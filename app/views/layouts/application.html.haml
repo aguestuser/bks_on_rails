@@ -1,0 +1,15 @@
+!!!
+%html
+  %head
+    %title= full_title(yield(:title))
+    = stylesheet_link_tag    "application", media: "all", "data-turbolinks-track" => true
+    = javascript_include_tag "application", "data-turbolinks-track" => true
+    = csrf_meta_tags
+    = render 'layouts/shim'
+  %body
+    = render 'layouts/header'
+    .container
+      - flash.each do |k, v|
+        = content_tag(:div, v, class: "alert alert-#{k}")
+      = yield
+      = render 'layouts/debug_data' if Rails.env.development?
