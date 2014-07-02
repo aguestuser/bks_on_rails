@@ -1,5 +1,4 @@
 require 'spec_helper'
-include RequestSpecHelper
 
 describe "Static pages" do
   

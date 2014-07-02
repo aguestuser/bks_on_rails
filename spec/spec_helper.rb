@@ -44,6 +44,8 @@ Spork.prefork do
     #     --seed 1234
     config.order = "random"
     config.include Capybara::DSL
+    config.include RequestSpecMacros
+    config.include CustomMatchers
   end
 end
 

@@ -1,5 +1,4 @@
-module RequestSpecHelper
-  
+module RequestSpecMacros
   #methods
   def check_nav_links
     links = [
@@ -16,11 +15,5 @@ module RequestSpecHelper
     expect(page).to have_title(full_title(title))
   end
 
-  #custom matchers
-  RSpec::Matchers.define :have_heading do |heading|
-    match do |page|
-      expect(page).to have_selector('h1', text: heading)
-    end
-  end
-  
+  #custom matchers  
 end
