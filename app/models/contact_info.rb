@@ -10,8 +10,8 @@
 #  neighborhood   :string(255)
 #  created_at     :datetime
 #  updated_at     :datetime
-
-# include ContactInfoHelpers
+#  contactable_id :integer
+#
 
 class ContactInfo < ActiveRecord::Base
   include Boroughs, Neighborhoods
