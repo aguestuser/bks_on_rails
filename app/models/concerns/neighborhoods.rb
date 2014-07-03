@@ -1,14 +1,4 @@
-module ContactInfoHelpers
-  class Boroughs 
-    # include Ruby::Enum
-    include Enum
-    define :MANHATTAN, 'Manhattan'
-    define :BROOKLYN, 'Brooklyn'
-    define :QUEENS, 'Queens'
-    define :BRONX, 'Bronx'
-    define :STATEN_ISLAND, 'Staten Island'
-  end
-
+module Neighborhoods
   class Neighborhoods # note: will need to update this set of enums as we add more neighborhoods
     # include Ruby::Enum
     include Enum

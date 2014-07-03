@@ -10,13 +10,13 @@
 #  neighborhood   :string(255)
 #  created_at     :datetime
 #  updated_at     :datetime
-#
 
-include ContactInfoHelpers # contains Neigborhoods and Boroughs enum classes
+# include ContactInfoHelpers
 
 class ContactInfo < ActiveRecord::Base
+  include Boroughs, Neighborhoods
   #associations
-  # belongs_to :contactable, polymorphic: true
+  belongs_to :contactable, polymorphic: true
 
   #before filters
   before_save { street_address.strip! }
