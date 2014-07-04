@@ -3,23 +3,6 @@
 .row
   .span6.offset3
     = form_for(@staffer) do |form|
-
       = render 'shared/error_messages', object: form.object
-
-      = render 'contact_info_fields', object: form.object
-      
-      = form.fields_for :contact_info do |contact_info_fields|
-
-        = contact_info_fields.label :name
-        = contact_info_fields.text_field :name
-
-        = contact_info_fields.label :title
-        = contact_info_fields.text_field :title        
-
-        = contact_info_fields.label :email
-        = contact_info_fields.text_field :email
-
-        = contact_info_fields.label :phone
-        = contact_info_fields.text_field :phone
-
+      = render 'shared/contact_info_fields', form: form, object: form.object
       = form.submit "Create staffer", class: "btn btn-large btn-primary"      
