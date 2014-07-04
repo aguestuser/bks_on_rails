@@ -34,39 +34,54 @@ describe "Staffer Pages" do
     end
   end
 
-  describe "editing an existing Staffer" do
+  describe "viewing Staffer profile" do
     before do 
       staffer.save
-      visit edit_staffer_path(staffer)
+      visit staffer_path(staffer)
     end
 
     describe "page" do
-      it { should have_heading("Edit #{staffer.name}'s Profile") }
+      it { should have_heading("#{staffer.name}") }
+      it { should have_link('Edit') }
+      it { should have_link('Delete') }
     end
 
-    describe "with invalid input" do
-      before do 
-        fill_in 'Name', with: '' 
-        click_button 'Save changes'
+    describe "deleting Staffer" do
+      it "should reduce Staffer count by 1" do
+        expect { click_link "Delete" }.to change(Staffer, :count).by(-1)
       end
-      it { should have_an_error_message }
     end
 
-    describe "with valid input" do
-      let(:new_name) { 'Horrible Person' }
-      let(:new_email) { 'horribleperson@example.com' }
-      before do
-        fill_in 'Name',   with: new_name
-        fill_in 'Email',  with: new_email
-        click_button "Save changes"
+    describe "editing Staffer profile" do
+      before { click_link "Edit" }
+
+      describe "page" do
+        it { should have_heading("Edit #{staffer.name}'s Profile") }
       end
 
-      it { should have_heading(new_name) }
-      it { should have_success_message("#{new_name}'s profile has been updated") }
-      specify { expect(staffer.reload.name).to eq new_name }
-      specify { expect(staffer.reload.email).to eq new_email }
+      describe "with invalid input" do
+        before do 
+          fill_in 'Name', with: '' 
+          click_button 'Save changes'
+        end
+        it { should have_an_error_message }
+      end
 
+      describe "with valid input" do
+        let(:new_name) { 'Horrible Person' }
+        let(:new_email) { 'horribleperson@example.com' }
+        before do
+          fill_in 'Name',   with: new_name
+          fill_in 'Email',  with: new_email
+          click_button "Save changes"
+        end
+
+        it { should have_heading(new_name) }
+        it { should have_success_message("#{new_name}'s profile has been updated") }
+        specify { expect(staffer.reload.name).to eq new_name }
+        specify { expect(staffer.reload.email).to eq new_email }
+      end
     end
-
   end
 end
+
