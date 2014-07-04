@@ -13,6 +13,12 @@ class Staffer < ActiveRecord::Base
   has_one :contact_info, as: :contactable, dependent: :destroy
   accepts_nested_attributes_for :contact_info
 
+  #class methods
+  def self.find_by_email(email)
+    contact_info = ContactInfo.find_by(email: email)
+    Staffer.find(contact_info.contactable.id)
+  end
+
   #methods
   def email
     self.contact_info.email
@@ -25,4 +31,5 @@ class Staffer < ActiveRecord::Base
   def title
     self.contact_info.title
   end
+
 end

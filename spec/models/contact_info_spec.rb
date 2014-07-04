@@ -25,6 +25,7 @@ describe ContactInfo do
 
   describe "attributes" do
     it { should respond_to(:name) }
+    it { should respond_to(:title) }
     it { should respond_to(:phone) }
     it { should respond_to(:email) }
     it { should respond_to(:street_address) }
@@ -39,6 +40,7 @@ describe ContactInfo do
   describe "validation" do
 
     it { should be_valid }
+    let!(:staffer_contact_info) { FactoryGirl.create(:staffer).contact_info }
 
     describe "of phone number" do
       
@@ -78,11 +80,26 @@ describe ContactInfo do
     end
 
     describe "of street address" do
-          
+      
       describe "with no value" do
-        before { contact_info.street_address = nil }
-        it { should_not be_valid }
+        before { contact_info.street_address = '' }
+        
+        # describe "for Restaurants" do
+        #   before { contact_info.contactable_type = "Restaurant" }
+        #   it { should_not be_valid }
+        # end
+        
+        describe "for Staffers" do
+          subject { staffer_contact_info }
+          it { should be_valid }
+        end
+
+        describe "for Riders" do
+          before { contact_info.contactable_type = "Riders" }
+          it { should be_valid }            
+        end
       end
+
       describe "with borough in address" do
         it "should be invalid" do
           boroughs = %w[Brooklyn brooklyn Queens Bronx Manhattan Staten NYC]

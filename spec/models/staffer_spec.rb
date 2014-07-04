@@ -20,7 +20,12 @@ describe Staffer do
   end
 
   # describe "methods" do
-  # end
+  describe "find_by_email" do
+    let(:expected_id) { Staffer.find_by_email(staffer.email).id }
+    it "should retrieve the correct staffer" do
+      expect(staffer.id).to eq expected_id
+    end
+  end
 
   describe "associations" do
     describe "contact info" do

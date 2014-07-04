@@ -11,7 +11,7 @@ class StaffersController < ApplicationController
 
     @staffer = Staffer.new(staffer_params)
     if @staffer.save
-      flash[:success] = 'Micropost created!'
+      flash[:success] = "Profile created for #{@staffer.name}."
       redirect_to @staffer
     else
       render 'new'

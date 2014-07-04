@@ -1,4 +1,5 @@
 require 'spec_helper'
+include CustomMatchers
 
 describe "Staffer Pages" do
   let(:staffer) { FactoryGirl.build(:staffer) }
@@ -14,7 +15,7 @@ describe "Staffer Pages" do
       fill_in 'Email',    with: staffer.contact_info.email
     end    
     
-    let(:subnmit) { 'Create staffer' }
+    let(:submit) { 'Create staffer' }
 
     it "should create a new Staffer" do
       expect { click_button submit }.to change(Staffer, :count).by(1)
@@ -26,10 +27,10 @@ describe "Staffer Pages" do
 
     describe "after saving the staffer" do
       before { click_button submit }
-      let(:saved_staffer) { Staffer.find_by(name: staffer_name) }
+      let(:saved_staffer) { Staffer.find_by_email(staffer.email) }     
 
-      it { should have_title(saved_user.name) }
-      it { should have_success_message('New staffer created!') }
+      it { should have_title(saved_staffer.name) }
+      it { should have_success_message("Profile created for #{saved_staffer.name}.") }
     end
   end
 end
