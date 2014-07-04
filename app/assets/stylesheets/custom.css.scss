@@ -250,3 +250,28 @@ input {
   display: inline-block;
   width: 100%;
 }
+
+
+/* Profile pages */
+
+.profile {
+  .name {
+    text-align: left;
+    margin-bottom: .3em;
+    margin-top: .2em;
+  }
+  h3 {
+    text-align: center;
+    background-color: lightgrey;
+    border-radius: .4em;
+    padding: .2em;
+  }
+  li {
+    list-style-type: none;   
+  }
+  .title {
+    color: $grayLight;
+    text-align: left;
+    text-decoration: uppercase;
+  }
+}

@@ -2,6 +2,10 @@ BksOnRails::Application.routes.draw do
 
   root 'static_pages#home'
 
+  resources :staffers do
+    resources :contact_info
+  end
+
   match '/manual', to: 'static_pages#manual', via: 'get'
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".

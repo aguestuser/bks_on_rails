@@ -5,13 +5,13 @@
 #  id              :integer          not null, primary key
 #  created_at      :datetime
 #  updated_at      :datetime
-#  title           :string(255)
 #  contact_info_id :integer
 #
 
 class Staffer < ActiveRecord::Base
   #associations
-  has_one :contact_info, as: :contactable
+  has_one :contact_info, as: :contactable, dependent: :destroy
+  accepts_nested_attributes_for :contact_info
 
   #methods
   def email
@@ -20,5 +20,9 @@ class Staffer < ActiveRecord::Base
 
   def name
     self.contact_info.name
+  end
+
+  def title
+    self.contact_info.title
   end
 end
