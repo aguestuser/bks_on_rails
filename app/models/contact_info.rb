@@ -28,6 +28,7 @@ class ContactInfo < ActiveRecord::Base
 
   #validations
 
+  validates :name, presence: true
   VALID_STREET_ADDRESS = /\A((?!brooklyn|manhattan|queens|bronx|staten island|nyc|NY).)*\z/i
   validates :street_address,  presence: true, 
                               format: { with: VALID_STREET_ADDRESS },

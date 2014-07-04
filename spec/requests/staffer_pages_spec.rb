@@ -33,4 +33,40 @@ describe "Staffer Pages" do
       it { should have_success_message("Profile created for #{saved_staffer.name}.") }
     end
   end
+
+  describe "editing an existing Staffer" do
+    before do 
+      staffer.save
+      visit edit_staffer_path(staffer)
+    end
+
+    describe "page" do
+      it { should have_heading("Edit #{staffer.name}'s Profile") }
+    end
+
+    describe "with invalid input" do
+      before do 
+        fill_in 'Name', with: '' 
+        click_button 'Save changes'
+      end
+      it { should have_an_error_message }
+    end
+
+    describe "with valid input" do
+      let(:new_name) { 'Horrible Person' }
+      let(:new_email) { 'horribleperson@example.com' }
+      before do
+        fill_in 'Name',   with: new_name
+        fill_in 'Email',  with: new_email
+        click_button "Save changes"
+      end
+
+      it { should have_heading(new_name) }
+      it { should have_success_message("#{new_name}'s profile has been updated") }
+      specify { expect(staffer.reload.name).to eq new_name }
+      specify { expect(staffer.reload.email).to eq new_email }
+
+    end
+
+  end
 end
