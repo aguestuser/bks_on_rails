@@ -1,0 +1,11 @@
+- if object.class.name == 'Staffer'
+
+  = form.fields_for :contact_info do |contact_info_fields|
+    = contact_info_fields.label :name
+    = contact_info_fields.text_field :name
+    = contact_info_fields.label :title
+    = contact_info_fields.text_field :title        
+    = contact_info_fields.label :email
+    = contact_info_fields.text_field :email
+    = contact_info_fields.label :phone
+    = contact_info_fields.text_field :phone

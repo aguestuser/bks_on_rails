@@ -1,39 +1,13 @@
 class StaffersController < ApplicationController
   
+  before_action :get_staffer, only: [:show, :edit, :update]
+
   def new
     @staffer = Staffer.new
     @staffer.build_contact_info
   end
 
   def create
-    # @staffer = Staffer.create!(staffer_params)
-    # @contact_info = @staffer.contact_info.new(contact_info_params)
-    # if @contact_info.save
-    #   flash[:success] = "New staffer created!"
-    #   redirect_to @staffer
-    # else
-    #   render 'new'
-    # end
-
-    # @contact_info = ContactInfo.new(params[:contact_info])
-    
-    # if @contact_info.save
-    #   @staffer = Staffer.create!({contact_info: @contact_info.id})
-    #   flash[:success] = "New staffer created!"
-    #   redirect_to @staffer
-    # else
-    #   render 'new'
-    # end
-
-    # @staffer = Staffer.new
-    # @contact_info = @staffer.build_contact_info(params[:staffer][:contact_info])
-    # if @contact_info.save
-    #   @staffer.save
-    #   flash[:success] = "New staffer created!"
-    #   redirect_to @staffer
-    # else
-    #   render 'new'
-    # end
 
     @staffer = Staffer.new(staffer_params)
     if @staffer.save
@@ -42,24 +16,27 @@ class StaffersController < ApplicationController
     else
       render 'new'
     end
-
   end
 
   def index
-    
+    @staffers = Staffer.all
   end
 
   def show
-    @staffer = Staffer.find(params[:id])
     @contact = @staffer.contact_info
   end
 
   def edit
-    
   end
 
   def update
-    
+    @staffer.update(staffer_params)
+    if @staffer.save
+      flash[:success] = "#{@staffer.name}'s profile has been updated"
+      redirect_to @staffer
+    else
+      render 'edit'
+    end    
   end
 
   def destory
@@ -67,6 +44,10 @@ class StaffersController < ApplicationController
   end
 
   private
+
+    def get_staffer
+      @staffer = Staffer.find(params[:id])
+    end
 
     def staffer_params
       params.require(:staffer).permit(contact_info_attributes: [:name, :title, :phone, :email])
