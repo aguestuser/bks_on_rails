@@ -1,16 +1,16 @@
 FactoryGirl.define do
   
   factory :staffer do
-    contact_info { FactoryGirl.create(:staffer_contact_info) }
+    contact_info { FactoryGirl.build(:staffer_contact_info) }
     # contact_info.email 'staffer@example.com'
   end
 
   factory :restaurant do
-    contact_info { FactoryGirl.create(:restaurant_contact_info) }
+    contact_info { FactoryGirl.build(:restaurant_contact_info) }
   end
 
   factory :rider do
-    contact_info { FactoryGirl.create(:rider_contact_info) }
+    contact_info { FactoryGirl.build(:rider_contact_info) }
   end
 
   factory :contact_info do

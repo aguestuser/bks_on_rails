@@ -20,7 +20,7 @@ require 'spec_helper'
 
 describe ContactInfo do
 
-  let(:contact_info) { FactoryGirl.create(:contact_info) }
+  let(:contact_info) { FactoryGirl.build(:contact_info) }
   subject { contact_info }
 
   describe "attributes" do
@@ -38,9 +38,9 @@ describe ContactInfo do
   end
 
   describe "validation" do
-
+    # before { contact_info.save }
     it { should be_valid }
-    let!(:staffer_contact_info) { FactoryGirl.create(:staffer).contact_info }
+    let(:staffer) { FactoryGirl.create(:staffer).contact_info }
 
     describe "of phone number" do
       
@@ -90,8 +90,10 @@ describe ContactInfo do
         # end
         
         describe "for Staffers" do
-          subject { staffer_contact_info }
-          it { should be_valid }
+          it "should be valid" do 
+            expect(staffer.contact_info).to be_valid
+          end
+          # it { should be_valid }
         end
 
         describe "for Riders" do
