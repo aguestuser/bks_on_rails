@@ -1,0 +1,15 @@
+- provide(:title, @staffer.name)
+.profile
+  .row
+    .span8.offset2
+      = gravatar_for @staffer, size: 80
+      %section
+        %h1.name= @staffer.name
+        %h2.title= @staffer.title
+  .row
+    .span8.offset2
+      %h3 Contact Info
+      %ul 
+        %li Phone: #{@contact.phone}
+        %li Email: #{@contact.email}
+      = render 'edit_button'

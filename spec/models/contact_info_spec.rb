@@ -2,14 +2,18 @@
 #
 # Table name: contact_infos
 #
-#  id             :integer          not null, primary key
-#  phone          :string(255)
-#  email          :string(255)
-#  street_address :string(255)
-#  borough        :string(255)
-#  neighborhood   :string(255)
-#  created_at     :datetime
-#  updated_at     :datetime
+#  id               :integer          not null, primary key
+#  phone            :string(255)
+#  email            :string(255)
+#  street_address   :string(255)
+#  borough          :string(255)
+#  neighborhood     :string(255)
+#  created_at       :datetime
+#  updated_at       :datetime
+#  contactable_id   :integer
+#  contactable_type :string(255)
+#  name             :string(255)
+#  title            :string(255)
 #
 
 require 'spec_helper'
@@ -20,6 +24,7 @@ describe ContactInfo do
   subject { contact_info }
 
   describe "attributes" do
+
     it { should respond_to(:phone) }
     it { should respond_to(:email) }
     it { should respond_to(:street_address) }
@@ -61,7 +66,11 @@ describe ContactInfo do
             expect(contact_info).not_to be_valid
           end      
         end
-      end 
+      end
+      describe "with pre-existing address" do
+        let(:new_contact_info) { contact_info.dup }
+        specify { expect(new_contact_info).not_to be_valid }
+       end 
     end
 
     describe "of street address" do
