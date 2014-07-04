@@ -9,8 +9,6 @@ module ApplicationHelper
     end
   end
 
-<<<<<<< HEAD
-=======
   def gravatar_for(user, options = { size: 50 }) #input: User, output: String (html img tag for user's gravatar) [http://gravatar.com/]
     gravatar_id = Digest::MD5::hexdigest(user.email.downcase)
     size = options[:size]
@@ -18,6 +16,5 @@ module ApplicationHelper
     image_tag(gravatar_url, alt: user.name, class: "gravatar")
   end 
 
->>>>>>> sprint1
 
 end
