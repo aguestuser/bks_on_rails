@@ -35,3 +35,14 @@ describe Staffer do
     end
   end
 end
+
+    # describe "factory girl associations work" do
+    #   # let(:staffer_contact_info) { FactoryGirl.create(:staffer_contact_info) }
+    #   before { staffer.save }
+    #   it "should have a staffer" do
+    #     expect(staffer.contact_info.contactable.id).not_to eq nil
+    #   end
+    #   it "should create a contact info for staffer" do
+    #     expect(staffer.contact_info.name).to eq "Wonderful Staffer"
+    #   end
+    # end

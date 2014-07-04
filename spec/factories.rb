@@ -1,52 +1,57 @@
 FactoryGirl.define do
-  
-  factory :staffer do
-    contact_info { FactoryGirl.build(:staffer_contact_info) }
-    # contact_info.email 'staffer@example.com'
+
+  factory :staffer, class: "Staffer" do
+    after(:build) do |f|
+      f.contact_info = FactoryGirl.build(:staffer_contact_info, contactable: f)
+    end
   end
 
-  factory :restaurant do
-    contact_info { FactoryGirl.build(:restaurant_contact_info) }
+  factory :restaurant, class: "Restaurant" do
+    after(:build) do |f|
+      f.contact_info = FactoryGirl.build(:restaurant_contact_info, contactable: f)
+    end
   end
 
-  factory :rider do
-    contact_info { FactoryGirl.build(:rider_contact_info) }
+  factory :rider, class: "Rider" do
+    after(:build) do |f|
+      f.contact_info = FactoryGirl.build(:rider_contact_info, contactable: f)
+    end
   end
 
   factory :contact_info do
-    name 'Wonderful Guy'
-    title 'Accounts Manager'
-    phone '555-555-5555'
-    email 'wonderfulguy@example.com'
+    name 'Wonderful Person'
+    title 'Doer of Great Things'
+    phone '111-111-1111'
+    email 'wonderfulperson@example.com'
     street_address '446 Dean St'
     borough 'Brooklyn'
     neighborhood 'Park Slope'
   end
 
-  factory :staffer_contact_info do
-    name 'Wonderful Guy'
+  factory :staffer_contact_info, class: 'ContactInfo' do  
+    name 'Wonderful Staffer'
     title 'Accounts Manager'
-    phone '555-555-5555'
-    email 'wonderfulguy@example.com'
-    association :contactable, factory: :staffer
+    phone '222-222-2222'
+    email 'wonderfulstaffer@example.com'
+    association :contactable , factory: :staffer
   end
 
-  factory :rider_contact_info do
-    name 'Wonderful Guy'
-    phone '555-555-5555'
-    email 'wonderfulguy@example.com'
-    borough 'Brooklyn'
-    neighborhood 'Park Slope'
-    association :contactable, factory: :staffer
-  end
-
-  factory :restaurant_contact_info do
-    phone '555-555-5555'
-    email 'wonderfulguy@example.com'
+  factory :restaurant_contact_info, class: 'ContactInfo' do  
+    name 'Wonderful Restaurant'
+    phone '333-333-3333'
     street_address '446 Dean St'
     borough 'Brooklyn'
     neighborhood 'Park Slope'
-    association :contactable, factory: :restaurant    
+    association :contactable, factory: :restaurant
+  end
+
+  factory :rider_contact_info, class: 'ContactInfo' do  
+    name 'Wonderful Guy'
+    phone '555-555-5555'
+    email 'wonderfulguy@example.com'
+    borough 'Brooklyn'
+    neighborhood 'Park Slope'
+    association :contactable, factory: :rider
   end
 
 end

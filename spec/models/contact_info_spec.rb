@@ -17,6 +17,7 @@
 #
 
 require 'spec_helper'
+include ContactInfoMacros
 
 describe ContactInfo do
 
@@ -40,7 +41,9 @@ describe ContactInfo do
   describe "validation" do
     # before { contact_info.save }
     it { should be_valid }
-    let(:staffer) { FactoryGirl.create(:staffer).contact_info }
+    let!(:staffer) { FactoryGirl.build(:staffer) }
+    # let!(:restaurant) { FactoryGirl.build(:restaurant) }
+    # let!(:rider) { FactoryGirl.build(:rider) }
 
     describe "of phone number" do
       
@@ -74,6 +77,7 @@ describe ContactInfo do
         end
       end
       describe "with pre-existing address" do
+        before { contact_info.save }
         let(:new_contact_info) { contact_info.dup }
         specify { expect(new_contact_info).not_to be_valid }
        end 
@@ -82,63 +86,60 @@ describe ContactInfo do
     describe "of street address" do
       
       describe "with no value" do
-        before { contact_info.street_address = '' }
-        
-        # describe "for Restaurants" do
-        #   before { contact_info.contactable_type = "Restaurant" }
-        #   it { should_not be_valid }
-        # end
-        
+
         describe "for Staffers" do
-          it "should be valid" do 
-            expect(staffer.contact_info).to be_valid
-          end
-          # it { should be_valid }
+          subject { staffer.contact_info }
+          it { should be_valid }
         end
 
-        describe "for Riders" do
-          before { contact_info.contactable_type = "Riders" }
-          it { should be_valid }            
-        end
+        # describe "for Restaurants" do
+        #   it "should not be valid" do
+        #     expect(restaurant.contact_info).not_to be_valid
+        #   end
+        # end
+
+        # describe "for Riders" do
+        #   before { contact_info.contactable_type = "Riders" }
+        #   it { should be_valid }            
+        # end
       end
 
-      describe "with borough in address" do
-        it "should be invalid" do
-          boroughs = %w[Brooklyn brooklyn Queens Bronx Manhattan Staten NYC]
-          boroughs.each do |borough|
-            contact_info.street_address = "#{contact_info.street_address} #{borough}" 
-            expect(contact_info).not_to be_valid
-          end   
-        end
-      end
-      describe "with 'NY' in address" do
-        before { contact_info.street_address = "#{contact_info.street_address} NY" }
-        it { should_not be_valid }
-      end
+    #   describe "with borough in address" do
+        
+    #     describe "for Restaurant" do
+    #       it "should not be valid" do
+    #         check_borough_in_address(restaurant.contact_info)
+    #       end
+    #     end
+    #   end
+    #   describe "with 'NY' in address" do
+    #     before { contact_info.street_address = "#{contact_info.street_address} NY" }
+    #     it { should_not be_valid }
+    #   end
     end
 
-    describe "of borough" do
+    # describe "of borough" do
       
-      describe "with no value" do
-        before { contact_info.borough = nil }
-        it { should_not be_valid }
-      end
-      describe "with incorrect value" do
-        before { contact_info.borough = 'long island' }
-        it { should_not be_valid }
-      end
-    end
+    #   describe "with no value" do
+    #     before { contact_info.borough = nil }
+    #     it { should_not be_valid }
+    #   end
+    #   describe "with incorrect value" do
+    #     before { contact_info.borough = 'long island' }
+    #     it { should_not be_valid }
+    #   end
+    # end
 
-    describe "of neighborhood" do
+    # describe "of neighborhood" do
       
-      describe "with no value" do
-        before { contact_info.neighborhood = nil }
-        it { should_not be_valid }
-      end
-      describe "with incorrect value" do
-        before { contact_info.neighborhood = 'hoboken' }
-        it { should_not be_valid }
-      end
-    end
+    #   describe "with no value" do
+    #     before { contact_info.neighborhood = nil }
+    #     it { should_not be_valid }
+    #   end
+    #   describe "with incorrect value" do
+    #     before { contact_info.neighborhood = 'hoboken' }
+    #     it { should_not be_valid }
+    #   end
+    # end
   end
 end

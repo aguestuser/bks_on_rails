@@ -35,7 +35,7 @@ class ContactInfo < ActiveRecord::Base
 
   validates :borough, presence: true, 
                       inclusion: { in: Boroughs.values },
-                      if: Proc.new { |ci| ci.contactable_type == 'Restaurant' }
+                      if: Proc.new { |ci| ci.contactable_type == 'Restaurant' || ci.contactable_type == 'Rider'}
   validates :neighborhood,  presence: true, 
                             inclusion: { in: Neighborhoods.values },
                             if: Proc.new { |ci| ci.contactable_type == 'Restaurant' }
