@@ -17,7 +17,7 @@
 #
 
 class ContactInfo < ActiveRecord::Base
-  include Boroughs, Neighborhoods
+  include ContactInfoEnums
   #associations
   belongs_to :contactable, polymorphic: true
 

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140705023047) do
+ActiveRecord::Schema.define(version: 20140705064945) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -55,5 +55,28 @@ ActiveRecord::Schema.define(version: 20140705023047) do
     t.datetime "created_at"
     t.datetime "updated_at"
   end
+
+  create_table "work_arrangements", force: true do |t|
+    t.string   "zone"
+    t.string   "daytime_volume"
+    t.string   "evening_volume"
+    t.string   "pay_rate"
+    t.boolean  "shift_meal"
+    t.boolean  "cash_out_tips"
+    t.boolean  "rider_on_premises"
+    t.boolean  "extra_work"
+    t.string   "extra_work_description"
+    t.boolean  "bike"
+    t.boolean  "lock"
+    t.boolean  "rack"
+    t.boolean  "bag"
+    t.boolean  "heated_bag"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "restaurant_id"
+    t.string   "rider_payment_method"
+  end
+
+  add_index "work_arrangements", ["restaurant_id"], name: "index_work_arrangements_on_restaurant_id", using: :btree
 
 end

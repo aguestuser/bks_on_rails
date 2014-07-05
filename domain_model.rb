@@ -126,11 +126,10 @@ end
 
 class Restaurant
 
-  has_one :balance # Balance
-  has_one :restaurant_rating 
   has_one :contact_info
-  has_one :billing_info
   has_one :work_rule_set
+  # has_one :balance # Balance
+  # has_one :restaurant_rating 
 
   has_many :managers # Manager
   has_many :shifts # Shift 
@@ -141,10 +140,47 @@ class Restaurant
   @payment_method # PaymentMethods::Enum
   @pickup_required #bool
 
+end
 
 class BillingInfo
   @payment_method
   @pickup
+end
+
+class WorkArrangement
+  belongs_to :restaurant
+
+  @zone #str
+  @daytime_volume #str
+  @evening_volume #str
+  @rider_payment_method # str (RiderPaymentMethod::Enum)
+
+  @pay_rate #str
+  @shift_meal #bool
+  @cash_out_tips #bool
+  @rider_on_premises #bool
+  @extra_work #bool
+  @extra_work_description # str
+
+  @bike # bool
+  @lock # bool
+  @rack # bool
+  @bag # bool
+  @heated_bag # bool
+
+end
+
+class EquipmentSet
+  belongs_to :equipable
+  
+
+  @cell_phone # bool
+  @smart_phone # bool
+
+  def list_for(equipable)
+
+  end
+
 end
 
 class Owner < User
@@ -153,8 +189,8 @@ class Owner < User
 end
 
 class Manager < User
-  @restaurant # Restaurant
-  TITLE # CONSTANT 'Manager'
+  belongs_to :restaurant # Restaurant
+  has_one :contact_info # ContactInfo
 end
 
 class Rider < User

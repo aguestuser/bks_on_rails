@@ -27,4 +27,37 @@ describe Restaurant do
     it { should respond_to(:created_at) }
     it { should respond_to(:updated_at) }
   end
+
+  describe "associations" do
+    it { should respond_to(:managers) }
+    it { should respond_to(:contact_info) }
+  end
+
+  describe "validations" do
+    describe "when active is nil" do
+      before { restaurant.active = nil }
+      it { should_not be_valid }
+    end
+
+    describe "when status is nil" do
+      before { restaurant.status = nil }
+      it { should_not be_valid }
+    end
+
+    describe "when description is nil" do
+      before { restaurant.description = nil }
+      it { should_not be_valid }
+    end
+
+    describe "payment method is nil" do
+      before { restaurant.payment_method = nil }
+      it { should_not be_valid }
+    end
+
+    describe "pickup required is nil" do
+      before { restaurant.payment_method = nil }
+      it { should_not be_valid }
+    end
+    
+  end
 end

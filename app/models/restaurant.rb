@@ -13,6 +13,10 @@
 #
 
 class Restaurant < ActiveRecord::Base
-  include Contactable
+  include Contactable, RestaurantEnums
   has_many :managers, dependent: :destroy
+  has_one :work_arrangement, dependent: :destroy
+
+  validates :active , :status, :description, :payment_method, :pickup_required,
+    presence: true
 end
