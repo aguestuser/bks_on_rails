@@ -135,18 +135,16 @@ class Restaurant
   has_many :managers # Manager
   has_many :shifts # Shift 
   
+  @active #bool
+  @status # RestaurantStatuses::Enum
+  @description # text
+  @payment_method # PaymentMethods::Enum
+  @pickup_required #bool
 
-  @contact_info #ContactInfo
-  @brief # text
+
+class BillingInfo
   @payment_method
-
-  @work_rules
-
-end
-
-class BillingInfoSet
-  @payment_method
-  @pickup_required
+  @pickup
 end
 
 class Owner < User
