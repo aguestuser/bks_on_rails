@@ -1,6 +1,6 @@
 class StaffersController < ApplicationController
   
-  before_action :get_staffer, only: [:show, :edit, :update]
+  before_action :get_staffer, only: [:show, :edit, :update, :destroy]
 
   def new
     @staffer = Staffer.new
@@ -8,10 +8,9 @@ class StaffersController < ApplicationController
   end
 
   def create
-
     @staffer = Staffer.new(staffer_params)
     if @staffer.save
-      flash[:success] = 'Micropost created!'
+      flash[:success] = "Profile created for #{@staffer.name}."
       redirect_to @staffer
     else
       render 'new'
@@ -39,8 +38,10 @@ class StaffersController < ApplicationController
     end    
   end
 
-  def destory
-    
+  def destroy
+    @staffer.destroy
+    flash[:success] = "All information associated with #{@staffer} has been deleted"
+    redirect_to staffers_url
   end
 
   private

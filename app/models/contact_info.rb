@@ -28,6 +28,7 @@ class ContactInfo < ActiveRecord::Base
 
   #validations
 
+  validates :name, presence: true
   VALID_STREET_ADDRESS = /\A((?!brooklyn|manhattan|queens|bronx|staten island|nyc|NY).)*\z/i
   validates :street_address,  presence: true, 
                               format: { with: VALID_STREET_ADDRESS },
@@ -35,7 +36,7 @@ class ContactInfo < ActiveRecord::Base
 
   validates :borough, presence: true, 
                       inclusion: { in: Boroughs.values },
-                      if: Proc.new { |ci| ci.contactable_type == 'Restaurant' }
+                      if: Proc.new { |ci| ci.contactable_type == 'Restaurant' || ci.contactable_type == 'Rider'}
   validates :neighborhood,  presence: true, 
                             inclusion: { in: Neighborhoods.values },
                             if: Proc.new { |ci| ci.contactable_type == 'Restaurant' }
