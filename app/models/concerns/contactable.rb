@@ -7,10 +7,10 @@ module Contactable
   end
   
   module ClassMethods
-    def find_by_email(email)
-      contact_info = ContactInfo.find_by(email: email)
-      Staffer.find(contact_info.contactable.id)
-    end
+    # def find_by_email(email)
+    #   contact_info = ContactInfo.find_by(email: email)
+    #   Staffer.find(contact_info.contactable.id)
+    # end
   end  
 end
 

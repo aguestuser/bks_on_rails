@@ -1,5 +1,6 @@
 class StaffersController < ApplicationController
-  
+  # include UsersController
+
   before_action :get_staffer, only: [:show, :edit, :update, :destroy]
 
   def new
@@ -17,12 +18,12 @@ class StaffersController < ApplicationController
     end
   end
 
-  def index
-    @staffers = Staffer.all
+  def show
+    @contact_info = @staffer.contact_info
   end
 
-  def show
-    @contact = @staffer.contact_info
+  def index
+    @staffers = Staffer.all
   end
 
   def edit
@@ -53,13 +54,4 @@ class StaffersController < ApplicationController
     def staffer_params
       params.require(:staffer).permit(contact_info_attributes: [:name, :title, :phone, :email])
     end
-
-    # def staffer_params
-    #   params.require(:staffer, { :contact_info_id => @contact_info.id })
-    # end
-
-    # def contact_info_params
-    #   # params[:contact_info].require(:name, :phone, :email, :title).permit(:street_address, :borough, :neighborhood)
-    #   params.require(:staffer, contact_info: [:name, :phone, :email, :title]).permit(contact_info: [:street_address, :borough, :neighborhood])
-    # end
 end

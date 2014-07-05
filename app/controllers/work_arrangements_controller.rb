@@ -1,4 +1,4 @@
-class ContactInfosController < ApplicationController
+class WorkArrangementsController < ApplicationController
 
   def create
   end
@@ -11,7 +11,5 @@ class ContactInfosController < ApplicationController
 
   def update
   end
-
-  private
 
 end

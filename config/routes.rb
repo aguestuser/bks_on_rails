@@ -1,9 +1,18 @@
 BksOnRails::Application.routes.draw do
 
-  root 'static_pages#home'
-
+  get "managers/new"
+  get "managers/edit"
+  get "managers/show"
   resources :staffers do
-    resources :contact_info
+    resource :contact_info, only: [:new, :create, :edit, :update]
+  end
+
+  resources :restaurants do
+    resource :contact_info, only: [:new, :create, :edit, :update]
+    resource :work_arrangement, only: [:new, :create, :edit, :update]
+    resources :managers, only: [:new, :create, :edit, :update, :show]
+      resource :contact_info, only: [:new, :create, :edit, :update]
+    resources :shifts, shallow: true
   end
 
   match '/manual', to: 'static_pages#manual', via: 'get'
