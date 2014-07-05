@@ -52,18 +52,18 @@ class User
 end
 
 class Contact_Info
-  @phone_numbers # arr of Phone_Numbers
-  @email_addresses # arr of Email_Addresses
-  @address # Location
+  has_many :phone_numbers
+  has_many :email_addresses
+  has_one :location
 end
 
-class Phone_Number
-  @type # Phone_Number_Types::ENUM
+class PhoneNumber
+  @type # Phone_Types::ENUM
   @primary # bool
-  @number # str
+  @value # str
 end
 
-class Phone_Number_Types
+class Phone_Types
   include Ruby::Enum
   define :WORK, 'Work'
   define :CELL, 'Cell'
@@ -73,20 +73,19 @@ class Phone_Number_Types
 end
 
 class Email_Address
-  @type # Email_Address_Types::ENUM
   @primary # bool
-  @address # str
+  @value # str
 end
 
 class Email_Address_Types
-  include Rubby::Enum
+  include Ruby::Enum
   define :WORK, 'Work'
   define :PERSONAL, 'Personal'
 end
 
 class Location
   @address # str
-  @lat # num
+  @lat # :decimal, {:precision=>10, :scale=>6}
   @lng # str
   @borough # Boroughs::ENUM
   @neighborhood # Neighborhoods::ENUM
@@ -126,20 +125,28 @@ class Staffer < User
 end
 
 class Restaurant
-  has_many :owners #Owner
-  has_many :managers #Manager
-  has_many :shifts # Shift
-  has_many :assignments, through :shifts 
-  has_one :balance
-  has_one :rating
 
+  has_one :balance # Balance
+  has_one :restaurant_rating 
+  has_one :contact_info
+  has_one :billing_info
+  has_one :work_rule_set
 
-  @name #Str
-  @location # Location
-  @neighborhood # Neighborhood:ENUM
-  @description # text
+  has_many :managers # Manager
+  has_many :shifts # Shift 
+  
 
+  @contact_info #ContactInfo
+  @brief # text
+  @payment_method
 
+  @work_rules
+
+end
+
+class BillingInfoSet
+  @payment_method
+  @pickup_required
 end
 
 class Owner < User
