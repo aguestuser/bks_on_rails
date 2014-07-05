@@ -13,19 +13,18 @@
 #
 
 require 'spec_helper'
+include ValidationMacros
 
 describe Restaurant do
   let(:restaurant) { FactoryGirl.create(:restaurant) }
   subject { restaurant }
 
   describe "attributes" do
-    it { should respond_to(:active) }
-    it { should respond_to(:status) }
-    it { should respond_to(:description) }
-    it { should respond_to(:payment_method) }
-    it { should respond_to(:pickup_required) }
-    it { should respond_to(:created_at) }
-    it { should respond_to(:updated_at) }
+    let(:attributes) { [
+      :active, :status, :description, :payment_method, :pickup_required, :created_at, :updated_at ] }
+    it "should respond to all attributes" do
+      check_attributes restaurant, attributes
+    end
   end
 
   describe "associations" do
@@ -34,30 +33,10 @@ describe Restaurant do
   end
 
   describe "validations" do
-    describe "when active is nil" do
-      before { restaurant.active = nil }
-      it { should_not be_valid }
+    let(:required_attribtues) { [ 
+      :active, :status, :description, :payment_method ] }
+    it "should be invalid when required fields are nil" do
+      check_required_attributes restaurant, required_attribtues
     end
-
-    describe "when status is nil" do
-      before { restaurant.status = nil }
-      it { should_not be_valid }
-    end
-
-    describe "when description is nil" do
-      before { restaurant.description = nil }
-      it { should_not be_valid }
-    end
-
-    describe "payment method is nil" do
-      before { restaurant.payment_method = nil }
-      it { should_not be_valid }
-    end
-
-    describe "pickup required is nil" do
-      before { restaurant.payment_method = nil }
-      it { should_not be_valid }
-    end
-    
   end
 end

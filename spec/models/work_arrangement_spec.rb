@@ -45,16 +45,18 @@ describe WorkArrangement do
   end
 
   describe "validations" do
-    let(:required_attributes) { [
-      :zone, :daytime_volume, :evening_volume, :rider_payment_method ] }
-    it "should be invalid when required fields are nil" do
-      check_required_attributes work_arrangement, required_attributes  
+    describe "for required fields" do
+      let(:required_attributes) { [
+        :zone, :daytime_volume, :evening_volume, :rider_payment_method ] }
+      it "should be invalid when required fields are nil" do
+        check_required_attributes work_arrangement, required_attributes  
+      end      
     end
-  end
-end
-
-def check_attributes(model, attributes)
-  attributes.each do |attr|
-    expect(model).to respond_to attr
+    describe "when extra work is true" do
+      before { work_arrangement.extra_work = true }
+      it "should be invalid without extra work description" do
+        check_required_attributes work_arrangement, [:extra_work_description]
+      end
+    end
   end
 end
