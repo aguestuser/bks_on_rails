@@ -1,8 +1,7 @@
 BksOnRails::Application.routes.draw do
 
-  get "managers/new"
-  get "managers/edit"
-  get "managers/show"
+  root 'static_pages#home' 
+
   resources :staffers do
     resource :contact_info, only: [:new, :create, :edit, :update]
   end

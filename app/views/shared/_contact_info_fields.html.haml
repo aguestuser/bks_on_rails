@@ -1,11 +1,22 @@
 - if object.class.name == 'Staffer'
-
-  = form.fields_for :contact_info do |contact_info_fields|
-    = contact_info_fields.label :name
-    = contact_info_fields.text_field :name
-    = contact_info_fields.label :title
-    = contact_info_fields.text_field :title        
-    = contact_info_fields.label :email
-    = contact_info_fields.text_field :email
-    = contact_info_fields.label :phone
-    = contact_info_fields.text_field :phone
+  = form.fields_for :contact_info do |ci|
+    = ci.label :name
+    = ci.text_field :name
+    = ci.label :title
+    = ci.text_field :title        
+    = ci.label :email
+    = ci.text_field :email
+    = ci.label :phone
+    = ci.text_field :phone
+- elsif object.class.name == 'Restaurant'
+  = form.fields_for :contact_info do |ci|
+    = ci.label :name
+    = ci.text_field :name
+    = ci.label :phone
+    = ci.text_field :phone
+    = ci.label :street_address
+    = ci.text_field :street_address
+    = ci.label :borough
+    = ci.select :borough, @boroughs
+    = ci.label :neighborhood
+    = ci.select :neighborhood, @neighborhoods    

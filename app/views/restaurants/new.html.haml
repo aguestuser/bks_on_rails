@@ -1,2 +1,17 @@
-%h1 Restaurants#new
-%p Find me in app/views/restaurants/new.html.haml
+- provide(:title, 'Create Restaurant')
+%h1 Create Restaurant
+.profile
+  .row
+    .span6.offset3
+      = form_for(@restaurant) do |form|
+        = render 'shared/error_messages', object: form.object
+        %h3 Contact Info
+        = render 'shared/contact_info_fields', form: form, object: form.object
+        / %h3 Managers
+        / = render 'manager_fields'
+        / %h3 Working Conditions
+        / = render 'work_arrangement_fields'
+        / %h3 Scheduling Needs
+        / = render 'scheduling_needs_fields'
+
+        = form.submit "Create restaurant", class: "btn btn-large btn-primary" 

@@ -1,5 +1,4 @@
 class ManagersController < ApplicationController
-  
   before_action :get_manager, only: [:show, :edit, :update, :destroy]
 
   def new

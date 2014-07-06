@@ -1,6 +1,15 @@
-module Neighborhoods
+module ContactInfoEnums
+
+  class Boroughs 
+    include Enum
+    define :MANHATTAN, 'Manhattan'
+    define :BROOKLYN, 'Brooklyn'
+    define :QUEENS, 'Queens'
+    define :BRONX, 'Bronx'
+    define :STATEN_ISLAND, 'Staten Island'
+  end
+
   class Neighborhoods # note: will need to update this set of enums as we add more neighborhoods
-    # include Ruby::Enum
     include Enum
     define :PARK_SLOPE, 'Park Slope'
     define :FORT_GREENE, 'Fort Greene'

@@ -1,4 +1,5 @@
 class RestaurantsController < ApplicationController
+  include ContactInfoEnums
   before_action :get_restaurant, only: [:show, :edit, :update, :destroy]
 
   def new
@@ -6,6 +7,8 @@ class RestaurantsController < ApplicationController
     @restaurant.build_contact_info
     @restaurant.build_work_arrangement
     @restaurant.managers.build
+    @boroughs = Boroughs.values
+    @neighborhoods = Neighborhoods.values
   end
 
   def create

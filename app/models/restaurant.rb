@@ -15,7 +15,7 @@
 class Restaurant < ActiveRecord::Base
   include Contactable, RestaurantEnums
   has_many :managers, dependent: :destroy
-  accepts_nested_attributes_for :managers, allow_destory: true
+  accepts_nested_attributes_for :managers, allow_destroy: true
   has_one :work_arrangement, dependent: :destroy
   accepts_nested_attributes_for :work_arrangement
 
