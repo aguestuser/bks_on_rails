@@ -20,9 +20,9 @@ module Contactable
     def email # i could DRY up this and the title method, no?
       begin
         if @klass != Restaurant
-          self.contact_info.title
+          self.contact_info.email
         else
-          raise Exception, "Restaurants don't have titles, silly!"
+          raise Exception, "You tried to find a restaurant by its email. Restaurants don't have emails, silly!"
         end        
       rescue Exception => e
         #do something here to handle error
@@ -34,7 +34,7 @@ module Contactable
         if @klass != Restaurant
           self.contact_info.title
         else
-          raise Exception, "Restaurants don't have titles, silly!"
+          raise Exception, "You tried to find a restaurant by its title. Restaurants don't have titles, silly!"
         end        
       rescue Exception => e
         #do something here to handle error

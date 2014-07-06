@@ -1,14 +1,16 @@
 class RestaurantsController < ApplicationController
-  include ContactInfoEnums
+  include ContactInfoEnums # /app/helpers/contact_info_enums.rb
+  include RestaurantEnums # /app/helpers/restaurant_enums.rb
+
   before_action :get_restaurant, only: [:show, :edit, :update, :destroy]
+  before_action :get_enums, only: [:new, :create, :edit]
 
   def new
-    @restaurant = Restaurant.new
-    @restaurant.build_contact_info
-    @restaurant.build_work_arrangement
-    @restaurant.managers.build
-    @boroughs = Boroughs.values
-    @neighborhoods = Neighborhoods.values
+      @restaurant ||= Restaurant.new
+      @restaurant.build_contact_info
+      @restaurant.build_work_arrangement
+      managers ||= @restaurant.managers.build
+      managers.build_contact_info      
   end
 
   def create
@@ -52,7 +54,9 @@ class RestaurantsController < ApplicationController
     def restaurant_params
       params.require(:restaurant)
         .permit(
-          manager_attributes: 
+          contact_info_attributes:
+            [ :name, :phone, :street_address, :borough, :neighborhood ],
+          managers_attributes: 
             [ contact_info_attributes: 
               [ :name, :title, :phone, :email ] ],
           work_arrangement_attributes:
@@ -60,5 +64,15 @@ class RestaurantsController < ApplicationController
               :pay_rate, :shift_meal, :cash_out_tips, :rider_on_premises,
               :extra_work, :extra_work_description,
               :bike, :lock, :rack, :bag, :heated_bag ] )
-    end  
+    end 
+
+    def get_enums
+      @boroughs = Boroughs
+      @neighborhoods = Neighborhoods
+      @statuses = Statuses
+      @rider_payment_methods = RiderPaymentMethods
+      @agency_payment_methods = AgencyPaymentMethods
+    end
+
 end
+

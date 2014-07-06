@@ -40,7 +40,7 @@ class ContactInfo < ActiveRecord::Base
   validates :borough, 
               presence: true, 
               inclusion: { in: Boroughs.values },
-              if: "contactable_is?('Restaurant') || contactable_is?('Rider')"
+              if: "contactable_is?('Restaurant')"
   validates :neighborhood,  
               presence: true, 
               inclusion: { in: Neighborhoods.values },
@@ -67,7 +67,7 @@ class ContactInfo < ActiveRecord::Base
   end
 
   def contactable_is?(contactable_type)
-    self.contactable.class.name == contactable_type
+    self[:contactable_type] == contactable_type
   end
 
 end

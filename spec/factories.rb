@@ -95,13 +95,6 @@ FactoryGirl.define do
     end
   end
 
-
-
-
-
-
-
-
   factory :rider_contact_info, class: 'ContactInfo' do  
     name 'Wonderful Guy'
     phone '555-555-5555'

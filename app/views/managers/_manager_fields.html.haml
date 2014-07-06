@@ -1,0 +1,12 @@
+= form.fields_for :managers do |ff|
+  = ff.fields_for :contact_info do |fff|
+    = fff.label :name
+    = fff.text_field :name
+    = fff.label :title
+    = fff.text_field :title        
+    = fff.label :email
+    = fff.text_field :email
+    = fff.label :phone
+    = fff.text_field :phone
+  - if !@restaurant.new_record?  
+    = link_to 'Create new manager', new_restaurant_manager_path(@restaurant)

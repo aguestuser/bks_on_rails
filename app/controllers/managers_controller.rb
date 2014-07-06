@@ -2,7 +2,7 @@ class ManagersController < ApplicationController
   before_action :get_manager, only: [:show, :edit, :update, :destroy]
 
   def new
-    @manager = Manager.new
+    @manager ||= Manager.new
     @manager.build_contact_info
   end
 
