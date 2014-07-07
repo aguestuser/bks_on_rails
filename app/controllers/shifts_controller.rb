@@ -27,6 +27,16 @@ class ShiftsController < ApplicationController
   def edit
   end
 
+  def update
+    @shift.update(shift_params)
+    if @shift.save
+      flash[:success] = "Shift has been updated"
+      redirect_to @shift
+    else
+      render 'edit'
+    end
+  end
+
   def index    
   end
 
