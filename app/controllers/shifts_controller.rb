@@ -61,7 +61,9 @@ class ShiftsController < ApplicationController
     end
 
     def get_restaurant
-      @restaurant = Restaurant.find(params[:restaurant_id])
+      if params[:restaurant_id]
+        @restaurant = Restaurant.find(params[:restaurant_id])
+      end
     end
 
     def shift_params # permit :restaurant_id?
