@@ -40,6 +40,12 @@ class ShiftsController < ApplicationController
   def index    
   end
 
+  def destroy
+    @shift.destroy
+    flash[:success] = "Shift deleted"
+    redirect_to restaurant_path(@shift.restaurant)
+  end
+
   private
 
     def get_shift
