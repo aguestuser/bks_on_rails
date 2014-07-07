@@ -1,9 +1,13 @@
 require 'spec_helper'
 
-describe RiderPaymentMethods::Cash do
+describe Period::Am do
   pending "add some examples to (or delete) #{__FILE__}"
 end
 
-describe RiderPaymentMethods::Check do
+describe Period::Pm do
+  pending "add some examples to (or delete) #{__FILE__}"
+end
+
+describe Period::Double do
   pending "add some examples to (or delete) #{__FILE__}"
 end

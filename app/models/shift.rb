@@ -15,4 +15,12 @@
 #
 
 class Shift < ActiveRecord::Base
+  belongs_to :restaurant
+
+  classy_enum_attr :period
+  classy_enum_attr :billing_rate
+  classy_enum_attr :urgency
+
+  validates :start, :end, :period, :billing_rate, :urgency,
+    presence: true
 end

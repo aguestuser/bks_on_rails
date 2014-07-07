@@ -1,8 +1,7 @@
 class RestaurantsController < ApplicationController
 
   before_action :get_restaurant, only: [:show, :edit, :update, :destroy]
-  before_action :get_restaurant_and_children, only: [:update]
-  before_action :get_enums, only: [:new, :create, :edit]
+  # before_action :get_restaurant_and_children, only: [:update]
 
   def new
       @restaurant ||= Restaurant.new
@@ -50,9 +49,9 @@ class RestaurantsController < ApplicationController
       @restaurant ||= Restaurant.find(params[:id])
     end
 
-    def get_restaurant_and_children
-      @restaurant =Restaurant.includes(:managers).find(params[:id])
-    end
+    # def get_restaurant_and_children
+    #   @restaurant =Restaurant.includes(:managers).find(params[:id])
+    # end
 
     def restaurant_params
       params.require(:restaurant)
