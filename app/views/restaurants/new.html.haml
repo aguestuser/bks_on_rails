@@ -1,0 +1,18 @@
+- provide(:title, 'Create Restaurant')
+%h1 Create Restaurant
+.profile
+  .row
+    .span6.offset3
+      = form_for(@restaurant) do |f|
+        = render 'shared/error_messages', object: f.object
+        %h3 Agency Compensation
+        = render 'summary_fields', form: f
+        %h3 Contact Info
+        = render 'shared/contact_info_fields', form: f, object: f.object
+        %h3 Manager
+        = render '/managers/manager_fields', form: f, object: f.object
+        %h3 Working Conditions
+        = render 'work_arrangement_fields', form: f
+
+
+        = f.submit "Create restaurant", class: "btn btn-large btn-primary" 

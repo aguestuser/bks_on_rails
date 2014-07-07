@@ -50,6 +50,9 @@ describe "Staffer Pages" do
       it "should reduce Staffer count by 1" do
         expect { click_link "Delete" }.to change(Staffer, :count).by(-1)
       end
+      it "should reduce ContactInfo count by 1" do
+        expect { click_link "Delete" }.to change(ContactInfo, :count).by(-1)
+      end
     end
 
     describe "editing Staffer profile" do

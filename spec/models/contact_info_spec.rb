@@ -38,7 +38,7 @@ describe ContactInfo do
     # before { contact_info.save }
     it { should be_valid }
     let!(:staffer) { FactoryGirl.build(:staffer) }
-    # let!(:restaurant) { FactoryGirl.build(:restaurant) }
+    let!(:restaurant) { FactoryGirl.build(:restaurant) }
     # let!(:rider) { FactoryGirl.build(:rider) }
 
     describe "of phone number" do
@@ -79,63 +79,69 @@ describe ContactInfo do
        end 
     end
 
-    describe "of street address" do
+    describe "of location attributes" do
       
-      describe "with no value" do
+      subject { restaurant.contact_info }
 
-        describe "for Staffers" do
-          subject { staffer.contact_info }
-          it { should be_valid }
+      describe "of street address" do
+        
+        describe "with no value" do
+
+          describe "for Staffers" do
+            before { staffer.contact_info.street_address = nil }
+            subject { staffer.contact_info }
+            it { should be_valid }
+          end
+
+          describe "for Restaurants" do
+            before { restaurant.contact_info.street_address = nil }
+            subject { staffer.contact_info }
+            it { should be_valid }
+          end
+
+          # describe "for Riders" do
+          #   before { contact_info.contactable_type = "Riders" }
+          #   it { should be_valid }            
+          # end
         end
 
-        # describe "for Restaurants" do
-        #   it "should not be valid" do
-        #     expect(restaurant.contact_info).not_to be_valid
-        #   end
-        # end
+        describe "with borough in address" do
+          
+          before { restaurant.contact_info.street_address = '111 Brooklyn' }  
 
-        # describe "for Riders" do
-        #   before { contact_info.contactable_type = "Riders" }
-        #   it { should be_valid }            
-        # end
+          it "should not be valid" do
+            check_borough_in_address(restaurant.contact_info)
+          end
+        end
+        describe "with 'NY' in address" do
+          before { restaurant.contact_info.street_address = "333 NY" }
+          it { should_not be_valid }
+        end
       end
 
-    #   describe "with borough in address" do
+      describe "of borough" do
         
-    #     describe "for Restaurant" do
-    #       it "should not be valid" do
-    #         check_borough_in_address(restaurant.contact_info)
-    #       end
-    #     end
-    #   end
-    #   describe "with 'NY' in address" do
-    #     before { contact_info.street_address = "#{contact_info.street_address} NY" }
-    #     it { should_not be_valid }
-    #   end
+        describe "with no value" do
+          before { restaurant.contact_info.borough = nil }
+          it { should_not be_valid }
+        end
+        describe "with incorrect value" do
+          before { restaurant.contact_info.borough = 'long island' }
+          it { should_not be_valid }
+        end
+      end
+
+      describe "of neighborhood" do
+        
+        describe "with no value" do
+          before { restaurant.contact_info.neighborhood = nil }
+          it { should_not be_valid }
+        end
+        describe "with incorrect value" do
+          before { restaurant.contact_info.neighborhood = 'hoboken' }
+          it { should_not be_valid }
+        end
+      end      
     end
-
-    # describe "of borough" do
-      
-    #   describe "with no value" do
-    #     before { contact_info.borough = nil }
-    #     it { should_not be_valid }
-    #   end
-    #   describe "with incorrect value" do
-    #     before { contact_info.borough = 'long island' }
-    #     it { should_not be_valid }
-    #   end
-    # end
-
-    # describe "of neighborhood" do
-      
-    #   describe "with no value" do
-    #     before { contact_info.neighborhood = nil }
-    #     it { should_not be_valid }
-    #   end
-    #   describe "with incorrect value" do
-    #     before { contact_info.neighborhood = 'hoboken' }
-    #     it { should_not be_valid }
-    #   end
-    # end
   end
 end

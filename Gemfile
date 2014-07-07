@@ -23,6 +23,8 @@ gem 'haml-rails'
 gem 'haml-contrib'
 gem 'RedCloth'
 
+gem 'classy_enum', '~> 3.5.0'
+
 
 group :development, :test do
   gem 'rspec-rails', '2.13.1'

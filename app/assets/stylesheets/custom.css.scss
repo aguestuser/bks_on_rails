@@ -194,6 +194,14 @@ input {
   height: auto !important;
 }
 
+label {
+  font-weight: bold;
+}
+
+.checkbox label {
+  font-weight: normal;
+}
+
 #error_explanation {
   color: #f00;
   ul {

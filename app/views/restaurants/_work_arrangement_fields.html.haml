@@ -1,0 +1,39 @@
+= form.fields_for :work_arrangement do |ff|
+  = ff.label :zone, 'Delivery zone size'
+  = ff.text_field :zone
+  = ff.label :daytime_volume
+  = ff.text_field :daytime_volume
+  = ff.label :evening_volume
+  = ff.text_field :evening_volume
+  .checkbox
+    = ff.check_box :extra_work, id: 'extra_work'
+    = ff.label :extra_work, "Riders expected to do non-delivery work?", class: 'check_box_label'
+  = ff.label :extra_work_description, "If you checked above, please explain:"
+  = ff.text_area :extra_work_description
+
+  %h3 Rider Compensation
+  = ff.label :rider_payment_method
+  = ff.select :rider_payment_method, RiderPaymentMethods.select_options, include_blank: true
+  = ff.label :pay_rate
+  = ff.text_field :pay_rate
+  .checkbox
+    = ff.check_box :shift_meal, id: 'shift_meal'
+    = ff.label :shift_meal, "Shift meal provided?"
+  .checkbox
+    = ff.check_box :cash_out_tips, id: 'cash_out_tips'
+    = ff.label :cash_out_tips, "Cash out tips at end of each shift?"
+
+  %h3 Equipment
+  %strong With which of the following can you provide riders?
+  .checkbox
+    = ff.check_box :bike, id: 'bike'
+    = ff.label :bike
+    = ff.check_box :lock, id: 'lock'
+    = ff.label :lock
+    = ff.check_box :rack, id: 'rack'
+    = ff.label :rack
+    = ff.check_box :bag, id: 'bag'
+    = ff.label :bag
+    = ff.check_box :heated_bag, id: 'heated_bag'
+    = ff.label :heated_bag, 'Insulated bag'
+

@@ -1,0 +1,6 @@
+= form.label :agency_payment_method, 'Agency payment method'
+= form.select :agency_payment_method, AgencyPaymentMethod.select_options, include_blank: true
+.checkbox
+  = form.check_box :pickup_required, id: 'pickup_required'
+  = form.label :pickup_required, 'In-person payment collection requested?'
+%br/

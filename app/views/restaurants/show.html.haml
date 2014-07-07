@@ -1,0 +1,98 @@
+- provide(:title, @restaurant.name)
+.profile
+  .row
+    .span8.offset2
+      = gravatar_for @restaurant.managers.first, size: 80
+      %section
+        %h1.name= @restaurant.name
+        %h2.title #{@contact_info.neighborhood.text} , #{@contact_info.borough.text}
+  .row
+    .span8.offset2
+      %h3 Summary
+      %ul
+        %li 
+          %strong Status: 
+          #{@restaurant.status.text} [#{@restaurant.active? ? 'ACTIVE' : 'INACTIVE'}]
+        %li
+          %strong Rider Payment: 
+          = @work_arrangement.rider_payment_method.text
+        %li 
+          %strong Agency Payment: 
+          = @restaurant.agency_payment_method.text
+        %li 
+          %strong In-person collection?: 
+          #{@restaurant.pickup_required? ? 'Yes' : 'No'}
+        %li 
+          %strong Brief: 
+          #{@restaurant.name} #{@restaurant.description}
+      %h3 Contact Info
+      %ul
+        %li
+          %strong Restaurant Phone:
+          = @contact_info.phone
+        %li
+          %strong Address:
+          #{@contact_info.street_address}, #{@contact_info.borough.text}, NY
+      %h3 Managers
+      - @restaurant.managers.each do |manager|
+        %ul
+          %li
+            %strong Name:
+            = manager.contact_info.name
+          %li
+            %strong Phone:
+            = manager.contact_info.phone
+          %li
+            %strong Email:
+            = manager.contact_info.email
+      %h3 Working Conditions
+      %ul
+        %li
+          %strong Zone:
+          = @work_arrangement.zone
+        %li
+          %strong AM Volume:
+          = @work_arrangement.daytime_volume
+        %li
+          %strong PM Volume:
+          = @work_arrangement.evening_volume
+        %li
+          %strong Extra Work?
+          = @work_arrangement.extra_work? ? 'Yes' : 'No'
+        %li
+          %strong Extra work Description:
+          = @work_arrangement.extra_work_description
+      %h3 Rider Compensation
+      %ul
+        %li
+          %strong Payment Method
+          = @work_arrangement.rider_payment_method
+        %li
+          %strong Pay Rate
+          = @work_arrangement.pay_rate
+        %li
+          %strong Shift Meal?:
+          = @work_arrangement.shift_meal? ? 'Yes' : 'No'
+        %li
+          %strong Tips Cashed Out?:
+          = @work_arrangement.cash_out_tips? ? 'Yes' : 'No'
+      %h3 Equipment
+      %ul  
+        %li
+          %strong Bike?: 
+          = @work_arrangement.bike? ? 'Yes' : 'No'
+        %li
+          %strong Lock?: 
+          = @work_arrangement.lock? ? 'Yes' : 'No'
+        %li
+          %strong Rack?: 
+          = @work_arrangement.bike? ? 'Yes' : 'No'
+        %li
+          %strong Bag?: 
+          = @work_arrangement.bag? ? 'Yes' : 'No'
+        %li
+          %strong Heated Bag?: 
+          = @work_arrangement.heated_bag? ? 'Yes' : 'No'
+      %br/
+      = link_to 'Edit', edit_restaurant_path(@restaurant)
+        

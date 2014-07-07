@@ -1,0 +1,9 @@
+- provide(:title, 'Restaurants')
+.row
+  .span8.offset2
+    %h1 Restaurants
+    %section
+      %ul.staff
+        = render @restaurants
+    .edit 
+      = link_to 'Create new restaurant', new_restaurant_path
