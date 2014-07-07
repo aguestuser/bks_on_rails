@@ -1,0 +1,10 @@
+- provide(:title, 'Shifts')
+.shifts
+  = render 'shift_header'
+  = render @shifts
+  %br/
+  .center
+    - if params[:restaurant_id] # if index is of shifts for only 1 restaurant
+      = link_to 'Create new shift', new_restaurant_shift_path(params[:restaurant_id]), class: 'btn btn-primary'
+    - else   
+      = link_to 'Create new shift', new_shift_path, class: 'btn btn-primary'

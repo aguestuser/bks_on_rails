@@ -1,0 +1,15 @@
+.row
+  .span3
+    = link_to shift.restaurant.name, restaurant_path(shift.restaurant)
+  .span2
+    = shift.start.strftime("%m/%d/%y | %I:%M%p")
+  .span2
+    = shift.end.strftime("%m/%d/%y | %I:%M%p")
+  .span1
+    = shift.billing_rate
+  .span2
+    = shift.urgency
+  .span2
+    = link_to 'Edit', edit_shift_path(shift)
+    |
+    = link_to 'Delete', shift, method: :delete, data: { confirm: 'Are you sure?' }

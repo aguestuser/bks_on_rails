@@ -1,17 +1,17 @@
 require 'spec_helper'
 
-describe AgencyPaymentMethods::Cash do
+describe BillingRate::Normal do
   pending "add some examples to (or delete) #{__FILE__}"
 end
 
-describe AgencyPaymentMethods::Check do
+describe BillingRate::Extra do
   pending "add some examples to (or delete) #{__FILE__}"
 end
 
-describe AgencyPaymentMethods::SquareApp do
+describe BillingRate::EmergencyExtra do
   pending "add some examples to (or delete) #{__FILE__}"
 end
 
-describe AgencyPaymentMethods::Venmo do
+describe BillingRate::Free do
   pending "add some examples to (or delete) #{__FILE__}"
 end

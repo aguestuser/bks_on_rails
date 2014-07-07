@@ -1,2 +1,25 @@
-%h1 Managers#show
-%p Find me in app/views/managers/show.html.haml
+- provide(:title, @manager.name)
+.profile
+  .row
+    .span8.offset2
+      = gravatar_for @manager, size: 80
+      %section
+        %h1.name= @manager.name
+        %h2.title
+          #{@manager.title} | #{@manager.restaurant.name}
+  .row
+    .span8.offset2
+      %h3 Contact Info
+      %ul
+        %li 
+          %strong 
+            Phone: 
+          = @contact_info.phone
+        %li 
+          %strong
+            Email: 
+          = @contact_info.email
+      .center
+        = link_to 'Edit', edit_manager_path(@manager)
+        | 
+        = link_to "Delete", @manager, method: :delete, data: { confirm: "Are you sure? All information associated with #{@manager.name} will be permanently destroyed!" }

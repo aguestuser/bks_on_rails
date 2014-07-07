@@ -17,26 +17,26 @@ class ManagersController < ApplicationController
   end
   
   def show
-    @contact = @manager.contact_info
+    @contact_info = @manager.contact_info
   end
 
   def edit
   end
 
   def update
-    # @manager.update_attributes(manager_params)
-    # if @manager.save
-    #   flash[:success] = "#{@manager.name}'s profile has been updated"
-    #   redirect_to @manager
-    # else
-    #   render 'edit'
-    # end    
+    @manager.update(manager_params)
+    if @manager.save
+      flash[:success] = "#{@manager.name}'s profile has been updated"
+      redirect_to @manager
+    else
+      render 'edit'
+    end    
   end
 
   def destroy
     @manager.destroy
     flash[:success] = "All information associated with #{@manager} has been deleted"
-    redirect_to staffers_url
+    redirect_to restaurant_path(manager.restaurant)
   end
 
   private
@@ -46,6 +46,6 @@ class ManagersController < ApplicationController
     end
 
     def manager_params
-      params.require(:manager).permit(contact_info_attributes: [:name, :title, :phone, :email])
+      params.require(:manager).permit(:restaurant_id, contact_info_attributes: [:name, :title, :phone, :email])
     end
 end

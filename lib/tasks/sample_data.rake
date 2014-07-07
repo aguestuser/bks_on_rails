@@ -3,6 +3,7 @@ namespace :db do
   task populate: :environment do
     make_staffers
     make_restaurants
+    make_shifts
   end
 end
 
@@ -110,5 +111,29 @@ def make_restaurants
       managers: [manager],
       work_arrangement: work_arr
     )
+  end
+
+  def make_shifts
+    Restaurant.all.each do |restaurant|
+      10.times do |n|
+        start_1 = n.days.from_now.beginning_of_day + 12.hours
+        end_1 = start_1 + 6.hours
+        start_2 = end_1
+        end_2 = start_2 + 6.hours
+
+        Shift.create!(
+          restaurant_id: restaurant.id,
+          start: start_1,
+          :end => end_1,
+          billing_rate: :normal,
+          urgency: :weekly )
+        Shift.create!(
+          restaurant_id: restaurant.id,
+          start: start_2,
+          :end => end_2,
+          billing_rate: :normal,
+          urgency: :weekly )
+      end
+    end
   end
 end

@@ -1,2 +1,9 @@
-%h1 Managers#edit
-%p Find me in app/views/managers/edit.html.haml
+- provide(:title, 'Edit Manager')
+%h1 Create Manager
+.row
+  .span6.offset3
+    = form_for(@manager) do |f|
+      = render 'shared/error_messages', object: f.object
+      = render 'manager_fields', form: f, object: f.object
+      .center
+        = f.submit "Save changes", method: :get, class: "btn btn-primary"

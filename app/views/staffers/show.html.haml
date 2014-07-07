@@ -12,6 +12,7 @@
       %ul 
         %li Phone: #{@contact_info.phone}
         %li Email: #{@contact_info.email}
-      = link_to 'Edit', edit_staffer_path(@staffer)
-      | 
-      = link_to "Delete", @staffer, method: :delete, data: {confirm: "Are you sure? All information associated with #{@staffer.name} will be permanently destroyed!"}
+      .center
+        = link_to 'Edit', edit_staffer_path(@staffer)
+        | 
+        = link_to "Delete", @staffer, method: :delete, data: { confirm: "Are you sure? All information associated with #{@staffer.name} will be permanently destroyed!" }

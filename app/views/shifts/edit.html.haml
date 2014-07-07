@@ -1,0 +1,8 @@
+- provide(:title, 'Edit Shift')
+%h1 Edit Shift
+.row
+  .span6.offset3
+    = form_for(@shift) do |f|
+      = render 'shift_fields', f: f
+      .center
+        = f.submit "Edit shift", class: "btn btn-large btn-primary"

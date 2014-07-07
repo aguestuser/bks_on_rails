@@ -1,2 +1,11 @@
-%h1 Managers#new
-%p Find me in app/views/managers/new.html.haml
+- provide(:title, 'Create Manager')
+%h1 Create Manager
+.row
+  .span6.offset3
+    = form_for(@manager) do |f|
+      = render 'shared/error_messages', object: f.object
+      = render 'manager_fields', form: f, object: f.object
+      .center
+        = f.submit "Create manager", method: :get, class: "btn btn-primary"
+
+        

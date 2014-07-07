@@ -1,13 +1,13 @@
 require 'spec_helper'
 
-describe Cash::Check do
+describe Urgency::Weekly do
   pending "add some examples to (or delete) #{__FILE__}"
 end
 
-describe Cash::SquareApp do
+describe Urgency::Extra do
   pending "add some examples to (or delete) #{__FILE__}"
 end
 
-describe Cash::Venmo do
+describe Urgency::Emergency do
   pending "add some examples to (or delete) #{__FILE__}"
 end

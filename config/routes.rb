@@ -2,7 +2,13 @@ BksOnRails::Application.routes.draw do
 
   root 'static_pages#home' 
 
+  #users
+
   resources :staffers do
+    resource :contact_info, only: [:new, :create, :edit, :update]
+  end
+
+  resources :managers do
     resource :contact_info, only: [:new, :create, :edit, :update]
   end
 
@@ -11,8 +17,12 @@ BksOnRails::Application.routes.draw do
     resource :work_arrangement, only: [:new, :create, :edit, :update]
     resources :managers, only: [:new, :create, :edit, :update, :show]
       resource :contact_info, only: [:new, :create, :edit, :update]
-    resources :shifts, shallow: true
+    resources :shifts
   end
+
+  resources :shifts
+
+
 
   match '/manual', to: 'static_pages#manual', via: 'get'
   # The priority is based upon order of creation: first created -> highest priority.
