@@ -10,15 +10,15 @@
     = ff.text_field :phone
 - elsif object.class == Restaurant
   = form.fields_for :contact_info do |ff|
-    = ff.label :name
+    = ff.label :name, 'Restaurant name'
     = ff.text_field :name
-    = ff.label :phone
+    = ff.label :phone, 'Restaurant phone'
     = ff.text_field :phone
     = ff.label :street_address
     = ff.text_field :street_address
     = ff.label :borough
-    = ff.select :borough, @boroughs.values, include_blank: true
+    = ff.select :borough, Borough.select_options, include_blank: true
     = ff.label :neighborhood
-    = ff.select :neighborhood, @neighborhoods.values, include_blank: true
+    = ff.select :neighborhood, Neighborhood.select_options, include_blank: true
 
 

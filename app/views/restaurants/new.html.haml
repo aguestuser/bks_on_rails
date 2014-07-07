@@ -5,97 +5,14 @@
     .span6.offset3
       = form_for(@restaurant) do |f|
         = render 'shared/error_messages', object: f.object
-        /= render 'status_fields', form: f, statuses: @statuses
-        - if params[:action] == 'new' || params[:action] == 'create'
-          = f.hidden_field :active, id: 'active', value: true
-          = f.hidden_field :status, value: :new_account
-          = f.hidden_field :description, value: "is a newly signed up account. They say it gets busy. Let us know how it goes!"
-        - else 
-          %h3 Status
-          .checkbox
-            = f.check_box :active 
-            = f.label :active, "Active?"
-          = f.label :status
-          = f.select :status, AccountStatus.select_options
-          = f.label :description
-          = f.text_area :description
+        = render 'status_fields', form: f
         %h3 Contact Info
-        /= render 'shared/contact_info_fields', form: f, object: f.object
-        = f.fields_for :contact_info do |ff|
-          = ff.label :name, 'Restaurant name'
-          = ff.text_field :name
-          = ff.label :phone, 'Restaurant phone'
-          = ff.text_field :phone
-          = ff.label :street_address
-          = ff.text_field :street_address
-          = ff.label :borough
-          = ff.select :borough, Borough.select_options, include_blank: true
-          = ff.label :neighborhood
-          = ff.select :neighborhood, Neighborhood.select_options, include_blank: true
+        = render 'shared/contact_info_fields', form: f, object: f.object
         %h3 Manager
-        /= render '/managers/manager_fields', form: f, object: f.object, params: params
-        = f.fields_for :managers do |ff|
-          = ff.fields_for :contact_info do |fff|
-            = fff.label :name
-            = fff.text_field :name
-            = fff.label :title
-            = fff.text_field :title        
-            = fff.label :phone
-            = fff.text_field :phone
-            = fff.label :email
-            = fff.text_field :email
-          - if params[:action] == 'edit'  
-            = link_to 'Create new manager', new_restaurant_manager_path(@restaurant)
-
+        = render '/managers/manager_fields', form: f, object: f.object, params: params
         %h3 Working Conditions
-        /= render 'work_arrangement_fields', form: f, rider_payment_methods: @rider_payment_methods
-        = f.fields_for :work_arrangement do |ff|
-          = ff.label :zone, 'Delivery zone size'
-          = ff.text_field :zone
-          = ff.label :daytime_volume
-          = ff.text_field :daytime_volume
-          = ff.label :evening_volume
-          = ff.text_field :evening_volume
-          .checkbox
-            = ff.check_box :extra_work, id: 'extra_work'
-            = ff.label :extra_work, "Riders expected to do non-delivery work?", class: 'check_box_label'
-          = ff.label :extra_work_description, "If you checked above, please explain:"
-          = ff.text_area :extra_work_description
-          
-          %h3 Rider Compensation
-          = ff.label :rider_payment_method
-          = ff.select :rider_payment_method, RiderPaymentMethods.select_options, include_blank: true
-          = ff.label :pay_rate
-          = ff.text_field :pay_rate
-          .checkbox
-            = ff.check_box :shift_meal, id: 'shift_meal'
-            = ff.label :shift_meal, "Shift meal provided?"
-          .checkbox
-            = ff.check_box :cash_out_tips, id: 'cash_out_tips'
-            = ff.label :cash_out_tips, "Cash out tips at end of each shift?"
-          
-          %h3 Equipment
-          %strong With which of the following can you provide riders?
-          .checkbox
-            = ff.check_box :bike, id: 'bike'
-            = ff.label :bike
-            = ff.check_box :lock, id: 'lock'
-            = ff.label :lock
-            = ff.check_box :rack, id: 'rack'
-            = ff.label :rack
-            = ff.check_box :bag, id: 'bag'
-            = ff.label :bag
-            = ff.check_box :heated_bag, id: 'heated_bag'
-            = ff.label :heated_bag, 'Insulated bag'
+        = render 'work_arrangement_fields', form: f
         %h3 Agency Compensation
-        = f.label :agency_payment_method, 'Agency payment method'
-        = f.select :agency_payment_method, AgencyPaymentMethod.select_options, include_blank: true
-        .checkbox
-          = f.check_box :pickup_required, id: 'pickup_required'
-          = f.label :pickup_required, 'In-person payment collection requested?'
-        %br/
-        
-        / %h3 Scheduling Needs
-        / = render 'scheduling_needs_fields'
+        = render 'agency_compensation_fields', form: f
 
         = f.submit "Create restaurant", class: "btn btn-large btn-primary" 

@@ -1,13 +1,13 @@
-- if params[:new] || params[:create]
-  = form.hidden_field :active, value: true
-  = form.hidden_field :status, value: @statuses::NEW_ACCOUNT
+- if params[:action] == 'new' || params[:action] == 'create'
+  = form.hidden_field :active, id: 'active', value: true
+  = form.hidden_field :status, value: :new_account
   = form.hidden_field :description, value: "is a newly signed up account. They say it gets busy. Let us know how it goes!"
-- else 
+- elsif params[:action] == 'edit' 
   %h3 Status
-  = form.check_box :active 
-  .checkbox_label
+  .checkbox
+    = form.check_box :active 
     = form.label :active, "Active?"
   = form.label :status
-  = form.select :status, @statuses.values
+  = form.select :status, AccountStatus.select_options
   = form.label :description
   = form.text_area :description

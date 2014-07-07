@@ -1,12 +1,23 @@
-= form.fields_for :managers do |ff|
-  = ff.fields_for :contact_info do |fff|
-    = fff.label :name
-    = fff.text_field :name
-    = fff.label :title
-    = fff.text_field :title        
-    = fff.label :email
-    = fff.text_field :email
-    = fff.label :phone
-    = fff.text_field :phone
-  - if !@restaurant.new_record?  
-    = link_to 'Create new manager', new_restaurant_manager_path(@restaurant)
+- if object.class == Restaurant
+  = form.fields_for :managers do |ff|
+    = ff.fields_for :contact_info do |fff|
+      = fff.label :name
+      = fff.text_field :name
+      = fff.label :title
+      = fff.text_field :title        
+      = fff.label :phone
+      = fff.text_field :phone
+      = fff.label :email
+      = fff.text_field :email
+    - if params[:action] == 'edit'  
+      = link_to 'Create new manager', new_restaurant_manager_path(@restaurant)
+- elsif object.class == Manager
+  = f.label :name
+  = f.text_field :name
+  = f.label :title
+  = f.text_field :title        
+  = f.label :phone
+  = f.text_field :phone
+  = f.label :email
+  = f.text_field :email
+

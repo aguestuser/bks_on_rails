@@ -17,5 +17,16 @@ describe "Restaurant Pages" do
       expect { click_button submit }.to change(Restaurant, :count).by(1)
     end
 
+    it "should create 2 new ContactInfo" do
+      expect { click_button submit }.to change(ContactInfo, :count).by(2)
+    end
+
+    it "should create a new Manager" do
+      expect { click_button submit }.to change(Manager, :count).by(1)
+    end
+
+    it "should create a new WorkArrangement" do
+      expect { click_button submit }.to change(WorkArrangement, :count).by(1)
+    end
   end
 end
