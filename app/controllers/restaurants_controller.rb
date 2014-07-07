@@ -1,6 +1,6 @@
 class RestaurantsController < ApplicationController
-  include ContactInfoEnums # /app/helpers/contact_info_enums.rb
-  include RestaurantEnums # /app/helpers/restaurant_enums.rb
+  # include ContactInfoEnums # /app/helpers/contact_info_enums.rb
+  # include RestaurantEnums # /app/helpers/restaurant_enums.rb
 
   before_action :get_restaurant, only: [:show, :edit, :update, :destroy]
   before_action :get_enums, only: [:new, :create, :edit]
@@ -67,11 +67,11 @@ class RestaurantsController < ApplicationController
     end 
 
     def get_enums
-      @boroughs = Boroughs
-      @neighborhoods = Neighborhoods
-      @statuses = Statuses
-      @rider_payment_methods = RiderPaymentMethods
-      @agency_payment_methods = AgencyPaymentMethods
+      # @boroughs = Boroughs
+      # @neighborhoods = Neighborhoods
+      # @statuses = Statuses
+      # @rider_payment_methods = RiderPaymentMethods
+      # @agency_payment_methods = AgencyPaymentMethods
     end
 
 end

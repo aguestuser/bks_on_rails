@@ -26,6 +26,8 @@
 class WorkArrangement < ActiveRecord::Base
   belongs_to :restaurant
 
+  classy_enum_attr :rider_payment_method
+
   validates :zone, :daytime_volume, :evening_volume, :rider_payment_method,
     presence: true
   validates :extra_work_description, 

@@ -25,6 +25,9 @@ class ContactInfo < ActiveRecord::Base
   before_save { street_address.strip! if street_address }
   before_save { email.downcase! if email }
 
+  #enums
+  classy_enum_attr :borough
+  classy_enum_attr :neighborhood
 
   #validations
 

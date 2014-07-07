@@ -8,7 +8,7 @@
         /= render 'status_fields', form: f, statuses: @statuses
         - if params[:action] == 'new' || params[:action] == 'create'
           = f.hidden_field :active, value: true
-          = f.hidden_field :status, value: @statuses::NEW_ACCOUNT
+          = f.hidden_field :status, value: AccountStatus::NewAccount
           = f.hidden_field :description, value: "is a newly signed up account. They say it gets busy. Let us know how it goes!"
         - else 
           %h3 Status
@@ -16,7 +16,7 @@
             = f.check_box :active 
             = f.label :active, "Active?"
             = f.label :status
-            = f.select :status, @statuses.values
+            = f.select :status, AccountStatus.select_options
             = f.label :description
             = f.text_area :description
         %h3 Contact Info
@@ -29,9 +29,9 @@
           = ff.label :street_address
           = ff.text_field :street_address
           = ff.label :borough
-          = ff.select :borough, @boroughs.values, include_blank: true
+          = ff.select :borough, Borough.select_options, include_blank: true
           = ff.label :neighborhood
-          = ff.select :neighborhood, @neighborhoods.values, include_blank: true
+          = ff.select :neighborhood, Neighborhood.select_options, include_blank: true
         %h3 Manager
         /= render '/managers/manager_fields', form: f, object: f.object, params: params
         = f.fields_for :managers do |ff|
@@ -64,7 +64,7 @@
           
           %h3 Rider Compensation
           = ff.label :rider_payment_method
-          = ff.select :rider_payment_method, @rider_payment_methods.to_h.map { |k, v| [ v, k ] }, include_blank: true
+          = ff.select :rider_payment_method, RiderPaymentMethods.select_options, include_blank: true
           = ff.label :pay_rate
           = ff.text_field :pay_rate
           .checkbox
@@ -88,8 +88,8 @@
             = ff.check_box :heated_bag
             = ff.label :heated_bag, 'Insulated bag'
         %h3 Agency Compensation
-        = f.label :payment_method, 'Agency payment method'
-        = f.select :payment_method, @agency_payment_methods.values, include_blank: true
+        = f.label :agency_payment_method, 'Agency payment method'
+        = f.select :agency_payment_method, AgencyPaymentMethod.select_options, include_blank: true
         .checkbox
           = f.check_box :pickup_required, id: 'pickup_required'
           = f.label :pickup_required, 'In-person payment collection requested?'

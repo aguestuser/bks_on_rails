@@ -13,12 +13,15 @@
 #
 
 class Restaurant < ActiveRecord::Base
-  include Contactable, RestaurantEnums
+  include Contactable #, RestaurantEnums
   has_many :managers, dependent: :destroy
   accepts_nested_attributes_for :managers, allow_destroy: true
   # accepts_nested_attributes_for :managers[:contact_info], allow_destroy: true
   has_one :work_arrangement, dependent: :destroy
   accepts_nested_attributes_for :work_arrangement
+
+  classy_enum_attr :status, enum: 'AccountStatus'
+  classy_enum_attr :agency_payment_method 
 
   validates :active , :status, :description, :payment_method, :pickup_required,
     presence: true
