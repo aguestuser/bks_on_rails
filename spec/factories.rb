@@ -49,15 +49,13 @@ FactoryGirl.define do
     zone 'big'
     daytime_volume 'slow'
     evening_volume 'busy'
-
     rider_payment_method 'Cash'
     pay_rate '$10/hr'
     shift_meal false
     cash_out_tips true
-    rider_on_premises true
+    rider_on_premises false
     extra_work true
     extra_work_description 'lick balls'
-
     bike true
     lock true
     rack true

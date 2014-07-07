@@ -7,7 +7,7 @@
         = render 'shared/error_messages', object: f.object
         /= render 'status_fields', form: f, statuses: @statuses
         - if params[:action] == 'new' || params[:action] == 'create'
-          = f.hidden_field :active, value: true
+          = f.hidden_field :active, id: 'active', value: true
           = f.hidden_field :status, value: :new_account
           = f.hidden_field :description, value: "is a newly signed up account. They say it gets busy. Let us know how it goes!"
         - else 
@@ -22,9 +22,9 @@
         %h3 Contact Info
         /= render 'shared/contact_info_fields', form: f, object: f.object
         = f.fields_for :contact_info do |ff|
-          = ff.label :name
+          = ff.label :name, 'Restaurant name'
           = ff.text_field :name
-          = ff.label :phone
+          = ff.label :phone, 'Restaurant phone'
           = ff.text_field :phone
           = ff.label :street_address
           = ff.text_field :street_address
@@ -40,11 +40,11 @@
             = fff.text_field :name
             = fff.label :title
             = fff.text_field :title        
-            = fff.label :email
-            = fff.text_field :email
             = fff.label :phone
             = fff.text_field :phone
-          - if !@restaurant.new_record?  
+            = fff.label :email
+            = fff.text_field :email
+          - if params[:action] == 'edit'  
             = link_to 'Create new manager', new_restaurant_manager_path(@restaurant)
 
         %h3 Working Conditions
@@ -68,24 +68,24 @@
           = ff.label :pay_rate
           = ff.text_field :pay_rate
           .checkbox
-            = ff.check_box :shift_meal
+            = ff.check_box :shift_meal, id: 'shift_meal'
             = ff.label :shift_meal, "Shift meal provided?"
           .checkbox
-            = ff.check_box :cash_out_tips
+            = ff.check_box :cash_out_tips, id: 'cash_out_tips'
             = ff.label :cash_out_tips, "Cash out tips at end of each shift?"
           
           %h3 Equipment
           %strong With which of the following can you provide riders?
           .checkbox
-            = ff.check_box :bike
+            = ff.check_box :bike, id: 'bike'
             = ff.label :bike
-            = ff.check_box :lock
+            = ff.check_box :lock, id: 'lock'
             = ff.label :lock
-            = ff.check_box :rack
+            = ff.check_box :rack, id: 'rack'
             = ff.label :rack
-            = ff.check_box :bag
+            = ff.check_box :bag, id: 'bag'
             = ff.label :bag
-            = ff.check_box :heated_bag
+            = ff.check_box :heated_bag, id: 'heated_bag'
             = ff.label :heated_bag, 'Insulated bag'
         %h3 Agency Compensation
         = f.label :agency_payment_method, 'Agency payment method'
