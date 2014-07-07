@@ -2,8 +2,9 @@
   = form.hidden_field :active, id: 'active', value: true
   = form.hidden_field :status, value: :new_account
   = form.hidden_field :description, value: "is a newly signed up account. They say it gets busy. Let us know how it goes!"
-- elsif params[:action] == 'edit' 
-  %h3 Status
+  = render 'agency_compensation_fields', form: form
+  %br/
+- elsif params[:action] == 'edit' || params[:action] == 'update'
   .checkbox
     = form.check_box :active 
     = form.label :active, "Active?"
@@ -11,3 +12,4 @@
   = form.select :status, AccountStatus.select_options
   = form.label :description
   = form.text_area :description
+  = render 'agency_compensation_fields', form: form

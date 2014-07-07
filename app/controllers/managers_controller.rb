@@ -24,13 +24,13 @@ class ManagersController < ApplicationController
   end
 
   def update
-    @manager.update(manager_params)
-    if @manager.save
-      flash[:success] = "#{@manager.name}'s profile has been updated"
-      redirect_to @manager
-    else
-      render 'edit'
-    end    
+    # @manager.update_attributes(manager_params)
+    # if @manager.save
+    #   flash[:success] = "#{@manager.name}'s profile has been updated"
+    #   redirect_to @manager
+    # else
+    #   render 'edit'
+    # end    
   end
 
   def destroy

@@ -4,10 +4,10 @@
     = ff.text_field :name
     = ff.label :title
     = ff.text_field :title        
-    = ff.label :email
-    = ff.text_field :email
     = ff.label :phone
     = ff.text_field :phone
+    = ff.label :email
+    = ff.text_field :email
 - elsif object.class == Restaurant
   = form.fields_for :contact_info do |ff|
     = ff.label :name, 'Restaurant name'

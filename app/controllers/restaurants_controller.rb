@@ -1,6 +1,7 @@
 class RestaurantsController < ApplicationController
 
   before_action :get_restaurant, only: [:show, :edit, :update, :destroy]
+  before_action :get_restaurant_and_children, only: [:update]
   before_action :get_enums, only: [:new, :create, :edit]
 
   def new
@@ -28,16 +29,16 @@ class RestaurantsController < ApplicationController
   end
 
   def index
-    @restaurant = Restaurant.all
+    @restaurants = Restaurant.all
   end
 
   def edit
   end
 
   def update
-    @restaurant_params.update(restaurant_params)
+    @restaurant.update(restaurant_params)
     if @restaurant.save
-      flash[:success] = "#{@restaurant}'s profile has been updated"
+      flash[:success] = "#{@restaurant.name}'s profile has been updated"
       redirect_to @restaurant
     else
       render 'edit'
@@ -46,23 +47,32 @@ class RestaurantsController < ApplicationController
 
   private
     def get_restaurant
-      @restaurant = Restaurant.find(params[:id])
+      @restaurant ||= Restaurant.find(params[:id])
+    end
+
+    def get_restaurant_and_children
+      @restaurant =Restaurant.includes(:managers).find(params[:id])
     end
 
     def restaurant_params
       params.require(:restaurant)
         .permit(
           :active, :status, :description, :agency_payment_method, :pickup_required,
-          contact_info_attributes:
-            [ :name, :phone, :street_address, :borough, :neighborhood ],
-          managers_attributes: 
-            [ contact_info_attributes: 
-              [ :name, :title, :phone, :email ] ],
-          work_arrangement_attributes:
-            [ :zone, :daytime_volume, :evening_volume, 
-              :rider_payment_method, :pay_rate, :shift_meal, :cash_out_tips, :rider_on_premises,
-              :extra_work, :extra_work_description,
-              :bike, :lock, :rack, :bag, :heated_bag ] )
+          contact_info_attributes:[ 
+            :id, :name, :phone, :street_address, :borough, :neighborhood 
+          ],
+          managers_attributes: [ 
+            :id, contact_info_attributes:[ 
+              :id, :name, :title, :phone, :email 
+            ] 
+          ],
+          work_arrangement_attributes:[ 
+            :id, :zone, :daytime_volume, :evening_volume, 
+            :rider_payment_method, :pay_rate, :shift_meal, :cash_out_tips, :rider_on_premises,
+            :extra_work, :extra_work_description,
+            :bike, :lock, :rack, :bag, :heated_bag 
+          ] 
+        )
     end 
 
     def get_enums

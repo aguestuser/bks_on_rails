@@ -1,2 +1,18 @@
-%h1 Restaurants#edit
-%p Find me in app/views/restaurants/edit.html.haml
+- provide(:title, "Edit Staffer")
+%h1 Edit #{@restaurant.name}'s Profile
+.row
+  .span6.offset3.profile
+    = form_for(@restaurant) do |f|
+      = render 'shared/error_messages', object: f.object
+      %h3 Summary
+      = render 'summary_fields', form: f
+      %h3 Contact Info
+      = render 'shared/contact_info_fields', form: f, object: f.object
+      %h3 Managers
+      = render '/managers/manager_fields', form: f, object: f.object
+      - if params[:action] == 'edit'  
+        = link_to 'Create new manager', new_restaurant_manager_path(@restaurant)
+      %h3 Working Conditions
+      = render 'work_arrangement_fields', form: f
+
+      = f.submit "Edit #{@restaurant.name}'s profile", class: "btn btn-large btn-primary"
