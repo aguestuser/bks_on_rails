@@ -1,6 +1,4 @@
 class RestaurantsController < ApplicationController
-  # include ContactInfoEnums # /app/helpers/contact_info_enums.rb
-  # include RestaurantEnums # /app/helpers/restaurant_enums.rb
 
   before_action :get_restaurant, only: [:show, :edit, :update, :destroy]
   before_action :get_enums, only: [:new, :create, :edit]
@@ -16,7 +14,7 @@ class RestaurantsController < ApplicationController
   def create
     @restaurant = Restaurant.new(restaurant_params)
     if @restaurant.save
-      flash[:success] = "Profile created for #{@restaurant}"
+      flash[:success] = "Profile created for #{@restaurant.name}"
       redirect_to @restaurant
     else
       render 'new'
@@ -54,6 +52,7 @@ class RestaurantsController < ApplicationController
     def restaurant_params
       params.require(:restaurant)
         .permit(
+          :active, :status, :description, :agency_payment_method, :pickup_required,
           contact_info_attributes:
             [ :name, :phone, :street_address, :borough, :neighborhood ],
           managers_attributes: 
@@ -61,7 +60,7 @@ class RestaurantsController < ApplicationController
               [ :name, :title, :phone, :email ] ],
           work_arrangement_attributes:
             [ :zone, :daytime_volume, :evening_volume, 
-              :pay_rate, :shift_meal, :cash_out_tips, :rider_on_premises,
+              :rider_payment_method, :pay_rate, :shift_meal, :cash_out_tips, :rider_on_premises,
               :extra_work, :extra_work_description,
               :bike, :lock, :rack, :bag, :heated_bag ] )
     end 

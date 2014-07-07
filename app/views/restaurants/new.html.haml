@@ -8,17 +8,17 @@
         /= render 'status_fields', form: f, statuses: @statuses
         - if params[:action] == 'new' || params[:action] == 'create'
           = f.hidden_field :active, value: true
-          = f.hidden_field :status, value: AccountStatus::NewAccount
+          = f.hidden_field :status, value: :new_account
           = f.hidden_field :description, value: "is a newly signed up account. They say it gets busy. Let us know how it goes!"
         - else 
           %h3 Status
           .checkbox
             = f.check_box :active 
             = f.label :active, "Active?"
-            = f.label :status
-            = f.select :status, AccountStatus.select_options
-            = f.label :description
-            = f.text_area :description
+          = f.label :status
+          = f.select :status, AccountStatus.select_options
+          = f.label :description
+          = f.text_area :description
         %h3 Contact Info
         /= render 'shared/contact_info_fields', form: f, object: f.object
         = f.fields_for :contact_info do |ff|

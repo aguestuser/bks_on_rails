@@ -26,9 +26,9 @@ FactoryGirl.define do
 
   factory :restaurant, class: "Restaurant" do
     active true
-    status 'new account'
+    status 'NewAccount' # AccountStatuses::NewAccount
     description "is a newly signed up account. They say it gets busy. Let us know how it goes!"
-    payment_method 'cash'
+    agency_payment_method 'Cash'
     pickup_required true
     # managers { 
     #   2.times.map do
@@ -49,8 +49,8 @@ FactoryGirl.define do
     zone 'big'
     daytime_volume 'slow'
     evening_volume 'busy'
-    rider_payment_method 'cash'
 
+    rider_payment_method 'Cash'
     pay_rate '$10/hr'
     shift_meal false
     cash_out_tips true
@@ -107,4 +107,4 @@ FactoryGirl.define do
 end
 
 
-#{ name: 'Wonderful Guy', title: 'Accounts Manager', phone: '555-555-5555', email: 'wonderfulguy@example.com', street_address: '446 Dean St', borough: 'Brooklyn', neighborhood: 'Park Slope' }
+# { name: 'Wonderful Guy', title: 'Accounts Manager', phone: '555-555-5555', email: 'wonderfulguy@example.com', street_address: '446 Dean St', borough: 'Brooklyn', neighborhood: 'Park Slope' }

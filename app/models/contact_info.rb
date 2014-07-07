@@ -17,7 +17,6 @@
 #
 
 class ContactInfo < ActiveRecord::Base
-  include ContactInfoEnums
   #associations
   belongs_to :contactable, polymorphic: true
 
@@ -26,8 +25,8 @@ class ContactInfo < ActiveRecord::Base
   before_save { email.downcase! if email }
 
   #enums
-  classy_enum_attr :borough
-  classy_enum_attr :neighborhood
+  classy_enum_attr :borough, allow_nil: true 
+  classy_enum_attr :neighborhood, allow_nil: true     
 
   #validations
 
@@ -42,11 +41,9 @@ class ContactInfo < ActiveRecord::Base
               if: "contactable_is?('Restaurant')"
   validates :borough, 
               presence: true, 
-              inclusion: { in: Boroughs.values },
               if: "contactable_is?('Restaurant')"
   validates :neighborhood,  
               presence: true, 
-              inclusion: { in: Neighborhoods.values },
               if: "contactable_is?('Restaurant')"
   VALID_EMAIL = /\A[\w+\-.]+@[a-z\d\-]+(?:\.[a-z\d\-]+)*\.[a-z]+\z/i
   validates :email, 
@@ -56,13 +53,6 @@ class ContactInfo < ActiveRecord::Base
               unless: "contactable_is?('Restaurant')"
 
   #class methods
-  def self.boroughs
-    Boroughs.values
-  end
-
-  def self.neighborhoods
-    Neighborhoods.values
-  end
 
   #public methods
   def contactable_type
