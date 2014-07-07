@@ -5,6 +5,7 @@
     = form_for(@staffer) do |form|
       = render 'shared/error_messages', object: form.object
       = render 'shared/contact_info_fields', form: form, object: form.object
-      = form.submit "Save changes", class: "btn btn-large btn-primary"
+      .center
+        = form.submit "Save changes", class: "btn btn-large btn-primary"
     = gravatar_for @staffer, size: 80
     = link_to 'Edit avatar', 'http://gravatar.com/emails', target: '_blank'

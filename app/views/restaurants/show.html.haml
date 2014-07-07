@@ -5,7 +5,7 @@
       = gravatar_for @restaurant.managers.first, size: 80
       %section
         %h1.name= @restaurant.name
-        %h2.title #{@contact_info.neighborhood.text} , #{@contact_info.borough.text}
+        %h2.title #{@contact_info.neighborhood.text} , #{@contact_info.borough.text} | #{link_to 'See shifts', restaurant_shifts_path(@restaurant.id)}
   .row
     .span8.offset2
       %h3 Summary
@@ -94,5 +94,6 @@
           %strong Heated Bag?: 
           = @work_arrangement.heated_bag? ? 'Yes' : 'No'
       %br/
-      = link_to 'Edit', edit_restaurant_path(@restaurant)
+      .center
+        = link_to 'Edit Profile', edit_restaurant_path(@restaurant), class: 'btn btn-primary'
         

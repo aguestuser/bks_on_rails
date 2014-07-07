@@ -1,2 +1,4 @@
-%h1 Shifts#show
-%p Find me in app/views/shifts/show.html.haml
+- provide(:title, 'Shift')
+.shifts
+  = render 'shift_header'
+  = render @shift

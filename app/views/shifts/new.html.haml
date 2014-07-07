@@ -1,2 +1,8 @@
-%h1 Shifts#new
-%p Find me in app/views/shifts/new.html.haml
+- provide(:title, 'Create Shift')
+%h1 Create Shift
+.row
+  .span6.offset3
+    = form_for(@shift) do |f|
+      = render 'shift_fields', f: f
+      .center
+        = f.submit "Create shift", method: :get, class: "btn btn-primary", style: 'text-align: center'

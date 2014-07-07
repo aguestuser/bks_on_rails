@@ -45,6 +45,12 @@ textarea {
   @include box_sizing;
 }
 
+.center {
+  text-align: center;
+  btn {
+    display: inline-block;
+  }
+}
 
 /* typography */
 
@@ -215,6 +221,11 @@ label {
   @extend .error;
 }
 
+.datepicker select {
+  display: inline-block;
+  width: auto;
+}
+
 /* Users index */
 
 .users {
@@ -259,20 +270,23 @@ label {
   width: 100%;
 }
 
-
-/* Profile pages */
-
-.profile {
-  .name {
-    text-align: left;
-    margin-bottom: .3em;
-    margin-top: .2em;
-  }
+@mixin grey_h3 {
   h3 {
     text-align: center;
     background-color: lightgrey;
     border-radius: .4em;
     padding: .2em;
+  }
+}
+
+/* Profile pages */
+
+.profile {
+  @include grey_h3;
+  .name {
+    text-align: left;
+    margin-bottom: .3em;
+    margin-top: .2em;
   }
   h2 {
     text-align: left;
@@ -284,5 +298,15 @@ label {
     color: $grayLight;
     text-align: left;
     text-decoration: uppercase;
+  }
+}
+
+/* Shift display */
+
+.shifts {
+  @include grey_h3;
+  text-align: center;
+  .header {
+    font-weight: bold;
   }
 }

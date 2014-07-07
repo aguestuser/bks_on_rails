@@ -14,5 +14,5 @@
         = link_to 'Create new manager', new_restaurant_manager_path(@restaurant)
       %h3 Working Conditions
       = render 'work_arrangement_fields', form: f
-
-      = f.submit "Edit #{@restaurant.name}'s profile", class: "btn btn-large btn-primary"
+      .center
+        = f.submit "Edit #{@restaurant.name}'s profile", class: "btn btn-large btn-primary"

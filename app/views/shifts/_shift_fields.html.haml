@@ -1,0 +1,25 @@
+= render 'shared/error_messages', object: f.object
+= f.label :restaurant
+- if params[:restaurant_id]
+  = f.collection_select :restaurant_id, Restaurant.all, :id, :name, selected: @restaurant.id
+- else
+  = f.collection_select :restaurant_id, Restaurant.all, :id, :name
+.datepicker
+  = f.label :start
+  = f.datetime_select :start, ampm: true
+.datepicker
+  = f.label :end
+  = f.datetime_select :end, ampm: true
+= f.label :urgency
+- if params[:action] == 'new' || params[:action] == 'create'
+  = f.select :urgency, Urgency.select_options, selected: :extra
+- else
+  = f.select :urgency, Urgency.select_options
+= f.label :billing_rate
+- if params[:action] == 'new' || params[:action] == 'create'
+  = f.select :billing_rate, BillingRate.select_options, selected: :normal
+- else 
+  = f.select :billing_rate, BillingRate.select_options
+= f.label :notes
+= f.text_area :notes
+
