@@ -6,8 +6,8 @@
 # Austin Guest, 2014
 
 # LICENSE:
-# 	This is free software licensed under the GNU General Public License v3. 
-# 	See http://www.gnu.org/licenses/gpl-3.0.txt for terms of the license.
+#   This is free software licensed under the GNU General Public License v3. 
+#   See http://www.gnu.org/licenses/gpl-3.0.txt for terms of the license.
 ##
 
 require 'date'
@@ -244,14 +244,15 @@ class Shift
   @start # Date
   @end # Date
   @period # Periods::ENUM
-  @time_windows # arr of Time_Windows
-  @event # Event 
   @urgency #Urgencies::ENUM
   @billing_rate #Billing_Rates::ENUM
-  @assignment # Assignment
-  @notes # str
-  @current # bool
-  @modifies # arr of Shifts
+  # @notes # str
+  
+  # @time_windows # arr of Time_Windows
+  # @event # Event 
+  # @assignment # Assignment
+  # @current # bool
+  # @modifies # arr of Shifts
 end
 
 class Periods
@@ -379,7 +380,7 @@ class Week
   @start # Date
   @end # Date
   @time_windows # arr of Time_Windows
-  has_many :invoices
+  has_and_belongs_to_many :invoices
   has_many :rider_schedules
   has_many :restaurant_schedules
   has_many :shifts, through :restaurant_schedules
