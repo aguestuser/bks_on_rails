@@ -49,13 +49,14 @@ FactoryGirl.define do
     zone 'big'
     daytime_volume 'slow'
     evening_volume 'busy'
+    extra_work true    
+    extra_work_description 'lick balls'
+    
     rider_payment_method :cash #AgencyPaymentMethod::Cash.new.text
     pay_rate '$10/hr'
     shift_meal false
     cash_out_tips true
-    rider_on_premises false
-    extra_work true
-    extra_work_description 'lick balls'
+    
     bike true
     lock true
     rack true

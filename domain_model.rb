@@ -43,19 +43,27 @@ class Main #is there any way to reflect the cateogry groupings I have accomplish
 
 end
 
-class UserKit
+class UserInfo
   belongs_to :user, polymorpous: true
-  has_one :contact_sheet, as: contactable
+  has_one :contact_info, as: :contact
+
+  @title # Str (min length 3)
+  @email # Str (matches VALID_EMAIL)
   @password_hash # str
-  :email
-  @contact_info # Contact_Info
 end
 
 class Contact_Info
   @name # Str (min length 3)
-  @title # Str (min length 3)
-  @phone_number # Str (w/ regex validation)
+  @phone_number # Str (matches VALID_)
   @email # Str (w/ regex validation)
+end
+
+class Location
+  @address # str
+  @borough # Boroughs::ENUM
+  @neighborhood # Neighborhoods::ENUM
+  # @lat # :decimal, {:precision=>10, :scale=>6}
+  # @lng # str
 end
 
 # class PhoneNumber
@@ -84,19 +92,14 @@ end
 #   define :PERSONAL, 'Personal'
 # end
 
-class Location
-  @address # str
-  @lat # :decimal, {:precision=>10, :scale=>6}
-  @lng # str
-  @borough # Boroughs::ENUM
-  @neighborhood # Neighborhoods::ENUM
-end
+
 
 class Boroughs 
   manhattan: 'Manhtattan'
-  :brooklyn
-  :queens
-  :staten
+  brooklyn: 'Brooklyn'
+  queens: 'Queens'
+  bronx: 'Bronx'
+  staten_island: 'Staten Island'
 end
 
 class Neighborhoods # note: will need to dynamically update this set of enums as we add more neighborhoods
@@ -118,69 +121,79 @@ class Neighborhoods # note: will need to dynamically update this set of enums as
   define :LONG_ISLAND_CITY, 'Long Island City'
 end 
 
-class Staffer < User
-  has_one :user_kit, as: :user
-  @hire_date # Datetime
+class Staffer
+  has_one :user_info, as: :user
+  has_one :contact_info, as: :contact
 end
 
+class Manager
+  belongs_to :restaurant
+  has_one :user_info, as: :user
+  has_one :contact_info, as: :contact
+  has_one :location, as: :locatable
+end
+
+
 class Restaurant
-  has_one :contact_info
-  has_one :work_rule_set
-  has_one :location, as: locatable
-  
+  has_one :contact_info, as: :contact
+  has_one :location, as: :locatable
+  has_many :managers # Manager
+  # has_one :work_rule_set, replace with:
+  has_one :work_requirements_info
+  has_one :rider_payment_info
+  has_one :agency_payment_info
+  has_one :equipment_set, as: :equipable
+
+  has_many :shifts # Shift 
   # has_one :balance # Balance
   # has_one :restaurant_rating 
-
-  has_many :managers # Manager
-  has_many :shifts # Shift 
   
   @active #bool
   @status # RestaurantStatuses::Enum
-  @description # text
-  @payment_method # PaymentMethods::Enum
-  @pickup_required #bool
+  @brief # Text
+  # @description # text
+  # @payment_method # PaymentMethods::Enum
+  # @pickup_required #bool
 
 end
 
-class BillingInfo
-  @payment_method
-  @pickup
+class AgencyPaymentInfo
+  :belongs_to :restaurant
+  @method # AgencyPaymentMethod::Enum
+  @pickup_required # boolean
 end
 
-class WorkArrangement
+class RiderPaymentInfo
+  :belongs_to :restaurant
+  @method #RiderPaymentMethod::Enum
+  @rate #str
+  @shift_meal #bool
+  @cash_out_tips #bool
+  # @rider_on_premises #bool
+end
+
+class WorkSpecification
   belongs_to :restaurant
 
   @zone #str
   @daytime_volume #str
   @evening_volume #str
-  @rider_payment_method # str (RiderPaymentMethod::Enum)
-
-  @pay_rate #str
-  @shift_meal #bool
-  @cash_out_tips #bool
-  @rider_on_premises #bool
   @extra_work #bool
   @extra_work_description # str
-
-  @bike # bool
-  @lock # bool
-  @rack # bool
-  @bag # bool
-  @heated_bag # bool
 
 end
 
 class EquipmentSet
-  belongs_to :equipable
+  belongs_to :equipable, polymorpous: true
   
-
+  @bike # bool
+  @lock # bool
+  @helmet #bool
+  @rack # bool
+  @bag # bool
+  @heated_bag # bool
   @cell_phone # bool
   @smart_phone # bool
-
-  def list_for(equipable)
-
-  end
-
 end
 
 class Owner < User

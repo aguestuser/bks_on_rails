@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140707095837) do
+ActiveRecord::Schema.define(version: 20140709234125) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -19,9 +19,6 @@ ActiveRecord::Schema.define(version: 20140707095837) do
   create_table "contact_infos", force: true do |t|
     t.string   "phone"
     t.string   "email"
-    t.string   "street_address"
-    t.string   "borough"
-    t.string   "neighborhood"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "contactable_id"
@@ -32,6 +29,16 @@ ActiveRecord::Schema.define(version: 20140707095837) do
 
   add_index "contact_infos", ["contactable_id"], name: "index_contact_infos_on_contactable_id", using: :btree
   add_index "contact_infos", ["email"], name: "index_contact_infos_on_email", unique: true, using: :btree
+
+  create_table "locations", force: true do |t|
+    t.integer  "locatable_id"
+    t.string   "locatable_type"
+    t.string   "address"
+    t.string   "borough"
+    t.string   "neighborhood"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "managers", force: true do |t|
     t.integer  "restaurant_id"
