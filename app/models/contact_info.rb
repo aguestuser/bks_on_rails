@@ -38,7 +38,7 @@ class ContactInfo < ActiveRecord::Base
   VALID_STREET_ADDRESS = /\A((?!brooklyn|manhattan|queens|bronx|staten island|nyc|NY).)*\z/i
   validates :street_address,  
               presence: true, 
-              # format: { with: VALID_STREET_ADDRESS },
+              format: { with: VALID_STREET_ADDRESS },
               if: "contactable_is?('Restaurant')"
   validates :borough, 
               presence: true, 

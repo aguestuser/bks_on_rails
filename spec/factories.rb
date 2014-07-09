@@ -3,11 +3,11 @@ FactoryGirl.define do
   factory :contact_info do
     name 'Wonderful Person'
     title 'Doer of Great Things'
-    phone '111-111-1111'
+    phone '917-345-3200'
     email 'wonderfulperson@example.com'
     street_address '446 Dean St'
-    borough 'Brooklyn'
-    neighborhood 'Park Slope'
+    borough :brooklyn #Borough::Brooklyn.new.text
+    neighborhood :park_slope #Neighborhood::ParkSlope.new.text
   end
 
   factory :staffer, class: "Staffer" do
@@ -19,16 +19,16 @@ FactoryGirl.define do
   factory :staffer_contact_info, class: 'ContactInfo' do  
     name 'Wonderful Staffer'
     title 'Accounts Manager'
-    phone '222-222-2222'
+    phone '917-345-3200'
     email 'wonderfulstaffer@example.com'
     association :contactable , factory: :staffer
   end
 
   factory :restaurant, class: "Restaurant" do
     active true
-    status 'NewAccount' # AccountStatuses::NewAccount
+    status :new_account #AccountStatus::NewAccount.new.text # AccountStatuses::NewAccount
     description "is a newly signed up account. They say it gets busy. Let us know how it goes!"
-    agency_payment_method 'Cash'
+    agency_payment_method :cash #AgencyPaymentMethod::Cash.new.text
     pickup_required true
     # managers { 
     #   2.times.map do
@@ -49,7 +49,7 @@ FactoryGirl.define do
     zone 'big'
     daytime_volume 'slow'
     evening_volume 'busy'
-    rider_payment_method 'Cash'
+    rider_payment_method :cash #AgencyPaymentMethod::Cash.new.text
     pay_rate '$10/hr'
     shift_meal false
     cash_out_tips true
@@ -65,10 +65,10 @@ FactoryGirl.define do
 
   factory :restaurant_contact_info, class: 'ContactInfo' do  
     name 'Wonderful Restaurant'
-    phone '333-333-3333'
+    phone '917-345-3200'
     street_address '446 Dean St'
-    borough 'Brooklyn'
-    neighborhood 'Park Slope'
+    borough :brooklyn #Borough::Brooklyn.new.text
+    neighborhood :park_slope #Neighborhood::ParkSlope.new.text
     association :contactable, factory: :restaurant
   end
 
@@ -82,7 +82,7 @@ FactoryGirl.define do
   factory :manager_contact_info, class: 'ContactInfo' do  
     sequence(:name) { |n| "Manager#{n}" }
     title 'Manager'
-    phone '222-222-2222'
+    phone '917-345-3200'
     sequence(:email) { |n| "manager#{n}@example.com" }
     association :contactable , factory: :manager
   end
@@ -95,14 +95,14 @@ FactoryGirl.define do
 
   factory :rider_contact_info, class: 'ContactInfo' do  
     name 'Wonderful Guy'
-    phone '555-555-5555'
+    phone '917-345-3200'
     email 'wonderfulguy@example.com'
-    borough 'Brooklyn'
-    neighborhood 'Park Slope'
+    borough :brooklyn #Borough::Brooklyn.new.text
+    neighborhood :park_slope #Neighborhood::ParkSlope.new.text
     association :contactable, factory: :rider
   end
 
 end
 
 
-# { name: 'Wonderful Guy', title: 'Accounts Manager', phone: '555-555-5555', email: 'wonderfulguy@example.com', street_address: '446 Dean St', borough: 'Brooklyn', neighborhood: 'Park Slope' }
+# { name: 'Wonderful Guy', title: 'Accounts Manager', phone: '555-555-5555', email: 'wonderfulguy@example.com', street_address: '446 Dean St', borough: Borough::Brooklyn.new.text, neighborhood: Neighborhood::ParkSlope.new.text }

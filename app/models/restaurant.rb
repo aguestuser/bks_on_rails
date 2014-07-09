@@ -23,6 +23,6 @@ class Restaurant < ActiveRecord::Base
   classy_enum_attr :status, enum: 'AccountStatus'
   classy_enum_attr :agency_payment_method 
 
-  validates :status, :description, :agency_payment_method, 
+  validates :active, :status, :description, :agency_payment_method, 
     presence: true
 end

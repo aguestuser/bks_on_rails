@@ -4,6 +4,12 @@ class StaffersController < ApplicationController
   before_action :get_staffer, only: [:show, :edit, :update, :destroy]
 
   def new
+    # new_user.build_contact_info
+
+    # def new_user
+    #   @user = User.new
+    # end
+
     @staffer = Staffer.new
     @staffer.build_contact_info
   end
@@ -52,6 +58,11 @@ class StaffersController < ApplicationController
     end
 
     def staffer_params
-      params.require(:staffer).permit(contact_info_attributes: [:name, :title, :phone, :email])
+      # params.require(:staffer).permit(contact_info_attributes: [:name, :title, :phone, :email])
+      params.require(:staffer).permit(contact_info_params)
+    end
+
+    def contact_info_params
+      { contact_info_attributes: [:name, :title, :phone, :email] }
     end
 end

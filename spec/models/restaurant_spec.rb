@@ -21,7 +21,7 @@ describe Restaurant do
 
   describe "attributes" do
     let(:attributes) { [
-      :active, :status, :description, :payment_method, :pickup_required, :created_at, :updated_at ] }
+      :active, :status, :description, :agency_payment_method, :pickup_required, :created_at, :updated_at ] }
     it "should respond to all attributes" do
       check_attributes restaurant, attributes
     end
@@ -34,7 +34,7 @@ describe Restaurant do
 
   describe "validations" do
     let(:required_attribtues) { [ 
-      :active, :status, :description, :payment_method ] }
+      :active, :status, :description, :agency_payment_method ] }
     it "should be invalid when required fields are nil" do
       check_required_attributes restaurant, required_attribtues
     end

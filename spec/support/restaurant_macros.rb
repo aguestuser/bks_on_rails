@@ -4,9 +4,9 @@ module RestaurantMacros
       fill_in 'Restaurant name',    with: restaurant.contact_info.name
       fill_in 'Restaurant phone',   with: restaurant.contact_info.phone
       fill_in 'Street address',     with: restaurant.contact_info.street_address
-      select restaurant.contact_info.borough,            
+      select restaurant.contact_info.borough.text,            
         from: 'Borough'
-      select restaurant.contact_info.neighborhood,          
+      select restaurant.contact_info.neighborhood.text,          
         from: 'Neighborhood'
       # manager
       fill_in 'Name',               with: restaurant.managers.first.name
@@ -20,7 +20,7 @@ module RestaurantMacros
       check 'extra_work'
       fill_in 'If you checked above, please explain:', with: restaurant.work_arrangement.extra_work_description
       # rider compensation
-      select restaurant.work_arrangement.rider_payment_method, 
+      select restaurant.work_arrangement.rider_payment_method.text, 
         from: 'Rider payment method'
       fill_in 'Pay rate',           with: restaurant.work_arrangement.pay_rate
       check 'cash_out_tips'
@@ -29,7 +29,7 @@ module RestaurantMacros
       check 'lock'
       check 'bag'
       # agency compensation
-      select restaurant.agency_payment_method,
+      select restaurant.agency_payment_method.text,
         from: 'Agency payment method'
   end
 end

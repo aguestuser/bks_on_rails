@@ -2,9 +2,6 @@ class AccountStatus < ClassyEnum::Base
 end
 
 class AccountStatus::NewAccount < AccountStatus
-  def text
-    "New account"
-  end
 end
 
 class AccountStatus::Stable < AccountStatus

@@ -43,45 +43,46 @@ class Main #is there any way to reflect the cateogry groupings I have accomplish
 
 end
 
-class User
-  @username # str
-  @password # str
-  @name #str
+class UserKit
+  belongs_to :user, polymorpous: true
+  has_one :contact_sheet, as: contactable
+  @password_hash # str
+  :email
   @contact_info # Contact_Info
-  @created # Date
 end
 
 class Contact_Info
-  has_many :phone_numbers
-  has_many :email_addresses
-  has_one :location
+  @name # Str (min length 3)
+  @title # Str (min length 3)
+  @phone_number # Str (w/ regex validation)
+  @email # Str (w/ regex validation)
 end
 
-class PhoneNumber
-  @type # Phone_Types::ENUM
-  @primary # bool
-  @value # str
-end
+# class PhoneNumber
+#   @type # Phone_Types::ENUM
+#   @primary # bool
+#   @value # str
+# end
 
-class Phone_Types
-  include Ruby::Enum
-  define :WORK, 'Work'
-  define :CELL, 'Cell'
-  define :HOME, 'Home'
-  define :PARENT, 'Parent'
-  define :PARTNER, 'Partner'
-end
+# class Phone_Types
+#   include Ruby::Enum
+#   define :WORK, 'Work'
+#   define :CELL, 'Cell'
+#   define :HOME, 'Home'
+#   define :PARENT, 'Parent'
+#   define :PARTNER, 'Partner'
+# end
 
-class Email_Address
-  @primary # bool
-  @value # str
-end
+# class Email_Address
+#   @primary # bool
+#   @value # str
+# end
 
-class Email_Address_Types
-  include Ruby::Enum
-  define :WORK, 'Work'
-  define :PERSONAL, 'Personal'
-end
+# class Email_Address_Types
+#   include Ruby::Enum
+#   define :WORK, 'Work'
+#   define :PERSONAL, 'Personal'
+# end
 
 class Location
   @address # str
@@ -92,10 +93,10 @@ class Location
 end
 
 class Boroughs 
-  include Ruby::Enum
-  define :MANHATTAN, 'Manhattan'
-  define :BROOKLYN, 'Brooklyn'
-  define :QUEENS, 'Queens'
+  manhattan: 'Manhtattan'
+  :brooklyn
+  :queens
+  :staten
 end
 
 class Neighborhoods # note: will need to dynamically update this set of enums as we add more neighborhoods
@@ -118,16 +119,15 @@ class Neighborhoods # note: will need to dynamically update this set of enums as
 end 
 
 class Staffer < User
-  @hire_date # Date
-  @start_date # Date (if nil, same as @hire_date)
-  @termination_date # Date
-  @contact_info # Contact_Info
+  has_one :user_kit, as: :user
+  @hire_date # Datetime
 end
 
 class Restaurant
-
   has_one :contact_info
   has_one :work_rule_set
+  has_one :location, as: locatable
+  
   # has_one :balance # Balance
   # has_one :restaurant_rating 
 
