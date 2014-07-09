@@ -5,9 +5,6 @@
 #  id               :integer          not null, primary key
 #  phone            :string(255)
 #  email            :string(255)
-#  street_address   :string(255)
-#  borough          :string(255)
-#  neighborhood     :string(255)
 #  created_at       :datetime
 #  updated_at       :datetime
 #  contactable_id   :integer
