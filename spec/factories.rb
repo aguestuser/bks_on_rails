@@ -47,11 +47,11 @@ FactoryGirl.define do
   end
 
 
-  factory :rider, class: "Rider" do
-    after(:build) do |f|
-      f.user_info = FactoryGirl.build(:user_info, :with_user, user: f)
-    end
-  end
+  # factory :rider, class: "Rider" do
+  #   after(:build) do |f|
+  #     f.user_info = FactoryGirl.build(:user_info, :with_user, user: f)
+  #   end
+  # end
 
   factory :restaurant, class: "Restaurant" do
     active true
@@ -116,6 +116,7 @@ FactoryGirl.define do
     heated_bag true
     cell_phone true
     smart_phone true
+    car false
     trait :with_equipable do |equipable|
       equipable
     end

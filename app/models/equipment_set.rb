@@ -15,11 +15,12 @@
 #  smart_phone    :boolean
 #  created_at     :datetime
 #  updated_at     :datetime
+#  car            :boolean
 #
 
 class EquipmentSet < ActiveRecord::Base
   belongs_to :equipable
 
   validates :bike, :lock, :helmet, :rack, :bag, :heated_bag, :cell_phone, :smart_phone,
-    presence: true
+    inclusion: { in: [ true, false ] }
 end

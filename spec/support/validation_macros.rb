@@ -16,4 +16,15 @@ module ValidationMacros
       expect(model).not_to be_valid
     end
   end
+  def check_numericality(model, num_attrs)
+    num_attrs.each do |attr|
+      model[attr] = 'foobar'
+      expect(model).not_to be_valid
+    end
+  end
+  def check_associations(model, associations)
+    associations.each do |assn|
+      expect(model).to respond_to assn
+    end
+  end
 end

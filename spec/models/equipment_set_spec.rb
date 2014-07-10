@@ -15,6 +15,7 @@
 #  smart_phone    :boolean
 #  created_at     :datetime
 #  updated_at     :datetime
+#  car            :boolean
 #
 
 require 'spec_helper'
@@ -22,7 +23,7 @@ include ValidationMacros
 
 describe EquipmentSet do
   let(:equip) { FactoryGirl.build(:equipment_set, :without_equipable) }
-  let(:attrs) { [ :bike, :lock, :helmet, :rack, :bag, :heated_bag, :cell_phone, :smart_phone] }
+  let(:attrs) { [ :bike, :lock, :helmet, :rack, :bag, :heated_bag, :cell_phone, :smart_phone, :car ] }
   subject { equip }
 
   describe "attrs" do

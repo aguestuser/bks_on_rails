@@ -206,50 +206,42 @@ class Manager < User
   has_one :contact_info # ContactInfo
 end
 
-class Rider < User
-  @nick_name #str
-  @hire_date # Date
-  @start_date # Date
-  @termination_date # Date
-  @skills # arr of Skills::ENUM
-  @equipment # arr of Equipment::ENUM
-  @experience # Experience
-  @rating # Rating
-  @active # bool
+class Rider
+  include User, Equipable
+  has_one :qualification_set
+  has_one :skill_set
+  has_one :rider_rating
+
+  @active #bool
+
+  # @hire_date # Date
+  # @start_date # Date
+  # @termination_date # Date
 end
 
-class Skills 
-  include Ruby::Enum
-  define :BIKE_REPAIR, 'bike repair'
-  define :FIX_FLATS, 'fix flats'
-  define :EARLY_MORNING, 'early morning'
-  define :PIZZA, 'pizza'
+class QualificationSet
+  @experience # text
+  @geography # text
+  @hiring_assessment # text 
+  # @skills # Arr of Skills::Enum [:bike_repair, :fix_flats, :early_morning, :pizza]
 end
 
-class Equipment < Rider_Assets
-  include Ruby::Enum
-  define :BIKE, 'bike'
-  define :BIKE_LOCK, 'bike lock'
-  define :SMART_PHONE, 'smart phone'
-  define :BAG, 'bag'
-  define :HEATED_BAGE, 'heated bag'
-  define :PUMP, 'pump'
-  define :TUBES, 'tubes'
+class SkillSet
+  @bike_repair # bool
+  @fix_flats # bool
+  @early_morning #bool
+  @pizza #bool
 end
 
-class Rating < Rider_Assets
-  @hiring_assessment # str
-  @likeability # num
-  @reliability # num
-  @punctuality # num
-  @initial_points # num
-  @points # num
+class RiderRating < Rider_Assets
+  @initial_points # int
+  @likeability # int
+  @reliability # int
+  @speed #int
+  # @punctuality # int
+  @points # int
 end
 
-class Experience < Rider_Assets
-  @work # str 
-  @geography # arr of Neighborhoods::ENUM
-end
 
 
 class Shift 
