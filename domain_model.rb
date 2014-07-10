@@ -54,7 +54,7 @@ end
 
 class Contact_Info
   @name # Str (min length 3)
-  @phone_number # Str (matches VALID_)
+  @phone # Str (matches VALID_)
   @email # Str (w/ regex validation)
 end
 

@@ -22,8 +22,9 @@ class UserInfo < ActiveRecord::Base
   #validations
   VALID_EMAIL = /\A[\w+\-.]+@[a-z\d\-]+(?:\.[a-z\d\-]+)*\.[a-z]+\z/i
   validates :email, 
-              presence: true,
-              format: { with: VALID_EMAIL },
-              uniqueness: { case_sensitive: false }  
+    presence: true,
+    format: { with: VALID_EMAIL },
+    uniqueness: { case_sensitive: false } 
+  validates :title, presence: true 
 
 end

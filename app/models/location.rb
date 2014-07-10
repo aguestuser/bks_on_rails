@@ -25,6 +25,6 @@ class Location < ActiveRecord::Base
 
   #validations
   # VALID_STREET_ADDRESS = /\A((?!brooklyn|manhattan|queens|bronx|staten island|nyc|NY).)*\z/i
-  validates :street_address, :borough, :neighborhood, 
+  validates :address, :borough, :neighborhood, 
     presence: true  
 end

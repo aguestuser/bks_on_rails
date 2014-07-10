@@ -11,20 +11,24 @@
 require 'spec_helper'
 
 describe Manager do
-  let(:manager) { FactoryGirl.create(:manager) }
+  
+  let(:manager) { FactoryGirl.create(:manager, :without_restaurant) }
   subject { manager }
+
+  describe "validation" do
+    it { should be_valid }
+  end
 
   describe "associations" do
 
-    describe "contact info" do
-      it { should respond_to(:contact_info) }
-      its(:name) { should eq manager.contact_info.name }
-      its(:phone) { should eq manager.contact_info.phone }
-      its(:email) { should eq manager.contact_info.email }
-      its(:title) { should eq manager.contact_info.title }      
+    describe "with Restaurant model" do
+      it { should respond_to :restaurant_id }
     end
-    describe "restaurant" do
-      it { should respond_to(:restaurant) }
-    end  
+
+    describe "with UserInfo model" do
+      it { should respond_to(:user_info)}
+      its(:email) { should eq manager.user_info.email }
+      its(:title) { should eq manager.user_info.title }
+    end
   end
 end

@@ -10,4 +10,10 @@ module ValidationMacros
       expect(model).not_to be_valid    
     end
   end
+  def check_enums(model, enums)
+    enums.each do |enum|
+      model[enum] = 'foobar'
+      expect(model).not_to be_valid
+    end
+  end
 end

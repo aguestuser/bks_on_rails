@@ -8,5 +8,5 @@
 #
 
 class Staffer < ActiveRecord::Base
-  include User # ../concerns/contactable.rb
+  include User # ../concerns/user.rb
 end

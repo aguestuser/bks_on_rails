@@ -18,7 +18,28 @@
 #
 
 require 'spec_helper'
+include ValidationMacros
 
 describe EquipmentSet do
-  pending "add some examples to (or delete) #{__FILE__}"
+  let(:equip) { FactoryGirl.build(:equipment_set, :without_equipable) }
+  let(:attrs) { [ :bike, :lock, :helmet, :rack, :bag, :heated_bag, :cell_phone, :smart_phone] }
+  subject { equip }
+
+  describe "attrs" do
+    it "should respond to all attributes" do
+      check_attributes equip, attrs
+    end
+  end
+
+  describe "validation" do
+    it { should be_valid }
+    
+    it "shouldn't be valid without required attributes" do
+      check_required_attributes equip, attrs
+    end
+  end
+
+  describe "associations" do
+    it { should respond_to :equipable_id }
+  end
 end

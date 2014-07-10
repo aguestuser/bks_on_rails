@@ -14,5 +14,9 @@
 
 class RiderPaymentInfo < ActiveRecord::Base
   belongs_to :restaurant
-  validates :method, :rate, :shift_meal, :cash_out_tips, presence: true
+
+  classy_enum_attr :method, enum: 'RiderPaymentMethod'
+
+  validates :method, :rate, presence: true
+  validates :shift_meal, :cash_out_tips, inclusion: { in: [ true, false ] }
 end
