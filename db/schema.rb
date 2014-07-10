@@ -11,10 +11,20 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140710001002) do
+ActiveRecord::Schema.define(version: 20140710004623) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "agency_payment_infos", force: true do |t|
+    t.string   "method"
+    t.boolean  "pickup_required"
+    t.integer  "restaurant_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "agency_payment_infos", ["restaurant_id"], name: "index_agency_payment_infos_on_restaurant_id", using: :btree
 
   create_table "contact_infos", force: true do |t|
     t.string   "phone"
@@ -26,6 +36,23 @@ ActiveRecord::Schema.define(version: 20140710001002) do
   end
 
   add_index "contact_infos", ["contact_id"], name: "index_contact_infos_on_contact_id", using: :btree
+
+  create_table "equipment_sets", force: true do |t|
+    t.integer  "equipable_id"
+    t.string   "equipable_type"
+    t.boolean  "bike"
+    t.boolean  "lock"
+    t.boolean  "helmet"
+    t.boolean  "rack"
+    t.boolean  "bag"
+    t.boolean  "heated_bag"
+    t.boolean  "cell_phone"
+    t.boolean  "smart_phone"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "equipment_sets", ["equipable_id", "equipable_type"], name: "index_equipment_sets_on_equipable_id_and_equipable_type", using: :btree
 
   create_table "locations", force: true do |t|
     t.integer  "locatable_id"
@@ -57,6 +84,18 @@ ActiveRecord::Schema.define(version: 20140710001002) do
     t.datetime "updated_at"
   end
 
+  create_table "rider_payment_infos", force: true do |t|
+    t.integer  "restaurant_id"
+    t.string   "method"
+    t.string   "rate"
+    t.boolean  "shift_meal"
+    t.boolean  "cash_out_tips"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "rider_payment_infos", ["restaurant_id"], name: "index_rider_payment_infos_on_restaurant_id", using: :btree
+
   create_table "shifts", force: true do |t|
     t.integer  "restaurant_id"
     t.datetime "start"
@@ -87,27 +126,17 @@ ActiveRecord::Schema.define(version: 20140710001002) do
 
   add_index "user_infos", ["user_id"], name: "index_user_infos_on_user_id", using: :btree
 
-  create_table "work_arrangements", force: true do |t|
+  create_table "work_specifications", force: true do |t|
+    t.integer  "restaurant_id"
     t.string   "zone"
     t.string   "daytime_volume"
     t.string   "evening_volume"
-    t.string   "pay_rate"
-    t.boolean  "shift_meal"
-    t.boolean  "cash_out_tips"
-    t.boolean  "rider_on_premises"
-    t.boolean  "extra_work"
-    t.string   "extra_work_description"
-    t.boolean  "bike"
-    t.boolean  "lock"
-    t.boolean  "rack"
-    t.boolean  "bag"
-    t.boolean  "heated_bag"
+    t.string   "extra_work"
+    t.text     "extra_work_description"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "restaurant_id"
-    t.string   "rider_payment_method"
   end
 
-  add_index "work_arrangements", ["restaurant_id"], name: "index_work_arrangements_on_restaurant_id", using: :btree
+  add_index "work_specifications", ["restaurant_id"], name: "index_work_specifications_on_restaurant_id", using: :btree
 
 end

@@ -12,9 +12,9 @@
 #
 
 class UserInfo < ActiveRecord::Base
+  include Contact
   #associations
   belongs_to :user, polymorphic: true
-  has_one :contact_info, as: :contact
 
   #before filters
   before_save { email.downcase! }

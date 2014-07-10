@@ -1,4 +1,4 @@
-module Contactable
+module Contact
   extend ActiveSupport::Concern
 
 

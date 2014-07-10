@@ -136,11 +136,10 @@ end
 
 
 class Restaurant
-  has_one :contact_info, as: :contact
-  has_one :location, as: :locatable
+  include Contact, Locatable
   has_many :managers # Manager
   # has_one :work_rule_set, replace with:
-  has_one :work_requirements_info
+  has_one :work_specification_info
   has_one :rider_payment_info
   has_one :agency_payment_info
   has_one :equipment_set, as: :equipable

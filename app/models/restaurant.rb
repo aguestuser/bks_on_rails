@@ -13,7 +13,7 @@
 #
 
 class Restaurant < ActiveRecord::Base
-  include Contactable, Locatable
+  include Contact, Locatable
   has_many :managers, dependent: :destroy
     accepts_nested_attributes_for :managers, allow_destroy: true
   has_one :work_requirements_info
