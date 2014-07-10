@@ -23,4 +23,11 @@ class Shift < ActiveRecord::Base
 
   validates :start, :end, :billing_rate, :urgency,
     presence: true
+  validate :start_before_end
+
+  def start_before_end
+    if self.end.present? && start.present? && self.end <= start
+      errors.add(:end, "can't be before start")
+    end  
+  end
 end

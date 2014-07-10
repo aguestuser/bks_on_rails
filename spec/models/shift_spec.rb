@@ -38,6 +38,13 @@ describe Shift do
     it "shouldn't be valid when enum attrs don't correspond to enum values" do
       check_enums shift, enums
     end
+    describe "of end date after start date" do
+      before do
+        shift.start = 1.hour.ago
+        shift.end = 3.hours.ago
+      end
+      it { should_not be_valid }
+    end
   end
 
   describe "associations" do
