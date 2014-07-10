@@ -11,24 +11,21 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140709234125) do
+ActiveRecord::Schema.define(version: 20140710001002) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
   create_table "contact_infos", force: true do |t|
     t.string   "phone"
-    t.string   "email"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "contactable_id"
-    t.string   "contactable_type"
+    t.integer  "contact_id"
+    t.string   "contact_type"
     t.string   "name"
-    t.string   "title"
   end
 
-  add_index "contact_infos", ["contactable_id"], name: "index_contact_infos_on_contactable_id", using: :btree
-  add_index "contact_infos", ["email"], name: "index_contact_infos_on_email", unique: true, using: :btree
+  add_index "contact_infos", ["contact_id"], name: "index_contact_infos_on_contact_id", using: :btree
 
   create_table "locations", force: true do |t|
     t.integer  "locatable_id"
@@ -39,6 +36,8 @@ ActiveRecord::Schema.define(version: 20140709234125) do
     t.datetime "created_at"
     t.datetime "updated_at"
   end
+
+  add_index "locations", ["locatable_id"], name: "index_locations_on_locatable_id", using: :btree
 
   create_table "managers", force: true do |t|
     t.integer  "restaurant_id"
@@ -76,6 +75,17 @@ ActiveRecord::Schema.define(version: 20140709234125) do
     t.datetime "created_at"
     t.datetime "updated_at"
   end
+
+  create_table "user_infos", force: true do |t|
+    t.string   "title"
+    t.string   "email"
+    t.integer  "user_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string   "user_type"
+  end
+
+  add_index "user_infos", ["user_id"], name: "index_user_infos_on_user_id", using: :btree
 
   create_table "work_arrangements", force: true do |t|
     t.string   "zone"

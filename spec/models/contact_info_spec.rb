@@ -2,15 +2,13 @@
 #
 # Table name: contact_infos
 #
-#  id               :integer          not null, primary key
-#  phone            :string(255)
-#  email            :string(255)
-#  created_at       :datetime
-#  updated_at       :datetime
-#  contactable_id   :integer
-#  contactable_type :string(255)
-#  name             :string(255)
-#  title            :string(255)
+#  id           :integer          not null, primary key
+#  phone        :string(255)
+#  created_at   :datetime
+#  updated_at   :datetime
+#  contact_id   :integer
+#  contact_type :string(255)
+#  name         :string(255)
 #
 
 require 'spec_helper'

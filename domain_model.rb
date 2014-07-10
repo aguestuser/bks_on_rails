@@ -127,8 +127,9 @@ class Staffer
 end
 
 class Manager
+  include User, Contact
   belongs_to :restaurant
-  has_one :user_info, as: :user
+
   has_one :contact_info, as: :contact
   has_one :location, as: :locatable
 end

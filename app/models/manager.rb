@@ -10,5 +10,5 @@
 
 class Manager < ActiveRecord::Base
   belongs_to :restaurant
-  include Contactable # ../concerns/contactable.rb
+  include User, Contact # app/model/concerns/
 end

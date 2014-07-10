@@ -3,7 +3,7 @@ module Contactable
 
 
   included do
-    has_one :contact_info, as: :contactable, dependent: :destroy
+    has_one :contact_info, as: :contact, dependent: :destroy
     accepts_nested_attributes_for :contact_info
 
     #methods

@@ -13,11 +13,17 @@
 #
 
 class Location < ActiveRecord::Base
+  #associations
   belongs_to :locatable, polymorphic: :true
 
+  #enums
   classy_enum_attr :borough, allow_nil: true 
   classy_enum_attr :neighborhood, allow_nil: true  
+  
+  #before filters
+  before_save { street_address.strip! if street_address }
 
+  #validations
   # VALID_STREET_ADDRESS = /\A((?!brooklyn|manhattan|queens|bronx|staten island|nyc|NY).)*\z/i
   validates :street_address, :borough, :neighborhood, 
     presence: true  
