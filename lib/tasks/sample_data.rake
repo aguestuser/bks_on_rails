@@ -10,11 +10,24 @@ end
 def make_staffers
   
   Staffer.create!(
-    contact_info: ContactInfo.new(
-      name: 'Austin Guest',
-      title: 'IT Director',
-      email: 'austin@bkshift.com',
-      phone: '831-917-6400'
+    user_info: UserInfo.new(
+      contact_info: ContactInfo.new(
+        name: 'Austin Guest',
+        title: 'IT Director',
+        email: 'austin@bkshift.com',
+        phone: '831-917-6400'
+      )
+    )
+  )
+
+  Staffer.create!(
+    user_info: UserInfo.new(
+      contact_info: ContactInfo.new(  
+        name: 'tess@bkshift.com',
+        title: 'Accounts Executive',
+        email: 'tess@bkshift.com',
+        phone: '347-460-6484'
+      )
     )
   )
 

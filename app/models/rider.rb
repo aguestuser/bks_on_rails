@@ -9,13 +9,13 @@
 #
 
 class Rider < ActiveRecord::Base
-  include User, Equipable # app/models/concerns/
+  include User, Equipable, Locatable # app/models/concerns/
 
-  has_one :qualification_set
+  has_one :qualification_set, dependent: :destroy
     accepts_nested_attributes_for :qualification_set
-  has_one  :skill_set
+  has_one  :skill_set, dependent: :destroy
     accepts_nested_attributes_for :skill_set
-  has_one :rider_rating
+  has_one :rider_rating, dependent: :destroy
     accepts_nested_attributes_for :rider_rating
 
   validates :active, 

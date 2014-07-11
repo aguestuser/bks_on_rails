@@ -13,6 +13,7 @@ require 'spec_helper'
 describe Manager do
   
   let(:manager) { FactoryGirl.create(:manager, :without_restaurant) }
+  let(:associations) { [:user_info] }
   subject { manager }
 
   describe "validation" do
@@ -27,8 +28,6 @@ describe Manager do
 
     describe "with UserInfo model" do
       it { should respond_to(:user_info)}
-      its(:email) { should eq manager.user_info.email }
-      its(:title) { should eq manager.user_info.title }
     end
   end
 end

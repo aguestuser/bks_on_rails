@@ -43,29 +43,6 @@ class Main #is there any way to reflect the cateogry groupings I have accomplish
 
 end
 
-class UserInfo
-  belongs_to :user, polymorpous: true
-  has_one :contact_info, as: :contact
-
-  @title # Str (min length 3)
-  @email # Str (matches VALID_EMAIL)
-  @password_hash # str
-end
-
-class Contact_Info
-  @name # Str (min length 3)
-  @phone # Str (matches VALID_)
-  @email # Str (w/ regex validation)
-end
-
-class Location
-  @address # str
-  @borough # Boroughs::ENUM
-  @neighborhood # Neighborhoods::ENUM
-  # @lat # :decimal, {:precision=>10, :scale=>6}
-  # @lng # str
-end
-
 # class PhoneNumber
 #   @type # Phone_Types::ENUM
 #   @primary # bool
@@ -134,12 +111,36 @@ class Manager
   has_one :location, as: :locatable
 end
 
+class UserInfo
+  belongs_to :user, polymorpous: true
+  has_one :contact_info, as: :contact
+
+  @password_hash # str
+end
+
+class Contact_Info
+  @name # Str (min length 3)
+  @title # str (min length 3)
+  @phone # Str (matches VALID_)
+  @email # Str (w/ regex validation)
+end
+
+class Location
+  @address # str
+  @borough # Boroughs::ENUM
+  @neighborhood # Neighborhoods::ENUM
+  # @lat # :decimal, {:precision=>10, :scale=>6}
+  # @lng # str
+end
+
 
 class Restaurant
-  include Contact, Locatable
+  # include Contact, Locatable
+  include Locatable
+  has_one :short_contact_info
   has_many :managers # Manager
   # has_one :work_rule_set, replace with:
-  has_one :work_specification_info
+  has_one :work_specification
   has_one :rider_payment_info
   has_one :agency_payment_info
   has_one :equipment_set, as: :equipable
@@ -155,6 +156,11 @@ class Restaurant
   # @payment_method # PaymentMethods::Enum
   # @pickup_required #bool
 
+end
+
+class ShortContactInfo
+  @name # str ( btw 3 & 30 chars)
+  @phone # str (VALID_PHONE)
 end
 
 class AgencyPaymentInfo

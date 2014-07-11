@@ -41,7 +41,7 @@ describe Restaurant do
 
     describe "with models it has" do
       it { should respond_to(:managers) }
-      it { should respond_to(:contact_info) }
+      it { should respond_to(:short_contact_info) }
       it { should respond_to(:agency_payment_info) }
       it { should respond_to(:rider_payment_info) }
       it { should respond_to(:work_specification) }

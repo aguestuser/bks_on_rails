@@ -11,13 +11,15 @@
 #
 
 class Restaurant < ActiveRecord::Base
-  include Contact, Locatable, Equipable
-  has_one :work_specification
-    accepts_nested_attributes_for :work_specification, allow_destroy: true
-  has_one :rider_payment_info
-    accepts_nested_attributes_for :rider_payment_info, allow_destroy: true
-  has_one :agency_payment_info
-    accepts_nested_attributes_for :agency_payment_info, allow_destroy: true
+  include Locatable, Equipable
+  has_one :short_contact_info, dependent: :destroy
+    accepts_nested_attributes_for :short_contact_info
+  has_one :work_specification, dependent: :destroy
+    accepts_nested_attributes_for :work_specification
+  has_one :rider_payment_info, dependent: :destroy
+    accepts_nested_attributes_for :rider_payment_info
+  has_one :agency_payment_info, dependent: :destroy
+    accepts_nested_attributes_for :agency_payment_info
   
   has_many :managers, dependent: :destroy
     accepts_nested_attributes_for :managers, allow_destroy: true

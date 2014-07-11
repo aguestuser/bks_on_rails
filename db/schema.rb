@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140710194521) do
+ActiveRecord::Schema.define(version: 20140711030310) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -33,6 +33,8 @@ ActiveRecord::Schema.define(version: 20140710194521) do
     t.integer  "contact_id"
     t.string   "contact_type"
     t.string   "name"
+    t.string   "email"
+    t.string   "title"
   end
 
   add_index "contact_infos", ["contact_id"], name: "index_contact_infos_on_contact_id", using: :btree
@@ -139,6 +141,16 @@ ActiveRecord::Schema.define(version: 20140710194521) do
 
   add_index "shifts", ["restaurant_id"], name: "index_shifts_on_restaurant_id", using: :btree
 
+  create_table "short_contact_infos", force: true do |t|
+    t.string   "name"
+    t.string   "phone"
+    t.integer  "restaurant_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "short_contact_infos", ["restaurant_id"], name: "index_short_contact_infos_on_restaurant_id", using: :btree
+
   create_table "skill_sets", force: true do |t|
     t.integer  "rider_id"
     t.boolean  "bike_repair"
@@ -157,8 +169,6 @@ ActiveRecord::Schema.define(version: 20140710194521) do
   end
 
   create_table "user_infos", force: true do |t|
-    t.string   "title"
-    t.string   "email"
     t.integer  "user_id"
     t.datetime "created_at"
     t.datetime "updated_at"
