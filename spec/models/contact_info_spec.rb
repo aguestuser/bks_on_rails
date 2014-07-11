@@ -57,7 +57,7 @@ describe ContactInfo do
       describe "of name" do
 
         describe "with too many characters " do
-          before { contact_info.name = 'a'*31 }
+          before { contact_info.name = 'a'*51 }
           it { should_not be_valid }        
         end
         
@@ -70,7 +70,7 @@ describe ContactInfo do
       describe "of title" do
 
         describe "with too many characters " do
-          before { contact_info.title = 'a'*31 }
+          before { contact_info.title = 'a'*51 }
           it { should_not be_valid }        
         end
         

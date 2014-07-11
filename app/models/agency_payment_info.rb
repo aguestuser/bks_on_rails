@@ -12,7 +12,7 @@
 
 class AgencyPaymentInfo < ActiveRecord::Base
   belongs_to :restaurant
-  validates :method, :pickup_required, presence: true
 
   classy_enum_attr :method, enum:'AgencyPaymentMethod' 
+  validates :pickup_required, inclusion: { in: [ true, false ] }
 end

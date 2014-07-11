@@ -32,6 +32,11 @@ describe ShortContactInfo do
     it "should be invalid without required attributes" do
       check_required_attributes short_contact_info, attrs
     end
+
+    describe "with name that's too long" do 
+      before { short_contact_info.name = 'a'*51 }
+      it { should be_invalid }
+    end
   end
 
   describe "associations" do
