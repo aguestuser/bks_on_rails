@@ -1,6 +1,6 @@
 # == Schema Information
 #
-# Table name: user_infos
+# Table name: accounts
 #
 #  id         :integer          not null, primary key
 #  user_id    :integer
@@ -12,11 +12,11 @@
 require 'spec_helper'
 include ValidationMacros
 
-describe UserInfo do
+describe Account do
   
-  let(:user_info) { FactoryGirl.create(:user_info, :without_user) }
-  let(:associations) { [:user, :contact_info] }
-  subject { user_info }
+  let(:account) { FactoryGirl.create(:account, :without_user) }
+  let(:associations) { [:user, :contact] }
+  subject { account }
 
   describe "attributes" do
   end
@@ -27,7 +27,7 @@ describe UserInfo do
 
   describe "associations" do
     it "should respond to references to all associations" do
-      check_associations user_info, associations
+      check_associations account, associations
     end
   end
 end

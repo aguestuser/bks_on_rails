@@ -3,26 +3,24 @@
 
   included do
     before_filter :get_user    
-    # before_action :get_user, only: [:show, :edit, :update, :destroy]
-    case @klass
-    when Staffer
-    
-    when Manager
-    
-    when Rider  
-
-    end
 
     private
 
-      def get_user
-        @klass = name.constantize
-        @user = klass.find(params[:id]) 
-      end
-
-      # def user_params
-      #   params.require(:user).permit(contact_info_attributes: [:name, :title, :phone, :email])
+      # def get_user
+      #   @user = self.user_info
+      #   @contact = @user.contact_info 
       # end
+
+    def user_info_params
+      { 
+        user_info_attributes: [
+          :id, :user_id, :user_type,
+          contact_info_attributes: [
+            :id, :contact_id, :name, :title, :email, :phone
+          ]
+        ] 
+      }
+    end
   end
 
   module ClassMethods

@@ -1,6 +1,6 @@
 # == Schema Information
 #
-# Table name: contact_infos
+# Table name: contacts
 #
 #  id           :integer          not null, primary key
 #  phone        :string(255)
@@ -16,17 +16,17 @@
 require 'spec_helper'
 include ValidationMacros
 
-describe ContactInfo do
+describe Contact do
 
-  let(:contact_info) { FactoryGirl.build(:contact_info, :without_contact) }
+  let(:contact) { FactoryGirl.build(:contact, :without_account) }
   let (:attrs) { [:name, :title, :phone, :email ] }
-  subject { contact_info }
+  subject { contact }
 
   describe "attributes" do
 
 
     it "should respond to all attributes" do
-      check_attributes contact_info, attrs
+      check_attributes contact, attrs
     end
   end
 
@@ -36,7 +36,7 @@ describe ContactInfo do
 
     describe "presence validations" do
       it "should be invalid without required attributes" do
-        check_required_attributes contact_info, attrs
+        check_required_attributes contact, attrs
       end
     end
 
@@ -44,12 +44,12 @@ describe ContactInfo do
       describe "of phone number" do
         
         describe "with non-numeric characters" do
-          before { contact_info.phone =  'A11-111-1111' }
+          before { contact.phone =  'A11-111-1111' }
           it { should_not be_valid }
         end
         
         describe "with the wrong number of characters" do
-          before { contact_info.phone =  '11-111-1111' }
+          before { contact.phone =  '11-111-1111' }
           it { should_not be_valid }
         end      
       end
@@ -57,12 +57,12 @@ describe ContactInfo do
       describe "of name" do
 
         describe "with too many characters " do
-          before { contact_info.name = 'a'*51 }
+          before { contact.name = 'a'*51 }
           it { should_not be_valid }        
         end
         
         describe "with too few characters" do
-          before { contact_info.name = 'bs' }
+          before { contact.name = 'bs' }
           it { should_not be_valid } 
         end
       end
@@ -70,12 +70,12 @@ describe ContactInfo do
       describe "of title" do
 
         describe "with too many characters " do
-          before { contact_info.title = 'a'*51 }
+          before { contact.title = 'a'*51 }
           it { should_not be_valid }        
         end
         
         describe "with too few characters" do
-          before { contact_info.title = 'bs' }
+          before { contact.title = 'bs' }
           it { should_not be_valid } 
         end
       end
@@ -83,7 +83,7 @@ describe ContactInfo do
       describe "of email" do  
       
         describe "with blank value" do
-          before { contact_info.email = '' }
+          before { contact.email = '' }
           it { should_not be_valid }
         end
 
@@ -91,18 +91,22 @@ describe ContactInfo do
           it 'should be invalid' do
             addresses = %w[user@foo,com user_at_foo.org example.user@foo. foo@bar_baz.com foo@bar+baz.com]
             addresses.each do |invalid_address|
-              contact_info.email = invalid_address
-              expect(contact_info).not_to be_valid
+              contact.email = invalid_address
+              expect(contact).not_to be_valid
             end      
           end
         end
 
         describe "with pre-existing address" do
-          before { contact_info.save }
-          let(:new_contact_info) { contact_info.dup }
-          specify { expect(new_contact_info).not_to be_valid }
+          before { contact.save }
+          let(:new_contact) { contact.dup }
+          specify { expect(new_contact).not_to be_valid }
          end 
       end       
     end
+  end
+
+  describe "associations" do
+    it { should respond_to :account }
   end
 end

@@ -1,7 +1,7 @@
 .profile
   %li
     %h2
-      = gravatar_for staffer, size: 40
-      = link_to staffer.name, staffer
+      = gravatar_for staffer.user_info.contact_info, size: 40
+      = link_to staffer.user_info.contact_info.name, staffer
       %br
-      = staffer.title
+      = staffer.user_info.contact_info.title

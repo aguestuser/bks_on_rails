@@ -27,7 +27,7 @@ describe Manager do
     end
 
     describe "with UserInfo model" do
-      it { should respond_to(:user_info)}
+      it { should respond_to(:account)}
     end
   end
 end

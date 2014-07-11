@@ -1,0 +1,11 @@
+= f.fields_for :user_info do |ff|
+  = ff.fields_for :contact_info do |fff|
+    = fff.label :name
+    = fff.text_field :name
+    = fff.label :title
+    = fff.text_field :title        
+    = fff.label :phone
+    = fff.text_field :phone
+    = fff.label :email
+    = fff.text_field :email
+

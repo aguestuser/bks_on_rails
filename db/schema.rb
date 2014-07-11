@@ -11,10 +11,19 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140711030310) do
+ActiveRecord::Schema.define(version: 20140711185525) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "accounts", force: true do |t|
+    t.integer  "user_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string   "user_type"
+  end
+
+  add_index "accounts", ["user_id"], name: "index_accounts_on_user_id", using: :btree
 
   create_table "agency_payment_infos", force: true do |t|
     t.string   "method"
@@ -26,18 +35,17 @@ ActiveRecord::Schema.define(version: 20140711030310) do
 
   add_index "agency_payment_infos", ["restaurant_id"], name: "index_agency_payment_infos_on_restaurant_id", using: :btree
 
-  create_table "contact_infos", force: true do |t|
+  create_table "contacts", force: true do |t|
     t.string   "phone"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "contact_id"
-    t.string   "contact_type"
     t.string   "name"
     t.string   "email"
     t.string   "title"
+    t.integer  "account_id"
   end
 
-  add_index "contact_infos", ["contact_id"], name: "index_contact_infos_on_contact_id", using: :btree
+  add_index "contacts", ["account_id"], name: "index_contacts_on_account_id", using: :btree
 
   create_table "equipment_sets", force: true do |t|
     t.integer  "equipable_id"
@@ -167,15 +175,6 @@ ActiveRecord::Schema.define(version: 20140711030310) do
     t.datetime "created_at"
     t.datetime "updated_at"
   end
-
-  create_table "user_infos", force: true do |t|
-    t.integer  "user_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.string   "user_type"
-  end
-
-  add_index "user_infos", ["user_id"], name: "index_user_infos_on_user_id", using: :btree
 
   create_table "work_specifications", force: true do |t|
     t.integer  "restaurant_id"

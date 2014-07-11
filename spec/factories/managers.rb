@@ -7,7 +7,7 @@ FactoryGirl.define do
       restaurant_id 0
     end
     after(:build) do |f|
-      f.user_info = FactoryGirl.build(:user_info, :with_user, user: f)
+      f.account = FactoryGirl.build(:account, :with_user, user: f)
     end
   end
 

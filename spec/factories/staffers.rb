@@ -8,9 +8,9 @@
 #
 
 FactoryGirl.define do
-  factory :staffer, class: "Staffer" do
+  factory :staffer do
     after(:build) do |f|
-      f.user_info = FactoryGirl.build(:user_info, :with_user, user: f)
+      f.account = FactoryGirl.build(:account, :with_user, user: f)
     end
   end
 end

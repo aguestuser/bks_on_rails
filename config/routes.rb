@@ -5,18 +5,33 @@ BksOnRails::Application.routes.draw do
   #users
 
   resources :staffers do
-    resource :contact_info, only: [:new, :create, :edit, :update]
+    resource :account, only: [:new, :create, :edit, :update]
+      # resource :contact, only: [:new, :create, :edit, :update]
   end
 
   resources :managers do
-    resource :contact_info, only: [:new, :create, :edit, :update]
+    resource :account, only: [:new, :create, :edit, :update]
+      # resource :contact, only: [:new, :create, :edit, :update]
+  end
+
+  resources :riders do
+    resource :account, only: [:new, :create, :edit, :update]
+      # resource :contact, only: [:new, :create, :edit, :update]
+  end
+
+  resources :account do
+    resource :contact, only: [:new, :create, :edit, :update]
   end
 
   resources :restaurants do
-    resource :contact_info, only: [:new, :create, :edit, :update]
-    resource :work_arrangement, only: [:new, :create, :edit, :update]
+    resource :short_contact_info, only: [:new, :create, :edit, :update]
     resources :managers, only: [:new, :create, :edit, :update, :show]
-      resource :contact_info, only: [:new, :create, :edit, :update]
+     # resource :account, only: [:new, :create, :edit, :update]
+     #    resource :contact, only: [:new, :create, :edit, :update]
+    resource :work_specification, only: [:new, :create, :edit, :update]
+    resource :rider_payment_info
+    resource :agency_payment_info
+    resource :equipment_set
     resources :shifts
   end
 

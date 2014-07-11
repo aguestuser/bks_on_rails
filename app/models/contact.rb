@@ -13,9 +13,9 @@
 #  title        :string(255)
 #
 
-class ContactInfo < ActiveRecord::Base
+class Contact < ActiveRecord::Base
   #associations
-  belongs_to :contact, polymorphic: true
+  belongs_to :account
 
   #before filters
   before_save { email.downcase! }
@@ -34,14 +34,5 @@ class ContactInfo < ActiveRecord::Base
     presence: true,
     format: { with: VALID_EMAIL },
     uniqueness: { case_sensitive: false } 
-
-  #public methods
-  def contactable_type
-    self.contactable.class.name
-  end
-
-  def contactable_is?(contactable_type)
-    self[:contactable_type] == contactable_type
-  end
 
 end

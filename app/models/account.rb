@@ -9,9 +9,15 @@
 #  user_type  :string(255)
 #
 
-class UserInfo < ActiveRecord::Base
-  include Contact
+class Account < ActiveRecord::Base
   #associations
   belongs_to :user, polymorphic: true
+
+  has_one :contact, dependent: :destroy
+    accepts_nested_attributes_for :contact
+
+  def email
+    self.contact.email
+  end
 
 end

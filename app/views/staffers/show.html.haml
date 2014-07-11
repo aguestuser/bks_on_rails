@@ -1,18 +1,18 @@
-- provide(:title, @staffer.name)
+- provide(:title, @contact.name)
 .profile
   .row
     .span8.offset2
-      = gravatar_for @staffer, size: 80
+      = gravatar_for @contact, size: 80
       %section
-        %h1.name= @staffer.name
-        %h2.title= @staffer.title
+        %h1.name= @contact.name
+        %h2.title= @contact.title
   .row
     .span8.offset2
       %h3 Contact Info
       %ul 
-        %li Phone: #{@contact_info.phone}
-        %li Email: #{@contact_info.email}
+        %li Phone: #{@contact.phone}
+        %li Email: #{@contact.email}
       .center
         = link_to 'Edit', edit_staffer_path(@staffer)
         | 
-        = link_to "Delete", @staffer, method: :delete, data: { confirm: "Are you sure? All information associated with #{@staffer.name} will be permanently destroyed!" }
+        = link_to "Delete", @staffer, method: :delete, data: { confirm: "Are you sure? All information associated with #{@user.name} will be permanently destroyed!" }

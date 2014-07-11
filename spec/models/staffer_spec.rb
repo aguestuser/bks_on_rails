@@ -21,7 +21,7 @@ describe Staffer do
   describe "associations" do
 
     describe "with UserInfo model" do
-      it { should respond_to(:user_info)}
+      it { should respond_to(:account)}
     end
 
   end

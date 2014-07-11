@@ -1,11 +1,11 @@
 - provide(:title, 'Edit Staffer')
-%h1 Edit #{@staffer.name}'s Profile
+%h1 Edit #{@contact.name}'s Profile
 .row
   .span6.offset3
-    = form_for(@staffer) do |form|
-      = render 'shared/error_messages', object: form.object
-      = render 'shared/contact_info_fields', form: form, object: form.object
+    = form_for(@staffer) do |f|
+      = render 'shared/error_messages', object: f.object
+      = render 'shared/user_fields', f: f
       .center
-        = form.submit "Save changes", class: "btn btn-large btn-primary"
-    = gravatar_for @staffer, size: 80
+        = f.submit "Save changes", class: "btn btn-large btn-primary"
+    = gravatar_for @contact, size: 80
     = link_to 'Edit avatar', 'http://gravatar.com/emails', target: '_blank'

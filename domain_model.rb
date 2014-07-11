@@ -99,26 +99,26 @@ class Neighborhoods # note: will need to dynamically update this set of enums as
 end 
 
 class Staffer
-  has_one :user_info, as: :user
-  has_one :contact_info, as: :contact
+  include User
 end
 
 class Manager
-  include User, Contact
+  include User
   belongs_to :restaurant
 
   has_one :contact_info, as: :contact
   has_one :location, as: :locatable
 end
 
-class UserInfo
+class Account
   belongs_to :user, polymorpous: true
-  has_one :contact_info, as: :contact
+  has_one :contact
 
   @password_hash # str
 end
 
-class Contact_Info
+class Contact
+  belongs_to :account
   @name # Str (min length 3)
   @title # str (min length 3)
   @phone # Str (matches VALID_)
@@ -213,7 +213,7 @@ class Manager < User
 end
 
 class Rider
-  include User, Equipable
+  include User, Equipable, Locatable (has_one :account, has_one :equipment_set, has_one: location)
   has_one :qualification_set
   has_one :skill_set
   has_one :rider_rating

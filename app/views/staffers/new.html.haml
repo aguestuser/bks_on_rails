@@ -4,6 +4,6 @@
   .span6.offset3
     = form_for(@staffer) do |f|
       = render 'shared/error_messages', object: f.object
-      = render 'shared/contact_info_fields', form: f, object: f.object
+      = render 'shared/user_fields', f: f
       .center
         = f.submit "Create staffer", class: "btn btn-large btn-primary"      

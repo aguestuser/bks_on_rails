@@ -12,8 +12,8 @@ end
 def make_staffers
   
   Staffer.create!(
-    user_info: UserInfo.new(
-      contact_info: ContactInfo.new(
+    user_info: Account.new(
+      contact_info: Contact.new(
         name: 'Austin Guest',
         title: 'IT Director',
         email: 'austin@bkshift.com',
@@ -23,8 +23,8 @@ def make_staffers
   )
 
   Staffer.create!(
-    user_info: UserInfo.new(
-      contact_info: ContactInfo.new(
+    user_info: Account.new(
+      contact_info: Contact.new(
         name: 'Tess Cohen',
         title: 'Accounts Executive',
         email: 'tess@bkshift.com',
@@ -34,8 +34,8 @@ def make_staffers
   )
 
   Staffer.create!(
-    user_info: UserInfo.new(
-      contact_info: ContactInfo.new(
+    user_info: Account.new(
+      contact_info: Contact.new(
         name: 'Justin Lewis',
         title: 'Accounts Manager',
         email: 'justin@bkshift.com',
@@ -45,8 +45,8 @@ def make_staffers
   )
 
   Staffer.create!(
-    user_info: UserInfo.new(
-      contact_info: ContactInfo.new(
+    user_info: Account.new(
+      contact_info: Contact.new(
         name: 'Yagil Kadosh',
         title: 'Partner Relations Director',
         email: 'yagil@bkshift.com',
@@ -71,14 +71,14 @@ def make_restaurants
     neighborhood = pick_neighorhood
     status = [ :stable, :at_risk, :at_high_risk, :emergency_only, :variable_needs, :inactive ].sample
 
-    rest_contact = ShortContactInfo.new(
+    rest_contact = ShortContact.new(
       name: rest_name,
       phone: rest_phone
     )
     
     manager = Manager.new(
-      user_info: UserInfo.new(
-        contact_info: ContactInfo.new(
+      user_info: Account.new(
+        contact_info: Contact.new(
           name: name,
           title: title,
           phone: phone,
@@ -171,8 +171,8 @@ def make_rider
     neighborhood = pick_neighorhood
 
     Rider.create!(
-      user_info: UserInfo.new(
-        contact_info: ContactInfo.new(
+      user_info: Account.new(
+        contact_info: Contact.new(
           name: name,
           title: 'Rider',
           email: email,

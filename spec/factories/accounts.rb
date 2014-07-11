@@ -10,9 +10,9 @@
 #
 
 FactoryGirl.define do
-  factory :user_info do
+  factory :account do
     after(:build) do |f|
-      f.contact_info = FactoryGirl.build(:contact_info, :with_contact, contact: f)
+      f.contact = FactoryGirl.build(:contact, :with_account, account: f)
     end
     trait :with_user do |user|
       user

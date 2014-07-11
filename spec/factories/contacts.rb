@@ -13,17 +13,17 @@
 #  title        :string(255)
 #
 FactoryGirl.define do
-  factory :contact_info do
+  factory :contact do
     name 'Wonderful Person'
     title 'Head of Wonder'
     sequence(:email) { |n| "wonderful#{n}@example.com" }
     phone '917-345-3200'
     
-    trait :with_contact do |contact|
-      contact     
+    trait :with_account do |account|
+      account     
     end 
-    trait :without_contact do
-      contact_id 0
+    trait :without_account do
+      account_id 0
     end
   end
 end
