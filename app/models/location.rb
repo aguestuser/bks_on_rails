@@ -21,7 +21,7 @@ class Location < ActiveRecord::Base
   classy_enum_attr :neighborhood, allow_nil: true  
   
   #before filters
-  before_save { street_address.strip! if street_address }
+  before_save { address.strip! }
 
   #validations
   # VALID_STREET_ADDRESS = /\A((?!brooklyn|manhattan|queens|bronx|staten island|nyc|NY).)*\z/i

@@ -6,14 +6,15 @@ namespace :db do
     make_staffers
     make_restaurants
     make_shifts
+    make_riders
   end
 end
 
 def make_staffers
   
   Staffer.create!(
-    user_info: Account.new(
-      contact_info: Contact.new(
+    account: Account.new(
+      contact: Contact.new(
         name: 'Austin Guest',
         title: 'IT Director',
         email: 'austin@bkshift.com',
@@ -23,8 +24,8 @@ def make_staffers
   )
 
   Staffer.create!(
-    user_info: Account.new(
-      contact_info: Contact.new(
+    account: Account.new(
+      contact: Contact.new(
         name: 'Tess Cohen',
         title: 'Accounts Executive',
         email: 'tess@bkshift.com',
@@ -34,8 +35,8 @@ def make_staffers
   )
 
   Staffer.create!(
-    user_info: Account.new(
-      contact_info: Contact.new(
+    account: Account.new(
+      contact: Contact.new(
         name: 'Justin Lewis',
         title: 'Accounts Manager',
         email: 'justin@bkshift.com',
@@ -45,8 +46,8 @@ def make_staffers
   )
 
   Staffer.create!(
-    user_info: Account.new(
-      contact_info: Contact.new(
+    account: Account.new(
+      contact: Contact.new(
         name: 'Yagil Kadosh',
         title: 'Partner Relations Director',
         email: 'yagil@bkshift.com',
@@ -71,14 +72,14 @@ def make_restaurants
     neighborhood = pick_neighorhood
     status = [ :stable, :at_risk, :at_high_risk, :emergency_only, :variable_needs, :inactive ].sample
 
-    rest_contact = ShortContact.new(
+    mini_contact = MiniContact.new(
       name: rest_name,
       phone: rest_phone
     )
     
     manager = Manager.new(
-      user_info: Account.new(
-        contact_info: Contact.new(
+      account: Account.new(
+        contact: Contact.new(
           name: name,
           title: title,
           phone: phone,
@@ -128,11 +129,12 @@ def make_restaurants
       active: true,
       status: status,
       brief: "is a newly signed up account. They say it gets busy. Let us know how it goes!",
-      short_contact_info: rest_contact,
+      mini_contact: mini_contact,
+      location: location,
       managers: [manager],
       work_specification: work_spec,
       rider_payment_info: rider_pay,
-      agency_payment_info: agency_pay
+      agency_payment_info: agency_pay,
     )
   end
 
@@ -161,7 +163,7 @@ def make_restaurants
   end
 end
 
-def make_rider
+def make_riders
   30.times do |n|
     name = make_name
     phone = make_phone
@@ -171,8 +173,9 @@ def make_rider
     neighborhood = pick_neighorhood
 
     Rider.create!(
-      user_info: Account.new(
-        contact_info: Contact.new(
+      active: true,
+      account: Account.new(
+        contact: Contact.new(
           name: name,
           title: 'Rider',
           email: email,

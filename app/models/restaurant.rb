@@ -12,8 +12,8 @@
 
 class Restaurant < ActiveRecord::Base
   include Locatable, Equipable
-  has_one :short_contact_info, dependent: :destroy
-    accepts_nested_attributes_for :short_contact_info
+  has_one :mini_contact, dependent: :destroy
+    accepts_nested_attributes_for :mini_contact
   has_one :work_specification, dependent: :destroy
     accepts_nested_attributes_for :work_specification
   has_one :rider_payment_info, dependent: :destroy

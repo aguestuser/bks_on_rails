@@ -13,7 +13,7 @@
 # Read about factories at https://github.com/thoughtbot/factory_girl
 
 FactoryGirl.define do
-  factory :short_contact_info do
+  factory :mini_contact do
     name "Wonderful Restaurant"
     phone "831-915-5000"
     trait :with_restaurant do |restaurant|

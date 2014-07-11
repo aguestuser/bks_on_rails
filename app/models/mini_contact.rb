@@ -10,7 +10,7 @@
 #  updated_at    :datetime
 #
 
-class ShortContactInfo < ActiveRecord::Base
+class MiniContact < ActiveRecord::Base
   belongs_to :restaurant
 
   validates :name, presence: true, length: { minimum: 3, maximum: 50 }

@@ -5,7 +5,7 @@ FactoryGirl.define do
     brief "is a newly signed up account. They say it gets busy. Let us know how it goes!"
 
     after(:build) do |f|
-      f.short_contact_info = FactoryGirl.build(:short_contact_info, :with_restaurant, restaurant: f)
+      f.mini_contact = FactoryGirl.build(:mini_contact, :with_restaurant, restaurant: f)
       f.location = FactoryGirl.build(:location, :with_locatable, locatable: f)
       f.managers = 2.times.map { FactoryGirl.build(:manager, :with_restaurant, restaurant: f) }
       f.rider_payment_info = FactoryGirl.build(:rider_payment_info, :with_restaurant, restaurant: f)

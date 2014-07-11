@@ -16,6 +16,8 @@ include ValidationMacros
 describe Restaurant do
   let(:restaurant) { FactoryGirl.build(:restaurant) }
   let(:attrs) { [ :active, :status, :brief ] }
+  let(:associations) { [:managers, :mini_contact, :location,
+    :agency_payment_info, :rider_payment_info, :work_specification, :equipment_set ] }
   subject { restaurant }
 
   describe "attributes" do
@@ -39,14 +41,8 @@ describe Restaurant do
 
   describe "associations" do
 
-    describe "with models it has" do
-      it { should respond_to(:managers) }
-      it { should respond_to(:short_contact_info) }
-      it { should respond_to(:agency_payment_info) }
-      it { should respond_to(:rider_payment_info) }
-      it { should respond_to(:work_specification) }
-      it { should respond_to(:location) }
-      it { should respond_to(:equipment_set) }      
+    it "should respond to all associations" do
+      check_associations restaurant, associations
     end
 
   end

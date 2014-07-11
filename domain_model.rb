@@ -137,7 +137,7 @@ end
 class Restaurant
   # include Contact, Locatable
   include Locatable
-  has_one :short_contact_info
+  has_one :mini_contact
   has_many :managers # Manager
   # has_one :work_rule_set, replace with:
   has_one :work_specification
@@ -158,7 +158,8 @@ class Restaurant
 
 end
 
-class ShortContactInfo
+class MiniContact
+  belongs_to :restaurant
   @name # str ( btw 3 & 30 chars)
   @phone # str (VALID_PHONE)
 end
