@@ -1,3 +1,15 @@
+# == Schema Information
+#
+# Table name: restaurants
+#
+#  id         :integer          not null, primary key
+#  active     :boolean
+#  status     :string(255)
+#  brief      :text
+#  created_at :datetime
+#  updated_at :datetime
+#
+
 FactoryGirl.define do
   factory :restaurant, class: "Restaurant" do
     active true

@@ -13,19 +13,19 @@
         = fff.check_box :_destroy
         = fff.label :_destroy, 'Delete?'
       %br/
-- elsif object.class == Manager
-  = form.label :restaurant
-  - if params[:restaurant_id]
-    = form.collection_select :restaurant_id, Restaurant.all, :id, :name, selected: params[:restaurant_id]
-  - else
-    = form.collection_select :restaurant_id, Restaurant.all, :id, :name
-  = form.fields_for :contact_info do |ff|
-    = ff.label :name
-    = ff.text_field :name
-    = ff.label :title
-    = ff.text_field :title        
-    = ff.label :phone
-    = ff.text_field :phone
-    = ff.label :email
-    = ff.text_field :email
+/ - elsif object.class == Manager
+/   = form.label :restaurant
+/   - if params[:restaurant_id]
+/     = form.collection_select :restaurant_id, Restaurant.all, :id, :name, selected: params[:restaurant_id]
+/   - else
+/     = form.collection_select :restaurant_id, Restaurant.all, :id, :name
+/   = form.fields_for :contact_info do |ff|
+/     = ff.label :name
+/     = ff.text_field :name
+/     = ff.label :title
+/     = ff.text_field :title        
+/     = ff.label :phone
+/     = ff.text_field :phone
+/     = ff.label :email
+/     = ff.text_field :email
 

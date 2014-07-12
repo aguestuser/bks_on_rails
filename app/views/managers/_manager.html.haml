@@ -1,0 +1,15 @@
+- if manager == @managers.first
+  %h3 Managers
+%ul
+  %li
+    %strong Name:
+    = manager.account.contact.name
+  %li
+    %strong Title:
+    = manager.account.contact.title  
+  %li
+    %strong Phone:
+    = manager.account.contact.phone
+  %li
+    %strong Email:
+    = manager.account.contact.email

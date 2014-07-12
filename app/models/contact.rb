@@ -1,16 +1,15 @@
 # == Schema Information
 #
-# Table name: contact_infos
+# Table name: contacts
 #
-#  id           :integer          not null, primary key
-#  phone        :string(255)
-#  created_at   :datetime
-#  updated_at   :datetime
-#  contact_id   :integer
-#  contact_type :string(255)
-#  name         :string(255)
-#  email        :string(255)
-#  title        :string(255)
+#  id         :integer          not null, primary key
+#  phone      :string(255)
+#  created_at :datetime
+#  updated_at :datetime
+#  name       :string(255)
+#  email      :string(255)
+#  title      :string(255)
+#  account_id :integer
 #
 
 class Contact < ActiveRecord::Base

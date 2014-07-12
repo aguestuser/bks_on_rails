@@ -1,3 +1,13 @@
+# == Schema Information
+#
+# Table name: managers
+#
+#  id            :integer          not null, primary key
+#  restaurant_id :integer
+#  created_at    :datetime
+#  updated_at    :datetime
+#
+
 FactoryGirl.define do
   factory :manager, class: "Manager" do
     trait :with_restaurant do |restaurant|

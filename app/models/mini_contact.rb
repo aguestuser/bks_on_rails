@@ -1,6 +1,6 @@
 # == Schema Information
 #
-# Table name: short_contact_infos
+# Table name: mini_contacts
 #
 #  id            :integer          not null, primary key
 #  name          :string(255)

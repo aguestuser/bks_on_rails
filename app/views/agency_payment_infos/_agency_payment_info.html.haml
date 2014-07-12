@@ -1,0 +1,8 @@
+%h3 Agency Compensation
+%ul
+  %li
+    %strong Payment Method:
+    = @agency_payment.method.text
+  %li
+    %strong Collection:
+    = @agency_payment.pickup_required? ? 'Pickup required' : 'No pickup required'

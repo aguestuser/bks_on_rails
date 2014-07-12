@@ -1,0 +1,14 @@
+%h3 Rider Compensation
+%ul
+  %li
+    %strong Payment Method
+    = @rider_payment.method.text
+  %li
+    %strong Pay Rate
+    = @rider_payment.rate
+  %li
+    %strong Shift Meal?:
+    = @rider_payment.shift_meal? ? 'Yes' : 'No'
+  %li
+    %strong Tips Cashed Out?:
+    = @rider_payment.cash_out_tips? ? 'Yes' : 'No'

@@ -1,27 +1,20 @@
  module UsersController
+  include ControllerHelpers
   extend ActiveSupport::Concern
 
   included do  
-    # before_action :get_user_klass
-    # after_action :build_account, only: :create
+    
     before_action :get_account, only: [:show, :edit, :update, :destroy]
 
     private
 
-    def get_user_klass
-      @klass = params[:controller].singularize.capitalize.constantize      
-    end
-
     def get_account
-      get_user_klass
-      @user = @klass.find(params[:id])
-      @account = @user.account
+      @account = get_klass.find(params[:id]).account
       @contact = @account.contact
     end
 
     def build_account(user)
-      @user = self.instance_variable_get "@#{controller_name.singularize}" 
-      @user.build_account.build_contact
+      user.build_account.build_contact
     end
 
     def refresh_account(user) 

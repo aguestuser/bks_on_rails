@@ -90,8 +90,8 @@ def make_restaurants
 
     work_spec = WorkSpecification.new(
       zone: '5 mile radius',
-      daytime_volume: '#{[5,10,15].sample} deliveries',
-      evening_volume: '#{[10,15,20,25].sample} deliveries',
+      daytime_volume: "#{[5,10,15].sample} deliveries",
+      evening_volume: "#{[10,15,20,25].sample} deliveries",
       extra_work: true,
       extra_work_description: 'Clean toilet seats with bare hands',
     )
@@ -111,6 +111,7 @@ def make_restaurants
     equipment_set = EquipmentSet.new(
       bike: [true, false].sample,
       lock: [true, false].sample,
+      helmet: [true, false].sample,
       rack: [true, false].sample,
       bag: [true, false].sample,
       heated_bag: [true, false].sample,
@@ -134,7 +135,8 @@ def make_restaurants
       managers: [manager],
       work_specification: work_spec,
       rider_payment_info: rider_pay,
-      agency_payment_info: agency_pay,
+      equipment_set: equipment_set,
+      agency_payment_info: agency_pay
     )
   end
 
