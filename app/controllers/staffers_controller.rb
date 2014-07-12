@@ -4,20 +4,15 @@ class StaffersController < ApplicationController
   before_action :get_staffer, only: [:show, :edit, :update, :destroy]
 
   def new
-    # new_user.build_contact_info
-
-    # def new_user
-    #   @user = User.new
-    # end
-
     @staffer = Staffer.new
-    @staffer.build_user_info.build_contact_info
+    @staffer.build_account.build_contact
   end
 
   def create
     @staffer = Staffer.new(staffer_params)
     if @staffer.save
-      flash[:success] = "Profile created."
+      refresh_account @staffer
+      flash[:success] = "Profile created for #{@contact.name}."
       redirect_to @staffer
     else
       render 'new'
@@ -25,7 +20,6 @@ class StaffersController < ApplicationController
   end
 
   def show
-    @contact_info = @staffer.contact_info
   end
 
   def index
@@ -38,7 +32,8 @@ class StaffersController < ApplicationController
   def update
     @staffer.update(staffer_params)
     if @staffer.save
-      flash[:success] = "#{@contact.name}'s profile has been updated"
+      refresh_account @staffer
+      flash[:success] = "#{@contact.name}'s profile has been updated."
       redirect_to @staffer
     else
       render 'edit'
@@ -47,7 +42,7 @@ class StaffersController < ApplicationController
 
   def destroy
     @staffer.destroy
-    flash[:success] = "All information associated with #{@staffer} has been deleted"
+    flash[:success] = "All information associated with #{@contact.name} has been deleted"
     redirect_to staffers_url
   end
 
@@ -55,23 +50,9 @@ class StaffersController < ApplicationController
 
     def get_staffer
       @staffer = Staffer.find(params[:id])
-      @user = @staffer.user_info
-      @contact = @user.contact_info
     end
 
     def staffer_params
-      params.require(:staffer).permit(user_info_params)
+        params.require(:staffer).permit(account_params)
     end
-
-    # def user_info_params
-    #   { 
-    #     user_info_attributes: [
-    #       :id, :user_id, :user_type,
-    #       contact_info_attributes: [
-    #         :id, :contact_id, :name, :title, :email, :phone
-    #       ]
-    #     ] 
-    #   }
-    # end
-
 end

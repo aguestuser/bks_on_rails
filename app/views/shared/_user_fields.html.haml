@@ -1,4 +1,5 @@
 = f.fields_for :user_info do |ff|
+  = render 'contact/fields'
   = ff.fields_for :contact_info do |fff|
     = fff.label :name
     = fff.text_field :name

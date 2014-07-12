@@ -4,8 +4,8 @@
   .span6.offset3
     = form_for(@staffer) do |f|
       = render 'shared/error_messages', object: f.object
-      = render 'shared/user_fields', f: f
+      = render 'accounts/fields', f: f, object: f.object
       .center
-        = f.submit "Save changes", class: "btn btn-large btn-primary"
+        = f.submit "Save Changes", class: "btn btn-large btn-primary"
     = gravatar_for @contact, size: 80
     = link_to 'Edit avatar', 'http://gravatar.com/emails', target: '_blank'
