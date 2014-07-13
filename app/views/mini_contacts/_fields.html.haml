@@ -1,0 +1,6 @@
+%h3 Contact Info
+= f.fields_for :contact do |ff|
+  = ff.label :name, 'Restaurant name'
+  = ff.text_field :name       
+  = ff.label :phone, 'Restaurant phone'
+  = ff.text_field :phone

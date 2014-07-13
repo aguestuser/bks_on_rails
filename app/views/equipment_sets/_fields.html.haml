@@ -1,0 +1,23 @@
+%h3 Equipment
+= fields_for :equipment_set do |ff|
+  .checkbox
+    = ff.check_box :bike
+    = ff.label :bike
+  .checkbox
+    = ff.check_box :lock
+    = ff.label :lock
+  .checkbox
+    = ff.check_box :helmet
+    = ff.label :helmet
+  .checkbox
+    = ff.check_box :rack
+    = ff.label :rack
+  .checkbox
+    = ff.check_box :bag
+    = ff.label :bage
+  .checkbox
+    = ff.check_box :heated_bag
+    = ff.label :heated_bag, 'Insulated bag'
+  .checkbox
+    = ff.check_box :car
+    = ff.label :car

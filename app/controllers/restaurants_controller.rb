@@ -6,7 +6,7 @@ class RestaurantsController < ApplicationController
 
   def new
       @restaurant = Restaurant.new
-      @restaurant.build_contact_info
+      @restaurant.build_mini_contact
       @restaurant.build_location
       @restaurant.build_work_specification
       @restaurant.build_rider_payment_info

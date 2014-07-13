@@ -1,0 +1,7 @@
+%h3 Agency Compensation
+= f.fields_for :agency_payment_info do |ff|
+  = ff.label :method, 'Agency payment method'
+  = ff.select :method, AgencyPaymentMethod.select_options, include_blank: true
+  .checkbox
+    = ff.check_box :pickup_required
+    = ff.label :pickup_required, 'In-person payment collection requested?'

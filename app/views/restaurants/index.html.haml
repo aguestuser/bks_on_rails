@@ -2,9 +2,11 @@
 .row
   .span8.offset2
     %h1 Restaurants
+    .center
+      = link_to 'Create new restaurant', new_restaurant_path
     %section
       %ul.staff
         = render @restaurants
     .edit
       .center 
-        = link_to 'Create new restaurant', new_restaurant_path, class: 'btn btn-primary'
+        = link_to 'Create new restaurant', new_restaurant_path, class: 'btn btn-large btn-primary'

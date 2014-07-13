@@ -1,0 +1,12 @@
+%h3 Rider Compensation
+= f.fields_for :rider_payment_info do |ff|
+  = ff.label :method, 'Rider payment method'
+  = ff.select :method, RiderPaymentMethod.select_options, include_blank: true
+  = ff.label :rate, 'Pay rate'
+  = ff.text_field :rate
+  .checkbox
+    = ff.check_box :shift_meal, id: 'shift_meal'
+    = ff.label :shift_meal, "Shift meal provided?"
+  .checkbox
+    = ff.check_box :cash_out_tips, id: 'cash_out_tips'
+    = ff.label :cash_out_tips, "Cash out tips at end of each shift?"

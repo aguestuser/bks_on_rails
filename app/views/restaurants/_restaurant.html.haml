@@ -1,9 +1,9 @@
 .profile
   %li
     %h2
-      = gravatar_for restaurant.managers.first, size: 40
-      = link_to restaurant.name, restaurant 
+      = gravatar_for restaurant.managers.first.account.contact, size: 40
+      = link_to restaurant.mini_contact.name, restaurant 
       %br/
-      = restaurant.contact_info.neighborhood.text
+      = restaurant.location.neighborhood.text
       |
       = restaurant.status.text

@@ -11,17 +11,7 @@
   = ff.label :extra_work_description, "If you checked above, please explain:"
   = ff.text_area :extra_work_description
 
-  %h3 Rider Compensation
-  = ff.label :rider_payment_method
-  = ff.select :rider_payment_method, RiderPaymentMethods.select_options, include_blank: true
-  = ff.label :pay_rate
-  = ff.text_field :pay_rate
-  .checkbox
-    = ff.check_box :shift_meal, id: 'shift_meal'
-    = ff.label :shift_meal, "Shift meal provided?"
-  .checkbox
-    = ff.check_box :cash_out_tips, id: 'cash_out_tips'
-    = ff.label :cash_out_tips, "Cash out tips at end of each shift?"
+
 
   %h3 Equipment
   %strong With which of the following can you provide riders?

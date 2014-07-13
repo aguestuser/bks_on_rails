@@ -1,0 +1,13 @@
+%h3 Working Conditions
+= f.fields_for :work_specification do |ff|
+  = ff.label :zone, 'Delivery zone size'
+  = ff.text_field :zone
+  = ff.label :daytime_volume, 'Daytime volume'
+  = ff.text_field :daytime_volume
+  = ff.label :evening_volume, 'Evening volume'
+  = ff.text_field :evening_volume
+  .checkbox
+    = ff.check_box :extra_work 
+    = ff.label :extra_work, 'Riders expected to do non-delivery work?'
+  = ff.label :extra_work_description, 'If you checked above, please explain:'
+  = ff.text_area :extra_work_description

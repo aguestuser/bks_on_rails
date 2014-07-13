@@ -27,5 +27,23 @@ module RequestSpecMacros
     end
   end
 
+  def fill_in_form(f)
+    # input: Hash of 3 Hashes:
+      # (1) fields: { field_name: field_input}
+      # (2) selects: { select_name: select_value }
+      # (3) checkboxes: Arr of checkbox hashes:
+        #  [ { label: label_name, id: id_name, value: Boolean }, {}, {} ]
+    # side efffects: populate form fields
+    f[:fields].each do |field, input|
+      fill_in field, with: input
+    end
+    f[:selects].each_with_index do |select, value|
+      select value, from: select
+    end
+    f[:checkboxes].each do |cb|
+      check cb.id if cb.value
+    end
+  end
+
   #custom matchers  
 end

@@ -1,0 +1,8 @@
+= f.fields_for :location do |ff|
+  = ff.label :address, 'Street address'
+  = ff.text_field :address
+  = ff.label :neighborhood
+  = ff.select :neighborhood, Neighborhood.select_options, include_blank: true 
+  = ff.label :borough
+  = ff.select :borough, Borough.select_options, include_blank: true
+  

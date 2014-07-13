@@ -1,35 +1,74 @@
 module RestaurantMacros
-  def fill_in_new_restaurant_form
-      # contact info
-      fill_in 'Restaurant name',    with: restaurant.contact_info.name
-      fill_in 'Restaurant phone',   with: restaurant.contact_info.phone
-      fill_in 'Street address',     with: restaurant.contact_info.street_address
-      select restaurant.contact_info.borough.text,            
-        from: 'Borough'
-      select restaurant.contact_info.neighborhood.text,          
-        from: 'Neighborhood'
-      # manager
-      fill_in 'Name',               with: restaurant.managers.first.name
-      fill_in 'Title',              with: restaurant.managers.first.title
-      fill_in 'Phone',              with: restaurant.managers.first.phone
-      fill_in 'Email',              with: restaurant.managers.first.email
-      # working conditions
-      fill_in 'Delivery zone size', with: restaurant.work_arrangement.zone
-      fill_in 'Daytime volume',     with: restaurant.work_arrangement.daytime_volume
-      fill_in 'Evening volume',     with: restaurant.work_arrangement.evening_volume
-      check 'extra_work'
-      fill_in 'If you checked above, please explain:', with: restaurant.work_arrangement.extra_work_description
-      # rider compensation
-      select restaurant.work_arrangement.rider_payment_method.text, 
-        from: 'Rider payment method'
-      fill_in 'Pay rate',           with: restaurant.work_arrangement.pay_rate
-      check 'cash_out_tips'
-      # equipment
-      check 'bike'
-      check 'lock'
-      check 'bag'
-      # agency compensation
-      select restaurant.agency_payment_method.text,
-        from: 'Agency payment method'
+  def get_form_hash(action)
+    #input: (Str)
+    #output: Hash of 3 Hashes -- 
+      # (1) fields: { field_name: field_input}
+      # (2) selects: { select_name: select_value }
+      # (3) checkboxes: { <Arr of checkboxes> [label: label_name, id: id_name, value: Boolean }
+    case action
+    when 'new'
+      {  
+        fields: {
+          #mini_contact
+          'Restaurant name' => contact.name,
+          'Restaurant phone' => contact.phone,
+          #location,
+          'Street address' => location.address,
+          #manager,
+          'Name' => restaurant.managers.first.account.contact.name,
+          'Title' => restaurant.managers.first.account.contact.title,
+          'Phone' => restaurant.managers.first.account.contact.phone,
+          'Email' => restaurant.managers.first.account.contact.email,
+          #rider_payment,
+          'Pay rate' => rider_payment.rate,
+          #work_spec,
+          'Delivery zone size' => work_spec.zone,
+          'Daytime volume' => work_spec.daytime_volume,
+          'Evening volume' => work_spec.evening_volume,
+          'If you checked above, please explain:' => work_spec.extra_work_description
+          # excluded for Restaurants#new
+          # 'Brief' => restaurant.brief
+        },
+        selects: {
+          #location
+          'Borough' => location.borough.text,
+          'Neighborhood' => location.neighborhood.text,
+          #rider_payment
+          'Rider payment method' => rider_payment.method.text,
+          #agency_payment
+          'Agency payment method' => agency_payment.method.text
+          #excluded for Restaurants#new
+          # 'Status' => "is a newly signed up account. They say it gets busy. Let us know how it goes!"     
+        },
+        checkboxes: [
+          #restaurant
+          # excluded for Restaurants#new
+          # { label: 'Active', id: 'restaurant_active', value: true },
+          #equipment
+          { label: 'Bike', id: 'equipment_set_bike', value: true }, 
+          { label: 'Lock', id: 'equipment_set_lock', value: true },
+          { label: 'Helmet', id: 'equipment_set_helmet', value: true },
+          { label: 'Rack', id: 'equipment_set_rack', value: true },
+          { label: 'Bag', id: 'equipment_set_bag', value: true },
+          { label: 'Insulated bag', id: 'equipment_set_heated_bag', value: true },
+          { label: 'Cell phone', id: 'equipment_set_cell_phone', value: true },
+          { label: 'Smart phone', id: 'equipment_set_smart_phone', value: true },
+          { label: 'Car', id: 'equipment_set_car', value: false },
+          #rider_payment
+          { label: 'Shift meal provided?', id: 'restaurant_rider_payment_info_attributes_shift_meal', value: true },
+          { label: 'Cash out tips at end of each shift?', id: 'restaurant_rider_payment_info_attributes_cash_out_tips', value: true },
+          { label: 'Riders expected to do non-delivery work?', id: 'restaurant_work_specification_attributes_extra_work', value: true },
+          { label: 'In-person payment collection requested?', id: 'restaurant_agency_payment_info_attributes_pickup_required', value: true }
+        ]
+      }
+    when 'edit'
+      {
+        fields: { 'Restaurant name' => 'Poop Palace' },
+        selects: { 'Borough' => 'Staten Island' },
+        checkboxes: [ {label: 'Bike', id: 'equipment_set_bike', value: false } ]
+      }
+    else 
+      raise "Invalid action argument passed to get_form_hash, must be 'create' or 'edit'."
+    end
   end
 end
