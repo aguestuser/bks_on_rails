@@ -1,7 +1,7 @@
 require 'spec_helper'
 include CustomMatchers # /spec/support/custom_matchers.rb
-include RestaurantMacros # /spec/support/restaurant_macros.rb
-include RequestSpecMacros
+include RestaurantPageMacros # /spec/support/restaurant_macros.rb
+include RequestSpecMacros # /spec/support/request_spec_macros.rb
 
 describe "Restaurant Pages" do
   let!(:restaurant) { FactoryGirl.build(:restaurant) }
@@ -55,7 +55,7 @@ describe "Restaurant Pages" do
     describe "Restaurants#new" do
       
       before { visit new_restaurant_path }
-      let(:new_form) { get_form_hash 'new' }
+      let(:new_form) { get_restaurant_form_hash 'new' }
       let(:submit) { 'Create Restaurant' }
 
       describe "page contents" do
@@ -79,17 +79,19 @@ describe "Restaurant Pages" do
           it { should have_an_error_message }
         end
 
-        let!(:old_restaurant_count) { Restaurant.count }
-        let!(:old_mini_contacts_count) { MiniContact.count }
-        let!(:old_locations_count) { Location.count }
-        let!(:old_managers_count) { Manager.count }
-        let!(:old_contacts_count) { Contact.count }
-        let!(:old_rider_payments_count) { RiderPaymentInfo.count }
-        let!(:old_work_specifications_count) { WorkSpecification.count }
-        let!(:old_equipment_sets_count) { EquipmentSet.count }
-        let!(:old_agency_payments_count) { AgencyPaymentInfo.count }
+
 
         describe "with valid input" do
+
+          let!(:old_restaurant_count) { Restaurant.count }
+          let!(:old_mini_contacts_count) { MiniContact.count }
+          let!(:old_locations_count) { Location.count }
+          let!(:old_managers_count) { Manager.count }
+          let!(:old_contacts_count) { Contact.count }
+          let!(:old_rider_payments_count) { RiderPaymentInfo.count }
+          let!(:old_work_specifications_count) { WorkSpecification.count }
+          let!(:old_equipment_sets_count) { EquipmentSet.count }
+          let!(:old_agency_payments_count) { AgencyPaymentInfo.count }
 
           before do 
             fill_in_form new_form
@@ -125,7 +127,7 @@ describe "Restaurant Pages" do
         visit edit_restaurant_path(restaurant)
       end
       let(:save) { "Save Changes" }
-      let(:edit_form) { get_form_hash 'edit' }
+      let(:edit_form) { get_restaurant_form_hash 'edit' }
 
       describe "page contents" do
         it { should have_h3('Status') }

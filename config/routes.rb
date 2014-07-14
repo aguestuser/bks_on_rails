@@ -9,10 +9,12 @@ BksOnRails::Application.routes.draw do
       # resource :contact, only: [:new, :create, :edit, :update]
   end
 
-  resources :managers do
-    resource :account, only: [:new, :create, :edit, :update]
-      # resource :contact, only: [:new, :create, :edit, :update]
-  end
+  # resources :managers do
+  #   resource :account, only: [:new, :create, :edit, :update]
+  #     # resource :contact, only: [:new, :create, :edit, :update]
+  # end
+
+  resources :managers, only: [:destroy]
 
   resources :riders do
     resource :account, only: [:new, :create, :edit, :update]
@@ -25,8 +27,8 @@ BksOnRails::Application.routes.draw do
 
   resources :restaurants do
     resource :short_contact_info, only: [:new, :create, :edit, :update]
-    resources :managers, only: [:new, :create, :edit, :update, :show]
-     # resource :account, only: [:new, :create, :edit, :update]
+    resources :managers, only: [:new, :create, :edit, :update, :show, :destroy]
+     resource :account, only: [:new, :create, :edit, :update]
      #    resource :contact, only: [:new, :create, :edit, :update]
     resource :work_specification, only: [:new, :create, :edit, :update]
     resource :rider_payment_info

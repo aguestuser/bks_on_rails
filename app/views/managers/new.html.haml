@@ -2,10 +2,10 @@
 %h1 Create Manager
 .row
   .span6.offset3
-    = form_for(@manager) do |f|
+    = form_for [@restaurant, @manager] do |f|
       = render 'shared/error_messages', object: f.object
       = render 'fields', f: f, object: f.object
       .center
-        = f.submit "Create Manager", method: :get, class: "btn btn-large btn-primary"
+        = f.submit "Create Manager", class: "btn btn-large btn-primary"
 
         

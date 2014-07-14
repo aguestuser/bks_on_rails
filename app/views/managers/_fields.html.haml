@@ -11,14 +11,16 @@
         = ffff.text_field :phone
         = ffff.label :email
         = ffff.text_field :email
-        .checkbox
-          = ffff.check_box :_destroy
-          = ffff.label :_destroy, 'Delete?'
-  .center
-    = link_to 'Create new manager', new_restaurant_manager_path(@restaurant.id)
+        / .checkbox
+        /   = ffff.check_box :_destroy
+        /   = ffff.label :_destroy, 'Delete?'
+  - if params[:action] == 'edit'
+    .center
+      = link_to 'Create new manager', new_restaurant_manager_path(@restaurant.id)
   %br/
 - elsif object.class == Manager
-  %h2 Restaurant: #{@restaurant.mini_contact.name}
+  - if @restaurant
+    %h2 Restaurant: #{@restaurant.mini_contact.name}
   = f.fields_for :account do |ff|
     = ff.fields_for :contact do |fff|
       = fff.label :name

@@ -19,6 +19,12 @@ module CustomMatchers
     end
   end
 
+  RSpec::Matchers.define :have_h2 do |heading|
+    match do |page|
+      expect(page).to have_selector('h2', text: heading)
+    end
+  end  
+
   RSpec::Matchers.define :have_h3 do |heading|
     match do |page|
       expect(page).to have_selector('h3', text: heading)

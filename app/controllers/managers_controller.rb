@@ -1,19 +1,19 @@
 class ManagersController < ApplicationController
   include UsersController
   before_action :get_manager, only: [ :show, :edit, :update, :destroy ]
-  before_action :get_restaurant, only: [ :new, :create ]
+  before_action :get_restaurant, only: [ :new, :create, :edit, :update ]
 
   def new
-    @manager = Manager.new(restaurant_id: @restaurant.id)
+    @manager = Manager.new
     @manager.build_account.build_contact
   end
 
   def create
     @manager = Manager.new(manager_params)
+    @manager.restaurant_id = @restaurant.id
     if @manager.save
-      refresh_account @manager
-      flash[:success] = "Profile created for #{@contact.name}."
-      redirect_to @manager.restaurant
+      flash[:success] = "Profile created for #{@manager.account.contact.name}."
+      redirect_to restaurant_path(@restaurant.id)
     else
       render 'new'
     end
@@ -28,6 +28,7 @@ class ManagersController < ApplicationController
   def update
     @manager.update(manager_params)
     if @manager.save
+      refresh_account @manager
       flash[:success] = "#{@contact.name}'s profile has been updated"
       redirect_to @manager.restaurant
     else
@@ -38,7 +39,7 @@ class ManagersController < ApplicationController
   def destroy
     @manager.destroy
     flash[:success] = "All information associated with #{@contact.name} has been deleted"
-    redirect_to restaurant_path(manager.restaurant)
+    redirect_to restaurant_path(@manager.restaurant)
   end
 
   private
@@ -49,6 +50,10 @@ class ManagersController < ApplicationController
 
     def get_restaurant
       @restaurant = Restaurant.find(params[:restaurant_id])
+    end
+
+    def refresh_restaurant(manager)
+      manager.restaurant
     end
 
     def manager_params

@@ -5,7 +5,9 @@
     .span8.offset2
       = render 'shifts_teaser'
       = render @contact
-      = render @managers 
+      = render @managers
+      .center
+        = link_to 'Create new manager', new_restaurant_manager_path(@restaurant.id) 
       = render @rider_payment
       = render @work_specification
       = render @equipment

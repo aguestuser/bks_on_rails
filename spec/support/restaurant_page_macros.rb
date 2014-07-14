@@ -1,5 +1,5 @@
-module RestaurantMacros
-  def get_form_hash(action)
+module RestaurantPageMacros
+  def get_restaurant_form_hash(action)
     #input: (Str)
     #output: Hash of 3 Hashes -- 
       # (1) fields: { field_name: field_input}

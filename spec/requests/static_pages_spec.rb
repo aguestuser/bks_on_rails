@@ -5,7 +5,7 @@ describe "Static pages" do
   subject { page }
 
   shared_examples_for 'all static pages' do
-    it { should have_heading(expected_heading) }
+    it { should have_h1(expected_heading) }
     it { should have_title(full_title(expected_title)) }
     it "should have correct links in nav bar " do
       check_nav_links

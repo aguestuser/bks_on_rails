@@ -1,6 +1,9 @@
 .row
-  .span8.offset2
+  .span6.offset2
     = gravatar_for @managers.first.account.contact, size: 80
     %section
       %h1.name= @contact.name
-      %h2.title #{@location.neighborhood.text}, #{@location.borough.text} | #{@restaurant.status.text} (#{@restaurant.active? ? 'active' : 'inactive'}) | #{link_to 'Edit', edit_restaurant_path}
+      %h2.title #{@location.neighborhood.text}, #{@location.borough.text} | #{@restaurant.status.text} (#{@restaurant.active? ? 'active' : 'inactive'}) 
+  .span2
+    .edit
+      = link_to 'Edit Profile', edit_restaurant_path, class: 'btn btn-primary'
