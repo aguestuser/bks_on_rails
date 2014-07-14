@@ -25,7 +25,7 @@
     def account_params
       { 
         account_attributes: [
-          :id, :user_id, :user_type,
+          :id, :user_id, :user_type, :password, :password_confirmation,
           contact_attributes: [
             :id, :contact_id, :name, :title, :email, :phone
           ]

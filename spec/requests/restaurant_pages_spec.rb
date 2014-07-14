@@ -12,7 +12,10 @@ describe "Restaurant Pages" do
   let!(:agency_payment) { restaurant.agency_payment_info }
   let!(:location) { restaurant.location }
   # let(:form_edits) { form: { fields: ['Restaurant name', 'Name' ], values: [ 'Poop Palace', 'Sir Poopy Pants' ] } }
-    
+  let(:staffer) { FactoryGirl.create(:staffer) }
+
+  before { mock_sign_in staffer }
+
   subject { page }
 
   describe "display pages" do
@@ -27,6 +30,7 @@ describe "Restaurant Pages" do
         it { should have_h1("#{contact.name}") }
         it { should have_h3("Shifts") }
         it { should have_h3("Contact Info") }
+        it { should have_content('Address:') }
         it { should have_h3("Managers") }
         it { should have_h3("Rider Compensation") }
         it { should have_h3("Equipment") }
@@ -35,9 +39,7 @@ describe "Restaurant Pages" do
     end
 
     describe "Restaurants#index" do
-      before(:all) do
-        3.times { FactoryGirl.create(:restaurant) } 
-      end 
+      before(:all) { 3.times { FactoryGirl.create(:restaurant) } }
       after(:all) { Restaurant.last(3).each { |s| s.destroy } }
       before(:each) { visit restaurants_path }
       let(:names) { Restaurant.last(3).map { |s| s.mini_contact.name } }

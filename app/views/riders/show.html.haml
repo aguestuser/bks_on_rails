@@ -1,0 +1,15 @@
+- provide(:title, @contact.name)
+.profile
+  = render 'users/profile_header'
+  .row
+    .span8.offset2
+      = render @account
+      = render @rating
+      = render @qualifications
+      = render @skills
+      = render @equipment
+  .center
+    = link_to 'Edit Rider Profile', edit_rider_path(@rider)
+    |
+    = link_to 'See All Riders', riders_path
+      

@@ -1,0 +1,16 @@
+- provide(:title, 'Riders')
+.row
+  .span8.offset2
+    %h1 Riders
+.row
+  .center
+    = link_to 'Create Rider', new_rider_path
+.row
+  .span8.offset2
+    %ul.staff
+      = render @riders
+    .edit 
+      .center
+        = link_to 'Create Rider', new_rider_path
+        |
+        = link_to 'Home', root_path

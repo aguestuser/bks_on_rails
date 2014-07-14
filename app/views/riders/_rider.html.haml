@@ -1,0 +1,11 @@
+.profile
+  %li
+    %h2
+      = gravatar_for rider.account.contact, size: 40
+      = link_to rider.account.contact.name, rider
+      %br
+      = rider.account.contact.title
+      |
+      = rider.location.borough.text
+      |
+      = rider.account.contact.phone

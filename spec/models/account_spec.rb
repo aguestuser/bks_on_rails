@@ -2,11 +2,13 @@
 #
 # Table name: accounts
 #
-#  id         :integer          not null, primary key
-#  user_id    :integer
-#  created_at :datetime
-#  updated_at :datetime
-#  user_type  :string(255)
+#  id              :integer          not null, primary key
+#  user_id         :integer
+#  created_at      :datetime
+#  updated_at      :datetime
+#  user_type       :string(255)
+#  password_digest :string(255)
+#  remember_token  :string(255)
 #
 
 require 'spec_helper'

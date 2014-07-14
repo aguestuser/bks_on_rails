@@ -6,6 +6,14 @@ module User
     has_one :account, as: :user, dependent: :destroy
       accepts_nested_attributes_for :account
 
+    def name
+      self.account.contact.name
+    end
+
+    def email
+      self.account.contact.email
+    end
+
   end
 
   module ClassMethods

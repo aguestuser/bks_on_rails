@@ -30,4 +30,14 @@ class Restaurant < ActiveRecord::Base
 
   validates :status, :brief, presence: true
   validates :active, inclusion: { in: [ true, false ] }
+
+  #public methods
+
+  def name
+    self.mini_contact.name
+  end
+
+  def phone
+    self.mini_contact.phone
+  end
 end

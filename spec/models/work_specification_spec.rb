@@ -7,10 +7,10 @@
 #  zone                   :string(255)
 #  daytime_volume         :string(255)
 #  evening_volume         :string(255)
-#  extra_work             :string(255)
 #  extra_work_description :text
 #  created_at             :datetime
 #  updated_at             :datetime
+#  extra_work             :boolean
 #
 
 require 'spec_helper'

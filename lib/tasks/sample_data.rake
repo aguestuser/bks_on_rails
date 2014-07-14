@@ -14,6 +14,8 @@ def make_staffers
   
   Staffer.create!(
     account: Account.new(
+      password: 'changeme123',
+      password_confirmation: 'changeme123',
       contact: Contact.new(
         name: 'Austin Guest',
         title: 'IT Director',
@@ -25,6 +27,8 @@ def make_staffers
 
   Staffer.create!(
     account: Account.new(
+      password: 'changeme123',
+      password_confirmation: 'changeme123',
       contact: Contact.new(
         name: 'Tess Cohen',
         title: 'Accounts Executive',
@@ -36,6 +40,8 @@ def make_staffers
 
   Staffer.create!(
     account: Account.new(
+      password: 'changeme123',
+      password_confirmation: 'changeme123',
       contact: Contact.new(
         name: 'Justin Lewis',
         title: 'Accounts Manager',
@@ -47,6 +53,8 @@ def make_staffers
 
   Staffer.create!(
     account: Account.new(
+      password: 'changeme123',
+      password_confirmation: 'changeme123',      
       contact: Contact.new(
         name: 'Yagil Kadosh',
         title: 'Partner Relations Director',
@@ -79,6 +87,8 @@ def make_restaurants
     
     manager = Manager.new(
       account: Account.new(
+        password: 'changeme123',
+        password_confirmation: 'changeme123',        
         contact: Contact.new(
           name: name,
           title: title,
@@ -177,6 +187,8 @@ def make_riders
     Rider.create!(
       active: true,
       account: Account.new(
+        password: 'changeme123',
+        password_confirmation: 'changeme123',          
         contact: Contact.new(
           name: name,
           title: 'Rider',
@@ -188,6 +200,34 @@ def make_riders
         address: address,
         borough: borough,
         neighborhood: neighborhood
+      ),
+      equipment_set: EquipmentSet.new(
+        bike: [true, false].sample,
+        lock: [true, false].sample,
+        helmet: [true, false].sample,
+        rack: [true, false].sample,
+        bag: [true, false].sample,
+        heated_bag: [true, false].sample,
+        cell_phone: [true, false].sample,
+        smart_phone: [true, false].sample,
+        car: [true, false].sample
+      ),
+      qualification_set: QualificationSet.new(
+        hiring_assessment: ["Lousy guy. Emergency Only.", "Heady rider. Get 'em to work!", "Middle of the road. Let's see."].sample,
+        experience: ["Been doing it for 5 years.", "No experience, loves to bike.", "Just got fired from Artichoke."].sample,
+        geography: ["LES and Williamsburg", "Manhattan numbered streets", "Brooklyn only"].sample
+      ),
+      skill_set: SkillSet.new(
+        bike_repair: [true, false].sample,
+        fix_flats: [true, false].sample,
+        early_morning: [true, false].sample,
+        pizza: [true, false].sample
+      ),
+      rider_rating: RiderRating.new(
+        reliability: [1,2,3].sample,
+        likeability: [1,2,3].sample,
+        speed: [1,2,3].sample,
+        initial_points: [75,80,90,100].sample
       )
     )
   end

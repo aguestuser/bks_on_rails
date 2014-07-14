@@ -1,6 +1,10 @@
-.row
-  .span8.offset2
-    %h3 Contact Info
-    %ul 
-      %li Phone: #{@contact.phone}
-      %li Email: #{@contact.email}
+%h3 Contact Info
+%ul 
+  %li 
+    %strong Phone: 
+    = @contact.phone
+  %li 
+    %strong Email: 
+    = @contact.email
+  - if params[:controller] == 'riders'
+    = render @location

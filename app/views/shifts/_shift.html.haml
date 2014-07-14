@@ -1,6 +1,6 @@
 .row
   .span3
-    = link_to shift.restaurant.name, restaurant_path(shift.restaurant)
+    = link_to shift.restaurant.mini_contact.name, restaurant_path(shift.restaurant)
   .span2
     = shift.start.strftime("%m/%d/%y | %I:%M%p")
   .span2

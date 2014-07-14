@@ -1,6 +1,15 @@
 .row
-  .span8.offset2
+  .span6.offset2
     = gravatar_for @contact, size: 80
     %section
       %h1.name= @contact.name
-      %h2.title= @contact.title
+      %h2.title 
+        = @contact.title
+        | 
+        - if params[:controller] == 'riders'
+          = @location.borough.text
+          |
+        = @contact.phone
+  .span2
+    .edit
+      = link_to 'Edit Profile', edit_rider_path, class: 'btn btn-primary'

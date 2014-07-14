@@ -1,29 +1,26 @@
 BksOnRails::Application.routes.draw do
 
-  root 'static_pages#home' 
+  root 'static_pages#home'
 
-  #users
+  match '/sign_in', to:'sessions#new', via: 'get'
+  match '/sign_out', to:'sessions#destroy', via: 'delete' 
+  match '/manual', to: 'static_pages#manual', via: 'get'
 
-  resources :staffers do
-    resource :account, only: [:new, :create, :edit, :update]
-      # resource :contact, only: [:new, :create, :edit, :update]
-  end
-
-  # resources :managers do
-  #   resource :account, only: [:new, :create, :edit, :update]
-  #     # resource :contact, only: [:new, :create, :edit, :update]
-  # end
-
-  resources :managers, only: [:destroy]
-
-  resources :riders do
-    resource :account, only: [:new, :create, :edit, :update]
-      # resource :contact, only: [:new, :create, :edit, :update]
-  end
+  resources :sessions, only: [:new, :create, :destroy]
 
   resources :account do
     resource :contact, only: [:new, :create, :edit, :update]
   end
+
+  resources :staffers do
+    resource :account, only: [:new, :create, :edit, :update]
+  end
+
+  resources :riders do
+    resource :account, only: [:new, :create, :edit, :update]
+  end
+
+  resources :managers, only: [ :destroy ]
 
   resources :restaurants do
     resource :short_contact_info, only: [:new, :create, :edit, :update]
@@ -41,7 +38,7 @@ BksOnRails::Application.routes.draw do
 
 
 
-  match '/manual', to: 'static_pages#manual', via: 'get'
+
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 

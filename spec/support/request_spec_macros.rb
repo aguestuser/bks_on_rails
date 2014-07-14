@@ -1,5 +1,18 @@
 module RequestSpecMacros
-  #methods
+  
+  def mock_sign_in(user, options={})
+    if options[:no_capybara]
+      remember_token = Account.new_remember_token
+      cookies[:remember_token] = remember_token
+      user.account.update_attribute(:remember_token, Account.digest(remember_token))
+    else
+      visit sign_in_path
+      fill_in "Email",    with: user.account.contact.email
+      fill_in "Password", with: user.account.password
+      click_button "Sign in"    
+    end
+  end
+
   def check_nav_links
     links = [
       { text: 'Home' ,    new_page_title: '' },

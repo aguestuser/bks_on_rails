@@ -31,6 +31,12 @@ module CustomMatchers
     end
   end
 
+  RSpec::Matchers.define :have_label do |text|
+    match do |page|
+      expect(page).to have_selector('label', text: text)
+    end
+  end
+
 
   RSpec::Matchers.define :have_success_message do |heading|
     match do |page|
@@ -53,7 +59,7 @@ module CustomMatchers
 
   #authorization matchers
 
-  RSpec::Matchers.define :have_signout_link do
+  RSpec::Matchers.define :have_sign_out_link do
     match do |page|
       expect(page).to have_link('Sign out', href: signout_path)
     end
@@ -80,7 +86,7 @@ module CustomMatchers
     end
   end
 
-  RSpec::Matchers.define :have_signin_link do
+  RSpec::Matchers.define :have_sign_in_link do
     match do |page|
       expect(page).to have_link('Sign in', href: signin_path)
     end

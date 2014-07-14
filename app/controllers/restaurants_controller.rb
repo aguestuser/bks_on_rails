@@ -2,16 +2,15 @@ class RestaurantsController < ApplicationController
   include LocatablesController, EquipablesController
 
   before_action :get_restaurant, only: [:show, :edit, :update, :destroy]
-  # before_action :get_restaurant_and_children, only: [:update]
 
   def new
       @restaurant = Restaurant.new
       @restaurant.build_mini_contact
-      @restaurant.build_location
+      @restaurant.build_location # abstract to LocatablesController?
       @restaurant.build_work_specification
       @restaurant.build_rider_payment_info
       @restaurant.build_agency_payment_info
-      @restaurant.build_equipment_set
+      @restaurant.build_equipment_set # abstract to EquipablesController?
       managers = @restaurant.managers.build
       managers.build_account.build_contact     
   end
