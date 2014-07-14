@@ -45,15 +45,15 @@ module RestaurantMacros
           # excluded for Restaurants#new
           # { label: 'Active', id: 'restaurant_active', value: true },
           #equipment
-          { label: 'Bike', id: 'equipment_set_bike', value: true }, 
-          { label: 'Lock', id: 'equipment_set_lock', value: true },
-          { label: 'Helmet', id: 'equipment_set_helmet', value: true },
-          { label: 'Rack', id: 'equipment_set_rack', value: true },
-          { label: 'Bag', id: 'equipment_set_bag', value: true },
-          { label: 'Insulated bag', id: 'equipment_set_heated_bag', value: true },
-          { label: 'Cell phone', id: 'equipment_set_cell_phone', value: true },
-          { label: 'Smart phone', id: 'equipment_set_smart_phone', value: true },
-          { label: 'Car', id: 'equipment_set_car', value: false },
+          { label: 'Bike', id: 'restaurant_equipment_set_attributes_bike', value: true }, 
+          { label: 'Lock', id: 'restaurant_equipment_set_attributes_lock', value: true },
+          { label: 'Helmet', id: 'restaurant_equipment_set_attributes_helmet', value: true },
+          { label: 'Rack', id: 'restaurant_equipment_set_attributes_rack', value: true },
+          { label: 'Bag', id: 'restaurant_equipment_set_attributes_bag', value: true },
+          { label: 'Insulated bag', id: 'restaurant_equipment_set_attributes_heated_bag', value: true },
+          { label: 'Cell phone', id: 'restaurant_equipment_set_attributes_cell_phone', value: true },
+          { label: 'Smart phone', id: 'restaurant_equipment_set_attributes_smart_phone', value: true },
+          { label: 'Car', id: 'restaurant_equipment_set_attributes_car', value: false },
           #rider_payment
           { label: 'Shift meal provided?', id: 'restaurant_rider_payment_info_attributes_shift_meal', value: true },
           { label: 'Cash out tips at end of each shift?', id: 'restaurant_rider_payment_info_attributes_cash_out_tips', value: true },
@@ -65,7 +65,7 @@ module RestaurantMacros
       {
         fields: { 'Restaurant name' => 'Poop Palace' },
         selects: { 'Borough' => 'Staten Island' },
-        checkboxes: [ {label: 'Bike', id: 'equipment_set_bike', value: false } ]
+        checkboxes: [ {label: 'Bike', id: 'restaurant_equipment_set_attributes_bike', value: false } ]
       }
     else 
       raise "Invalid action argument passed to get_form_hash, must be 'create' or 'edit'."

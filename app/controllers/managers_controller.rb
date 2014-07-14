@@ -1,23 +1,25 @@
 class ManagersController < ApplicationController
-  before_action :get_manager, only: [:show, :edit, :update, :destroy]
+  include UsersController
+  before_action :get_manager, only: [ :show, :edit, :update, :destroy ]
+  before_action :get_restaurant, only: [ :new, :create ]
 
   def new
-    @manager ||= Manager.new
-    @manager.build_contact_info
+    @manager = Manager.new(restaurant_id: @restaurant.id)
+    @manager.build_account.build_contact
   end
 
   def create
     @manager = Manager.new(manager_params)
     if @manager.save
-      flash[:success] = "Profile created for #{@manager.name}."
-      redirect_to @manager
+      refresh_account @manager
+      flash[:success] = "Profile created for #{@contact.name}."
+      redirect_to @manager.restaurant
     else
       render 'new'
     end
   end
   
   def show
-    @contact_info = @manager.contact_info
   end
 
   def edit
@@ -26,8 +28,8 @@ class ManagersController < ApplicationController
   def update
     @manager.update(manager_params)
     if @manager.save
-      flash[:success] = "#{@manager.name}'s profile has been updated"
-      redirect_to @manager
+      flash[:success] = "#{@contact.name}'s profile has been updated"
+      redirect_to @manager.restaurant
     else
       render 'edit'
     end    
@@ -35,7 +37,7 @@ class ManagersController < ApplicationController
 
   def destroy
     @manager.destroy
-    flash[:success] = "All information associated with #{@manager} has been deleted"
+    flash[:success] = "All information associated with #{@contact.name} has been deleted"
     redirect_to restaurant_path(manager.restaurant)
   end
 
@@ -45,7 +47,11 @@ class ManagersController < ApplicationController
       @manager = Manager.find(params[:id])
     end
 
+    def get_restaurant
+      @restaurant = Restaurant.find(params[:restaurant_id])
+    end
+
     def manager_params
-      params.require(:manager).permit(:restaurant_id, contact_info_attributes: [:name, :title, :phone, :email])
+      params.require(:manager).permit(:restaurant_id, account_params)
     end
 end

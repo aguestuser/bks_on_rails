@@ -19,7 +19,8 @@ class RestaurantsController < ApplicationController
   def create
     @restaurant = Restaurant.new(restaurant_params)
     if @restaurant.save
-      flash[:success] = "Profile created for #{@restaurant.name}"
+      get_associations @restaurant
+      flash[:success] = "Profile created for #{@contact.name}"
       redirect_to @restaurant
     else
       render 'new'
@@ -39,8 +40,8 @@ class RestaurantsController < ApplicationController
   def update
     @restaurant.update(restaurant_params)
     if @restaurant.save
-      flash[:success] = "#{@restaurant.name}'s profile has been updated"
-      redirect_to @restaurant
+      flash[:success] = "#{@contact.name}'s profile has been updated"
+      redirect_to restaurants_path
     else
       render 'edit'
     end
@@ -49,11 +50,15 @@ class RestaurantsController < ApplicationController
   private
     def get_restaurant
       @restaurant = Restaurant.find(params[:id])
-      @work_specification = @restaurant.work_specification
-      @contact = @restaurant.mini_contact
-      @managers = @restaurant.managers
-      @rider_payment = @restaurant.rider_payment_info
-      @agency_payment = @restaurant.agency_payment_info
+      get_associations @restaurant
+    end
+
+    def get_associations(restaurant)
+      @work_specification = restaurant.work_specification
+      @contact = restaurant.mini_contact
+      @managers = restaurant.managers
+      @rider_payment = restaurant.rider_payment_info
+      @agency_payment = restaurant.agency_payment_info
     end
 
     # def get_restaurant_and_children
@@ -62,11 +67,11 @@ class RestaurantsController < ApplicationController
 
     def restaurant_params
       params.require(:restaurant)
-        .permit( :active, :status, :description, :agency_payment_method, :pickup_required,
+        .permit( :active, :status, :brief,
           mini_contact_params, 
           managers_params,
-          rider_payment_info_params,
-          agency_payment_info_params,
+          rider_payment_params,
+          agency_payment_params,
           work_specification_params,
           equipment_params,
           location_params )
@@ -82,7 +87,7 @@ class RestaurantsController < ApplicationController
               contact_attributes: [ :account_id, :id, :name, :title, :phone, :email ] ] ] }
     end
 
-    def rider_payment_info_params
+    def rider_payment_params
       { rider_payment_info_attributes: [ :restaurant_id, :id, :method, :rate, :shift_meal, :cash_out_tips ] }
     end
 

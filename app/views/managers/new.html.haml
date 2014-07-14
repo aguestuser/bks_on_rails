@@ -4,8 +4,8 @@
   .span6.offset3
     = form_for(@manager) do |f|
       = render 'shared/error_messages', object: f.object
-      = render 'manager_fields', form: f, object: f.object
+      = render 'fields', f: f, object: f.object
       .center
-        = f.submit "Create manager", method: :get, class: "btn btn-primary"
+        = f.submit "Create Manager", method: :get, class: "btn btn-large btn-primary"
 
         

@@ -1,6 +1,6 @@
 
 - if params[:action] == 'new' || params[:action] == 'create'
-  = f.hidden_field :active, id: 'active', value: true
+  = f.hidden_field :active, id: 'restaurant_active', value: true
   = f.hidden_field :status, value: :new_account
   = f.hidden_field :brief, value: "is a newly signed up account. They say it gets busy. Let us know how it goes!"
 - elsif params[:action] == 'edit' || params[:action] == 'update'
@@ -10,6 +10,5 @@
     = f.label :active, "Active?"
   = f.label :status
   = f.select :status, AccountStatus.select_options
-  = f.label :description
-  = f.text_area :description
-  = render 'agency_compensation_fields', form: form
+  = f.label :brief
+  = f.text_area :brief

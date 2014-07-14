@@ -1,5 +1,5 @@
 %h3 Equipment
-= fields_for :equipment_set do |ff|
+= f.fields_for :equipment_set do |ff|
   .checkbox
     = ff.check_box :bike
     = ff.label :bike
@@ -14,10 +14,16 @@
     = ff.label :rack
   .checkbox
     = ff.check_box :bag
-    = ff.label :bage
+    = ff.label :bag
   .checkbox
     = ff.check_box :heated_bag
     = ff.label :heated_bag, 'Insulated bag'
+  .checkbox
+    = ff.check_box :cell_phone
+    = ff.label :cell_phone, 'Cell phone'
+  .checkbox
+    = ff.check_box :smart_phone
+    = ff.label :smart_phone, 'Smart phone'    
   .checkbox
     = ff.check_box :car
     = ff.label :car

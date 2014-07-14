@@ -56,6 +56,7 @@ describe "Restaurant Pages" do
       
       before { visit new_restaurant_path }
       let(:new_form) { get_form_hash 'new' }
+      let(:submit) { 'Create Restaurant' }
 
       describe "page contents" do
         it { should_not have_h3('Status') }
@@ -73,39 +74,47 @@ describe "Restaurant Pages" do
 
       describe "form submission" do
 
-        before { fill_in_form new_form }
-        let(:submit) { 'Create Restaurant' }
-
-        it "should create a new Restaurant" do
-          expect { click_button submit }.to change(Restaurant, :count).by(1)
+        describe "with invalid input" do
+          before { click_button submit }
+          it { should have_an_error_message }
         end
 
-        it "should create a new MiniContact" do
-          expect { click_button submit }.to change(MiniContact, :count).by(2)
-        end
+        let!(:old_restaurant_count) { Restaurant.count }
+        let!(:old_mini_contacts_count) { MiniContact.count }
+        let!(:old_locations_count) { Location.count }
+        let!(:old_managers_count) { Manager.count }
+        let!(:old_contacts_count) { Contact.count }
+        let!(:old_rider_payments_count) { RiderPaymentInfo.count }
+        let!(:old_work_specifications_count) { WorkSpecification.count }
+        let!(:old_equipment_sets_count) { EquipmentSet.count }
+        let!(:old_agency_payments_count) { AgencyPaymentInfo.count }
 
-        it "should create a new Location" do
-          expect { click_button submit }.to change(Location, :count).by(2)
-        end
+        describe "with valid input" do
 
-        it "should create a new Manager" do
-          expect { click_button submit }.to change(Manager, :count).by(1)
-        end
+          before do 
+            fill_in_form new_form
+            click_button submit 
+          end
+          
+          it "should create new instances of associated models" do
+            expect( Restaurant.count - old_restaurant_count ).to eq 1
+            expect( MiniContact.count - old_mini_contacts_count ).to eq 1
+            expect( Location.count - old_locations_count ).to eq 1
+            expect( Manager.count - old_managers_count ).to eq 1
+            expect( Contact.count - old_contacts_count ).to eq 1
+            expect( RiderPaymentInfo.count - old_rider_payments_count ).to eq 1
+            expect( WorkSpecification.count - old_work_specifications_count ).to eq 1
+            expect( EquipmentSet.count - old_equipment_sets_count ).to eq 1
+            expect( AgencyPaymentInfo.count - old_agency_payments_count ).to eq 1
+          end        
 
-        it "should create a new Contact" do
-          expect { click_button submit }.to change(Contact, :count).by(1)
-        end
+          describe "after successful submission" do
+            # let(:url) { URI.parse(current_url) }
 
-        it "should create a new RiderPaymentInfo" do
-          expect { click_button submit }.to change(RiderPaymentInfo, :count).by(1)
-        end
-
-        it "should create a new WorkSpecification" do
-          expect { click_button submit }.to change(WorkSpecification, :count).by(1)
-        end
-
-        it "should create a new AgencyPaymentInfo" do
-          expect { click_button submit }.to change(AgencyPaymentInfo, :count).by(1)
+            # specify { expect(url).to eq restaurant_path(restaurant.reload.id) }
+            it { should have_success_message("Profile created for #{contact.name}") }
+            it { should have_h1(contact.name) }        
+          end      
         end
       end  
     end
@@ -116,16 +125,22 @@ describe "Restaurant Pages" do
         visit edit_restaurant_path(restaurant)
       end
       let(:save) { "Save Changes" }
+      let(:edit_form) { get_form_hash 'edit' }
 
       describe "page contents" do
-        it "should have all expected labels" do
-          check_form_labels form
-        end
+        it { should have_h3('Status') }
+        it { should have_h3('Contact Info') }
+        it { should have_selector('label', text: 'Street address') }
+        it { should have_h3('Managers') }
+        it { should have_h3('Rider Compensation') }
+        it { should have_h3('Working Conditions') }
+        it { should have_h3('Equipment') }
+        it { should have_h3('Agency Compensation') }
       end
 
       describe "with invalid input" do
         before do 
-          fill_in_form invalid_edits
+          fill_in_form fields: { 'Restaurant name' => '' }, selects: {}, checkboxes: []
           click_button save
         end
 
@@ -133,16 +148,17 @@ describe "Restaurant Pages" do
       end
 
       describe "with valid input" do
-        before { fill_in_form fields: {'Restaurant name' => 'Poop Palace' } }
+        before do 
+          fill_in_form edit_form
+          click_button save
+        end
 
         it { should have_h1('Restaurants') }
-        it { should have_success_message("Poop Palace's profile has been updated.") }
-        specify { expect(restaurant.reload.mini_contact.name).to eq 'Poop Palace' }
+        it { should have_success_message("Poop Palace's profile has been updated") }
+        specify { expect(restaurant.mini_contact.reload.name).to eq 'Poop Palace' }
+        specify { expect(restaurant.reload.location.reload.borough.text).to eq 'Staten Island' }
+        specify { expect(restaurant.reload.equipment_set.reload.bike).to eq false  }
       end
     end
-
   end
-  
-
-
 end

@@ -37,11 +37,15 @@ module RequestSpecMacros
     f[:fields].each do |field, input|
       fill_in field, with: input
     end
-    f[:selects].each_with_index do |select, value|
-      select value, from: select
+    f[:selects].each do |select_name, value|
+      select value, from: select_name
     end
     f[:checkboxes].each do |cb|
-      check cb.id if cb.value
+      if cb[:value]
+        check cb[:id]
+      else
+        uncheck cb[:id]
+      end
     end
   end
 

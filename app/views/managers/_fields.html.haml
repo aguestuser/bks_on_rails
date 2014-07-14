@@ -14,20 +14,18 @@
         .checkbox
           = ffff.check_box :_destroy
           = ffff.label :_destroy, 'Delete?'
+  .center
+    = link_to 'Create new manager', new_restaurant_manager_path(@restaurant.id)
   %br/
-/ - elsif object.class == Manager
-/   = form.label :restaurant
-/   - if params[:restaurant_id]
-/     = form.collection_select :restaurant_id, Restaurant.all, :id, :name, selected: params[:restaurant_id]
-/   - else
-/     = form.collection_select :restaurant_id, Restaurant.all, :id, :name
-/   = form.fields_for :contact_info do |ff|
-/     = ff.label :name
-/     = ff.text_field :name
-/     = ff.label :title
-/     = ff.text_field :title        
-/     = ff.label :phone
-/     = ff.text_field :phone
-/     = ff.label :email
-/     = ff.text_field :email
-
+- elsif object.class == Manager
+  %h2 Restaurant: #{@restaurant.mini_contact.name}
+  = f.fields_for :account do |ff|
+    = ff.fields_for :contact do |fff|
+      = fff.label :name
+      = fff.text_field :name
+      = fff.label :title
+      = fff.text_field :title        
+      = fff.label :phone
+      = fff.text_field :phone
+      = fff.label :email
+      = fff.text_field :email
