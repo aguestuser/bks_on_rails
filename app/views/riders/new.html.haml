@@ -1,2 +1,19 @@
-%h1 Riders#new
-%p Find me in app/views/riders/new.html.haml
+- provide(:title, 'Create Rider')
+%h1 Create Rider
+/ should abstract the below three lines into a profile wrapper partial
+.profile 
+  .row
+    .span6.offset3
+      = form_for @rider do |f|
+        = render 'fields', f: f
+        = render 'shared/error_messages', object: f.object
+        = render 'accounts/fields', f: f
+        = render 'locations/fields', f: f
+        = render 'rider_ratings/fields', f: f
+        = render 'qualification_sets/fields', f: f
+        = render 'skill_sets/fields', f: f
+        = render 'equipment_sets/fields', f: f
+        %br/
+        %br/
+        .center
+          = f.submit "Create Rider", class: "btn btn-large btn-primary" 

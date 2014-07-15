@@ -8,7 +8,7 @@ BksOnRails::Application.routes.draw do
 
   resources :sessions, only: [:new, :create, :destroy]
 
-  resources :account do
+  resources :accounts do
     resource :contact, only: [:new, :create, :edit, :update]
   end
 
@@ -18,6 +18,11 @@ BksOnRails::Application.routes.draw do
 
   resources :riders do
     resource :account, only: [:new, :create, :edit, :update]
+    resource :location, only: [:new, :create, :edit, :update]
+    resource :rider_rating, only: [:new, :create, :edit, :update]
+    resource :qualification_set, only: [:new, :create, :edit, :update]
+    resource :skill_set, only: [:new, :create, :edit, :update]
+    resource :equipment_set, only: [:new, :create, :edit, :update]
   end
 
   resources :managers, only: [ :destroy ]
@@ -25,13 +30,13 @@ BksOnRails::Application.routes.draw do
   resources :restaurants do
     resource :short_contact_info, only: [:new, :create, :edit, :update]
     resources :managers, only: [:new, :create, :edit, :update, :show, :destroy]
-     resource :account, only: [:new, :create, :edit, :update]
+      resource :account, only: [:new, :create, :edit, :update]
      #    resource :contact, only: [:new, :create, :edit, :update]
     resource :work_specification, only: [:new, :create, :edit, :update]
-    resource :rider_payment_info
-    resource :agency_payment_info
-    resource :equipment_set
-    resources :shifts
+    resource :rider_payment_info, only: [:new, :create, :edit, :update]
+    resource :agency_payment_info, only: [:new, :create, :edit, :update]
+    resource :equipment_set, only: [:new, :create, :edit, :update]
+    resources :shifts, only: [:new, :create, :edit, :update]
   end
 
   resources :shifts

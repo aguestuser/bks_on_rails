@@ -81,8 +81,6 @@ describe "Restaurant Pages" do
           it { should have_an_error_message }
         end
 
-
-
         describe "with valid input" do
 
           let!(:old_restaurant_count) { Restaurant.count }

@@ -1,0 +1,9 @@
+%h3 Qualifications
+= f.fields_for :qualification_set do |ff|
+  = ff.label :hiring_assessment
+  = ff.text_area :hiring_assessment
+  = ff.label :experience
+  = ff.text_area :experience
+  = ff.label :geography
+  = ff.text_area :geography
+

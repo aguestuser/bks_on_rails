@@ -1,0 +1,11 @@
+%h3 Rating
+= f.fields_for :rider_rating do |ff|
+  = ff.label :initial_points
+  = ff.select :initial_points, RiderRating::INITIAL_POINTS.map { |v| [v.to_i, v.to_i] }, include_blank: true
+  = ff.label :reliability
+  = ff.select :reliability, RiderRating::RATINGS.map { |v| [v.to_i, v.to_i] }, include_blank: true
+  = ff.label :likeability
+  = ff.select :likeability, RiderRating::RATINGS.map { |v| [v.to_i, v.to_i] }, include_blank: true
+  = ff.label :speed
+  = ff.select :speed, RiderRating::RATINGS.map { |v| [v.to_i, v.to_i] }, include_blank: true
+

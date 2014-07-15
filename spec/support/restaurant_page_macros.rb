@@ -53,7 +53,7 @@ module RestaurantPageMacros
           { label: 'Insulated bag', id: 'restaurant_equipment_set_attributes_heated_bag', value: true },
           { label: 'Cell phone', id: 'restaurant_equipment_set_attributes_cell_phone', value: true },
           { label: 'Smart phone', id: 'restaurant_equipment_set_attributes_smart_phone', value: true },
-          { label: 'Car', id: 'restaurant_equipment_set_attributes_car', value: false },
+          { label: 'Car', id: 'restaurant_equipment_set_attributes_car', value: true },
           #rider_payment
           { label: 'Shift meal provided?', id: 'restaurant_rider_payment_info_attributes_shift_meal', value: true },
           { label: 'Cash out tips at end of each shift?', id: 'restaurant_rider_payment_info_attributes_cash_out_tips', value: true },

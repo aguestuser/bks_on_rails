@@ -62,5 +62,21 @@ module RequestSpecMacros
     end
   end
 
-  #custom matchers  
+  def count_models(models)
+    #input: Array of Models
+    #output: Array of Model.counts
+    models.map { |m| m.count }
+  end
+
+  def model_counts_incremented?(old_counts, new_counts)
+    diffs = new_counts.each_with_index.map do |new_count, i|
+      new_count - old_counts[i]
+    end 
+    if 
+      diffs.count(1) == diffs.size
+      true
+    else
+      diffs
+    end
+  end
 end

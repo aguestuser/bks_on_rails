@@ -1,0 +1,14 @@
+%h3 Skills
+= f.fields_for :skill_set do |ff|
+  .checkbox
+    = ff.check_box :bike_repair
+    = ff.label :bike_repair
+  .checkbox
+    = ff.check_box :fix_flats
+    = ff.label :fix_flats
+  .checkbox
+    = ff.check_box :early_morning
+    = ff.label :early_morning
+  .checkbox
+    = ff.check_box :pizza
+    = ff.label :pizza

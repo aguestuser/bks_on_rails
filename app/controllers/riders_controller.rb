@@ -1,22 +1,22 @@
 class RidersController < ApplicationController
   include UsersController, LocatablesController, EquipablesController
 
-  before_action :get_rider, only: [:show, :edit, :update, :destroy]
+  before_action :get_rider, only: [ :show, :edit, :update, :destroy ]
 
   def new
     @rider = Rider.new
     @rider.build_account.build_contact # abstract to UsersController?
     @rider.build_location # abstract to LocatablesController?
     @rider.build_equipment_set # abstract to EquipablesController?
+    @rider.build_rider_rating
     @rider.build_qualification_set
     @rider.build_skill_set
-    @rider.build_rider_rating
   end
 
   def create
     @rider = Rider.new(rider_params)
     if @rider.save
-      get_associations @rider
+      refresh_account @rider
       flash[:success] = "Profile created for #{@contact.name}"
       redirect_to riders_path
     else
@@ -29,9 +29,6 @@ class RidersController < ApplicationController
 
   def index
     @riders = Rider.all
-  end
-
-  def new
   end
 
   def edit
@@ -48,6 +45,7 @@ class RidersController < ApplicationController
   end
 
   private
+
     def get_rider
       @rider = Rider.find(params[:id])
       get_associations @rider
@@ -63,6 +61,7 @@ class RidersController < ApplicationController
     def rider_params
       params.require(:rider)
         .permit(
+          :active, 
           account_params, #included
           equipment_params, #included
           location_params, #included
@@ -81,6 +80,6 @@ class RidersController < ApplicationController
     end
 
     def rating_params
-      { rider_rating_params: [ :rider_id, :id, :reliablity, :likeability, :speed, :initial_points ] }
+      { rider_rating_attributes: [ :rider_id, :id, :reliability, :likeability, :speed, :initial_points ] }
     end
 end

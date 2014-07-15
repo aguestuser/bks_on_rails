@@ -3,7 +3,7 @@
 .profile
   .row
     .span6.offset3
-      = form_for(@restaurant) do |f|
+      = form_for @restaurant do |f|
         = render 'shared/error_messages', object: f.object
         = render 'fields', f: f
         = render 'mini_contacts/fields', f: f

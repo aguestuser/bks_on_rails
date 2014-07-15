@@ -201,16 +201,11 @@ def make_riders
         borough: borough,
         neighborhood: neighborhood
       ),
-      equipment_set: EquipmentSet.new(
-        bike: [true, false].sample,
-        lock: [true, false].sample,
-        helmet: [true, false].sample,
-        rack: [true, false].sample,
-        bag: [true, false].sample,
-        heated_bag: [true, false].sample,
-        cell_phone: [true, false].sample,
-        smart_phone: [true, false].sample,
-        car: [true, false].sample
+      rider_rating: RiderRating.new(
+        reliability: [1,2,3].sample,
+        likeability: [1,2,3].sample,
+        speed: [1,2,3].sample,
+        initial_points: [75,80,90,100].sample
       ),
       qualification_set: QualificationSet.new(
         hiring_assessment: ["Lousy guy. Emergency Only.", "Heady rider. Get 'em to work!", "Middle of the road. Let's see."].sample,
@@ -223,12 +218,17 @@ def make_riders
         early_morning: [true, false].sample,
         pizza: [true, false].sample
       ),
-      rider_rating: RiderRating.new(
-        reliability: [1,2,3].sample,
-        likeability: [1,2,3].sample,
-        speed: [1,2,3].sample,
-        initial_points: [75,80,90,100].sample
-      )
+      equipment_set: EquipmentSet.new(
+        bike: [true, false].sample,
+        lock: [true, false].sample,
+        helmet: [true, false].sample,
+        rack: [true, false].sample,
+        bag: [true, false].sample,
+        heated_bag: [true, false].sample,
+        cell_phone: [true, false].sample,
+        smart_phone: [true, false].sample,
+        car: [true, false].sample
+      )     
     )
   end
 end

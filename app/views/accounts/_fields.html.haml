@@ -1,4 +1,9 @@
+%h3 Account Info
 = f.fields_for :account do |ff|
-  = render 'contacts/fields', f: ff
   = ff.label :password
   = ff.text_field :password
+  - if params[:action] == 'new' || params[:action] == 'create'
+    = ff.label :password_confirmation
+    = ff.text_field :password_confirmation
+  = render 'contacts/fields', f: ff
+

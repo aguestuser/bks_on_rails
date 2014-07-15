@@ -4,11 +4,13 @@
     %section
       %h1.name= @contact.name
       %h2.title 
-        = @contact.title
-        | 
         - if params[:controller] == 'riders'
           = @location.borough.text
           |
+          = @rider.active? ? 'Active' : 'Inactive'
+        - else 
+          = @contact.title
+        |
         = @contact.phone
   .span2
     .edit
