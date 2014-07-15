@@ -54,7 +54,7 @@ describe "Rider Pages" do
 
   describe "form pages" do
 
-    describe "Restaurants#new" do
+    describe "Riders#new" do
       
       before { visit new_rider_path }
       let(:new_form) { get_rider_form_hash 'new' }

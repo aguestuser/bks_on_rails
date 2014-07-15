@@ -1,9 +1,8 @@
 %h3 Account Info
 = f.fields_for :account do |ff|
   = ff.label :password
-  = ff.text_field :password
-  - if params[:action] == 'new' || params[:action] == 'create'
-    = ff.label :password_confirmation
-    = ff.text_field :password_confirmation
+  = ff.password_field :password
+  = ff.label :password_confirmation
+  = ff.password_field :password_confirmation
   = render 'contacts/fields', f: ff
 

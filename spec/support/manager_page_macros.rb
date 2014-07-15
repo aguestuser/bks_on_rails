@@ -5,7 +5,9 @@ module ManagerPageMacros
         'Name' => contact.name,
         'Title' => contact.title,
         'Phone' => contact.phone,
-        'Email' => contact.email
+        'Email' => contact.email,
+        'Password' => account.password,
+        'Password confirmation' => account.password_confirmation
       },
       selects: {},
       checkboxes: []

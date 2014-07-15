@@ -1,19 +1,7 @@
 - if object.class == Restaurant
   %h3 Managers
   = f.fields_for :managers do |ff|
-    = ff.fields_for :account do |fff|
-      = fff.fields_for :contact do |ffff|
-        = ffff.label :name
-        = ffff.text_field :name
-        = ffff.label :title
-        = ffff.text_field :title        
-        = ffff.label :phone
-        = ffff.text_field :phone
-        = ffff.label :email
-        = ffff.text_field :email
-        / .checkbox
-        /   = ffff.check_box :_destroy
-        /   = ffff.label :_destroy, 'Delete?'
+    = render 'accounts/fields', f: ff
   - if params[:action] == 'edit'
     .center
       = link_to 'Create new manager', new_restaurant_manager_path(@restaurant.id)
@@ -21,13 +9,4 @@
 - elsif object.class == Manager
   - if @restaurant
     %h2 Restaurant: #{@restaurant.mini_contact.name}
-  = f.fields_for :account do |ff|
-    = ff.fields_for :contact do |fff|
-      = fff.label :name
-      = fff.text_field :name
-      = fff.label :title
-      = fff.text_field :title        
-      = fff.label :phone
-      = fff.text_field :phone
-      = fff.label :email
-      = fff.text_field :email
+    = render 'accounts/fields', f: f

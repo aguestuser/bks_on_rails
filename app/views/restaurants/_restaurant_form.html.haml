@@ -1,0 +1,18 @@
+.profile
+  .row
+    .span6.offset3
+      = form_for(@restaurant) do |f|
+        = render 'shared/error_messages', object: f.object
+        = render 'fields', f: f
+        = render 'mini_contacts/fields', f: f
+        = render 'locations/fields', f: f
+        = render 'managers/fields', object: f.object, f: f
+        = render 'rider_payment_infos/fields', f: f
+        = render 'work_specifications/fields', f: f
+        = render 'equipment_sets/fields', f: f
+        = render 'agency_payment_infos/fields', f: f
+        %br/
+        %br/
+        .center
+          - button_text = params[:action] == 'new' ? "Create Restaurant" : "Save Changes"
+          = f.submit button_text, class: "btn btn-primary"

@@ -25,7 +25,9 @@ module RestaurantPageMacros
           'Delivery zone size' => work_spec.zone,
           'Daytime volume' => work_spec.daytime_volume,
           'Evening volume' => work_spec.evening_volume,
-          'If you checked above, please explain:' => work_spec.extra_work_description
+          'If you checked above, please explain:' => work_spec.extra_work_description,
+          'Password' => manager.account.password,
+          'Password confirmation' => manager.account.password_confirmation
           # excluded for Restaurants#new
           # 'Brief' => restaurant.brief
         },
@@ -63,7 +65,13 @@ module RestaurantPageMacros
       }
     when 'edit'
       {
-        fields: { 'Restaurant name' => 'Poop Palace' },
+        fields: { 
+          'Restaurant name' => 'Poop Palace', 
+          'restaurant_managers_attributes_0_account_attributes_password' => 'changeme123',
+          'restaurant_managers_attributes_0_account_attributes_password_confirmation' => 'changeme123',
+          'restaurant_managers_attributes_1_account_attributes_password' => 'changeme123',
+          'restaurant_managers_attributes_1_account_attributes_password_confirmation' => 'changeme123'
+        },
         selects: { 'Borough' => 'Staten Island' },
         checkboxes: [ {label: 'Bike', id: 'restaurant_equipment_set_attributes_bike', value: false } ]
       }

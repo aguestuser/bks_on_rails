@@ -5,7 +5,7 @@ include RequestSpecMacros # /spec/support/request_spec_macros.rb
 
 describe "Restaurant Pages" do
   let!(:restaurant) { FactoryGirl.build(:restaurant) }
-  let!(:manger) { restaurant.managers.first }
+  let!(:manager) { restaurant.managers.first }
   let!(:contact) { restaurant.mini_contact }
   let!(:work_spec) { restaurant.work_specification }
   let!(:rider_payment) { restaurant.rider_payment_info }

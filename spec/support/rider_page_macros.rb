@@ -17,7 +17,9 @@ module RiderPageMacros
           #qualifications
           'Hiring assessment' => qualifications.hiring_assessment,
           'Experience' => qualifications.experience,
-          'Geography' => qualifications.geography
+          'Geography' => qualifications.geography,
+          'Password' => account.password,
+          'Password confirmation' => account.password_confirmation
         },
         selects: { 
           #location

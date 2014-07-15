@@ -15,6 +15,8 @@ describe "Staffer Pages" do
       fill_in 'Title',    with: contact.title
       fill_in 'Phone',    with: contact.phone
       fill_in 'Email',    with: contact.email
+      fill_in 'Password', with: staffer.account.password
+      fill_in 'Password confirmation', with: staffer.account.password
     end    
     
     let(:submit) { 'Create Staffer' }
@@ -111,6 +113,8 @@ describe "Staffer Pages" do
       before do
         fill_in 'Name',   with: new_name
         fill_in 'Email',  with: new_email
+        fill_in 'Password', with: staffer.account.password
+        fill_in 'Password confirmation', with: staffer.account.password
         click_button "Save Changes"
       end
 

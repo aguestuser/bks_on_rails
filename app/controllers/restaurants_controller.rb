@@ -58,6 +58,7 @@ class RestaurantsController < ApplicationController
       @managers = restaurant.managers
       @rider_payment = restaurant.rider_payment_info
       @agency_payment = restaurant.agency_payment_info
+      @shifts = restaurant.shifts
     end
 
     # def get_restaurant_and_children
@@ -82,7 +83,7 @@ class RestaurantsController < ApplicationController
 
     def managers_params
       { managers_attributes: [ :restaurant_id, :id, 
-          account_attributes: [ :user_id, :id, 
+          account_attributes: [ :user_id, :id, :password, :password_confirmation,
               contact_attributes: [ :account_id, :id, :name, :title, :phone, :email ] ] ] }
     end
 

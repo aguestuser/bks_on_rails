@@ -36,7 +36,7 @@ BksOnRails::Application.routes.draw do
     resource :rider_payment_info, only: [:new, :create, :edit, :update]
     resource :agency_payment_info, only: [:new, :create, :edit, :update]
     resource :equipment_set, only: [:new, :create, :edit, :update]
-    resources :shifts, only: [:new, :create, :edit, :update]
+    resources :shifts
   end
 
   resources :shifts

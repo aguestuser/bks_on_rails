@@ -1,7 +1,10 @@
 require 'spec_helper'
 
 describe "Static pages" do
-  
+
+  let(:staffer) { FactoryGirl.create(:staffer) }
+  before { mock_sign_in staffer }
+
   subject { page }
 
   shared_examples_for 'all static pages' do
