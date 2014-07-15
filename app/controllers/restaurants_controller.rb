@@ -2,6 +2,7 @@ class RestaurantsController < ApplicationController
   include LocatablesController, EquipablesController
 
   before_action :get_restaurant, only: [:show, :edit, :update, :destroy]
+  before_action :check_credentials, only: [:new, :create]
 
   def new
       @restaurant = Restaurant.new
@@ -50,6 +51,7 @@ class RestaurantsController < ApplicationController
     def get_restaurant
       @restaurant = Restaurant.find(params[:id])
       get_associations @restaurant
+      check_credentials
     end
 
     def get_associations(restaurant)
@@ -99,30 +101,19 @@ class RestaurantsController < ApplicationController
     def agency_payment_params
       { agency_payment_info_attributes: [ :restaurant_id, :id, :method, :pickup_required ] }
     end
-        #   ,
-        #   contact_info_attributes:[ 
-        #     :id, :name, :phone, :street_address, :borough, :neighborhood 
-        #   ],
-        #   managers_attributes: [ 
-        #     :id, contact_info_attributes:[ 
-        #       :id, :name, :title, :phone, :email 
-        #     ] 
-        #   ],
-        #   work_arrangement_attributes:[ 
-        #     :id, :zone, :daytime_volume, :evening_volume, 
-        #     :rider_payment_method, :pay_rate, :shift_meal, :cash_out_tips, :rider_on_premises,
-        #     :extra_work, :extra_work_description,
-        #     :bike, :lock, :rack, :bag, :heated_bag 
-        #   ] 
-        # )
-    # end 
 
-    def get_enums
-      # @boroughs = Boroughs
-      # @neighborhoods = Neighborhoods
-      # @statuses = Statuses
-      # @rider_payment_methods = RiderPaymentMethods
-      # @agency_payment_methods = AgencyPaymentMethods
+    def check_credentials
+      case credentials
+      when 'Manager'
+        if !@restaurant.managers.include? current_account.user
+          redirect_to root_path
+        end        
+      when 'Rider'
+        redirect_to root_path
+      when 'Staffer'
+      else
+        # nothing
+      end
     end
 
 end

@@ -13,19 +13,36 @@ module RequestSpecMacros
     end
   end
 
-  def check_nav_links
-    links = [
-      { text: 'Home' ,    new_page_title: '' },
-      { text: 'Manual',   new_page_title: 'Manual' }
-    ]
+  def get_nav_links
+    ['Home', 'Riders', 'Restaurants', 'Staffers', 'Account', 'Settings', 'Sign out']
+  end
+
+  def check_no_nav_links(links)
     links.each do |link|
-      check_nav_link(link[:text], link[:new_page_title])
+      expect(page).to_not have_link(link)
     end
   end
 
-  def check_nav_link(link, title)
-    click_link link
-    expect(page).to have_title(full_title(title))
+  def check_nav_links(links)
+    links.each do |linke|
+      expect(page).to have_link(link)
+    end
+  end
+
+  def get_paths
+    [
+      restaurant_path(1), new_restaurant_path, edit_restaurant_path(1), restaurants_path,
+      rider_path(1), new_rider_path, edit_rider_path(1), riders_path,
+      staffer_path(1), new_staffer_path, edit_staffer_path(1), staffers_path,
+      shift_path(1), new_shift_path, edit_shift_path(1), shifts_path,
+    ]
+  end
+
+  def check_sign_in_redirect(paths)
+    paths.each do |path|
+      visit path
+      expect(page).to have_h1('Sign in')
+    end
   end
 
   def check_fields(fields)

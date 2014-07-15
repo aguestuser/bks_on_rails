@@ -2,6 +2,7 @@ class RidersController < ApplicationController
   include UsersController, LocatablesController, EquipablesController
 
   before_action :get_rider, only: [ :show, :edit, :update, :destroy ]
+  before_action :check_credentials
 
   def new
     @rider = Rider.new
@@ -81,5 +82,9 @@ class RidersController < ApplicationController
 
     def rating_params
       { rider_rating_attributes: [ :rider_id, :id, :reliability, :likeability, :speed, :initial_points ] }
+    end
+
+    def check_credentials
+      redirect_to root_path unless credentials == 'Staffer'
     end
 end

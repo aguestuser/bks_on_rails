@@ -1,12 +1,12 @@
-- provide(:title, @manager.name)
+- provide(:title, @manager.account.contact.name)
 .profile
   .row
     .span8.offset2
       = gravatar_for @manager, size: 80
       %section
-        %h1.name= @manager.name
+        %h1.name= @manager.account.contact.name
         %h2.title
-          #{@manager.title} | #{@manager.restaurant.name}
+          #{@manager.account.contact.title} | #{@manager.restaurant.name}
   .row
     .span8.offset2
       %h3 Contact Info
@@ -14,11 +14,11 @@
         %li 
           %strong 
             Phone: 
-          = @contact_info.phone
+          = @manager.account.contact.phone
         %li 
           %strong
             Email: 
-          = @contact_info.email
+          = @manager.account.contact.email
       .center
         = link_to 'Edit', edit_manager_path(@manager)
         | 

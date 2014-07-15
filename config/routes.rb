@@ -25,7 +25,7 @@ BksOnRails::Application.routes.draw do
     resource :equipment_set, only: [:new, :create, :edit, :update]
   end
 
-  resources :managers, only: [ :destroy ]
+  resources :managers
 
   resources :restaurants do
     resource :short_contact_info, only: [:new, :create, :edit, :update]
