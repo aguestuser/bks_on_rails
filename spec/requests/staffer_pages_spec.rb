@@ -3,46 +3,74 @@ include CustomMatchers
 include RequestSpecMacros
 
 describe "Staffer Pages" do
+  let(:admin) { FactoryGirl.create(:staffer) }
   let(:staffer) { FactoryGirl.build(:staffer) }
   let(:contact) { staffer.account.contact }
   let(:fields) { ['Name', 'Title', 'Phone', 'Email'] }
+
+  before { mock_sign_in admin }
+
   subject { page }
 
   describe "Staffers#new" do
-    before do 
-      visit new_staffer_path 
-      fill_in 'Name',     with: contact.name
-      fill_in 'Title',    with: contact.title
-      fill_in 'Phone',    with: contact.phone
-      fill_in 'Email',    with: contact.email
-      fill_in 'Password', with: staffer.account.password
-      fill_in 'Password confirmation', with: staffer.account.password
-    end    
-    
-    let(:submit) { 'Create Staffer' }
 
-    it "should have expected fields" do
-      check_fields fields
+    before { visit new_staffer_path }
+
+    describe "page contents" do
+      
+      it { should have_h1 'Create Staffer' }
+      it "should have expected fields" do
+        check_fields fields
+      end      
     end
 
-    it "should create a new Staffer" do
-      expect { click_button submit }.to change(Staffer, :count).by(1)
-    end
+    describe "form submission" do
+      
+      let(:submit) { 'Create Staffer' }
+      let(:models) { [ Staffer, Account, Contact ] }
+      let!(:old_counts) { count_models models }
 
-    it "should create a new Account" do
-      expect { click_button submit }.to change(Account, :count).by(1)
-    end
+      describe "with invalid input" do
+        before  {click_button submit}
+        it { should have_an_error_message }
+      end
 
-    it "should create a new Contact" do
-      expect { click_button submit }.to change(Account, :count).by(1)
-    end
+      describe "with valid input" do
+        before do 
+          visit new_staffer_path 
+          fill_in 'Name',     with: contact.name
+          fill_in 'Title',    with: contact.title
+          fill_in 'Phone',    with: contact.phone
+          fill_in 'Email',    with: contact.email
+          fill_in 'Password', with: staffer.account.password
+          fill_in 'Password confirmation', with: staffer.account.password
+          click_button submit
+        end
 
-    describe "after saving the staffer" do
-      before { click_button submit }
-      let(:saved_staffer) { Staffer.find(staffer.id) }     
+        describe "after submission" do
+          let(:new_counts){ count_models models }
 
-      it { should have_title(contact.name) }
-      it { should have_success_message("Profile created for #{contact.name}.") }
+          it "should create new intances of appropriate models" do
+            expect( model_counts_incremented? old_counts, new_counts ).to eq true
+          end
+          it { should have_title(contact.name) }
+          it { should have_success_message("Profile created for #{contact.name}.") }
+
+          describe "logging out admin" do
+
+            before { click_link 'Sign out' }
+            it { should have_link('Sign in') }
+
+            describe "logging in new staffer" do
+
+              before { mock_sign_in staffer }
+
+              it { should_not have_an_error_message }
+              it { should have_h1 staffer.account.contact.name }
+            end
+          end
+        end    
+      end
     end
   end
 

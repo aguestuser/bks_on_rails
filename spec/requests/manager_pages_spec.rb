@@ -8,6 +8,11 @@ describe "Manager Pages" do
   let!(:new_manager) { FactoryGirl.build(:manager, :with_restaurant, restaurant: restaurant) }
   let(:account) { new_manager.account }
   let(:contact) { new_manager.account.contact }
+  
+  let(:staffer) { FactoryGirl.create(:staffer) }
+
+  before { mock_sign_in staffer }
+
   subject { page }
 
   describe "navigating to Manager#new" do

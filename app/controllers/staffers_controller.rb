@@ -43,7 +43,7 @@ class StaffersController < ApplicationController
   def destroy
     @staffer.destroy
     flash[:success] = "All information associated with #{@contact.name} has been deleted"
-    redirect_to staffers_url
+    redirect_to staffers_path
   end
 
   private

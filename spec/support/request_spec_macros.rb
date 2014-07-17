@@ -6,24 +6,44 @@ module RequestSpecMacros
       cookies[:remember_token] = remember_token
       user.account.update_attribute(:remember_token, Account.digest(remember_token))
     else
-      visit sign_in_path
+      visit sign_in_path unless current_path == sign_in_path
       fill_in "Email",    with: user.account.contact.email
       fill_in "Password", with: user.account.password
       click_button "Sign in"    
     end
   end
 
+  def check_blocked_paths(user, paths)
+    paths.each do |path|
+      visit path
+      expect(page).to have_an_error_message
+      expet(page).to have_h1 user.account.contact.name
+    end
+  end
+
+  def check_permitted_paths(user, paths)
+    paths.each do |path|
+      visit path
+      expect(page).not_to have_an_error_message
+      # expect(page).not_to have_h1 user.account.contact.name unless path == own_profile_path? user, path
+    end
+  end
+
+  def own_profile_path?(user, path)
+    path.to_s.include? user.class.name.downcase.pluralize
+  end
+
   def get_nav_links
     ['Home', 'Riders', 'Restaurants', 'Staffers', 'Account', 'Settings', 'Sign out']
   end
 
-  def check_no_nav_links(links)
+  def check_no_links(links)
     links.each do |link|
       expect(page).to_not have_link(link)
     end
   end
 
-  def check_nav_links(links)
+  def check_links(links)
     links.each do |linke|
       expect(page).to have_link(link)
     end

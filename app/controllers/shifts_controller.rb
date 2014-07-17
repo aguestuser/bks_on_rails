@@ -3,7 +3,6 @@ class ShiftsController < ApplicationController
   before_action :get_shift, only: [ :show, :edit, :update, :destroy ]
   before_action :get_shifts, only: [ :index ]
   before_action :get_restaurant, only: [ :new, :create ]
-  before_action :check_credentials, only: [ :new, :create ]
   # before_action :get_restaurant, only: [ :create, :edit, :update, :index ]
 
   def new
@@ -51,7 +50,6 @@ class ShiftsController < ApplicationController
 
     def get_shift
       @shift = Shift.find(params[:id])
-      check_credentials
     end
 
     def get_shifts
@@ -71,19 +69,5 @@ class ShiftsController < ApplicationController
     def shift_params # permit :restaurant_id?
       params.require(:shift)
         .permit(:restaurant_id, :start, :end, :period, :urgency, :billing_rate, :notes)    
-    end
-
-    def check_credentials
-      case credentials
-      when 'Manager'
-        if !@shift.restaurant.managers.include? current_account.user
-          redirect_to root_path
-        end        
-      when 'Rider'
-        redirect_to root_path
-      when 'Staffer'
-      else
-        # nothing
-      end
     end
 end

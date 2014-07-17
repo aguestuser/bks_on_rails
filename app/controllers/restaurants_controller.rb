@@ -2,16 +2,16 @@ class RestaurantsController < ApplicationController
   include LocatablesController, EquipablesController
 
   before_action :get_restaurant, only: [:show, :edit, :update, :destroy]
-  before_action :check_credentials, only: [:new, :create]
 
   def new
       @restaurant = Restaurant.new
       @restaurant.build_mini_contact
-      @restaurant.build_location # abstract to LocatablesController?
       @restaurant.build_work_specification
       @restaurant.build_rider_payment_info
       @restaurant.build_agency_payment_info
+      @restaurant.build_location # abstract to LocatablesController?
       @restaurant.build_equipment_set # abstract to EquipablesController?
+      
       managers = @restaurant.managers.build
       managers.build_account.build_contact     
   end
@@ -19,8 +19,7 @@ class RestaurantsController < ApplicationController
   def create
     @restaurant = Restaurant.new(restaurant_params)
     if @restaurant.save
-      get_associations @restaurant
-      flash[:success] = "Profile created for #{@contact.name}"
+      flash[:success] = "Profile created for #{@restaurant.mini_contact.name}"
       redirect_to @restaurant
     else
       render 'new'
@@ -40,7 +39,7 @@ class RestaurantsController < ApplicationController
   def update
     @restaurant.update(restaurant_params)
     if @restaurant.save
-      flash[:success] = "#{@contact.name}'s profile has been updated"
+      flash[:success] = "#{@restaurant.mini_contact.name}'s profile has been updated"
       redirect_to restaurants_path
     else
       render 'edit'
@@ -51,7 +50,6 @@ class RestaurantsController < ApplicationController
     def get_restaurant
       @restaurant = Restaurant.find(params[:id])
       get_associations @restaurant
-      check_credentials
     end
 
     def get_associations(restaurant)
@@ -101,20 +99,5 @@ class RestaurantsController < ApplicationController
     def agency_payment_params
       { agency_payment_info_attributes: [ :restaurant_id, :id, :method, :pickup_required ] }
     end
-
-    def check_credentials
-      case credentials
-      when 'Manager'
-        if !@restaurant.managers.include? current_account.user
-          redirect_to root_path
-        end        
-      when 'Rider'
-        redirect_to root_path
-      when 'Staffer'
-      else
-        # nothing
-      end
-    end
-
 end
 

@@ -11,7 +11,7 @@ describe "Restaurant Pages" do
   let!(:rider_payment) { restaurant.rider_payment_info }
   let!(:agency_payment) { restaurant.agency_payment_info }
   let!(:location) { restaurant.location }
-  # let(:form_edits) { form: { fields: ['Restaurant name', 'Name' ], values: [ 'Poop Palace', 'Sir Poopy Pants' ] } }
+
   let(:staffer) { FactoryGirl.create(:staffer) }
 
   before { mock_sign_in staffer }
