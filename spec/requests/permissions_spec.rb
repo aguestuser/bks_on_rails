@@ -1,12 +1,16 @@
 require 'spec_helper'
+require 'cancan/matchers'
 include RequestSpecMacros
 
 describe "Authentication" do
   subject { page }
-  let(:staffer) { FactoryGirl.create(:staffer) }
+  let!(:staffer) { FactoryGirl.create(:staffer) }
   let(:rider) { FactoryGirl.create(:rider) }
+  let(:other_rider) { FactoryGirl.create(:rider) }
   let!(:restaurant) { FactoryGirl.create(:restaurant) }
   let(:manager) { restaurant.managers.first }
+  let(:shift) { FactoryGirl.create(:shift, :with_restaurant, restaurant: restaurant) }
+  let(:other_shift) { FactoryGirl.create(:shift, :with_restaurant, restaurant: other_restaurant) }
 
   describe "sign in" do
 
@@ -35,7 +39,7 @@ describe "Authentication" do
     end
   end
 
-  describe "authorization" do
+  describe "permissions" do
     
     let(:nav_links) { get_nav_links }
     let(:paths) { get_paths }
@@ -48,7 +52,7 @@ describe "Authentication" do
         before { visit root_path }
 
         it "should not have nav links" do
-          check_no_nav_links nav_links
+          check_no_links nav_links
         end
         # should not see any nav links, only "Sign in"
       end
@@ -65,153 +69,150 @@ describe "Authentication" do
       
       before { mock_sign_in staffer }
 
-      describe "default page" do
-        it { should have_h1 staffer.account.contact.name }
-      end
-
-      describe "Homepage" do
-        before { click_link 'Homepage' }
-
-        it { should have_h1 staffer.account.contact.name }
-      end
-
       describe "root path" do
         before { visit root_path }
 
         it { should have_h1 staffer.account.contact.name }
       end
 
-      describe "nav links" do
-        #should see all nav links (Restaurants, Riders, Staff, Account > Homepage / Settings / Manual / Sign out )
+      it "should have appropriate nav links" do
+        check_links nav_links
       end
 
-      describe "profile page" do
-        before { click_link 'Home' }
-        #should see profile page with own info
-      end
-
-      describe "accessing Restaurants" do
-        before { click_link 'Restaurants' }
-        #should be able to access restaurants index
-        #should be able to edit a restaurant
-      end
-
-      describe "accessing Riders" do
-        before { click_link 'Riders' }
-        # should be able to access Riders index
-        # should be able to edit Rider
-      end
-
-      describe "accessing Staffers" do
-        before { click_link 'Staffers' }
-        # should be able to access Staffers index
-        # should be able to 
-      end
-
-      describe "accessing Shifts" do
-        before { click_link 'Shifts' }
-        # should be able to access Shifts index
-        # should be able to access list of shifts for several restaurants
+      describe "accessing controller actions" do
+        subject(:ability) { Ability.new(staffer.account) }
+        it { should be_able_to :manage, :all }
       end
     end
 
     describe "as Manager" do
+
+      before { mock_sign_in manager }
       let(:manager_name) { manager.account.contact.name }
-      describe "nav links" do
-        it "should have appropriate nav links" do
-          check_links ['Account', 'Homepage', 'Settings', 'Sign out', 'Staffers']
-          check_no_links ['Riders', 'Restaurants', 'Shifts']
-        end
+      let(:own_restaurant) { restaurant }
+      let(:other_manager) { restaurant.managers[1] }
+      let(:other_restaurant) { FactoryGirl.create(:restaurant) }
+      let(:other_restaurant_manager) { other_restaurant.managers.first }
+
+      it "should have appropriate nav links" do
+        check_links ['Staffers', 'Account', 'Homepage', 'Settings', 'Sign out' ]
+        check_no_links [ 'Riders', 'Restaurants', 'Shifts' ]
       end
 
       describe "profile page" do
         before { click_link 'Homepage' }
-        #should see profile page with own info
         it { should have_h1 manager_name }
       end
 
-      describe "accessing Restaurants" do
-        # blocked actions: new/create, edit/update(other restaurant), show(other restaurant), index, destroy
-        # permitted actions: edit/update (own restaurant), show (own restaurant)
+      describe "accessing controller actions" do
+        
+        subject(:ability) { Ability.new(manager.account) }
 
-        let(:own_restaurant) { restaurant }
-        let(:other_restaurant) { FactoryGirl.create(:restaurant) }
-
-
-        it "should not be able to access blocked paths" do
-          check_blocked_paths manager,  [  
-                                          new_restaurants_path, #new
-                                          edit_restaurant_path other_restaurant, #edit
-                                          restaurant_path other_restaurant, #show
-                                          restaurants_path, #index
-                                        ]
+        describe "for Restaurants" do
+          it { should_not be_able_to :create, Restaurant.new }
+          it { should_not be_able_to :edit, other_restaurant  }
+          it { should be_able_to :edit, own_restaurant }
+          it { should_not be_able_to :read, other_restaurant }
+          it { should be_able_to :read, own_restaurant }
+          it { should_not be_able_to :destroy, own_restaurant }
+          it { should_not be_able_to :destroy, other_restaurant }           
         end
 
-        it "should be able to access permitted paths" do
-          check_permitted_paths manager,  [
-                                            edit_restaurant_path own_restaurant, #edit
-                                            restaurant_path own_restaurant, #show
-                                          ]
+        describe "for Managers" do
+          it { should_not be_able_to :create, Manager.new }
+          it { should_not be_able_to :edit, other_restaurant_manager }
+          it { should_not be_able_to :edit, other_manager }
+          it { should be_able_to :edit, manager }
+          it { should_not be_able_to :read, other_restaurant_manager }
+          it { should be_able_to :read, other_manager }
+          it { should be_able_to :read, manager }
+          it { should_not be_able_to :destroy, other_restaurant_manager}
+          it { should_not be_able_to :destroy, other_manager }
+          it { should_not be_able_to :destroy, manager }
         end
+
+        describe "for Staffers" do
+          it { should_not be_able_to :create, Staffer.new }
+          it { should_not be_able_to :edit, staffer }
+          it { should be_able_to :read, staffer }
+          it { should_not be_able_to :destroy, staffer }
+        end
+
+        describe "for Riders" do
+          #blocked actions: create, edit, read, destory
+          it { should_not be_able_to :create, Rider.new }
+          it { should_not be_able_to :edit, rider }
+          it { should_not be_able_to :read, rider }
+          it { should_not be_able_to :destroy, rider }
+        end
+
+        describe "for Shifts" do
+          it { should_not be_able_to :create, Shift.new }
+          it { should_not be_able_to :edit, shift }
+          it { should_not be_able_to :edit, other_shift }
+          it { should_not be_able_to :read, other_shift }
+          it { should be_able_to :read, shift }
+          it { should_not be_able_to :destroy, Shift.new }
+        end
+      end  
+
+    end
+    describe "as Rider" do
+
+      before { mock_sign_in rider }
+
+      it "should have appropriate nav links" do
+        check_links [ 'Shifts', 'Staffers',  'Account', 'Homepage', 'Settings', 'Sign out'  ]
+        check_no_links [ 'Restaurants' ]
       end
 
-
-      describe "accessing Riders" do
-        # blocked actions: new/create, edit/update, show, index
-        # permitted actions: NONE
-        it "should not be able to access blocked paths" do
-          check_blocked_paths manager, [
-                                         new_rider_path, #new
-                                         edit_rider_path rider, #edit
-                                         rider_path rider, #show
-                                         riders_path #index
-                                       ]
-        end
+      describe "root path" do
+        before { visit root_path }
+        it { should have_h1 rider.account.contact.name }
       end
 
-      describe "accessing Staffers" do
-        # blocked paths: new/create, edit/update
-        # permitted paths: view, index
-        it "should not be able to access blocked paths" do
-          check_blocked_paths manager,  [
-                                          new_staffer_path, #new
-                                          edit_staffer_path #edit  
-                                        ]
+      describe "accessing controller actions" do
+        subject(:ability) { Ability.new(rider.account) }
+
+        describe "for Restaurants" do
+          #blocked: all
+          it { should_not be_able_to :create, Restaurant.new }
+          it { should_not be_able_to :read, Restaurant.new }
+          it { should_not be_able_to :update, Restaurant.new }
+          it { should_not be_able_to :destroy, Restaurant.new }
         end
 
-        it "should be able to access permitted paths" do
-          check_permitted_paths manager,  [
-                                            staffer_path staffer, #show
-                                            staffers_path #index
-                                          ]
+        describe "for Managers" do
+          #blocked: all
+          it { should_not be_able_to :create, Manager.new }
+          it { should_not be_able_to :read, manager }
+          it { should_not be_able_to :update, manager }
+          it { should_not be_able_to :destroy, manager } 
+        end
+
+        describe "for Staffers" do
+          it { should_not be_able_to :create, Staffer.new }
+          it { should be_able_to :read, staffer }
+          it { should_not be_able_to :update, staffer }
+          it { should_not be_able_to :destroy, staffer }
+        end
+
+        describe "for Riders" do
+          it { should_not be_able_to :create, Rider.new }
+          it { should be_able_to :read, rider }
+          it { should_not be_able_to :read, other_rider }
+          it { should be_able_to :update, rider }
+          it { should_not be_able_to :update, other_rider }
+          it { should_not be_able_to :destroy, Rider.new }
+        end
+
+        describe "for Shifts" do
+          it { should_not be_able_to :create, Shift.new }
+          it { should_not be_able_to :read, Shift.new }
+          it { should_not be_able_to :update, Shift.new }
+          it { should_not be_able_to :destroy, Shift.new }          
         end
       end
-
-      describe "accessing Shifts" do
-        let(:own_shift) { FactoryGirl.create(:shift, :with_restaurant, restaurant: restaurant) }
-        let(:other_shift) { FactoryGirl.create(:shift, :with_restaurant, restaurant: other_restaurant) }
-        #blocked actions: create/new, edit/update
-        #constrained actions: index(only own restaurant's shifts), show (only own restaurant's shifts)
-        it "should be able to access to access blocked paths" do
-          check_blocked_paths manager, [  
-                                          new_shift_path, #new
-                                          new_restaurant_shift_path restaurant, #new
-                                          new_restaurant_shift_path other_restaurant, #new
-                                          edit_shift_path own_shift, # edit
-                                          edit_shift_path other_shift, #edit
-                                          shift_path other_shift,  #show(other restaurant's shift)
-                                          shifts_path, #index
-                                          restaurant_shifts_path other_restaurant, #index
-                                        ]
-        end
-
-        it "should be able to access permitted paths" do
-          check_permitted_paths manager,  [ 
-                                            shift_path own_shift, #show
-                                            restaurant_shifts_path #index
-                                          ] 
-        end
-      end     
     end
   end
 end

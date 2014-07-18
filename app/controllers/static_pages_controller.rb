@@ -1,6 +1,11 @@
 class StaticPagesController < ApplicationController
+  skip_load_and_authorize_resource
   def home
-    redirect_to current_account.user if signed_in?
+    if signed_in?
+      redirect_to current_account.user 
+    else 
+      redirect_to sign_in_path
+    end
   end
 
   def manual

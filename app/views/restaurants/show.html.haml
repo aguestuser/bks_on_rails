@@ -1,17 +1,18 @@
-- provide(:title, @contact.name)
+- provide(:title, @restaurant.mini_contact.name)
 .profile
   = render 'profile_header'
   .row
     .span8.offset2
-      = render 'shifts/teaser'
-      = render @contact
-      = render @managers
+      = render 'shifts/teaser', shifts: @restaurant.shifts
+      = render @restaurant.mini_contact
+      = render @restaurant.location
+      = render @restaurant.managers, managers: @restaurant.managers
       .center
         = link_to 'Create new manager', new_restaurant_manager_path(@restaurant.id) 
-      = render @rider_payment
-      = render @work_specification
-      = render @equipment
-      = render @agency_payment
+      = render @restaurant.rider_payment_info
+      = render @restaurant.work_specification, restaurant: @restaurant
+      = render @restaurant.equipment_set
+      = render @restaurant.agency_payment_info
   .center
     = link_to 'Edit Profile', edit_restaurant_path(@restaurant), class: 'btn btn-large btn-primary'
       

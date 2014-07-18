@@ -1,9 +1,10 @@
+- r = @restaurant
 .row
   .span6.offset2
-    = gravatar_for @managers.first.account.contact, size: 80
+    = gravatar_for r.managers.first.account.contact, size: 80
     %section
-      %h1.name= @contact.name
-      %h2.title #{@location.neighborhood.text}, #{@location.borough.text} | #{@restaurant.status.text} (#{@restaurant.active? ? 'active' : 'inactive'}) 
+      %h1.name= r.mini_contact.name
+      %h2.title #{r.location.neighborhood.text}, #{r.location.borough.text} | #{r.status.text} (#{r.active? ? 'active' : 'inactive'}) 
   .span2
     .edit
       = link_to 'Edit Profile', edit_restaurant_path, class: 'btn btn-primary'

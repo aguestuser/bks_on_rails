@@ -1,7 +1,8 @@
 class RidersController < ApplicationController
   include UsersController, LocatablesController, EquipablesController
 
-  before_action :get_rider, only: [ :show, :edit, :update, :destroy ]
+  # before_action :get_rider, only: [ :show, :edit, :update, :destroy ]
+  load_and_authorize_resource
 
   def new
     @rider = Rider.new

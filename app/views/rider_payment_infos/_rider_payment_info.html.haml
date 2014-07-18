@@ -2,13 +2,13 @@
 %ul
   %li
     %strong Payment Method
-    = @rider_payment.method.text
+    = rider_payment_info.method.text
   %li
     %strong Pay Rate
-    = @rider_payment.rate
+    = rider_payment_info.rate
   %li
     %strong Shift Meal?:
-    = @rider_payment.shift_meal? ? 'Yes' : 'No'
+    = rider_payment_info.shift_meal? ? 'Yes' : 'No'
   %li
     %strong Tips Cashed Out?:
-    = @rider_payment.cash_out_tips? ? 'Yes' : 'No'
+    = rider_payment_info.cash_out_tips? ? 'Yes' : 'No'

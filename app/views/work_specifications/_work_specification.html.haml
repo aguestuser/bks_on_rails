@@ -2,19 +2,19 @@
 %ul
   %li
     %strong Brief:
-    #{@contact.name} #{@restaurant.brief}
+    #{restaurant.mini_contact.name} #{restaurant.brief}
   %li
     %strong Zone:
-    = @work_specification.zone
+    = work_specification.zone
   %li
     %strong AM Volume:
-    = @work_specification.daytime_volume
+    = work_specification.daytime_volume
   %li
     %strong PM Volume:
-    = @work_specification.evening_volume
+    = work_specification.evening_volume
   %li
     %strong Extra Work?
-    = @work_specification.extra_work? ? 'Yes' : 'No'
+    = work_specification.extra_work? ? 'Yes' : 'No'
   %li
     %strong Extra work Description:
-    = @work_specification.extra_work_description
+    = work_specification.extra_work_description

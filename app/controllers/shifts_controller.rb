@@ -2,7 +2,8 @@ class ShiftsController < ApplicationController
   
   before_action :get_shift, only: [ :show, :edit, :update, :destroy ]
   before_action :get_shifts, only: [ :index ]
-  before_action :get_restaurant, only: [ :new, :create ]
+  load_and_authorize_resource
+  # before_action :get_restaurant, only: [ :new, :create ]
   # before_action :get_restaurant, only: [ :create, :edit, :update, :index ]
 
   def new

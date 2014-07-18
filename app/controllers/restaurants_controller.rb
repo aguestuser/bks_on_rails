@@ -1,7 +1,7 @@
 class RestaurantsController < ApplicationController
   include LocatablesController, EquipablesController
-
-  before_action :get_restaurant, only: [:show, :edit, :update, :destroy]
+  # before_action :get_restaurant, only: [:show, :edit, :update, :destroy]
+  # load_and_authorize_resource
 
   def new
       @restaurant = Restaurant.new
@@ -30,7 +30,7 @@ class RestaurantsController < ApplicationController
   end
 
   def index
-    @restaurants = Restaurant.all
+    # @restaurants = Restaurant.all
   end
 
   def edit
@@ -47,19 +47,19 @@ class RestaurantsController < ApplicationController
   end
 
   private
-    def get_restaurant
-      @restaurant = Restaurant.find(params[:id])
-      get_associations @restaurant
-    end
+    # def get_restaurant
+    #   @restaurant = Restaurant.find(params[:id])
+    #   get_associations @restaurant
+    # end
 
-    def get_associations(restaurant)
-      @work_specification = restaurant.work_specification
-      @contact = restaurant.mini_contact
-      @managers = restaurant.managers
-      @rider_payment = restaurant.rider_payment_info
-      @agency_payment = restaurant.agency_payment_info
-      @shifts = restaurant.shifts
-    end
+    # def get_associations(restaurant)
+    #   @work_specification = restaurant.work_specification
+    #   @contact = restaurant.mini_contact
+    #   @managers = restaurant.managers
+    #   @rider_payment = restaurant.rider_payment_info
+    #   @agency_payment = restaurant.agency_payment_info
+    #   @shifts = restaurant.shifts
+    # end
 
     # def get_restaurant_and_children
     #   @restaurant =Restaurant.includes(:managers).find(params[:id])

@@ -1,7 +1,8 @@
 class ManagersController < ApplicationController
   include UsersController
-  before_action :get_manager, only: [ :show, :edit, :update, :destroy ]
-  before_action :get_restaurant, only: [ :new, :create, :edit, :update ]
+  # before_action :get_manager, only: [ :show, :edit, :update, :destroy ]
+  # before_action :get_restaurant, only: [ :new, :create, :edit, :update ]
+  # load_and_authorize_resource
 
   def new
     @manager = Manager.new

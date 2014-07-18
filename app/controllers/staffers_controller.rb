@@ -1,7 +1,7 @@
 class StaffersController < ApplicationController
   include UsersController
-
-  before_action :get_staffer, only: [:show, :edit, :update, :destroy]
+  # before_action :get_staffer, only: [:show, :edit, :update, :destroy]
+  load_and_authorize_resource
 
   def new
     @staffer = Staffer.new

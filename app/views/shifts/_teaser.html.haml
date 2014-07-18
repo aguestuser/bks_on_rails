@@ -1,6 +1,6 @@
 %h3 Shifts
 .center
-  - @shifts.first(5).each do |shift|
+  - shifts.first(5).each do |shift|
     .row 
       .span2
         = shift.start.strftime("%m/%d/%y | %I:%M%p")

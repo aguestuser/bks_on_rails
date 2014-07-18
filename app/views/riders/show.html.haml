@@ -1,14 +1,14 @@
-- provide(:title, @contact.name)
+- provide(:title, @rider.account.contact.name)
 .profile
   = render 'users/profile_header'
   .row
     .span8.offset2
-      = render @account
-      = render @location
-      = render @rating
-      = render @qualifications
-      = render @skills
-      = render @equipment
+      = render @rider.account
+      = render @rider.location
+      = render @rider.rider_rating
+      = render @rider.qualification_set
+      = render @rider.skill_set
+      = render @rider.equipment_set
   .center
     = link_to 'Edit Rider Profile', edit_rider_path(@rider)
     |

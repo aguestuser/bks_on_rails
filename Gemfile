@@ -24,6 +24,7 @@ gem 'haml-contrib'
 gem 'RedCloth'
 
 gem 'classy_enum', '~> 3.5.0'
+gem 'cancan' #1.6.10
 
 
 group :development, :test do

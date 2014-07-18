@@ -2,7 +2,7 @@
 %ul
   %li
     %strong Payment Method:
-    = @agency_payment.method.text
+    = agency_payment_info.method.text
   %li
     %strong Collection:
-    = @agency_payment.pickup_required? ? 'Pickup required' : 'No pickup required'
+    = agency_payment_info.pickup_required? ? 'Pickup required' : 'No pickup required'

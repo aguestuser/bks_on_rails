@@ -15,16 +15,16 @@ module RequestSpecMacros
 
   def check_blocked_paths(user, paths)
     paths.each do |path|
-      visit path
-      expect(page).to have_an_error_message
-      expet(page).to have_h1 user.account.contact.name
+      expect(page).to have_link('Staffers')
+      expect(page).to have_error_message 'You are not authorized to access this page.'
+      expect(page).to have_h1 user.account.contact.name
     end
   end
 
   def check_permitted_paths(user, paths)
     paths.each do |path|
       visit path
-      expect(page).not_to have_an_error_message
+      expect(page).not_to have_error_message 'You are not authorized to access this page.'
       # expect(page).not_to have_h1 user.account.contact.name unless path == own_profile_path? user, path
     end
   end
@@ -44,7 +44,7 @@ module RequestSpecMacros
   end
 
   def check_links(links)
-    links.each do |linke|
+    links.each do |link|
       expect(page).to have_link(link)
     end
   end
