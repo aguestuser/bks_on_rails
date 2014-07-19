@@ -23,6 +23,7 @@ BksOnRails::Application.routes.draw do
     resource :qualification_set, only: [:new, :create, :edit, :update]
     resource :skill_set, only: [:new, :create, :edit, :update]
     resource :equipment_set, only: [:new, :create, :edit, :update]
+    resources :assignments
   end
 
   resources :managers
@@ -39,7 +40,9 @@ BksOnRails::Application.routes.draw do
     resources :shifts
   end
 
-  resources :shifts
+  resources :shifts do
+    resource :assignment
+  end
 
 
 

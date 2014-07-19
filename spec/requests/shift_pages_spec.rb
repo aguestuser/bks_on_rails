@@ -34,6 +34,8 @@ describe "Shift Requests" do
       before(:all) { 2.times { FactoryGirl.create(:shift, :without_restaurant) } }
       after(:all) { Shift.last(2).each { |s| s.destroy } }
       let(:shifts) { Shift.last(2) }
+      let(:first_restaurant) { shifts[0].restaurant }
+      let(:second_restaurant) { shifts[1].restaurant }
 
       describe "from root path" do
 
@@ -45,15 +47,15 @@ describe "Shift Requests" do
           it { should have_link('Create new shift') }
           it { should have_content('Restaurant') }
           it { should have_link('Options') }
-          it { should have_content(shifts[0].restaurant.mini_contact.name) }
-          it { should have_content(shifts[1].restaurant.mini_contact.name) }          
+          it { should have_content(first_restaurant.mini_contact.name) }
+          it { should have_content(second_restaurant.mini_contact.name) }          
         end
       end
 
       describe "from restaurant path" do
-        before { visit restaurant_shifts_path(Restaurant.first) }
-        it { should have_content(shifts[0].restaurant.mini_contact.name) }
-        it { should_not have_content(shifts[1].restaurant.mini_contact.name) }
+        before { visit restaurant_shifts_path(first_restaurant) }
+        it { should have_content(first_restaurant.mini_contact.name) }
+        it { should_not have_content(second_restaurant.mini_contact.name) }
       end
     end
   end

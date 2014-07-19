@@ -154,11 +154,9 @@ describe "Staffer Pages" do
   end
 
   describe "Staffers#index" do
-    before(:all) do
-      3.times { FactoryGirl.create(:staffer) } 
-      visit staffers_path
-    end 
+    before(:all) { 3.times { FactoryGirl.create(:staffer) }  }
     after(:all) { Staffer.last(3).each { |s| s.destroy } }
+    before(:each) { visit staffers_path }
     let(:names) { Staffer.last(3).map { |s| s.account.contact.name } }
     
     it "should contain names of last 3 staffers" do

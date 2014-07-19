@@ -3,15 +3,22 @@ require 'cancan/matchers'
 include RequestSpecMacros
 
 describe "Authentication" do
-  subject { page }
-  let!(:staffer) { FactoryGirl.create(:staffer) }
-  let(:rider) { FactoryGirl.create(:rider) }
-  let(:other_rider) { FactoryGirl.create(:rider) }
-  let!(:restaurant) { FactoryGirl.create(:restaurant) }
-  let(:manager) { restaurant.managers.first }
-  let(:shift) { FactoryGirl.create(:shift, :with_restaurant, restaurant: restaurant) }
-  let(:other_shift) { FactoryGirl.create(:shift, :with_restaurant, restaurant: other_restaurant) }
 
+  let!(:staffer) { FactoryGirl.create(:staffer) }
+  let!(:rider) { FactoryGirl.create(:rider) }
+  let(:other_rider) { FactoryGirl.create(:rider) }
+
+  let!(:restaurant) { FactoryGirl.create(:restaurant) }
+    let(:manager) { restaurant.managers.first }
+  let(:shift) { FactoryGirl.create(:shift, :with_restaurant, restaurant: restaurant) }
+  let(:assignment){ Assignment.new(rider_id: rider.id, shift_id: shift.id) }
+
+  let!(:other_restaurant) { FactoryGirl.create(:restaurant) }
+  let(:other_shift) { FactoryGirl.create(:shift, :with_restaurant, restaurant: other_restaurant) }
+  let(:other_assignment) { Assignment.new(rider_id: other_rider.id, shift_id: other_shift.id) }
+
+  subject { page }
+  
   describe "sign in" do
 
     before { visit sign_in_path }
@@ -154,6 +161,14 @@ describe "Authentication" do
           it { should be_able_to :read, shift }
           it { should_not be_able_to :destroy, Shift.new }
         end
+
+        describe "for Assignments" do
+          it { should_not be_able_to :create, Assignment.new }
+          it { should be_able_to :read, assignment }
+          it { should_not be_able_to :read, other_assignment }
+          it { should_not be_able_to :update, Assignment.new }
+          it { should_not be_able_to :destory, Assignment.new }
+        end
       end  
 
     end
@@ -211,6 +226,14 @@ describe "Authentication" do
           it { should_not be_able_to :read, Shift.new }
           it { should_not be_able_to :update, Shift.new }
           it { should_not be_able_to :destroy, Shift.new }          
+        end
+
+        describe "for Assignments" do
+          it { should_not be_able_to :create, Assignment.new }
+          it { should be_able_to :read, assignment }
+          it { should_not be_able_to :read, other_assignment }
+          it { should_not be_able_to :update, Assignment.new }
+          it { should_not be_able_to :destory, Assignment.new }
         end
       end
     end
