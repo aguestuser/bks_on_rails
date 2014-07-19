@@ -16,6 +16,8 @@
 
 class Shift < ActiveRecord::Base
   belongs_to :restaurant
+  has_one :assignment
+    accepts_nested_attributes_for :assignment
 
   classy_enum_attr :period, allow_nil: true
   classy_enum_attr :billing_rate

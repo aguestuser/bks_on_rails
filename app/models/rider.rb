@@ -17,6 +17,7 @@ class Rider < ActiveRecord::Base
     accepts_nested_attributes_for :skill_set
   has_one :rider_rating, dependent: :destroy
     accepts_nested_attributes_for :rider_rating
+  has_many :assignments
 
   validates :active, 
     presence: true,

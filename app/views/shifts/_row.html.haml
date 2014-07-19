@@ -1,0 +1,10 @@
+.row
+  .span3
+    = link_to shift.restaurant.mini_contact.name, restaurant_path(shift.restaurant)
+  .span2
+    = shift.start.strftime("%m/%d | %I:%M%p")
+  .span1
+    = shift.end.strftime("%I:%M%p")
+  - if can? :manage, @shift
+    .span2
+      = render 'dropdown', shift: shift

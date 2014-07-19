@@ -74,7 +74,7 @@ describe "Rider Pages" do
       end
 
       describe "form submission" do       
-        let!(:models) { [ Rider, Account, Contact, Location, EquipmentSet, QualificationSet, SkillSet, RiderRating ] }
+        let(:models) { [ Rider, Account, Contact, Location, EquipmentSet, QualificationSet, SkillSet, RiderRating ] }
         let!(:old_counts) { count_models models }       
 
         describe "with invalid input" do

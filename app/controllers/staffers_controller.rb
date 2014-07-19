@@ -1,7 +1,6 @@
 class StaffersController < ApplicationController
   include UsersController
-  # before_action :get_staffer, only: [:show, :edit, :update, :destroy]
-  load_and_authorize_resource
+  before_action :load_staffer, only: [:show, :edit, :update, :destroy]
 
   def new
     @staffer = Staffer.new
@@ -48,7 +47,7 @@ class StaffersController < ApplicationController
 
   private
 
-    def get_staffer
+    def load_staffer
       @staffer = Staffer.find(params[:id])
     end
 

@@ -1,0 +1,9 @@
+.dropdown
+  %a.dropdown-toggle{"data-toggle" => "dropdown", :href => "#"}
+    Options
+    %b.caret
+  %ul.dropdown-menu
+    %li= link_to "Edit Assignment", '#'
+    %li= link_to "Edit Shift", edit_shift_path(shift)
+    %li= link_to "See Details", shift_path(shift)
+    %li= link_to 'Delete', shift, method: :delete, data: { confirm: 'Are you sure?' }

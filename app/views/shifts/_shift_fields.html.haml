@@ -1,8 +1,11 @@
 = render 'shared/error_messages', object: f.object
-= f.label :restaurant
-- if params[:restaurant_id]
-  = f.collection_select :restaurant_id, Restaurant.all, :id, :name, selected: @restaurant.id
+- if params.include? :restaurant_id
+  %p
+    %strong
+      Restaurant: 
+    = @restaurant.mini_contact.name
 - else
+  = f.label :restaurant
   = f.collection_select :restaurant_id, Restaurant.all, :id, :name
 .datepicker
   = f.label :start

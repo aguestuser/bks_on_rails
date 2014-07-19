@@ -308,10 +308,13 @@ label {
 
 /* Shift display */
 
-.shifts {
-  @include grey_h3;
+.table {
   text-align: center;
   .header {
     font-weight: bold;
+    border-bottom: 2px solid $grayLight
+  }
+  .row{
+    border-bottom: 1px solid $grayLighter
   }
 }

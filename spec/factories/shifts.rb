@@ -26,7 +26,8 @@ FactoryGirl.define do
       restaurant
     end
     trait :without_restaurant do
-      restaurant_id 0
+      # restaurant_id 1
+      sequence(:restaurant_id) { |n| n }
     end
   end
 end

@@ -1,8 +1,7 @@
 class ManagersController < ApplicationController
   include UsersController
-  # before_action :get_manager, only: [ :show, :edit, :update, :destroy ]
-  # before_action :get_restaurant, only: [ :new, :create, :edit, :update ]
-  # load_and_authorize_resource
+  before_action :load_manager, only: [ :show, :edit, :update, :destroy ]
+  before_action :load_restaurant, only: [ :new, :create, :edit, :update ]
 
   def new
     @manager = Manager.new
@@ -45,11 +44,11 @@ class ManagersController < ApplicationController
 
   private
 
-    def get_manager
+    def load_manager
       @manager = Manager.find(params[:id])
     end
 
-    def get_restaurant
+    def load_restaurant
       @restaurant = Restaurant.find(params[:restaurant_id])
     end
 

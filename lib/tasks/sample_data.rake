@@ -7,6 +7,7 @@ namespace :db do
     make_restaurants
     make_shifts
     make_riders
+    make_assignments
   end
 end
 
@@ -233,6 +234,22 @@ def make_riders
   end
 end
 
+def make_assignments
+  Restaurant.all.each do |restaurant|
+    restaurant.shifts.first(14).each do |shift|
+      rider_id = Rider.all.sample.id
+      status = pick_assignment_status
+      Assignment.create!(
+        shift_id: shift.id, 
+        rider_id: rider_id, 
+        status: status
+      )
+    end
+  end
+end
+
+
+# helpers
 
 def make_name
   Faker::Name.name
@@ -255,7 +272,15 @@ def pick_borough
 end
 
 def pick_neighorhood
-  [ :park_slope, :fort_greene, :gowanus, 
-      :midtown_west, :midtown_east, :west_village, :east_village, 
-      :chelsea, :prospect_heights, :boerum_hill, :east_harlem ].sample
+  [ 
+    :park_slope, :fort_greene, :gowanus, 
+    :midtown_west, :midtown_east, :west_village, :east_village, 
+    :chelsea, :prospect_heights, :boerum_hill, :east_harlem 
+  ].sample
+end
+
+def pick_assignment_status
+  [ 
+    :proposed, :delegated, :confirmed, :cancelled_by_rider, :cancelled_by_restaurant 
+  ].sample
 end

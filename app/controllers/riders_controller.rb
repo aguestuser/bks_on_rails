@@ -1,8 +1,7 @@
 class RidersController < ApplicationController
   include UsersController, LocatablesController, EquipablesController
 
-  # before_action :get_rider, only: [ :show, :edit, :update, :destroy ]
-  load_and_authorize_resource
+  before_action :load_rider, only: [ :show, :edit, :update, :destroy ]
 
   def new
     @rider = Rider.new
@@ -47,7 +46,7 @@ class RidersController < ApplicationController
 
   private
 
-    def get_rider
+    def load_rider
       @rider = Rider.find(params[:id])
       get_associations @rider
     end

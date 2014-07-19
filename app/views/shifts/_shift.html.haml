@@ -1,17 +1,26 @@
-.row
-  .span3
-    = link_to shift.restaurant.mini_contact.name, restaurant_path(shift.restaurant)
-  .span2
+%h3 Shift Details
+%ul
+  %li
+    %strong Restaurant:
+    = link_to shift.restaurant.mini_contact.name, restaurant_path(@shift.restaurant)
+  %li
+    %strong Start:
     = shift.start.strftime("%m/%d | %I:%M%p")
-  .span1
+  %li
+    %strong End:
     = shift.end.strftime("%I:%M%p")
-  .span1
-    = shift.urgency
-  .span1
-    = shift.billing_rate
-  .span2
+  %li
+    %strong Urgency:
+    = shift.urgency.text
+  %li
+    %strong Billing:
+    = shift.billing_rate.text
+  %li
+    %strong Notes:
     = shift.notes
-  .span2
-    = link_to 'Edit', edit_shift_path(shift)
-    |
-    = link_to 'Delete', shift, method: :delete, data: { confirm: 'Are you sure?' }
+.center
+  = link_to 'Edit', edit_shift_path(shift)
+  |
+  = link_to 'Delete', shift, method: :delete, data: { confirm: 'Are you sure?' }
+  |
+  = link_to 'All Shifts', shifts_path
