@@ -1,0 +1,12 @@
+.row
+  - if caller != 'restaurant'
+    .span2
+      = link_to shift.restaurant.mini_contact.name, restaurant_path(shift.restaurant)
+  .span2
+    = shift.start.strftime("%m/%d | %I:%M%p")
+  .span1
+    = shift.end.strftime("%I:%M%p")
+  = render 'shifts/tables/row_partial', shift: shift, caller: caller
+  - if can? :manage, @shift
+    .span1
+      = render 'shifts/tables/dropdown', shift: shift

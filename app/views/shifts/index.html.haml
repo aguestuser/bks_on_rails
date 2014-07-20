@@ -1,20 +1,31 @@
 - provide(:title, 'Shifts')
 
 - if @restaurant
-  %h1 #{@restaurant.mini_contact.name} Shifts
+  - caller = 'restaurant'
+  %h1 Shifts for #{@restaurant.mini_contact.name}
+  - if can? :create, Shift
+    %p.center
+      = link_to 'See all shifts', shifts_path
+      |
+      = render 'shifts/create_link', caller: caller
+
+- elsif @rider
+  - caller = 'rider'
+  %h1 Assignments for #{@rider.account.contact.name}
+
 - else
+  - caller = 'default'
   %h1 Shifts
-.center
-  = link_to 'Create new shift', new_shift_path
-  %br/
-  %br/
-.table
-  = render 'row_header'
-  - @shifts.each do |shift|
-    = render 'row', shift: shift
-  %br/
-  .center
-    - if params[:restaurant_id] # if index is of shifts for only 1 restaurant
-      = link_to 'Create new shift', new_restaurant_shift_path(params[:restaurant_id]), class: 'btn btn-primary'
-    - else   
-      = link_to 'Create new shift', new_shift_path, class: 'btn btn-primary'
+  %p.center
+    = render 'shifts/create_link', caller: caller
+
+.row
+  .span10.offset1
+    = render 'shifts/tables/wrapper', shifts: @shifts, caller: caller
+
+%p.center
+  - if caller == 'rider' || caller == 'restaurant'
+    = link_to 'See all shifts', shifts_path
+  - if can? :create, Shift && caller != 'rider'
+    |
+    = render 'shifts/create_link', caller: caller

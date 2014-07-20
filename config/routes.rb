@@ -28,6 +28,7 @@ BksOnRails::Application.routes.draw do
     resource :skill_set, only: [:new, :create, :edit, :update]
     resource :equipment_set, only: [:new, :create, :edit, :update]
     resources :assignments
+    resources :shifts
   end
 
   resources :managers

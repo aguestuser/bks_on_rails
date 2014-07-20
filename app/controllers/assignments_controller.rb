@@ -1,9 +1,10 @@
 class AssignmentsController < ApplicationController
   
   before_action :load_assignment, only: [ :show, :edit, :update, :destroy ]
+  before_action :load_shift, if: :shift_present?
+  before_action :load_rider, if: :rider_present?
   before_action :load_assignments, only: :index
-  before_action :load_shift, if: :shift_params?
-  before_action :load_rider, if: :rider_params?
+
 
   def new
     @assignment = Assignment.new
@@ -49,7 +50,7 @@ class AssignmentsController < ApplicationController
       @assignment = Assignment.find(params[:id])  
     end
 
-    def shift_params?
+    def shift_present?
       params.include? :shift_id
     end
 
@@ -57,7 +58,7 @@ class AssignmentsController < ApplicationController
       @shift = Shift.find(params[:shift_id])
     end
 
-    def rider_params?
+    def rider_present?
       params.include? :rider_id
     end
 
@@ -66,9 +67,9 @@ class AssignmentsController < ApplicationController
     end    
 
     def load_assignments
-      if params.include? :shift_id
+      if shift_present?
         @assignments = Assignment.where(shift: params[:shift_id])
-      elsif params.include? :rider_id
+      elsif rider_present?
         @assignments = Assignment.where(rider_id: params[:rider_id])
       else
         @assignments = Assignment.all

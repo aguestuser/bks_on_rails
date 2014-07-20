@@ -2,8 +2,8 @@
 .profile
   = render 'profile_header'
   .row
-    .span8.offset2
-      = render 'shifts/teaser', shifts: @restaurant.shifts
+    .span10.offset1
+      = render 'shifts/tables/teaser', shifts: @restaurant.shifts, caller: 'restaurant'
       = render @restaurant.mini_contact
       = render @restaurant.location
       = render @restaurant.managers, managers: @restaurant.managers

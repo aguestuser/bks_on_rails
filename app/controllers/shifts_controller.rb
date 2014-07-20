@@ -1,8 +1,9 @@
 class ShiftsController < ApplicationController
   
   before_action :load_shift, only: [ :show, :edit, :update, :destroy ]
+  before_action :load_restaurant, if: :restaurant_present?
+  before_action :load_rider, if: :rider_present?
   before_action :load_shifts, only: [ :index ]
-  before_action :load_restaurant, only: [ :new, :create, :edit, :update, :index ]
 
   def new
     @shift = Shift.new
@@ -57,17 +58,29 @@ class ShiftsController < ApplicationController
       @shift = Shift.find(params[:id])
     end
 
-    def load_shifts
-      if params[:restaurant_id]
-        @shifts = Shift.where(restaurant_id: params[:restaurant_id])
-      else
-        @shifts = Shift.all
-      end
+    def restaurant_present?
+      !params[:restaurant_id].nil?
     end
 
     def load_restaurant
-      if params[:restaurant_id]
-        @restaurant = Restaurant.find(params[:restaurant_id])
+      @restaurant = Restaurant.find(params[:restaurant_id])
+    end
+
+    def rider_present?
+      !params[:rider_id].nil?
+    end
+
+    def load_rider
+      @rider = Rider.find(params[:rider_id])
+    end
+
+    def load_shifts
+      if @restaurant
+        @shifts = Shift.where(restaurant_id: params[:restaurant_id])
+      elsif @rider
+        @shifts = Shift.joins(:assignment).where("assignments.rider_id = ?", @rider.id)
+      else
+        @shifts = Shift.all
       end
     end
 

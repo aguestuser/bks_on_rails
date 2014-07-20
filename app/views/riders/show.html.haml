@@ -2,7 +2,8 @@
 .profile
   = render 'users/profile_header'
   .row
-    .span8.offset2
+    .span10.offset1
+      = render 'shifts/tables/teaser', shifts: @rider.shifts, caller: 'rider'
       = render @rider.account
       = render @rider.location
       = render @rider.rider_rating
