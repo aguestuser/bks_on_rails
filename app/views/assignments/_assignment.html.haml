@@ -1,0 +1,14 @@
+%h3 Assignment Details
+%ul
+  %li
+    %strong Shift: 
+    #{assignment.shift.start.strftime("%m/%d | %I:%M%p")} - #{assignment.shift.end.strftime("%I:%M%p")} @ #{assignment.shift.restaurant.mini_contact.name}
+  %li
+    %strong Assigned to:
+    = assignment.rider.account.contact.name
+  %li
+    %strong Status:
+    = assignment.status.text
+.center
+  = link_to 'Edit', edit_assignment_path(assignment)
+  

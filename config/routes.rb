@@ -1,5 +1,9 @@
 BksOnRails::Application.routes.draw do
 
+  get "assignments/new"
+  get "assignments/edit"
+  get "assignments/show"
+  get "assignments/index"
   root 'static_pages#home'
 
   match '/sign_in', to:'sessions#new', via: 'get'
@@ -43,6 +47,8 @@ BksOnRails::Application.routes.draw do
   resources :shifts do
     resource :assignment
   end
+
+  resources :assignments, only: [ :show, :edit, :update ]
 
 
 

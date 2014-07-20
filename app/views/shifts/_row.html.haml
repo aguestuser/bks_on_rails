@@ -5,6 +5,7 @@
     = shift.start.strftime("%m/%d | %I:%M%p")
   .span1
     = shift.end.strftime("%I:%M%p")
+  = render 'assignments/row_partial', shift: shift
   - if can? :manage, @shift
     .span2
       = render 'dropdown', shift: shift

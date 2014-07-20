@@ -19,8 +19,9 @@ include ValidationMacros
 
 describe Shift do
   let(:shift) { FactoryGirl.build(:shift, :without_restaurant) }
-    let(:attrs) { [:start, :end, :period, :urgency, :billing_rate, :notes] }
-  
+  let(:attrs) { [:start, :end, :period, :urgency, :billing_rate, :notes] }
+  let(:associations) { [ :restaurant, :assignment ] }
+
   subject { shift }
 
   describe "attributes" do
@@ -47,8 +48,8 @@ describe Shift do
     end
   end
 
-  describe "associations" do
-    it { should respond_to :restaurant_id }
+  it "should respond to associated models" do
+    check_associations shift, associations
   end
 
 end

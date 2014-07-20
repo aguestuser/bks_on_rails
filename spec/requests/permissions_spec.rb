@@ -4,7 +4,7 @@ include RequestSpecMacros
 
 describe "Authentication" do
 
-  let!(:staffer) { FactoryGirl.create(:staffer) }
+  let(:staffer) { FactoryGirl.create(:staffer) }
   let!(:rider) { FactoryGirl.create(:rider) }
   let(:other_rider) { FactoryGirl.create(:rider) }
 

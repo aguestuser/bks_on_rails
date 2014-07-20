@@ -16,7 +16,7 @@
 
 class Shift < ActiveRecord::Base
   belongs_to :restaurant
-  has_one :assignment
+  has_one :assignment, dependent: :destroy
     accepts_nested_attributes_for :assignment
 
   classy_enum_attr :period, allow_nil: true
@@ -27,9 +27,25 @@ class Shift < ActiveRecord::Base
     presence: true
   validate :start_before_end
 
-  def start_before_end
-    if self.end.present? && start.present? && self.end <= start
-      errors.add(:end, "can't be before start")
-    end  
+  def assigned? #output: bool
+    !self.assignment.nil?
   end
+
+  def assign_to(rider) #input: Rider, #output: self.Assignment
+    if self.assigned?
+      self.assignment.update(rider_id: rider.id)
+    else 
+      self.assignment = Assignment.create!(shift_id: self.id, rider_id: rider.id)
+    end
+  end
+
+
+
+  private
+
+    def start_before_end
+      if self.end.present? && start.present? && self.end <= start
+        errors.add(:end, "can't be before start")
+      end  
+    end
 end

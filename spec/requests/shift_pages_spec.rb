@@ -21,6 +21,7 @@ describe "Shift Requests" do
       end      
       
       describe "page contents" do
+        it { should have_h2('Shift details') }
         it { should have_content('Restaurant:') }
         it { should have_content('Start:') }
         it { should have_content('End:') }

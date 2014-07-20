@@ -1,0 +1,11 @@
+
+- if shift.assigned?
+  .span2 
+    = shift.assignment.rider.account.contact.name
+  .span2
+    = shift.assignment.status.text
+- else 
+  .span2
+    \--
+  .span2
+    \--
