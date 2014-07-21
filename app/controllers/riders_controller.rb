@@ -1,11 +1,12 @@
 class RidersController < ApplicationController
-  include UsersController, LocatablesController, EquipablesController
+  include UsersController, ContactablesController, LocatablesController, EquipablesController
 
   before_action :load_rider, only: [ :show, :edit, :update, :destroy ]
 
   def new
     @rider = Rider.new
-    @rider.build_account.build_contact # abstract to UsersController?
+    @rider.build_account # abstract to UsersController?
+    @rider.build_contact # abstract to ContactablesController?
     @rider.build_location # abstract to LocatablesController?
     @rider.build_equipment_set # abstract to EquipablesController?
     @rider.build_rider_rating
@@ -48,21 +49,23 @@ class RidersController < ApplicationController
 
     def load_rider
       @rider = Rider.find(params[:id])
-      get_associations @rider
+      @it = @rider
+      # get_associations @rider
     end
 
-    def get_associations(rider)
-      @qualifications = rider.qualification_set
-      @skills = rider.skill_set
-      @rating = rider.rider_rating
-      # @account, @contact, @location, @equipment made accessible by included modules 
-    end
+    # def get_associations(rider)
+    #   @qualifications = rider.qualification_set
+    #   @skills = rider.skill_set
+    #   @rating = rider.rider_rating
+    #   # @account, @contact, @location, @equipment made accessible by included modules 
+    # end
 
     def rider_params
       params.require(:rider)
         .permit(
           :active, 
           account_params, #included
+          contact_params, #indluded
           equipment_params, #included
           location_params, #included
           qualification_params,

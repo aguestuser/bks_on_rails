@@ -1,7 +1,7 @@
 - if shift.assigned?
   - if caller != :rider
     .span2 
-      = shift.assignment.rider.account.contact.name
+      = shift.assignment.rider.contact.name
   .span2
     = shift.assignment.status.text
 - else 

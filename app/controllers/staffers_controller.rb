@@ -1,17 +1,17 @@
 class StaffersController < ApplicationController
-  include UsersController
+  include UsersController, ContactablesController
   before_action :load_staffer, only: [:show, :edit, :update, :destroy]
 
   def new
     @staffer = Staffer.new
-    @staffer.build_account.build_contact
+    @staffer.build_account #abstract?
+    @staffer.build_contact #abstract?
   end
 
   def create
     @staffer = Staffer.new(staffer_params)
     if @staffer.save
-      refresh_account @staffer
-      flash[:success] = "Profile created for #{@contact.name}."
+      flash[:success] = "Profile created for #{@staffer.contact.name}."
       redirect_to @staffer
     else
       render 'new'
@@ -31,8 +31,7 @@ class StaffersController < ApplicationController
   def update
     @staffer.update(staffer_params)
     if @staffer.save
-      refresh_account @staffer
-      flash[:success] = "#{@contact.name}'s profile has been updated."
+      flash[:success] = "#{@staffer.contact.name}'s profile has been updated."
       redirect_to @staffer
     else
       render 'edit'
@@ -41,7 +40,7 @@ class StaffersController < ApplicationController
 
   def destroy
     @staffer.destroy
-    flash[:success] = "All information associated with #{@contact.name} has been deleted"
+    flash[:success] = "All information associated with #{@staffer.contact.name} has been deleted"
     redirect_to staffers_path
   end
 
@@ -49,9 +48,10 @@ class StaffersController < ApplicationController
 
     def load_staffer
       @staffer = Staffer.find(params[:id])
+      @it = @staffer
     end
 
     def staffer_params
-        params.require(:staffer).permit(account_params)
+        params.require(:staffer).permit(account_params, contact_params)
     end
 end

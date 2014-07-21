@@ -1,11 +1,11 @@
 .profile
   %li
     %h2
-      = gravatar_for rider.account.contact, size: 40
-      = link_to rider.account.contact.name, rider
+      = gravatar_for rider.contact, size: 40
+      = link_to rider.contact.name, rider
       %br
       = rider.location.borough.text
       |
-      = rider.account.contact.phone
+      = rider.contact.phone
       |
       = rider.active? ? 'Active' : 'Inactive'

@@ -3,7 +3,6 @@ class ShiftsController < ApplicationController
   before_action :load_shift, only: [ :show, :edit, :update, :destroy ]
   before_action :load_caller # will call load_restaurant or load_rider if applicable
   before_action :load_index_path 
-  before_action :check_credentials, only: [ :index ]
   before_action :load_shifts, only: [ :index ]
 
   def new
@@ -86,10 +85,6 @@ class ShiftsController < ApplicationController
       when nil
         @index_path = shifts_path
       end
-    end
-
-    def check_credentials
-
     end
 
     def load_shifts

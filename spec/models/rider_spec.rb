@@ -13,8 +13,8 @@ include ValidationMacros
 
 describe Rider do
   let(:rider) { FactoryGirl.build(:rider) }
-  let(:attrs) { [:active] }
-  let(:associations) { [ :assignments, :account, :equipment_set, :qualification_set, :rider_rating, :location ] }
+  let(:attrs) { [ :active ] }
+  let(:associations) { [ :account, :contact, :equipment_set, :qualification_set, :rider_rating, :location, :assignments, :shifts ] }
 
   subject { rider }
 

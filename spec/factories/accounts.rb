@@ -15,14 +15,11 @@ FactoryGirl.define do
   factory :account do
     password 'changeme123'
     password_confirmation 'changeme123'
-    after(:build) do |f|
-      f.contact = FactoryGirl.build(:contact, :with_account, account: f)
-    end
     trait :with_user do |user|
       user
     end
     trait :without_user do
-      user_id 0
+      user_id 1
     end    
   end
 end

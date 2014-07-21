@@ -8,22 +8,19 @@
 #
 
 require 'spec_helper'
+include ValidationMacros
 
 describe Staffer do
   
   let(:staffer) { FactoryGirl.build(:staffer) }
+  let(:associations) { [ :account, :contact ] }
   subject { staffer }
 
-  describe "validation" do
-    it { should be_valid }
-  end
 
-  describe "associations" do
+  it { should be_valid }
 
-    describe "with UserInfo model" do
-      it { should respond_to(:account)}
-    end
-
+  it "should respond to all association references" do
+    check_associations staffer, associations
   end
 end
 

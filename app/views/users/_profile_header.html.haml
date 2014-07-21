@@ -1,17 +1,24 @@
 .row
   .span6.offset2
-    = gravatar_for @contact, size: 80
+    = gravatar_for @it.contact, size: 80
     %section
-      %h1.name= @contact.name
+      %h1.name= @it.name
       %h2.title 
-        - if params[:controller] == 'riders'
-          = @location.borough.text
+        - if it.class == Rider
+          = it.location.borough.text
           |
-          = @rider.active? ? 'Active' : 'Inactive'
+          = it.active? ? 'Active' : 'Inactive'
         - else 
-          = @contact.title
+          = it.title
         |
-        = @contact.phone
+        = it.phone
   .span2
     .edit
-      = link_to 'Edit Profile', edit_rider_path, class: 'btn btn-primary'
+      - case it.class
+      - when Staffer
+        - edit_path = edit_staffer_path(it)
+      - when Rider
+        - edit_path = edit_rider_path(it)
+      - when Manager
+        - edit_path = edith_manager_path(it)
+      = link_to 'Edit Profile', edit_path, class: 'btn btn-primary'

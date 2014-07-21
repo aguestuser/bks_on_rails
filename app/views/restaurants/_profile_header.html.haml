@@ -1,7 +1,7 @@
 - r = @restaurant
 .row
   .span6.offset2
-    = gravatar_for r.managers.first.account.contact, size: 80
+    = gravatar_for r.managers.first.contact, size: 80
     %section
       %h1.name= r.mini_contact.name
       %h2.title #{r.location.neighborhood.text}, #{r.location.borough.text} | #{r.status.text} (#{r.active? ? 'active' : 'inactive'}) 

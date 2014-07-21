@@ -1,12 +1,15 @@
-- if object.class == Restaurant
+- if it.class == Restaurant
   %h3 Managers
   = f.fields_for :managers do |ff|
-    = render 'accounts/fields', f: ff
+    - if params[:action] == 'new'
+      = render 'accounts/fields', f: ff
+    = render 'contacts/fields', f: ff
   - if params[:action] == 'edit'
     .center
       = link_to 'Create new manager', new_restaurant_manager_path(@restaurant.id)
   %br/
-- elsif object.class == Manager
-  - if @restaurant
-    %h2 Restaurant: #{@restaurant.mini_contact.name}
+- elsif it.class == Manager
+  %h2 Restaurant: #{@manager.restaurant.mini_contact.name}
+  - if params[:action] == 'new'
     = render 'accounts/fields', f: f
+  = render 'accounts/fields', f: f

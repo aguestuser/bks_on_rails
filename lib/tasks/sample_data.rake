@@ -15,54 +15,54 @@ def make_staffers
   
   Staffer.create!(
     account: Account.new(
-      password: 'changeme123',
-      password_confirmation: 'changeme123',
-      contact: Contact.new(
-        name: 'Austin Guest',
-        title: 'IT Director',
-        email: 'austin@bkshift.com',
-        phone: '831-917-6400'
-      )
+      password: 'foobar',
+      password_confirmation: 'foobar'
+    ),
+    contact: Contact.new(
+      name: 'Austin Guest',
+      title: 'IT Director',
+      email: 'austin@bkshift.com',
+      phone: '831-917-6400'
     )
   )
 
   Staffer.create!(
     account: Account.new(
-      password: 'changeme123',
-      password_confirmation: 'changeme123',
-      contact: Contact.new(
-        name: 'Tess Cohen',
-        title: 'Accounts Executive',
-        email: 'tess@bkshift.com',
-        phone: '347-460-6484'
-      )
+      password: 'foobar',
+      password_confirmation: 'foobar'
+    ),
+    contact: Contact.new(
+      name: 'Tess Cohen',
+      title: 'Accounts Executive',
+      email: 'tess@bkshift.com',
+      phone: '347-460-6484'
+    )    
+  )
+
+  Staffer.create!(
+    account: Account.new(
+      password: 'foobar',
+      password_confirmation: 'foobar'
+    ),
+    contact: Contact.new(
+      name: 'Justin Lewis',
+      title: 'Accounts Manager',
+      email: 'justin@bkshift.com',
+      phone: '347-460-6484'
     )
   )
 
   Staffer.create!(
     account: Account.new(
-      password: 'changeme123',
-      password_confirmation: 'changeme123',
-      contact: Contact.new(
-        name: 'Justin Lewis',
-        title: 'Accounts Manager',
-        email: 'justin@bkshift.com',
-        phone: '347-460-6484'
-      )
-    )
-  )
-
-  Staffer.create!(
-    account: Account.new(
-      password: 'changeme123',
-      password_confirmation: 'changeme123',      
-      contact: Contact.new(
-        name: 'Yagil Kadosh',
-        title: 'Partner Relations Director',
-        email: 'yagil@bkshift.com',
-        phone: '201-341-9442'
-      )
-    )
+      password: 'foobar',
+      password_confirmation: 'foobar'      
+    ),
+    contact: Contact.new(
+      name: 'Yagil Kadosh',
+      title: 'Partner Relations Director',
+      email: 'yagil@bkshift.com',
+      phone: '201-341-9442'
+    )    
   )
 
 end
@@ -88,15 +88,15 @@ def make_restaurants
     
     manager = Manager.new(
       account: Account.new(
-        password: 'changeme123',
-        password_confirmation: 'changeme123',        
-        contact: Contact.new(
-          name: name,
-          title: title,
-          phone: phone,
-          email: email,
-        )
-      )
+        password: 'foobar',
+        password_confirmation: 'foobar'
+      ),
+      contact: Contact.new(
+        name: name,
+        title: title,
+        phone: phone,
+        email: email,
+      )      
     )
 
     work_spec = WorkSpecification.new(
@@ -188,15 +188,15 @@ def make_riders
     Rider.create!(
       active: true,
       account: Account.new(
-        password: 'changeme123',
-        password_confirmation: 'changeme123',          
-        contact: Contact.new(
-          name: name,
-          title: 'Rider',
-          email: email,
-          phone: phone
-        )
+        password: 'foobar',
+        password_confirmation: 'foobar'
       ),
+      contact: Contact.new(
+        name: name,
+        title: 'Rider',
+        email: email,
+        phone: phone
+      ),      
       location: Location.new(
         address: address,
         borough: borough,

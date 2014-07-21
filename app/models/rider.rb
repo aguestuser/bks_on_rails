@@ -9,7 +9,7 @@
 #
 
 class Rider < ActiveRecord::Base
-  include User, Equipable, Locatable # app/models/concerns/
+  include User, Contactable, Equipable, Locatable # app/models/concerns/
 
   has_one :qualification_set, dependent: :destroy
     accepts_nested_attributes_for :qualification_set
@@ -25,6 +25,6 @@ class Rider < ActiveRecord::Base
     inclusion: { in: [ true, false ] }
 
   def name
-    self.account.contact.name
+    self.contact.name
   end
 end

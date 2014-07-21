@@ -55,7 +55,7 @@ describe "Assignment Requests" do
         it { should have_content('Start') }
         it { should have_content(assignment_start) }
         it { should have_content('Assigned to') }
-        it { should have_content(assignment.rider.account.contact.name) }
+        it { should have_content(assignment.rider.contact.name) }
         it { should have_content('Status') }
         it { should have_content(assignment.status.text) }
         it { should have_link('Edit Assignment') }

@@ -5,7 +5,7 @@ include RequestSpecMacros
 describe "Staffer Pages" do
   let(:admin) { FactoryGirl.create(:staffer) }
   let(:staffer) { FactoryGirl.build(:staffer) }
-  let(:contact) { staffer.account.contact }
+  let(:contact) { staffer.contact }
   let(:fields) { ['Name', 'Title', 'Phone', 'Email'] }
 
   before { mock_sign_in admin }
@@ -66,7 +66,7 @@ describe "Staffer Pages" do
               before { mock_sign_in staffer }
 
               it { should_not have_an_error_message }
-              it { should have_h1 staffer.account.contact.name }
+              it { should have_h1 staffer.contact.name }
             end
           end
         end    
@@ -141,15 +141,13 @@ describe "Staffer Pages" do
       before do
         fill_in 'Name',   with: new_name
         fill_in 'Email',  with: new_email
-        fill_in 'Password', with: staffer.account.password
-        fill_in 'Password confirmation', with: staffer.account.password
         click_button "Save Changes"
       end
 
       it { should have_h1(new_name) }
       it { should have_success_message("#{new_name}'s profile has been updated.") }
-      specify { expect(staffer.reload.account.contact.name).to eq new_name }
-      specify { expect(staffer.reload.account.contact.email).to eq new_email }
+      specify { expect(staffer.reload.contact.name).to eq new_name }
+      specify { expect(staffer.reload.contact.email).to eq new_email }
     end  
   end
 
@@ -157,7 +155,7 @@ describe "Staffer Pages" do
     before(:all) { 3.times { FactoryGirl.create(:staffer) }  }
     after(:all) { Staffer.last(3).each { |s| s.destroy } }
     before(:each) { visit staffers_path }
-    let(:names) { Staffer.last(3).map { |s| s.account.contact.name } }
+    let(:names) { Staffer.last(3).map { |s| s.contact.name } }
     
     it "should contain names of last 3 staffers" do
       check_name_subheads names

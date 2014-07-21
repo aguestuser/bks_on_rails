@@ -9,6 +9,7 @@
 #
 
 class Manager < ActiveRecord::Base
+  include User, Contactable # app/model/concerns/
   belongs_to :restaurant
-  include User # app/model/concerns/
+
 end

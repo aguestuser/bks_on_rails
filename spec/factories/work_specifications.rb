@@ -24,7 +24,7 @@ FactoryGirl.define do
       restaurant
     end
     trait :without_restaurant do
-      restaurant_id 0
+      restaurant_id 1
     end    
   end
 end

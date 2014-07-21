@@ -1,18 +1,19 @@
 class ManagersController < ApplicationController
-  include UsersController
+  include UsersController, ContactablesController
   before_action :load_manager, only: [ :show, :edit, :update, :destroy ]
   before_action :load_restaurant, only: [ :new, :create, :edit, :update ]
 
   def new
     @manager = Manager.new
-    @manager.build_account.build_contact
+    @manager.build_account # abstract to UsersController?
+    @manager.build_contact # abstract to ContactablesController?
   end
 
   def create
     @manager = Manager.new(manager_params)
     @manager.restaurant_id = @restaurant.id
     if @manager.save
-      flash[:success] = "Profile created for #{@manager.account.contact.name}."
+      flash[:success] = "Profile created for #{@manager.contact.name}."
       redirect_to restaurant_path(@restaurant.id)
     else
       render 'new'
@@ -46,6 +47,7 @@ class ManagersController < ApplicationController
 
     def load_manager
       @manager = Manager.find(params[:id])
+      @it = @manager
     end
 
     def load_restaurant
@@ -57,6 +59,6 @@ class ManagersController < ApplicationController
     end
 
     def manager_params
-      params.require(:manager).permit(:restaurant_id, account_params)
+      params.require(:manager).permit(account_params, contact_params)
     end
 end

@@ -3,16 +3,16 @@
 %ul
   %li
     %strong Name:
-    = manager.account.contact.name
+    = manager.contact.name
   %li
     %strong Title:
-    = manager.account.contact.title  
+    = manager.contact.title  
   %li
     %strong Phone:
-    = manager.account.contact.phone
+    = manager.contact.phone
   %li
     %strong Email:
-    = manager.account.contact.email
+    = manager.contact.email
   = link_to 'Edit', edit_restaurant_manager_path(restaurant_id: manager.restaurant.id, id: manager.id), id: "edit_manager_#{manager.id}"
   |
-  = link_to 'Delete', manager_path(manager.id), id: "delete_manager_#{manager.id}", method: :delete, data: { confirm: "Are you sure? All information associated with #{manager.account.contact.name} will be permanently destroyed!" }
+  = link_to 'Delete', manager_path(manager.id), id: "delete_manager_#{manager.id}", method: :delete, data: { confirm: "Are you sure? All information associated with #{manager.contact.name} will be permanently destroyed!" }

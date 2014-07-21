@@ -2,14 +2,15 @@
 #
 # Table name: contacts
 #
-#  id         :integer          not null, primary key
-#  phone      :string(255)
-#  created_at :datetime
-#  updated_at :datetime
-#  name       :string(255)
-#  email      :string(255)
-#  title      :string(255)
-#  account_id :integer
+#  id               :integer          not null, primary key
+#  phone            :string(255)
+#  created_at       :datetime
+#  updated_at       :datetime
+#  name             :string(255)
+#  email            :string(255)
+#  title            :string(255)
+#  contactable_id   :integer
+#  contactable_type :string(255)
 #
 
 FactoryGirl.define do
@@ -19,11 +20,11 @@ FactoryGirl.define do
     sequence(:email) { |n| "wonderful#{n}@example.com" }
     phone '917-345-3200'
     
-    trait :with_account do |account|
-      account     
+    trait :with_contactable do |contactable|
+      contactable     
     end 
-    trait :without_account do
-      account_id 0
+    trait :without_contactable do
+      contactable_id 1
     end
   end
 end

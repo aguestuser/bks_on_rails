@@ -1,3 +1,5 @@
+/ - if !shifts.first.nil?
+/   - raise "#{shifts.first.restaurant_id}"
 .table
   = render 'shifts/tables/row_header', caller: caller
   - shifts.each do |shift|

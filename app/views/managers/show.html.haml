@@ -1,12 +1,12 @@
-- provide(:title, @manager.account.contact.name)
+- provide(:title, @manager.contact.name)
 .profile
   .row
     .span10.offset1
       = gravatar_for @manager, size: 80
       %section
-        %h1.name= @manager.account.contact.name
+        %h1.name= @manager.contact.name
         %h2.title
-          #{@manager.account.contact.title} | #{@manager.restaurant.name}
+          #{@manager.contact.title} | #{@manager.restaurant.name}
   .row
     .span10.offset1
       %h3 Contact Info
@@ -14,12 +14,17 @@
         %li 
           %strong 
             Phone: 
-          = @manager.account.contact.phone
+          = @manager.contact.phone
         %li 
           %strong
             Email: 
-          = @manager.account.contact.email
-      .center
-        = link_to 'Edit', edit_manager_path(@manager)
-        | 
-        = link_to "Delete", @manager, method: :delete, data: { confirm: "Are you sure? All information associated with #{@manager.name} will be permanently destroyed!" }
+          = @manager.contact.email
+  .row
+    %p.center
+    - if can? :manage, Manager
+      = link_to 'Edit', edit_manager_path(@manager)
+      | 
+      = link_to "Delete", @manager, method: :delete, data: { confirm: "Are you sure? All information associated with #{@manager.name} will be permanently destroyed!" }
+      |
+    = link_to @manager.restaurant.mini_contact.name, restaurant_path(@manager.restaurant)      
+

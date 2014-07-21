@@ -14,10 +14,11 @@ FactoryGirl.define do
       restaurant
     end
     trait :without_restaurant do
-      restaurant_id 0
+      restaurant_id 1
     end
     after(:build) do |f|
       f.account = FactoryGirl.build(:account, :with_user, user: f)
+      f.contact = FactoryGirl.build(:contact, :with_contactable, contactable: f)
     end
   end
 

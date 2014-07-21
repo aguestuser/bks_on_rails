@@ -16,7 +16,7 @@ class AssignmentsController < ApplicationController
   def create
     @assignment = Assignment.new(assignment_params)
     if @assignment.save
-      flash[:success] = "Shift assigned to #{@assignment.rider.account.contact.name}"
+      flash[:success] = "Shift assigned to #{@assignment.rider.contact.name}"
       redirect_to @index_path
     else
       render 'new'

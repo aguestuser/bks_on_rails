@@ -6,25 +6,8 @@ module User
     has_one :account, as: :user, dependent: :destroy
       accepts_nested_attributes_for :account
 
-    def name
-      self.account.contact.name
-    end
-
-    def email
-      self.account.contact.email
-    end
-
   end
 
   module ClassMethods
-    # def find_by_email(email)
-    #   klass = name.constantize
-    #   users = klass.joins(:account).where(:user_infos => {:email => email})
-    #   if users.count == 1
-    #     users.first
-    #   else
-    #     raise "There were more than one user with that email!"
-    #   end
-    # end  
   end
 end

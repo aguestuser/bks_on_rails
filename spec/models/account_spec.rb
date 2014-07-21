@@ -17,7 +17,7 @@ include ValidationMacros
 describe Account do
   
   let(:account) { FactoryGirl.create(:account, :without_user) }
-  let(:associations) { [:user, :contact] }
+  let(:associations) { [ :user ] }
   subject { account }
 
   describe "attributes" do

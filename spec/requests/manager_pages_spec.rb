@@ -7,7 +7,7 @@ describe "Manager Pages" do
   let!(:restaurant) { FactoryGirl.create(:restaurant) }
   let!(:new_manager) { FactoryGirl.build(:manager, :with_restaurant, restaurant: restaurant) }
   let(:account) { new_manager.account }
-  let(:contact) { new_manager.account.contact }
+  let(:contact) { new_manager.contact }
   
   let(:staffer) { FactoryGirl.create(:staffer) }
 
@@ -107,8 +107,6 @@ describe "Manager Pages" do
               describe "with valid input" do
                 before do
                   fill_in 'Name', with: 'Big Jerk'
-                  fill_in 'Password', with: 'changeme123'
-                  fill_in 'Password confirmation', with: 'changeme123'
                   click_button save
                 end               
                 it { should have_h1(restaurant.mini_contact.name) } 

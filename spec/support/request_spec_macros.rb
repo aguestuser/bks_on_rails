@@ -7,7 +7,7 @@ module RequestSpecMacros
       user.account.update_attribute(:remember_token, Account.digest(remember_token))
     else
       visit sign_in_path unless current_path == sign_in_path
-      fill_in "Email",    with: user.account.contact.email
+      fill_in "Email",    with: user.contact.email
       fill_in "Password", with: user.account.password
       click_button "Sign in"    
     end
@@ -17,7 +17,7 @@ module RequestSpecMacros
     paths.each do |path|
       expect(page).to have_link('Staffers')
       expect(page).to have_error_message 'You are not authorized to access this page.'
-      expect(page).to have_h1 user.account.contact.name
+      expect(page).to have_h1 user.contact.name
     end
   end
 
@@ -25,7 +25,7 @@ module RequestSpecMacros
     paths.each do |path|
       visit path
       expect(page).not_to have_error_message 'You are not authorized to access this page.'
-      # expect(page).not_to have_h1 user.account.contact.name unless path == own_profile_path? user, path
+      # expect(page).not_to have_h1 user.contact.name unless path == own_profile_path? user, path
     end
   end
 

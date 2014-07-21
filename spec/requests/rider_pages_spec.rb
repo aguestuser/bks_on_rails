@@ -6,7 +6,7 @@ include RequestSpecMacros # /spec/support/request_spec_macros.rb
 describe "Rider Pages" do
   let!(:rider) { FactoryGirl.build(:rider) }
   let!(:account) { rider.account }
-  let(:contact) { account.contact }
+  let(:contact) { rider.contact }
   let(:location) { rider.location }
   let(:qualifications) { rider.qualification_set }
   let(:skills) { rider.qualification_set }
@@ -41,7 +41,7 @@ describe "Rider Pages" do
       before(:all) { 3.times { FactoryGirl.create(:rider) } }
       after(:all) { Rider.last(3).each { |r| r.destroy } }
       before(:each) { visit riders_path }
-      let(:names) { Rider.last(3).map { |r| r.account.contact.name } }
+      let(:names) { Rider.last(3).map { |r| r.contact.name } }
 
       it "should contain names of last 3 riders" do
         check_name_subheads names

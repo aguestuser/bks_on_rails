@@ -2,7 +2,9 @@
   .span6.offset3
     = form_for(@staffer) do |f|
       = render 'shared/error_messages', object: f.object
-      = render 'accounts/fields', f: f, object: f.object
+      - if params[:action] == 'new'
+        = render 'accounts/fields', f: f
+      = render 'contacts/fields', f: f
       .center
         - button_text = params[:action] == 'new' ? 'Create Staffer' : 'Save Changes'
         = f.submit button_text, class: "btn btn-large btn-primary"

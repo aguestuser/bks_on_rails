@@ -9,25 +9,19 @@
 #
 
 require 'spec_helper'
+include ValidationMacros
 
 describe Manager do
   
   let(:manager) { FactoryGirl.create(:manager, :without_restaurant) }
-  let(:associations) { [:user_info] }
+  let(:associations) { [ :account, :contact] }
   subject { manager }
 
   describe "validation" do
     it { should be_valid }
   end
 
-  describe "associations" do
-
-    describe "with Restaurant model" do
-      it { should respond_to :restaurant_id }
-    end
-
-    describe "with UserInfo model" do
-      it { should respond_to(:account)}
-    end
+  it "should respond to all association references" do
+    check_associations manager, associations
   end
 end

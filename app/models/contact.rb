@@ -2,19 +2,20 @@
 #
 # Table name: contacts
 #
-#  id         :integer          not null, primary key
-#  phone      :string(255)
-#  created_at :datetime
-#  updated_at :datetime
-#  name       :string(255)
-#  email      :string(255)
-#  title      :string(255)
-#  account_id :integer
+#  id               :integer          not null, primary key
+#  phone            :string(255)
+#  created_at       :datetime
+#  updated_at       :datetime
+#  name             :string(255)
+#  email            :string(255)
+#  title            :string(255)
+#  contactable_id   :integer
+#  contactable_type :string(255)
 #
 
 class Contact < ActiveRecord::Base
   #associations
-  belongs_to :account
+  belongs_to :contactable, polymorphic: true
 
   #before filters
   before_save { email.downcase! }
@@ -34,4 +35,9 @@ class Contact < ActiveRecord::Base
     format: { with: VALID_EMAIL },
     uniqueness: { case_sensitive: false } 
 
+  #class methods
+  def Contact.find_by_email(email)
+    Contact.where("email = ?", email)
+  end
+  
 end

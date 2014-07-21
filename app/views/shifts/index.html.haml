@@ -14,7 +14,7 @@
       = render 'shifts/index_and_new_links', caller: @caller
 
 - when :rider
-  %h1 Assignments for #{@rider.account.contact.name}
+  %h1 Assignments for #{@rider.contact.name}
   - if can? :manage, Shift
     = render 'shifts/index_and_new_links', caller: @caller  
   .row

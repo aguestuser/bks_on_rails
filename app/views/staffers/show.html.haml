@@ -1,12 +1,15 @@
-- provide(:title, @contact.name)
+- provide(:title, @staffer.name)
 .profile
-  = render '/users/profile_header'
+  = render '/users/profile_header', it: @it
   .row
     .span10.offset1
-      = render @contact
-      .center
+      = render @staffer.contact
+  .row
+    %p.center
+      - if can? :manage, Staffer
         = link_to 'Edit', edit_staffer_path(@staffer)
         | 
-        = link_to "Delete", @staffer, method: :delete, data: { confirm: "Are you sure? All information associated with #{@contact.name} will be permanently destroyed!" }
+        = link_to "Delete", @staffer, method: :delete, data: { confirm: "Are you sure? All information associated with #{@staffer.name} will be permanently destroyed!" }
         |
-        = link_to "All Staffers", staffers_path
+      = link_to "All Staffers", staffers_path
+          

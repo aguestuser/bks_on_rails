@@ -12,7 +12,8 @@ class RestaurantsController < ApplicationController
 
       
       managers = @restaurant.managers.build
-      managers.build_account.build_contact
+      managers.build_account
+      managers.build_contact
       # managers.build_account.build_contact     
   end
 
@@ -55,6 +56,7 @@ class RestaurantsController < ApplicationController
 
     def load_restaurant
       @restaurant = Restaurant.find(params[:id])
+      @it = @restaurant
     end
 
     def build_associations

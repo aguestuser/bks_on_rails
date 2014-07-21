@@ -39,7 +39,7 @@ describe "Authentication" do
 
       describe "with valid input" do
         before { mock_sign_in staffer }
-        let(:contact) { staffer.account.contact }
+        let(:contact) { staffer.contact }
 
         it { should have_title(contact.name) }
       end
@@ -79,7 +79,7 @@ describe "Authentication" do
       describe "root path" do
         before { visit root_path }
 
-        it { should have_h1 staffer.account.contact.name }
+        it { should have_h1 staffer.contact.name }
       end
 
       it "should have appropriate nav links" do
@@ -95,7 +95,7 @@ describe "Authentication" do
     describe "as Manager" do
 
       before { mock_sign_in manager }
-      let(:manager_name) { manager.account.contact.name }
+      let(:manager_name) { manager.contact.name }
       let(:own_restaurant) { restaurant }
       let(:other_manager) { restaurant.managers[1] }
       let(:other_restaurant) { FactoryGirl.create(:restaurant) }
@@ -183,7 +183,7 @@ describe "Authentication" do
 
       describe "root path" do
         before { visit root_path }
-        it { should have_h1 rider.account.contact.name }
+        it { should have_h1 rider.contact.name }
       end
 
       describe "accessing controller actions" do

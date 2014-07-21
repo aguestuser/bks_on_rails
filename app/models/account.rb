@@ -14,8 +14,6 @@
 class Account < ActiveRecord::Base
   #associations
   belongs_to :user, polymorphic: true
-  has_one :contact, dependent: :destroy
-    accepts_nested_attributes_for :contact
 
   #callbacks
   before_create :create_remember_token
@@ -32,10 +30,6 @@ class Account < ActiveRecord::Base
 
   def Account.digest(token)
     Digest::SHA1.hexdigest(token.to_s) #call .to_s to handle test cases in which token is nil
-  end
-
-  def Account.find_by_email(email) # input: String (valid email), output: Account instance
-    Account.joins(:contact).where("contacts.email = ?", email).readonly(false).first
   end
 
   private

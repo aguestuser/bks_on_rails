@@ -2,14 +2,15 @@
 #
 # Table name: contacts
 #
-#  id         :integer          not null, primary key
-#  phone      :string(255)
-#  created_at :datetime
-#  updated_at :datetime
-#  name       :string(255)
-#  email      :string(255)
-#  title      :string(255)
-#  account_id :integer
+#  id               :integer          not null, primary key
+#  phone            :string(255)
+#  created_at       :datetime
+#  updated_at       :datetime
+#  name             :string(255)
+#  email            :string(255)
+#  title            :string(255)
+#  contactable_id   :integer
+#  contactable_type :string(255)
 #
 
 require 'spec_helper'
@@ -17,8 +18,9 @@ include ValidationMacros
 
 describe Contact do
 
-  let(:contact) { FactoryGirl.build(:contact, :without_account) }
+  let(:contact) { FactoryGirl.build(:contact, :without_contactable) }
   let (:attrs) { [:name, :title, :phone, :email ] }
+  let(:associations) { [ :contactable ] }
   subject { contact }
 
   describe "attributes" do
@@ -106,6 +108,6 @@ describe Contact do
   end
 
   describe "associations" do
-    it { should respond_to :account }
+    it { should respond_to :contactable }
   end
 end
