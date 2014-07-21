@@ -8,15 +8,15 @@
 
             - if credentials == 'Staffer'
               = render 'nav/links_staffer'
-              = render 'nav/dropdown', it: @it
+              = render 'nav/dropdown', it: current_account.user
             
             - elsif credentials == 'Manager'
               = render 'nav/links_manager', manager: current_account.user
-              = render 'nav/dropdown', it: @it
+              = render 'nav/dropdown', it: current_account.user
 
             - elsif credentials == 'Rider'
               = render 'nav/links_rider', rider: current_account.user
-              = render 'nav/dropdown', it: @it
+              = render 'nav/dropdown', it: current_account.user
          
           - else 
             %li= link_to "Sign in", sign_in_path

@@ -1,0 +1,19 @@
+- provide(:title, 'Edit Contact Info')
+%h1 Edit #{@contact.name}'s Contact Info
+.profile
+  .row
+    .span6.offset3
+      = form_for [ @contact.contactable, @contact ] do |f|
+        = render 'shared/error_messages', object: f.object
+        = ff.label :name
+        = ff.text_field :name
+        = ff.label :title
+        = ff.text_field :title        
+        = ff.label :phone
+        = ff.text_field :phone
+        = ff.label :email
+        = ff.text_field :email
+        %br/
+        %br/
+        .center
+          = f.submit 'Save Changes', class: "btn btn-large btn-primary"

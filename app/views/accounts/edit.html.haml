@@ -1,0 +1,15 @@
+- provide(:title, 'Edit Account Settings')
+%h1 Edit #{@account.user.contact.name}'s Account Settings
+.profile
+  .row
+    .span6.offset3
+      = form_for [ @account.user, @account ] do |f|
+        = render 'shared/error_messages', object: f.object
+        = f.label :password
+        = f.password_field :password
+        = f.label :password_confirmation
+        = f.password_field :password_confirmation
+        %br/
+        %br/
+        .center
+          = f.submit 'Save Changes', class: "btn btn-large btn-primary"

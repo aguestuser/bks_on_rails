@@ -6,7 +6,7 @@
       %section
         %h1.name= @manager.contact.name
         %h2.title
-          #{@manager.contact.title} | #{@manager.restaurant.name}
+          #{@manager.contact.title} | #{link_to @manager.restaurant.name, @manager.restaurant}
   .row
     .span10.offset1
       %h3 Contact Info
@@ -21,10 +21,8 @@
           = @manager.contact.email
   .row
     %p.center
-    - if can? :manage, Manager
-      = link_to 'Edit', edit_manager_path(@manager)
-      | 
-      = link_to "Delete", @manager, method: :delete, data: { confirm: "Are you sure? All information associated with #{@manager.name} will be permanently destroyed!" }
-      |
-    = link_to @manager.restaurant.mini_contact.name, restaurant_path(@manager.restaurant)      
+      - if can? :manage, Manager
+        = link_to 'Edit', edit_manager_path(@manager)
+        | 
+        = link_to "Delete", @manager, method: :delete, data: { confirm: "Are you sure? All information associated with #{@manager.name} will be permanently destroyed!" }    
 

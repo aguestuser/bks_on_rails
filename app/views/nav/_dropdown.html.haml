@@ -1,13 +1,15 @@
-- case it.class
-- when Staffer
-  - edit_contact_path_ = edit_staffer_contact_path(it)
-  - edit_account_path_ = edit_staffer_account_path(it)
-- when Rider
-  - edit_contact_path_ = edit_rider_contact_path(it)
-  - edit_account_path_ = edit_rider_account_path(it)
-- when Manager
-  - edit_contact_path_ = edit_manager_contact_path(it)
-  - edit_account_path_ = edit_manager_account_path(it)
+- case credentials
+- when 'Staffer'
+  - edit_profile = edit_staffer_path(it)
+  - edit_account = edit_staffer_account_path(it)
+- when 'Rider'
+  - edit_profile = edit_rider_path(it)
+  - edit_account = edit_rider_account_path(it)
+- when 'Manager'
+  - edit_profile = edit_restaurant_path(it.restaurant)
+  - edit_account = edit_manager_account_path(it)
+- when nil
+  - raise "nil!"
 
 %li#fat-menu.dropdown
   %a.dropdown-toggle{"data-toggle" => "dropdown", :href => "#"}
@@ -15,7 +17,7 @@
     %b.caret
   %ul.dropdown-menu
     %li= link_to "Homepage", root_path
-    %li= link_to "Edit Profile", edit_contact_path_
-    %li= link_to "Change Password", edit_account_path_
+    %li= link_to "Edit Profile", edit_profile
+    %li= link_to "Change Password", edit_account
     %li.divider
     %li= link_to "Sign out", sign_out_path, method: 'delete'

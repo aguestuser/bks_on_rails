@@ -12,13 +12,17 @@ class Ability
       can :update, Manager, id: account.user.id # own account
       can :read, Staffer
       can :read, Shift, restaurant_id: account.user.restaurant.id
-      can :read, Assignment, shift: { restaurant_id: account.user.restaurant.id }
+      can [ :read, :update ], Contact, contactable_id: account.user.contact.id
+      can [ :read, :update ], Account, user_id: account.user.id
+
       # Riders blocked
     elsif account.user_type == 'Rider'
       can [ :read, :update ], Rider, id: account.user.id
       can :read, Staffer 
       can :read, Assignment, rider_id: account.user.id
       can :read, Shift, assignment: { rider_id: account.user.id }
+      can [ :read, :update ], Contact, contactable_id: account.user.contact.id
+      can [ :read, :update ], Account, user_id: account.user.id
       # Restaurants, Managers, Shifts blocked
     end
     # Define abilities for the passed in user here. For example:
