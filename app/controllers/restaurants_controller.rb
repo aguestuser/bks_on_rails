@@ -30,7 +30,12 @@ class RestaurantsController < ApplicationController
   end
 
   def index
-    @restaurants = Restaurant.all
+    if credentials == 'Staffer'
+      @restaurants = Restaurant.all
+    else 
+      flash[:error] = "You don't have permission to access that page."
+      redirect_to root_path
+    end 
   end
 
   def edit
@@ -47,6 +52,7 @@ class RestaurantsController < ApplicationController
   end
 
   private
+
     def load_restaurant
       @restaurant = Restaurant.find(params[:id])
     end
@@ -55,6 +61,10 @@ class RestaurantsController < ApplicationController
       @restaurant.build_work_specification
       @restaurant.build_agency_payment_info
       @restaurant.build_equipment_set
+    end
+
+    def load_restaurants
+     
     end
 
     # def get_associations(restaurant)

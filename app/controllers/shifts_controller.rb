@@ -3,6 +3,7 @@ class ShiftsController < ApplicationController
   before_action :load_shift, only: [ :show, :edit, :update, :destroy ]
   before_action :load_caller # will call load_restaurant or load_rider if applicable
   before_action :load_index_path 
+  before_action :check_credentials, only: [ :index ]
   before_action :load_shifts, only: [ :index ]
 
   def new
@@ -87,6 +88,10 @@ class ShiftsController < ApplicationController
       end
     end
 
+    def check_credentials
+
+    end
+
     def load_shifts
       case @caller
       when :restaurant
@@ -94,7 +99,12 @@ class ShiftsController < ApplicationController
       when :rider
         @shifts = Shift.joins(:assignment).where("assignments.rider_id = ?", @rider.id)
       when nil
-        @shifts = Shift.all
+        if credentials == 'Staffer'
+          @shifts = Shift.all
+        else 
+          flash[:error] = "You don't have permssion to view that page"
+          redirect_to root_path
+        end
       end
     end
 

@@ -11,11 +11,11 @@
               = render 'nav/dropdown'
             
             - elsif credentials == 'Manager'
-              = render 'nav/links_manager'
+              = render 'nav/links_manager', manager: current_account.user
               = render 'nav/dropdown'
 
             - elsif credentials == 'Rider'
-              = render 'nav/links_rider'
+              = render 'nav/links_rider', rider: current_account.user
               = render 'nav/dropdown'
          
           - else 
