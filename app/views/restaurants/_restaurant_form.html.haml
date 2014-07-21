@@ -8,9 +8,10 @@
         = render 'locations/fields', f: f
         = render 'managers/fields', object: f.object, f: f
         = render 'rider_payment_infos/fields', f: f
-        = render 'work_specifications/fields', f: f
-        = render 'equipment_sets/fields', f: f
-        = render 'agency_payment_infos/fields', f: f
+        - if credentials == 'Manager' || params[:action] == 'edit' || params[:action] == 'update'
+          = render 'work_specifications/fields', f: f
+          = render 'equipment_sets/fields', f: f
+          = render 'agency_payment_infos/fields', f: f
         %br/
         %br/
         .center

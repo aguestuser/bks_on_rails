@@ -10,9 +10,12 @@
       .center
         = link_to 'Create new manager', new_restaurant_manager_path(@restaurant.id) 
       = render @restaurant.rider_payment_info
-      = render @restaurant.work_specification, restaurant: @restaurant
-      = render @restaurant.equipment_set
-      = render @restaurant.agency_payment_info
+      - if @restaurant.work_specification
+        = render @restaurant.work_specification, restaurant: @restaurant
+      - if @restaurant.equipment_set
+        = render @restaurant.equipment_set
+      - if @restaurant.agency_payment_info
+        = render @restaurant.agency_payment_info
   .center
     = link_to 'Edit Profile', edit_restaurant_path(@restaurant), class: 'btn btn-large btn-primary'
       

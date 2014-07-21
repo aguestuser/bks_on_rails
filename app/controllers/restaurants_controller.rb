@@ -1,18 +1,19 @@
 class RestaurantsController < ApplicationController
   include LocatablesController, EquipablesController
   before_action :load_restaurant, only: [:show, :edit, :update, :destroy]
+  before_action :build_associations, only: [ :edit, :update ]
 
   def new
       @restaurant = Restaurant.new
       @restaurant.build_mini_contact
-      @restaurant.build_work_specification
-      @restaurant.build_rider_payment_info
-      @restaurant.build_agency_payment_info
       @restaurant.build_location # abstract to LocatablesController?
-      @restaurant.build_equipment_set # abstract to EquipablesController?
+      @restaurant.build_rider_payment_info
+      
+
       
       managers = @restaurant.managers.build
-      managers.build_account.build_contact     
+      managers.build_account.build_contact
+      # managers.build_account.build_contact     
   end
 
   def create
@@ -48,6 +49,12 @@ class RestaurantsController < ApplicationController
   private
     def load_restaurant
       @restaurant = Restaurant.find(params[:id])
+    end
+
+    def build_associations
+      @restaurant.build_work_specification
+      @restaurant.build_agency_payment_info
+      @restaurant.build_equipment_set
     end
 
     # def get_associations(restaurant)

@@ -12,6 +12,8 @@ describe "Restaurant Pages" do
   let!(:agency_payment) { restaurant.agency_payment_info }
   let!(:location) { restaurant.location }
 
+  # let!(:partial_restaurant) { FactoryGirl.build(:partial_restaurant) }
+
   let(:staffer) { FactoryGirl.create(:staffer) }
 
   before { mock_sign_in staffer }

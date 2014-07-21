@@ -19,4 +19,5 @@ class WorkSpecification < ActiveRecord::Base
   validates :zone, :daytime_volume, :evening_volume, presence: true
   validates :extra_work, inclusion: { in: [ true, false ] }
   validates :extra_work_description, presence: true, if: :extra_work 
+
 end
