@@ -31,7 +31,13 @@ class RidersController < ApplicationController
   end
 
   def index
-    @riders = Rider.all
+    if credentials == 'Rider'
+      @riders = Rider.find(current_account.user.id)
+    elsif credentials == 'Staffer'
+      @riders = Rider.all
+    else
+      redirect_to @manager
+    end
   end
 
   def edit

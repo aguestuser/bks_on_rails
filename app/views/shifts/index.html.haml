@@ -8,7 +8,7 @@
     = render 'shifts/index_and_new_links', caller: @caller
   .row
     .span8.offset2
-      = render 'shifts/tables/wrapper', shifts: @shifts, caller: :restaurant 
+      = render 'shifts/tables/wrapper', shifts: @shifts, caller: @caller
   - if can?(:manage, Shift)
     %p.center
       = render 'shifts/index_and_new_links', caller: @caller
@@ -19,7 +19,7 @@
     = render 'shifts/index_and_new_links', caller: @caller  
   .row
     .span8.offset2
-      = render 'shifts/tables/wrapper', shifts: @shifts, caller: :rider
+      = render 'shifts/tables/wrapper', shifts: @shifts, caller: @caller
   - if can? :manage, Shift
     = render 'shifts/index_and_new_links', caller: @caller 
 

@@ -3,16 +3,18 @@ class ShiftsController < ApplicationController
   before_action :load_shift, only: [ :show, :edit, :update, :destroy ]
   before_action :load_caller # will call load_restaurant or load_rider if applicable
   before_action :load_index_path 
-  before_action :load_shifts, only: [ :index ]
+  before_action :load_shifts, only: [ :create, :update, :index ]
 
   def new
     @shift = Shift.new
+    # @shift.restaurant_id = @restaurant.id if @restaurant
     @restaurants = Restaurant.all
     @it = @shift
   end
 
   def create
     @shift = Shift.new(shift_params)
+    # @shift.restaurant_id = @restaurant.id if @restaurant
     @it = @shift
     if @shift.save
       flash[:success] = "Shift created"
@@ -63,9 +65,9 @@ class ShiftsController < ApplicationController
       if params.include? :restaurant_id
         @caller = :restaurant
         load_restaurant
-      elsif params.include? :rider_id
-        @caller = :rider
-        load_rider
+      # elsif params.include? :rider_id
+      #   @caller = :rider
+      #   load_rider
       else 
         @caller = nil
       end
@@ -83,8 +85,8 @@ class ShiftsController < ApplicationController
       case @caller
       when :restaurant
         @index_path = restaurant_shifts_path(@restaurant)  
-      when :rider
-        @index_path = rider_shifts_path(@rider) 
+      # when :rider
+      #   @index_path = rider_shifts_path(@rider) 
       when nil
         @index_path = shifts_path
       end
@@ -108,6 +110,6 @@ class ShiftsController < ApplicationController
 
     def shift_params # permit :restaurant_id?
       params.require(:shift)
-        .permit(:restaurant_id, :start, :end, :urgency, :billing_rate, :notes )
+        .permit( :id, :restaurant_id, :start, :end, :urgency, :billing_rate, :notes )
     end
 end

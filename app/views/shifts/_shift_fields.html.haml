@@ -1,9 +1,10 @@
 = render 'shared/error_messages', object: f.object
-- if params.include? :restaurant_id
+- if caller == :restaurant
   %p
     %strong
       Restaurant: 
     = @restaurant.mini_contact.name
+  = f.hidden_field :restaurant_id, value: @restaurant.id
 - else
   = f.label :restaurant
   = f.collection_select :restaurant_id, Restaurant.all, :id, :name, include_blank: true

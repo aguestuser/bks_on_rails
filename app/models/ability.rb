@@ -17,7 +17,7 @@ class Ability
 
       # Riders blocked
     elsif account.user_type == 'Rider'
-      can [ :read, :update ], Rider, id: account.user.id
+      can [ :read, :update ], Rider, :id => account.user.id
       can :read, Staffer 
       can :read, Assignment, rider_id: account.user.id
       can :read, Shift, assignment: { rider_id: account.user.id }
