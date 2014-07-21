@@ -60,8 +60,8 @@ module RestaurantPageMacros
           'Daytime volume' => work_spec.daytime_volume,
           'Evening volume' => work_spec.evening_volume,
           'If you checked above, please explain:' => work_spec.extra_work_description,
-          'Password' => manager.account.password,
-          'Password confirmation' => manager.account.password_confirmation
+          # 'Password' => manager.account.password,
+          # 'Password confirmation' => manager.account.password_confirmation
         },
         selects: { 
           #location

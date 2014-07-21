@@ -21,6 +21,7 @@ module ShiftRequestMacros
   end
 
   def make_valid_shift_submission
+    select restaurant.name, from: 'shift_restaurant_id'
     select '08 AM', from: 'shift_start_4i'
     select '09 AM', from: 'shift_end_4i'
     click_button submit    

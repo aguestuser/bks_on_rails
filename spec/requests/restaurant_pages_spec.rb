@@ -29,7 +29,7 @@ describe "Restaurant Pages" do
       describe "with fully built model" do
         before { visit restaurant_path(full_restaurant) }
 
-        it { should have_h1("#{contact.name}") }
+        it { should have_h1("#{full_restaurant.mini_contact.name}") }
         it { should have_h3("Shifts") }
         it { should have_h3("Contact Info") }
         it { should have_content('Address:') }

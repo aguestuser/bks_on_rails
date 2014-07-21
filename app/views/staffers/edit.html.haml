@@ -1,5 +1,5 @@
 - provide(:title, 'Edit Staffer')
 %h1 Edit #{@staffer.contact.name}'s Profile
 = render 'staffer_form'
-= gravatar_for @contact, size: 80
+= gravatar_for @staffer.contact, size: 80
 = link_to 'Edit avatar', 'http://gravatar.com/emails', target: '_blank'

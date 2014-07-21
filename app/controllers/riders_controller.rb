@@ -12,13 +12,15 @@ class RidersController < ApplicationController
     @rider.build_rider_rating
     @rider.build_qualification_set
     @rider.build_skill_set
+
+    @it = @rider
   end
 
   def create
     @rider = Rider.new(rider_params)
+    @it = @rider
     if @rider.save
-      refresh_account @rider
-      flash[:success] = "Profile created for #{@contact.name}"
+      flash[:success] = "Profile created for #{@rider.contact.name}"
       redirect_to riders_path
     else
       render 'new'
@@ -38,7 +40,7 @@ class RidersController < ApplicationController
   def update
     @rider.update(rider_params)
     if @rider.save
-      flash[:success] = "#{@contact.name}'s profile has been updated"
+      flash[:success] = "#{@rider.contact.name}'s profile has been updated"
       redirect_to riders_path
     else
       render 'edit'

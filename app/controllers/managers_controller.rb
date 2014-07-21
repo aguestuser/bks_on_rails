@@ -7,11 +7,14 @@ class ManagersController < ApplicationController
     @manager = Manager.new
     @manager.build_account # abstract to UsersController?
     @manager.build_contact # abstract to ContactablesController?
+    @manager.restaurant = @restaurant
+    @it = @manager
   end
 
   def create
     @manager = Manager.new(manager_params)
     @manager.restaurant_id = @restaurant.id
+    @it = @manager
     if @manager.save
       flash[:success] = "Profile created for #{@manager.contact.name}."
       redirect_to restaurant_path(@restaurant.id)
@@ -29,8 +32,7 @@ class ManagersController < ApplicationController
   def update
     @manager.update(manager_params)
     if @manager.save
-      refresh_account @manager
-      flash[:success] = "#{@contact.name}'s profile has been updated"
+      flash[:success] = "#{@manager.contact.name}'s profile has been updated"
       redirect_to @manager.restaurant
     else
       render 'edit'
@@ -39,7 +41,7 @@ class ManagersController < ApplicationController
 
   def destroy
     @manager.destroy
-    flash[:success] = "All information associated with #{@contact.name} has been deleted"
+    flash[:success] = "All information associated with #{@manager.contact.name} has been deleted"
     redirect_to restaurant_path(@manager.restaurant)
   end
 

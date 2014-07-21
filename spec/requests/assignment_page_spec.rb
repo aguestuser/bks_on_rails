@@ -12,7 +12,7 @@ describe "Assignment Requests" do
   # let(:other_restaurant) { FactoryGirl.create(:restaurant) }
 
   let!(:shift){ FactoryGirl.create(:shift, :with_restaurant, restaurant: restaurant) }
-  let(:other_shift) { FactoryGirl.create(:shift, :with_restaurant, restaurant: restaurant) }
+  let!(:other_shift) { FactoryGirl.create(:shift, :with_restaurant, restaurant: restaurant) }
 
   let(:assignment) { Assignment.new( rider_id: rider.id, shift_id: shift.id) }
   let(:other_assignment) { Assignment.new( rider_id: rider.id, shift_id: other_shift.id) }
@@ -40,7 +40,7 @@ describe "Assignment Requests" do
     end
   end
 
-  describe "Assignments#index" do
+  describe "Assignments in Shifts#index" do
 
     before { assignment.save }
 

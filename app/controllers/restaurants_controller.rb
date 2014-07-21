@@ -9,16 +9,16 @@ class RestaurantsController < ApplicationController
       @restaurant.build_location # abstract to LocatablesController?
       @restaurant.build_rider_payment_info
       
-
-      
       managers = @restaurant.managers.build
       managers.build_account
       managers.build_contact
-      # managers.build_account.build_contact     
+      
+      @it = @restaurant     
   end
 
   def create
     @restaurant = Restaurant.new(restaurant_params)
+    @it = @restaurant
     if @restaurant.save
       flash[:success] = "Profile created for #{@restaurant.mini_contact.name}"
       redirect_to @restaurant
@@ -100,8 +100,8 @@ class RestaurantsController < ApplicationController
 
     def managers_params
       { managers_attributes: [ :restaurant_id, :id, 
-          account_attributes: [ :user_id, :id, :password, :password_confirmation,
-              contact_attributes: [ :account_id, :id, :name, :title, :phone, :email ] ] ] }
+          account_attributes: [ :user_id, :id, :password, :password_confirmation ],
+          contact_attributes: [ :contactable_id, :id, :name, :title, :phone, :email ] ] }
     end
 
     def rider_payment_params

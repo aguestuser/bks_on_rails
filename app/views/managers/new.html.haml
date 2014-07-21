@@ -5,6 +5,7 @@
     = form_for [@restaurant, @manager] do |f|
       = render 'shared/error_messages', object: f.object
       = render 'managers/fields', f: f, it: @it
+      %br/
       .center
         = f.submit "Create Manager", class: "btn btn-large btn-primary"
 

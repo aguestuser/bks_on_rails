@@ -29,6 +29,6 @@
     = render 'shifts/index_and_new_links', caller: @caller 
   .row
     .span10.offset1
-      = render 'shifts/tables/wrapper', shifts: @shifts, caller: nil  
+      = render 'shifts/tables/wrapper', shifts: @shifts, caller: @caller 
   - if can? :manage, Shift
     = render 'shifts/index_and_new_links', caller: @caller 

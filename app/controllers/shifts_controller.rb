@@ -8,10 +8,12 @@ class ShiftsController < ApplicationController
   def new
     @shift = Shift.new
     @restaurants = Restaurant.all
+    @it = @shift
   end
 
   def create
     @shift = Shift.new(shift_params)
+    @it = @shift
     if @shift.save
       flash[:success] = "Shift created"
       load_shifts
@@ -54,6 +56,7 @@ class ShiftsController < ApplicationController
 
     def load_shift
       @shift = Shift.find(params[:id])
+      @it = @shift
     end
 
    def load_caller

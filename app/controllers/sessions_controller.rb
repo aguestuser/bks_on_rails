@@ -6,8 +6,10 @@ class SessionsController < ApplicationController
   end
 
   def create
-    contact = Contact.find_by_email(params[:session][:email].downcase).first
-    account = contact.contactable.account
+    unless params[:session][:email].blank?
+      contact = Contact.find_by_email(params[:session][:email].downcase)
+      account = contact.contactable.account
+    end
     if account && account.authenticate(params[:session][:password])
       sign_in account
       redirect_back_or account.user

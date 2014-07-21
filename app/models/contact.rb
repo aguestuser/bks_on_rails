@@ -37,7 +37,7 @@ class Contact < ActiveRecord::Base
 
   #class methods
   def Contact.find_by_email(email)
-    Contact.where("email = ?", email)
+    Contact.where("email = ?", email).readonly(false).first
   end
   
 end

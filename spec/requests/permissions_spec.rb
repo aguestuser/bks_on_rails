@@ -102,8 +102,8 @@ describe "Authentication" do
       let(:other_restaurant_manager) { other_restaurant.managers.first }
 
       it "should have appropriate nav links" do
-        check_links ['Staffers', 'Account', 'Homepage', 'Settings', 'Sign out' ]
-        check_no_links [ 'Riders', 'Restaurants', 'Shifts' ]
+        check_links [ 'Shifts', 'Staffers', 'Account', 'Homepage', 'Edit Profile', 'Change Password', 'Sign out' ]
+        check_no_links [ 'Riders', 'Restaurants' ]
       end
 
       describe "profile page" do
@@ -177,8 +177,8 @@ describe "Authentication" do
       before { mock_sign_in rider }
 
       it "should have appropriate nav links" do
-        check_links [ 'Shifts', 'Staffers',  'Account', 'Homepage', 'Settings', 'Sign out'  ]
-        check_no_links [ 'Restaurants' ]
+        check_links [ 'Shifts', 'Staffers',  'Account', 'Homepage', 'Edit Profile', 'Change Password', 'Sign out'  ]
+        check_no_links [ 'Restaurants', 'Riders' ]
       end
 
       describe "root path" do

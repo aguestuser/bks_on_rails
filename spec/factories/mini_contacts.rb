@@ -14,7 +14,7 @@
 
 FactoryGirl.define do
   factory :mini_contact do
-    name "Wonderful Restaurant"
+    sequence(:name) { |n| "Wonderful Restaurant No. #{n}" }
     phone "831-915-5000"
     trait :with_restaurant do |restaurant|
       restaurant

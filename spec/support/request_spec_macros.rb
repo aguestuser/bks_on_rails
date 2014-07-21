@@ -34,7 +34,7 @@ module RequestSpecMacros
   end
 
   def get_nav_links
-    ['Home', 'Riders', 'Restaurants', 'Staffers', 'Account', 'Settings', 'Sign out']
+    [ 'Riders', 'Restaurants', 'Staffers', 'Account', 'Homepage', 'Edit Profile', 'Change Password', 'Sign out']
   end
 
   def check_no_links(links)

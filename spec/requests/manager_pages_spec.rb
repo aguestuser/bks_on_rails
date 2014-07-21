@@ -22,9 +22,11 @@ describe "Manager Pages" do
   end
 
   describe "Manager#new" do
-    before { visit  new_restaurant_manager_path(restaurant.id)}
+    before { visit  new_restaurant_manager_path(restaurant)}
+    
     let(:form_hash) { get_manager_form_hash }
     let(:submit) { 'Create Manager' }
+    
     describe "page contents" do
       it { should have_h1('Create Manager') }
       it { should have_h2("Restaurant: #{restaurant.mini_contact.name}") }
@@ -42,6 +44,7 @@ describe "Manager Pages" do
         let!(:old_restaurant_manager_count) { restaurant.managers.count }
         let!(:old_account_count) { Account.count }
         let!(:old_contact_count) { Contact.count }
+        
         before do
           fill_in_form form_hash
           click_button submit

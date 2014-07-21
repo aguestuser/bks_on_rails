@@ -6,10 +6,12 @@ class StaffersController < ApplicationController
     @staffer = Staffer.new
     @staffer.build_account #abstract?
     @staffer.build_contact #abstract?
+    @it = @staffer
   end
 
   def create
     @staffer = Staffer.new(staffer_params)
+    @it = @staffer
     if @staffer.save
       flash[:success] = "Profile created for #{@staffer.contact.name}."
       redirect_to @staffer

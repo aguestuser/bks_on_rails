@@ -16,7 +16,7 @@
     def contact_params
       { 
         contact_attributes: [
-          :id, :contact_id, :name, :title, :email, :phone
+          :id, :contactable_id, :name, :title, :email, :phone
         ]
       }
     end

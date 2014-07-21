@@ -4,8 +4,8 @@ include RequestSpecMacros
 include ShiftRequestMacros
 
 describe "Shift Requests" do
-  let(:restaurant) { FactoryGirl.create(:restaurant) }
-  let(:other_restaurant) { FactoryGirl.create(:restaurant) }
+  let!(:restaurant) { FactoryGirl.create(:restaurant) }
+  let!(:other_restaurant) { FactoryGirl.create(:restaurant) }
   let(:shift) { FactoryGirl.build(:shift, :with_restaurant, restaurant: restaurant) }
   let(:staffer) { FactoryGirl.create(:staffer) }
   before { mock_sign_in staffer }
@@ -32,11 +32,14 @@ describe "Shift Requests" do
     end
 
     describe "Shifts#index" do
-      before(:all) { 2.times { FactoryGirl.create(:shift, :without_restaurant) } }
-      after(:all) { Shift.last(2).each { |s| s.destroy } }
-      let(:shifts) { Shift.last(2) }
-      let(:first_restaurant) { shifts[0].restaurant }
-      let(:second_restaurant) { shifts[1].restaurant }
+      before do
+        FactoryGirl.create(:shift, :with_restaurant, restaurant: restaurant)
+        FactoryGirl.create(:shift, :with_restaurant, restaurant: other_restaurant)
+      end 
+      # after(:all) { Shift.last(2).each { |s| s.destroy } }
+      # let(:shifts) { Shift.last(2) }
+      # let(:first_restaurant) { shifts[0].restaurant }
+      # let(:second_restaurant) { shifts[1].restaurant }
 
       describe "from root path" do
 
@@ -48,15 +51,15 @@ describe "Shift Requests" do
           it { should have_link('Create shift') }
           it { should have_content('Restaurant') }
           it { should have_link('Action') }
-          it { should have_content(first_restaurant.mini_contact.name) }
-          it { should have_content(second_restaurant.mini_contact.name) }          
+          it { should have_content(restaurant.mini_contact.name) }
+          it { should have_content(other_restaurant.mini_contact.name) }          
         end
       end
 
       describe "from restaurant path" do
-        before { visit restaurant_shifts_path(first_restaurant) }
-        it { should have_content(first_restaurant.mini_contact.name) }
-        it { should_not have_content(second_restaurant.mini_contact.name) }
+        before { visit restaurant_shifts_path(restaurant) }
+        it { should have_content(restaurant.mini_contact.name) }
+        it { should_not have_content(other_restaurant.mini_contact.name) }
       end
     end
   end

@@ -6,7 +6,7 @@
     = @restaurant.mini_contact.name
 - else
   = f.label :restaurant
-  = f.collection_select :restaurant_id, Restaurant.all, :id, :name
+  = f.collection_select :restaurant_id, Restaurant.all, :id, :name, include_blank: true
 .datepicker
   = f.label :start
   = f.datetime_select :start, ampm: true

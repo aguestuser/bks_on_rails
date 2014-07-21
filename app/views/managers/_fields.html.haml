@@ -6,10 +6,11 @@
     = render 'contacts/fields', f: ff
   - if params[:action] == 'edit'
     .center
-      = link_to 'Create new manager', new_restaurant_manager_path(@restaurant.id)
+      = link_to 'Create new manager', new_restaurant_manager_path(it)
   %br/
 - elsif it.class == Manager
-  %h2 Restaurant: #{@manager.restaurant.mini_contact.name}
-  - if params[:action] == 'new'
-    = render 'accounts/fields', f: f
-  = render 'accounts/fields', f: f
+  %h2 Restaurant: #{it.restaurant.mini_contact.name}
+  .profile
+    - if params[:action] == 'new'
+      = render 'accounts/fields', f: f
+    = render 'contacts/fields', f: f
