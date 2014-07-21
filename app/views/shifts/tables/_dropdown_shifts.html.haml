@@ -4,8 +4,9 @@
     %b.caret
   %ul.dropdown-menu
     - if shift.assigned?
-      %li= link_to "Edit Assignment", edit_assignment_path(shift.assignment)
-      %li= link_to 'Assignment Details', assignment_path(shift.assignment)
+      / %li= link_to "Edit Assignment", edit_assignment_path(shift.assignment)
+      %li= link_to "Edit Assignment", edit_shift_assignment_path(shift, shift.assignment)    
+      %li= link_to 'Assignment Details', shift_assignment_path(shift, shift.assignment)
     - else
       %li= link_to 'Assign Shift', new_shift_assignment_path(shift)
     %li= link_to "Edit Shift", edit_shift_path(shift)

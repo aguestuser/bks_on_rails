@@ -28,7 +28,9 @@ BksOnRails::Application.routes.draw do
     resource :skill_set, only: [:new, :create, :edit, :update]
     resource :equipment_set, only: [:new, :create, :edit, :update]
     resources :assignments
-    resources :shifts
+    resources :shifts do
+      resources :assignments
+    end
   end
 
   resources :managers
@@ -42,14 +44,16 @@ BksOnRails::Application.routes.draw do
     resource :rider_payment_info, only: [:new, :create, :edit, :update]
     resource :agency_payment_info, only: [:new, :create, :edit, :update]
     resource :equipment_set, only: [:new, :create, :edit, :update]
-    resources :shifts
+    resources :shifts do
+      resources :assignments
+    end
   end
 
   resources :shifts do
-    resource :assignment
+    resources :assignments
   end
 
-  resources :assignments, only: [ :show, :edit, :update ]
+  # resources :assignments, only: [ :new, :create, :show, :edit, :update ]
 
 
 

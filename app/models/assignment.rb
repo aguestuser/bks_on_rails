@@ -20,7 +20,7 @@ class Assignment < ActiveRecord::Base
 
   classy_enum_attr :status, allow_nil: true, enum: 'AssignmentStatus'
 
-  validates :shift_id, :status, presence: true
+  validates :shift_id, :rider_id, :status, presence: true
 
   # validates :status, :assigned_by, :last_modified_by
   #   presence: true

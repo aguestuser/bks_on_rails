@@ -1,31 +1,37 @@
 - provide(:title, 'Shifts')
 
-- if @restaurant
-  - caller = 'restaurant'
+- case @caller
+
+- when :restaurant
   %h1 Shifts for #{@restaurant.mini_contact.name}
   - if can? :create, Shift
     %p.center
       = link_to 'See all shifts', shifts_path
       |
-      = render 'shifts/create_link', caller: caller
+      = render 'shifts/create_link', caller: @caller
+  .row
+    .span8.offset2
+      = render 'shifts/tables/wrapper', shifts: @shifts, caller: :restaurant 
+  - if can?(:manage, Shift)
+    %p.center
+      = link_to 'See all shifts', shifts_path
+      |
+      = link_to 'Create shift', new_restaurant_shift_path(@restaurant)
 
-- elsif @rider
-  - caller = 'rider'
+- when :rider
   %h1 Assignments for #{@rider.account.contact.name}
+  .row
+    .span8.offset2
+      = render 'shifts/tables/wrapper', shifts: @shifts, caller: :rider
+  - if can?(:manage, Shift)
+    %p.center
+      = link_to 'See all shifts', shifts_path 
 
-- else
-  - caller = 'default'
+- when nil
   %h1 Shifts
-  %p.center
-    = render 'shifts/create_link', caller: caller
-
-.row
-  .span10.offset1
-    = render 'shifts/tables/wrapper', shifts: @shifts, caller: caller
-
-%p.center
-  - if caller == 'rider' || caller == 'restaurant'
-    = link_to 'See all shifts', shifts_path
-  - if can? :create, Shift && caller != 'rider'
-    |
-    = render 'shifts/create_link', caller: caller
+  .row
+    .span10.offset1
+      = render 'shifts/tables/wrapper', shifts: @shifts, caller: nil  
+  - if can?(:manage, Shift)
+    %p.center
+      = link_to 'Create shift', new_shift_path

@@ -1,5 +1,5 @@
 .row
-  - if caller != 'restaurant'
+  - if caller != :restaurant
     .span2
       = link_to shift.restaurant.mini_contact.name, restaurant_path(shift.restaurant)
   .span2
@@ -9,4 +9,11 @@
   = render 'shifts/tables/row_partial', shift: shift, caller: caller
   - if can? :manage, @shift
     .span1
-      = render 'shifts/tables/dropdown', shift: shift
+      - case caller
+      - when :restaurant
+        = render 'shifts/tables/dropdown_restaurant_shifts', shift: shift
+      - when :rider
+        = render 'shifts/tables/dropdown_rider_shifts', shift: shift
+      - when nil # when nil
+        = render 'shifts/tables/dropdown_shifts', shift: shift
+        / = render 'shifts/tables/dropdown', shift: shift, caller: caller

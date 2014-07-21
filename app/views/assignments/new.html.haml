@@ -1,2 +1,15 @@
-%h1 Assignments#new
-%p Find me in app/views/assignments/new.html.haml
+- provide(:title, 'Assign Shift')
+%h1 Assign Shift
+.row
+  .span6.offset3
+    %p
+      = render 'assignments/shift_include', shift: @shift
+    - if @caller 
+      - form_subject = [ @shift.send(@caller), @shift, @assignment ]
+    - else
+      - form_subject = [ @shift, @assignment ]
+    = form_for(form_subject) do |f|
+      = render 'shared/error_messages', object: f.object
+      = render 'assignments/fields', f: f, caller: 'default'
+      .center
+        = f.submit "Assign shift", class: "btn btn-primary"

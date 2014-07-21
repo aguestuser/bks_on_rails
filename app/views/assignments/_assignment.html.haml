@@ -1,8 +1,7 @@
 %h3 Assignment Details
 %ul
   %li
-    %strong Shift: 
-    #{assignment.shift.start.strftime("%m/%d | %I:%M%p")} - #{assignment.shift.end.strftime("%I:%M%p")} @ #{assignment.shift.restaurant.mini_contact.name}
+    = render 'assignments/shift_include', shift: @shift
   %li
     %strong Assigned to:
     = assignment.rider.account.contact.name

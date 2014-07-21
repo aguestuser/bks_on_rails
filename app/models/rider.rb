@@ -23,4 +23,8 @@ class Rider < ActiveRecord::Base
   validates :active, 
     presence: true,
     inclusion: { in: [ true, false ] }
+
+  def name
+    self.account.contact.name
+  end
 end
