@@ -1,0 +1,12 @@
+- case caller
+- when :restaurant
+  %p.center
+    = link_to 'See all shifts', shifts_path
+    |
+    = link_to 'Create shift', new_restaurant_shift_path(@restaurant)
+- when :rider
+  %p.center
+    = link_to 'See all shifts', shifts_path
+- when nil
+  %p.center
+    = link_to 'Create shift', new_shift_path

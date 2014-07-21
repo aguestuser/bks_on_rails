@@ -1,2 +1,18 @@
-%h1 Assignments#edit
-%p Find me in app/views/assignments/edit.html.haml
+- provide(:title, 'Edit Shift Assignment')
+%h1 Edit Shift Assignment
+.row
+  .span6.offset3
+    %p
+      = render 'assignments/shift_include', shift: @shift
+    - case @caller 
+      - when :restaurant
+        - form_subject = [ @shift.restaurant, @shift, @assignment ]
+      - when :rider
+        - form_subject = [ @assignment.rider, @shift, @assignment ]
+      - when nil
+        - form_subject = [ @shift, @assignment ]
+    = form_for(form_subject) do |f|
+      = render 'shared/error_messages', object: f.object
+      = render 'assignments/fields', f: f, caller: @caller
+      .center
+        = f.submit "Save changes", class: "btn btn-primary"

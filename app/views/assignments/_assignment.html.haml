@@ -8,6 +8,14 @@
   %li
     %strong Status:
     = assignment.status.text
+
+- case caller
+- when :restaurant
+  - edit_path = edit_restaurant_shift_assignment_path(assignment.shift.restaurant, assignment.shift, assignment)
+- when :rider
+  - edit_path = edit_rider_shift_assignment_path(assignment.rider, assignment.shift, assignment)
+- when nil
+  - edith_path = edit_shift_assignment_path(assignment.shift, assignment)
 .center
-  = link_to 'Edit', edit_assignment_path(assignment)
+  = link_to 'Edit', edit_path
   

@@ -28,7 +28,7 @@ describe "Assignment Requests" do
     
     before do
       assignment.save
-      visit assignment_path(assignment)
+      visit shift_assignment_path(shift, assignment)
     end
 
     describe "page contents" do
@@ -61,7 +61,7 @@ describe "Assignment Requests" do
         it { should have_link('Edit Assignment') }
         it { should have_link('Assignment Details') }
         it { should have_link('Assign Shift') }
-        it { should have_link('Create new shift') }
+        it { should have_link('Create shift') }
         
         describe "with unassigned shift" do
           it { should have_content('--') }
@@ -88,7 +88,7 @@ describe "Assignment Requests" do
 
       it { should_not have_link(restaurant.mini_contact.name) }
       it { should have_content('Assigned to')}
-      it { should have_link('Create new shift') }
+      it { should have_link('Create shift') }
       it { should have_link('See all shifts') }
     end
 
@@ -179,12 +179,104 @@ describe "Assignment Requests" do
       before { visit new_rider_shift_assignment_path(rider, shift) }
       
       it { should have_an_error_message }
+      it { should have_h1("Assignments for #{rider.name}") }
     end
   end
 
   describe "Assignments#edit" do
+    before { assignment.save }
     
+    let(:submit) { 'Save changes' }
+
+    describe "from shifts path" do
+      before { visit edit_shift_assignment_path(shift, assignment) }
+
+      describe "page contents" do
+        check_form_contents :edit
+      end
+
+      describe "with invalid input" do
+        before  { make_invalid_submission }
+
+        it { should have_an_error_message }
+        it { should have_h1('Edit Shift Assignment') }
+      end
+
+      describe "with valid input" do
+        before { make_valid_edit }
+
+        describe "updating assignment attributes" do
+          subject { assignment.reload }
+
+          its(:rider) { should eq Rider.first }
+          its(:status) { should be_an_instance_of AssignmentStatus::CancelledByRider }          
+        end
+
+        describe "success redirect" do
+          subject { page }
+          
+          it { should have_success_message("Assignment updated (Rider: #{Rider.first.name}, Status: Cancelled (Rider))") }
+          it { should have_h1("Shifts") } 
+        end
+      end
+    end
+
+    describe "from restaurant path" do
+      before { visit edit_restaurant_shift_assignment_path(restaurant, shift, assignment) }
+
+      describe "page contents" do
+        check_form_contents :edit, :restaurant
+      end
+
+      describe "with invalid input" do
+        before { make_invalid_submission :restaurant }
+
+        it { should have_an_error_message }
+        it { should have_h1('Edit Shift Assignment') }
+      end
+
+      describe "with valid input" do
+        before { make_valid_edit }
+
+        describe "updating assignment attributes" do
+          subject { assignment.reload }
+
+          its(:rider) { should eq Rider.first }
+          its(:status) { should be_an_instance_of AssignmentStatus::CancelledByRider }
+        end
+
+        describe "success redirect" do
+          subject { page }
+
+          it { should have_success_message("Assignment updated (Rider: #{Rider.first.name}, Status: Cancelled (Rider))") }
+          it { should have_h1("Shifts for #{restaurant.name}") } 
+        end
+      end
+    end
+
+    describe "from riders path" do
+      before { visit edit_rider_shift_assignment_path(rider, shift, assignment) }      
+
+      describe "page contents" do
+        check_form_contents :edit, :rider        
+      end
+
+      describe "with valid input" do
+        before { make_valid_edit :rider }
+
+        describe "updating assignment attributes" do
+          subject { assignment.reload }
+
+          its(:status) { should be_an_instance_of AssignmentStatus::CancelledByRider } 
+        end
+
+        describe "success redirect" do
+          subject { page }
+
+          it { should have_success_message("Assignment updated (Rider: #{rider.name}, Status: Cancelled (Rider))") }
+          it { should have_h1("Assignments for #{rider.name}") }
+        end
+      end
+    end
   end
-
-
 end

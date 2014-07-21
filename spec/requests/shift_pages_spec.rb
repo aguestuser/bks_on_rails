@@ -110,7 +110,7 @@ describe "Shift Requests" do
       
       let(:submit) { 'Save changes' }
 
-      describe "from root path" do
+      describe "from shifts path" do
 
         before do 
           shift.save

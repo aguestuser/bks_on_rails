@@ -2,7 +2,7 @@ class AssignmentsController < ApplicationController
   
   # NOTE: always call through shift path
 
-  before_action :load_shift, only: [ :new, :create ]
+  before_action :load_shift
   before_action :load_assignment, only: [ :show, :edit, :update, :destroy ]
   before_action :load_caller # will call load_restaurant or load_rider if applicable
   before_action :load_index_path
@@ -30,7 +30,7 @@ class AssignmentsController < ApplicationController
   def update
     @assignment.update(assignment_params)
     if @assignment.save
-      flash[:success] = "Assignment updated"
+      flash[:success] = "Assignment updated (Rider: #{@assignment.rider.name}, Status: #{@assignment.status.text})"
       redirect_to @index_path
     else
       render 'edit'
@@ -54,7 +54,7 @@ class AssignmentsController < ApplicationController
     end
 
     def load_assignment
-      if params.include? :assignment_id
+      if params.include? :id
         @assignment = Assignment.find(params[:id])        
       elsif params.include? :shift_id
         @assignment = Assignment.where(shift_id: @shift.id)        
