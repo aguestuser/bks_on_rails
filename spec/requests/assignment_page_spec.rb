@@ -120,7 +120,7 @@ describe "Assignment Requests" do
       before { visit new_shift_assignment_path(shift) }
 
       describe "page contents" do
-        check_form_contents :new
+        check_assignment_form_contents :new
       end
 
       describe "form submission" do
@@ -132,7 +132,7 @@ describe "Assignment Requests" do
         end
 
         describe "with valid input" do
-          before { make_valid_submission }
+          before { make_valid_assignment_submission }
 
           let(:new_counts) { count_models [ Assignment ] }
         
@@ -149,7 +149,7 @@ describe "Assignment Requests" do
       before { visit new_restaurant_shift_assignment_path(restaurant, shift) }
 
       describe "page contents" do
-        check_form_contents :new, :restaurant
+        check_assignment_form_contents :new, :restaurant
       end
 
       describe "form submission" do
@@ -162,7 +162,7 @@ describe "Assignment Requests" do
         end
 
         describe "with valid input" do
-          before { make_valid_submission :restaurant }
+          before { make_valid_assignment_submission :restaurant }
 
           let(:new_counts) { count_models [ Assignment ] }
 
@@ -192,18 +192,18 @@ describe "Assignment Requests" do
       before { visit edit_shift_assignment_path(shift, assignment) }
 
       describe "page contents" do
-        check_form_contents :edit
+        check_assignment_form_contents :edit
       end
 
       describe "with invalid input" do
-        before  { make_invalid_submission }
+        before  { make_invalid_assignment_submission }
 
         it { should have_an_error_message }
         it { should have_h1('Edit Shift Assignment') }
       end
 
       describe "with valid input" do
-        before { make_valid_edit }
+        before { make_valid_assignment_edit }
 
         describe "updating assignment attributes" do
           subject { assignment.reload }
@@ -225,18 +225,18 @@ describe "Assignment Requests" do
       before { visit edit_restaurant_shift_assignment_path(restaurant, shift, assignment) }
 
       describe "page contents" do
-        check_form_contents :edit, :restaurant
+        check_assignment_form_contents :edit, :restaurant
       end
 
       describe "with invalid input" do
-        before { make_invalid_submission :restaurant }
+        before { make_invalid_assignment_submission :restaurant }
 
         it { should have_an_error_message }
         it { should have_h1('Edit Shift Assignment') }
       end
 
       describe "with valid input" do
-        before { make_valid_edit }
+        before { make_valid_assignment_edit }
 
         describe "updating assignment attributes" do
           subject { assignment.reload }
@@ -258,11 +258,11 @@ describe "Assignment Requests" do
       before { visit edit_rider_shift_assignment_path(rider, shift, assignment) }      
 
       describe "page contents" do
-        check_form_contents :edit, :rider        
+        check_assignment_form_contents :edit, :rider        
       end
 
       describe "with valid input" do
-        before { make_valid_edit :rider }
+        before { make_valid_assignment_edit :rider }
 
         describe "updating assignment attributes" do
           subject { assignment.reload }

@@ -21,7 +21,7 @@ describe "Shift Requests" do
       end      
       
       describe "page contents" do
-        it { should have_h2('Shift details') }
+        it { should have_h3('Shift Details') }
         it { should have_content('Restaurant:') }
         it { should have_content('Start:') }
         it { should have_content('End:') }
@@ -45,9 +45,9 @@ describe "Shift Requests" do
         describe "page contents" do
 
           it { should have_h1('Shifts')}
-          it { should have_link('Create new shift') }
+          it { should have_link('Create shift') }
           it { should have_content('Restaurant') }
-          it { should have_link('Options') }
+          it { should have_link('Action') }
           it { should have_content(first_restaurant.mini_contact.name) }
           it { should have_content(second_restaurant.mini_contact.name) }          
         end
@@ -73,19 +73,19 @@ describe "Shift Requests" do
         before { visit new_shift_path }
 
         it "should have correct form fields" do
-          check_form_fields 'root'
+          check_shift_form_contents 'root'
         end
 
         describe "form submission" do
 
           describe "with invalid input" do
-            before { make_invalid_submission }
+            before { make_invalid_shift_submission }
 
             it { should have_an_error_message }
           end
 
           describe "with valid input" do
-            before { make_valid_submission }
+            before { make_valid_shift_submission }
 
             describe "after submission" do
               let(:new_counts){ count_models models }
@@ -118,17 +118,17 @@ describe "Shift Requests" do
         end
         
         it "should have correct form fields" do
-          check_form_fields 'root'
+          check_shift_form_contents 'root'
         end 
 
         describe "with invalid input" do
-          before { make_invalid_submission }
+          before { make_invalid_shift_submission }
 
           it { should have_an_error_message }
         end
 
         describe "with valid input" do
-          before { make_valid_submission }
+          before { make_valid_shift_submission }
 
           it { should have_success_message('Shift updated') }
           it { should have_h1('Shifts') }

@@ -19,15 +19,11 @@ module RestaurantPageMacros
           'Title' => restaurant.managers.first.account.contact.title,
           'Phone' => restaurant.managers.first.account.contact.phone,
           'Email' => restaurant.managers.first.account.contact.email,
+          #manager.acccount
+          'restaurant_managers_attributes_0_account_attributes_password' => 'changeme123',
+          'restaurant_managers_attributes_0_account_attributes_password_confirmation' => 'changeme123',
           #rider_payment,
-          'Pay rate' => rider_payment.rate,
-          #work_spec,
-          'Delivery zone size' => work_spec.zone,
-          'Daytime volume' => work_spec.daytime_volume,
-          'Evening volume' => work_spec.evening_volume,
-          'If you checked above, please explain:' => work_spec.extra_work_description,
-          'Password' => manager.account.password,
-          'Password confirmation' => manager.account.password_confirmation
+          'Pay rate' => rider_payment.rate
           # excluded for Restaurants#new
           # 'Brief' => restaurant.brief
         },
@@ -36,9 +32,7 @@ module RestaurantPageMacros
           'Borough' => location.borough.text,
           'Neighborhood' => location.neighborhood.text,
           #rider_payment
-          'Rider payment method' => rider_payment.method.text,
-          #agency_payment
-          'Agency payment method' => agency_payment.method.text
+          'Rider payment method' => rider_payment.method.text
           #excluded for Restaurants#new
           # 'Status' => "is a newly signed up account. They say it gets busy. Let us know how it goes!"     
         },
@@ -46,6 +40,36 @@ module RestaurantPageMacros
           #restaurant
           # excluded for Restaurants#new
           # { label: 'Active', id: 'restaurant_active', value: true },
+         #rider_payment
+          { label: 'Shift meal provided?', id: 'restaurant_rider_payment_info_attributes_shift_meal', value: true },
+          { label: 'Cash out tips at end of each shift?', id: 'restaurant_rider_payment_info_attributes_cash_out_tips', value: true }
+        ]
+      }
+    when 'edit'
+      {
+        fields: { 
+          #contact
+          'Restaurant name' => 'Poop Palace', 
+          #manager.acccount
+          # 'restaurant_managers_attributes_0_account_attributes_password' => 'changeme123',
+          # 'restaurant_managers_attributes_0_account_attributes_password_confirmation' => 'changeme123',
+          # 'restaurant_managers_attributes_1_account_attributes_password' => 'changeme123',
+          # 'restaurant_managers_attributes_1_account_attributes_password_confirmation' => 'changeme123',
+          #work_spec,
+          'Delivery zone size' => work_spec.zone,
+          'Daytime volume' => work_spec.daytime_volume,
+          'Evening volume' => work_spec.evening_volume,
+          'If you checked above, please explain:' => work_spec.extra_work_description,
+          'Password' => manager.account.password,
+          'Password confirmation' => manager.account.password_confirmation
+        },
+        selects: { 
+          #location
+          'Borough' => 'Staten Island', 
+          #agency_payment
+          'Agency payment method' => agency_payment.method.text
+        },
+        checkboxes: [ 
           #equipment
           { label: 'Bike', id: 'restaurant_equipment_set_attributes_bike', value: true }, 
           { label: 'Lock', id: 'restaurant_equipment_set_attributes_lock', value: true },
@@ -56,24 +80,12 @@ module RestaurantPageMacros
           { label: 'Cell phone', id: 'restaurant_equipment_set_attributes_cell_phone', value: true },
           { label: 'Smart phone', id: 'restaurant_equipment_set_attributes_smart_phone', value: true },
           { label: 'Car', id: 'restaurant_equipment_set_attributes_car', value: true },
-          #rider_payment
-          { label: 'Shift meal provided?', id: 'restaurant_rider_payment_info_attributes_shift_meal', value: true },
-          { label: 'Cash out tips at end of each shift?', id: 'restaurant_rider_payment_info_attributes_cash_out_tips', value: true },
+          #work_spec
           { label: 'Riders expected to do non-delivery work?', id: 'restaurant_work_specification_attributes_extra_work', value: true },
+          #agency_payment
           { label: 'In-person payment collection requested?', id: 'restaurant_agency_payment_info_attributes_pickup_required', value: true }
+ 
         ]
-      }
-    when 'edit'
-      {
-        fields: { 
-          'Restaurant name' => 'Poop Palace', 
-          'restaurant_managers_attributes_0_account_attributes_password' => 'changeme123',
-          'restaurant_managers_attributes_0_account_attributes_password_confirmation' => 'changeme123',
-          'restaurant_managers_attributes_1_account_attributes_password' => 'changeme123',
-          'restaurant_managers_attributes_1_account_attributes_password_confirmation' => 'changeme123'
-        },
-        selects: { 'Borough' => 'Staten Island' },
-        checkboxes: [ {label: 'Bike', id: 'restaurant_equipment_set_attributes_bike', value: false } ]
       }
     else 
       raise "Invalid action argument passed to get_form_hash, must be 'create' or 'edit'."

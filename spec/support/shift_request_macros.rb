@@ -1,6 +1,6 @@
 module ShiftRequestMacros
 
-  def check_form_fields(path)
+  def check_shift_form_contents(path)
     expect(page).to have_label('Start')
     expect(page).to have_label('End')
     expect(page).to have_label('Urgency')
@@ -14,13 +14,13 @@ module ShiftRequestMacros
     end
   end
 
-  def make_invalid_submission
+  def make_invalid_shift_submission
     select '09 AM', from: 'shift_start_4i'
     select '08 AM', from: 'shift_end_4i'
     click_button submit       
   end
 
-  def make_valid_submission
+  def make_valid_shift_submission
     select '08 AM', from: 'shift_start_4i'
     select '09 AM', from: 'shift_end_4i'
     click_button submit    

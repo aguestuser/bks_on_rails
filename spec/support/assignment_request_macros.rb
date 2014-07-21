@@ -1,6 +1,6 @@
 module AssignmentRequestMacros
 
-  def check_form_contents(action, caller=nil)
+  def check_assignment_form_contents(action, caller=nil)
     it { should have_content('Shift:') }
     it { should have_content(assignment_start) }
     it { should have_content(assignment_end) }
@@ -17,19 +17,19 @@ module AssignmentRequestMacros
     end
   end
 
-  def make_valid_submission(caller=nil)
+  def make_valid_assignment_submission(caller=nil)
     select rider.name, from: 'assignment_rider_id' unless caller == :rider
     select 'Delegated', from: 'Status'
     click_button submit
   end
 
-  def make_valid_edit(caller=nil)
+  def make_valid_assignment_edit(caller=nil)
     select Rider.first.name, from: 'assignment_rider_id' unless caller == :rider
     select 'Cancelled (Rider)', from: 'Status' 
     click_button submit 
   end
 
-  def make_invalid_submission(caller=nil)
+  def make_invalid_assignment_submission(caller=nil)
     select '', from: 'assignment_rider_id' unless caller == :rider
     click_button submit
   end
