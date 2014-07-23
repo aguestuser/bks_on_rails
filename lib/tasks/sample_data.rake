@@ -8,6 +8,7 @@ namespace :db do
     make_shifts
     make_riders
     make_assignments
+    make_conflicts
   end
 end
 
@@ -248,6 +249,18 @@ def make_assignments
   end
 end
 
+def make_conflicts
+  Rider.all.each_with_index do |rider|
+    7.times do |n|
+      Conflict.create!(
+        rider_id: rider.id,
+        date: (n+14).days.from_now.beginning_of_day,
+        period: pick_period
+      )
+    end
+  end
+end
+
 
 # helpers
 
@@ -282,5 +295,11 @@ end
 def pick_assignment_status
   [ 
     :proposed, :delegated, :confirmed, :cancelled_by_rider, :cancelled_by_restaurant 
+  ].sample
+end
+
+def pick_period
+  [
+    :am, :pm, :double
   ].sample
 end
