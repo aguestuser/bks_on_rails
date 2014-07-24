@@ -7,14 +7,12 @@ class ShiftsController < ApplicationController
 
   def new
     @shift = Shift.new
-    # @shift.restaurant_id = @restaurant.id if @restaurant
     @restaurants = Restaurant.all
     @it = @shift
   end
 
   def create
     @shift = Shift.new(shift_params)
-    # @shift.restaurant_id = @restaurant.id if @restaurant
     @it = @shift
     if @shift.save
       flash[:success] = "Shift created"
@@ -26,7 +24,6 @@ class ShiftsController < ApplicationController
   end
 
   def show
-    # @restaurant = @shift.restaurant
   end
 
   def edit
@@ -65,9 +62,9 @@ class ShiftsController < ApplicationController
       if params.include? :restaurant_id
         @caller = :restaurant
         load_restaurant
-      # elsif params.include? :rider_id
-      #   @caller = :rider
-      #   load_rider
+      elsif params.include? :rider_id
+        @caller = :rider
+        load_rider
       else 
         @caller = nil
       end

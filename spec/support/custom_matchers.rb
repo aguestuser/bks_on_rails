@@ -37,6 +37,12 @@ module CustomMatchers
     end
   end
 
+  RSpec::Matchers.define :have_row_header do |text|
+    match do |page|
+      expect(page).to have_selector('div.header', text: text)
+    end
+  end
+
 
   RSpec::Matchers.define :have_success_message do |heading|
     match do |page|

@@ -1,0 +1,14 @@
+.row
+  - unless caller == :rider
+    .span2
+      = conflict.rider.contact.name
+  .span2
+    = conflict.date.strftime("%m/%d")
+  .span1
+    = conflict.period.text
+  .span1
+    = link_to 'Show', paths[:show].call(conflict)
+  .span1
+    = link_to 'Edit', paths[:edit].call(conflict)
+  .span1
+    = link_to 'Delete', paths[:show].call(conflict), method: :delete, data: { confirm: 'Are you sure?' }

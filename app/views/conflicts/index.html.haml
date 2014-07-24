@@ -1,0 +1,23 @@
+- provide(:title, "Conflicts" )
+
+- case @caller
+
+- when :rider
+  %h1 Conflicts for #{@rider.contact.name}
+  %p.center
+    = link_to 'Create conflict', @paths[:new]
+  .row
+    .span6.offset3
+      = render 'conflicts/table/wrapper', caller: @caller, conflicts: @conflicts, paths: @paths
+  %p.center
+    = link_to 'Create conflict', @paths[:new]
+
+- when nil
+  %h1 Conflicts for all riders
+  %p.center
+    = link_to 'Create conflict', @paths[:new]
+  .row
+    .span8.offset2
+      = render 'conflicts/table/wrapper', caller: @caller, conflicts: @conflicts, paths: @paths
+  %p.center
+    = link_to 'Create conflict', @paths[:new]

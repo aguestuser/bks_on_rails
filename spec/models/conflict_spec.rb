@@ -35,3 +35,5 @@ describe Conflict do
     check_associations conflict, [ :rider ]
   end
 end
+
+

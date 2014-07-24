@@ -1,0 +1,4 @@
+.table
+  = render 'conflicts/table/row_header', caller: caller
+  - conflicts.each do |conflict|
+    = render 'conflicts/table/row', caller: caller, conflict: conflict, paths: paths

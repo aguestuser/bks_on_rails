@@ -14,8 +14,8 @@
 
 FactoryGirl.define do
   factory :conflict do
-    date "2014-07-23 14:44:22"
-    period :am
+    sequence(:date) { |n| n.days.from_now.beginning_of_day }
+    sequence(:period) { |n| [ :am, :pm, :double ][n % 3] }
     trait :with_rider do |rider|
       rider
     end
