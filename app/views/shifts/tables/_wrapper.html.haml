@@ -1,4 +1,4 @@
 .table
   = render 'shifts/tables/row_header', caller: caller
   - shifts.each do |shift|
-    = render 'shifts/tables/row', shift: shift, caller: caller
+    = render 'shifts/tables/row', shift: shift, caller: caller, paths: paths

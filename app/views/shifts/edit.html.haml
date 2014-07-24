@@ -2,7 +2,7 @@
 %h1 Edit Shift
 .row
   .span6.offset3
-    = form_for(@shift) do |f|
+    = form_for @form_args do |f|
       = render 'shift_fields', f: f
       .center
         = f.submit "Save changes", class: "btn btn-primary"

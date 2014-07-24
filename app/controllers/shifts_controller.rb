@@ -1,23 +1,25 @@
 class ShiftsController < ApplicationController
+  include ShiftPaths
   
   before_action :load_shift, only: [ :show, :edit, :update, :destroy ]
-  before_action :load_caller # will call load_restaurant or load_rider if applicable
-  before_action :load_index_path 
-  before_action :load_shifts, only: [ :create, :update, :index ]
+  before_action :load_caller # will call load_restaurant or load_rider if applicable, load_paths always
+  before_action :load_form_args, only: [ :edit, :update ]
+  before_action :load_shifts, only: [ :index ]
 
   def new
     @shift = Shift.new
-    @restaurants = Restaurant.all
+    load_form_args
+    @restaurants = Restaurant.all if !params.include? :restaurant_id
     @it = @shift
   end
 
   def create
     @shift = Shift.new(shift_params)
+    load_form_args
     @it = @shift
     if @shift.save
       flash[:success] = "Shift created"
-      load_shifts
-      redirect_to @index_path
+      redirect_to @paths[:index]
     else
       render 'new'
     end
@@ -33,8 +35,7 @@ class ShiftsController < ApplicationController
     @shift.update(shift_params)
     if @shift.save
       flash[:success] = "Shift updated"
-      load_shifts
-      redirect_to @index_path
+      redirect_to @paths[:index]
     else
       render 'edit'
     end
@@ -46,10 +47,8 @@ class ShiftsController < ApplicationController
   def destroy
     @shift.destroy
     flash[:success] = "Shift deleted"
-    redirect_to @index_path
+    redirect_to @paths[:index]
   end
-
-  public
 
   private
 
@@ -68,6 +67,7 @@ class ShiftsController < ApplicationController
       else 
         @caller = nil
       end
+      load_paths
     end   
 
     def load_restaurant
@@ -78,14 +78,49 @@ class ShiftsController < ApplicationController
       @rider = Rider.find(params[:rider_id])
     end
 
-    def load_index_path
+    # def load_paths
+    #   case @caller
+    #   when :restaurant
+    #     @paths = {
+    #       show_shift: lambda { |shift| restaurant_shift_path(@restaurant, shift) },
+    #       edit_shift: lambda { |shift| edit_restaurant_shift_path(@restaurant, shift) },
+    #       new_shift: new_restaurant_shift_path,
+    #       index: restaurant_shifts_path(@restaurant),
+    #       show_assignment: lambda { |shift, assignment| restaurant_shift_assignment_path(@restaurant, shift, assignment) },
+    #       edit_assignment: lambda { |shift, assignment| edit_restaurant_shift_assignment_path(@restaurant, shift, assignment) },
+    #       new_assignment: lambda { |shift| new_restaurant_shift_assignment_path(@restaurant, shift) }
+    #     }
+    #   when :rider
+    #     @paths = {
+    #       show_shift: lambda { |shift| rider_shift_path(@rider, shift) },
+    #       edit_shift: lambda { |shift| edit_rider_shift_path(@rider, shift) },
+    #       new_shift: new_rider_shift_path,
+    #       index: rider_shifts_path(@rider),
+    #       show_assignment: lambda { |shift, assignment| rider_shift_assignment_path(@rider, shift, assignment) },
+    #       edit_assignment: lambda { |shift, assignment| edit_rider_shift_assignment_path(@rider, shift, assignment) },
+    #       new_assignment: lambda { |shift| new_rider_shift_assignment_path(@rider, shift) }
+    #     }
+    #   when nil
+    #     @paths = {
+    #       show_shift: lambda { |shift| shift_path(shift) },
+    #       edit_shift: lambda { |shift| edit_shift_path(shift) },
+    #       new_shift: new_shift_path,
+    #       index: shifts_path,
+    #       show_assignment: lambda { |shift, assignment| shift_assignment_path(shift, assignment) },
+    #       edit_assignment: lambda { |shift, assignment| edit_shift_assignment_path(shift, assignment) },
+    #       new_assignment: lambda { |shift| new_shift_assignment_path(shift) }          
+    #     }
+    #   end
+    # end
+
+    def load_form_args
       case @caller
       when :restaurant
-        @index_path = restaurant_shifts_path(@restaurant)  
-      # when :rider
-      #   @index_path = rider_shifts_path(@rider) 
+        @form_args = [ @restaurant, @shift ]
+      when :rider
+        @form_args = [ @rider, @shift ]
       when nil
-        @index_path = shifts_path
+        @form_args = @shift
       end
     end
 

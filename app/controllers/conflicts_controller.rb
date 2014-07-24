@@ -44,7 +44,6 @@ class ConflictsController < ApplicationController
         @caller = nil
       end
       load_paths
-      load_conflicts
     end
 
     def load_rider

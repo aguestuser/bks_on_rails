@@ -1,0 +1,13 @@
+.dropdown
+  %a.dropdown-toggle{"data-toggle" => "dropdown", :href => "#"}
+    Action
+    %b.caret
+  %ul.dropdown-menu
+    - if shift.assigned?
+      %li= link_to "Edit Assignment", paths[:edit_assignment].call(shift, shift.assignment)  
+      %li= link_to 'Assignment Details', paths[:show_assignment].call(shift, shift.assignment)
+    - else
+      %li= link_to 'Assign Shift', paths[:new_assignment].call(shift)
+    %li= link_to "Edit Shift", paths[:edit_shift].call(shift)
+    %li= link_to "Shift Details", paths[:show_shift].call(shift)
+    %li= link_to 'Delete', paths[:show_shift].call(shift), method: :delete, data: { confirm: 'Are you sure?' }

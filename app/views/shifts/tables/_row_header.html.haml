@@ -1,12 +1,12 @@
 .row.header
-  - if caller != :restaurant
+  - unless caller == :rider
     .span2
       Restaurant
   .span2
     Start
   .span1
     End
-  - if caller != :rider
+  - unless caller == :rider
     .span2
       Assigned to
   .span2

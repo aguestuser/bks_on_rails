@@ -1,11 +1,11 @@
 - if shift.assigned?
-  - if caller != :rider
+  - unless caller == :rider
     .span2 
       = shift.assignment.rider.contact.name
   .span2
     = shift.assignment.status.text
 - else 
-  - if caller != :rider
+  - unless caller == :rider
     .span2
       \--
   .span2

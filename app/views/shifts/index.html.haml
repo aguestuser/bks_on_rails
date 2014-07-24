@@ -1,34 +1,37 @@
 - provide(:title, 'Shifts')
 
+/ - if !@paths.nil? 
+/   - raise "#{@paths}"
+
 - case @caller
 
 - when :restaurant
   %h1 Shifts for #{@restaurant.mini_contact.name}
   - if can? :manage, Shift
-    = render 'shifts/index_and_new_links', caller: @caller
+    = render 'shifts/index_and_new_links', caller: @caller, paths: @paths
   .row
     .span8.offset2
-      = render 'shifts/tables/wrapper', shifts: @shifts, caller: @caller
+      = render 'shifts/tables/wrapper', shifts: @shifts, caller: @caller, paths: @paths
   - if can?(:manage, Shift)
     %p.center
-      = render 'shifts/index_and_new_links', caller: @caller
+      = render 'shifts/index_and_new_links', caller: @caller, paths: @paths
 
 - when :rider
   %h1 Assignments for #{@rider.contact.name}
   - if can? :manage, Shift
-    = render 'shifts/index_and_new_links', caller: @caller  
+    = render 'shifts/index_and_new_links', caller: @caller, paths: @paths
   .row
     .span8.offset2
-      = render 'shifts/tables/wrapper', shifts: @shifts, caller: @caller
+      = render 'shifts/tables/wrapper', shifts: @shifts, caller: @caller, paths: @paths
   - if can? :manage, Shift
-    = render 'shifts/index_and_new_links', caller: @caller 
+    = render 'shifts/index_and_new_links', caller: @caller, paths: @paths
 
 - when nil
   %h1 Shifts
   - if can? :manage, Shift
-    = render 'shifts/index_and_new_links', caller: @caller 
+    = render 'shifts/index_and_new_links', caller: @caller, paths: @paths
   .row
     .span10.offset1
-      = render 'shifts/tables/wrapper', shifts: @shifts, caller: @caller 
+      = render 'shifts/tables/wrapper', shifts: @shifts, caller: @caller, paths: @paths
   - if can? :manage, Shift
-    = render 'shifts/index_and_new_links', caller: @caller 
+    = render 'shifts/index_and_new_links', caller: @caller, paths: @paths 

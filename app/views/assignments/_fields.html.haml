@@ -3,4 +3,4 @@
   = f.collection_select :rider_id, Rider.all, :id, :name, include_blank: true
 = f.label :status
 = f.select :status, AssignmentStatus.select_options
-= f.hidden_field :shift_id, value: @assignment.shift.id
+= f.hidden_field :shift_id, value: shift.id

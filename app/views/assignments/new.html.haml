@@ -4,15 +4,8 @@
   .span6.offset3
     %p
       = render 'assignments/shift_include', shift: @shift
-    - case @caller 
-      - when :restaurant
-        - form_subject = [ @shift.restaurant, @shift, @assignment ]
-      - when :rider
-        - form_subject = [ @assignment.rider, @shift, @assignment ]
-      - when nil
-        - form_subject = [ @shift, @assignment ]
-    = form_for(form_subject) do |f|
+    = form_for @form_args do |f|
       = render 'shared/error_messages', object: f.object
-      = render 'assignments/fields', f: f, caller: 'default'
+      = render 'assignments/fields', f: f, caller: @caller, shift: @shift
       .center
         = f.submit "Assign shift", class: "btn btn-primary"

@@ -2,13 +2,7 @@
 %h1 Create Shift
 .row
   .span6.offset3
-    - if @caller == :restaurant
-      = form_for [ @restaurant, @shift ] do |f|
-        = render 'shift_fields', f: f, caller: @caller
-        .center
-          = f.submit "Create shift", method: :get, class: "btn btn-primary"
-    - else 
-      = form_for @shift do |f|
-        = render 'shift_fields', f: f, caller: @caller
-        .center
-          = f.submit "Create shift", method: :get, class: "btn btn-primary"
+    = form_for(@form_args) do |f|
+      = render 'shift_fields', f: f, caller: @caller
+      .center
+        = f.submit "Create shift", method: :get, class: "btn btn-primary"

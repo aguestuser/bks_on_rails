@@ -9,11 +9,4 @@
   = render 'shifts/tables/row_partial', shift: shift, caller: caller
   - if can? :manage, @shift
     .span1
-      - case caller
-      - when :restaurant
-        = render 'shifts/tables/dropdown_restaurant_shifts', shift: shift
-      - when :rider
-        = render 'shifts/tables/dropdown_rider_shifts', shift: shift
-      - when nil # when nil
-        = render 'shifts/tables/dropdown_shifts', shift: shift
-        / = render 'shifts/tables/dropdown', shift: shift, caller: caller
+      = render 'shifts/tables/dropdown', shift: shift, paths: paths

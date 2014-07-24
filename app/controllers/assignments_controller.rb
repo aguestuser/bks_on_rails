@@ -1,23 +1,27 @@
 class AssignmentsController < ApplicationController
-  
-  # NOTE: always call through shift path
+  include ShiftPaths
+
+  # NOTE: always call through shift_assignment_path, NEVER call directly through assignment_path
 
   before_action :load_shift
   before_action :load_assignment, only: [ :show, :edit, :update, :destroy ]
-  before_action :load_caller # will call load_restaurant or load_rider if applicable
-  before_action :load_index_path
+  before_action :load_caller # will call load_restaurant or load_rider if applicable, load_paths always
+  before_action :load_form_args, only: [ :edit, :update ]
   before_action :redirect_to_rider_shifts, only: [ :new, :create ]
 
   def new
     @assignment = Assignment.new
-    @assignment.shift = @shift      
+    load_form_args
+    # @assignment.shift = @shift      
   end
 
   def create
     @assignment = Assignment.new(assignment_params)
+    load_form_args
+
     if @assignment.save
       flash[:success] = "Shift assigned to #{@assignment.rider.contact.name}"
-      redirect_to @index_path
+      redirect_to @paths[:index]
     else
       render 'new'
     end
@@ -31,7 +35,7 @@ class AssignmentsController < ApplicationController
     @assignment.update(assignment_params)
     if @assignment.save
       flash[:success] = "Assignment updated (Rider: #{@assignment.rider.name}, Status: #{@assignment.status.text})"
-      redirect_to @index_path
+      redirect_to @paths[:index]
     else
       render 'edit'
     end
@@ -44,7 +48,9 @@ class AssignmentsController < ApplicationController
   end
 
   def destroy
-    
+    @assignment.destroy
+    flash[:success] = 'Assignment deleted'
+    redirect_to @paths[:index]
   end
 
   private 
@@ -73,6 +79,7 @@ class AssignmentsController < ApplicationController
       else 
         @caller = nil
       end
+      load_paths # included from concerns/shift_paths.rb
     end
 
     def load_restaurant
@@ -83,33 +90,23 @@ class AssignmentsController < ApplicationController
       @rider = Rider.find(params[:rider_id])
     end
 
+    def load_form_args
+      case @caller
+      when :restaurant
+        @form_args = [ @restaurant, @shift, @assignment ]
+      when :rider
+        @form_args = [ @rider, @shift, @assignment ]
+      when nil
+        @form_args = [ @shift, @assignment ]
+      end
+    end 
+
     def redirect_to_rider_shifts
       if @caller == :rider
         flash[:error] = "You can't create an assignment from a list of rider shifts. Try again from the shifts index or a list of restaurant shifts."
-        redirect_to @index_path
+        redirect_to @paths[:index]
       end
-    end
-
-    def load_index_path
-      case @caller
-      when :restaurant
-        @index_path = restaurant_shifts_path(@restaurant)
-      when :rider
-        @index_path = rider_shifts_path(@rider)
-      when nil
-        @index_path = shifts_path
-      end
-    end    
-
-    # def load_assignments
-    #   if shift_present?
-    #     @assignments = Assignment.where(shift: params[:shift_id])
-    #   elsif rider_present?
-    #     @assignments = Assignment.where(rider_id: params[:rider_id])
-    #   else
-    #     @assignments = Assignment.all
-    #   end 
-    # end
+    end  
 
     def assignment_params
       params

@@ -1,12 +1,12 @@
 - case caller
 - when :restaurant
   %p.center
-    = link_to 'See all shifts', shifts_path
+    = link_to 'See all shifts', paths[:index]
     |
-    = link_to 'Create shift', new_restaurant_shift_path(@restaurant)
+    = link_to 'Create shift', paths[:new_shift] 
 - when :rider
   %p.center
-    = link_to 'See all shifts', shifts_path
+    = link_to 'See all shifts', paths[:index]
 - when nil
   %p.center
-    = link_to 'Create shift', new_shift_path
+    = link_to 'Create shift', paths[:new_shift]
