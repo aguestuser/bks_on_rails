@@ -1,37 +1,37 @@
 - provide(:title, 'Shifts')
 
-/ - if !@paths.nil? 
-/   - raise "#{@paths}"
+/ - if !@shift_paths.nil? 
+/   - raise "#{@shift_paths}"
 
 - case @caller
 
 - when :restaurant
   %h1 Shifts for #{@restaurant.mini_contact.name}
   - if can? :manage, Shift
-    = render 'shifts/index_and_new_links', caller: @caller, paths: @paths
+    = render 'shifts/index_and_new_links', caller: @caller, paths: @shift_paths
   .row
     .span8.offset2
-      = render 'shifts/tables/wrapper', shifts: @shifts, caller: @caller, paths: @paths
+      = render 'shifts/tables/wrapper', shifts: @shifts, caller: @caller, paths: @shift_paths
   - if can?(:manage, Shift)
     %p.center
-      = render 'shifts/index_and_new_links', caller: @caller, paths: @paths
+      = render 'shifts/index_and_new_links', caller: @caller, paths: @shift_paths
 
 - when :rider
   %h1 Assignments for #{@rider.contact.name}
   - if can? :manage, Shift
-    = render 'shifts/index_and_new_links', caller: @caller, paths: @paths
+    = render 'shifts/index_and_new_links', caller: @caller, paths: @shift_paths
   .row
     .span8.offset2
-      = render 'shifts/tables/wrapper', shifts: @shifts, caller: @caller, paths: @paths
+      = render 'shifts/tables/wrapper', shifts: @shifts, caller: @caller, paths: @shift_paths
   - if can? :manage, Shift
-    = render 'shifts/index_and_new_links', caller: @caller, paths: @paths
+    = render 'shifts/index_and_new_links', caller: @caller, paths: @shift_paths
 
 - when nil
   %h1 Shifts
   - if can? :manage, Shift
-    = render 'shifts/index_and_new_links', caller: @caller, paths: @paths
+    = render 'shifts/index_and_new_links', caller: @caller, paths: @shift_paths
   .row
     .span10.offset1
-      = render 'shifts/tables/wrapper', shifts: @shifts, caller: @caller, paths: @paths
+      = render 'shifts/tables/wrapper', shifts: @shifts, caller: @caller, paths: @shift_paths
   - if can? :manage, Shift
-    = render 'shifts/index_and_new_links', caller: @caller, paths: @paths 
+    = render 'shifts/index_and_new_links', caller: @caller, paths: @shift_paths 

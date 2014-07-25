@@ -1,5 +1,5 @@
 class RestaurantsController < ApplicationController
-  include LocatablesController, EquipablesController
+  include LocatablesController, EquipablesController, ShiftPaths
   before_action :load_restaurant, only: [:show, :edit, :update, :destroy]
   before_action :build_associations, only: [ :edit, :update ]
 
@@ -28,6 +28,7 @@ class RestaurantsController < ApplicationController
   end
 
   def show
+    load_shift_paths # included from /controllers/concerns/shift_paths.rb
   end
 
   def index
@@ -56,6 +57,7 @@ class RestaurantsController < ApplicationController
 
     def load_restaurant
       @restaurant = Restaurant.find(params[:id])
+      @caller = :restaurant
       @it = @restaurant
     end
 

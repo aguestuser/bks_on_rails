@@ -14,11 +14,11 @@
         = it.phone
   .span2
     .edit
-      - case it.class
-      - when Staffer
-        - edit_path = edit_staffer_path(it)
-      - when Rider
-        - edit_path = edit_rider_path(it)
-      - when Manager
-        - edit_path = edith_manager_path(it)
-      = link_to 'Edit Profile', edit_path, class: 'btn btn-primary'
+      - case it.class.name
+      - when 'Staffer'
+        - edit_profile = edit_staffer_path(it)
+      - when 'Rider'
+        - edit_profile = edit_rider_path(it)
+      - when 'Manager'
+        - edit_profile = edit_restaurant_path(it.restaurant)
+      = link_to 'Edit Profile', edit_profile, class: 'btn btn-primary'

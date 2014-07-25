@@ -5,19 +5,27 @@
 - when :rider
   %h1 Conflicts for #{@rider.contact.name}
   %p.center
-    = link_to 'Create conflict', @paths[:new]
+    = link_to 'Create conflict', @conflict_paths[:new]
+    |
+    = link_to "#{@rider.contact.name}'s profile", rider_path(@rider)
   .row
     .span6.offset3
-      = render 'conflicts/table/wrapper', caller: @caller, conflicts: @conflicts, paths: @paths
+      = render 'conflicts/table/wrapper', caller: @caller, conflicts: @conflicts, paths: @conflict_paths
   %p.center
-    = link_to 'Create conflict', @paths[:new]
+    = link_to 'Create conflict', @conflict_paths[:new]
+    |
+    = link_to "#{@rider.contact.name}'s profile", rider_path(@rider)
 
 - when nil
-  %h1 Conflicts for all riders
+  %h1 Conflicts for All Riders
   %p.center
-    = link_to 'Create conflict', @paths[:new]
+    = link_to 'Create conflict', @conflict_paths[:new]
+    |
+    = link_to 'Rider list', riders_path
   .row
     .span8.offset2
-      = render 'conflicts/table/wrapper', caller: @caller, conflicts: @conflicts, paths: @paths
+      = render 'conflicts/table/wrapper', caller: @caller, conflicts: @conflicts, paths: @conflict_paths
   %p.center
-    = link_to 'Create conflict', @paths[:new]
+    = link_to 'Create conflict', @conflict_paths[:new]
+    |
+    = link_to 'Rider list', riders_path

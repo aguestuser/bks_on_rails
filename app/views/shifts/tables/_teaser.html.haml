@@ -1,25 +1,13 @@
-- if caller == 'restaurant'
+- case caller
+- when :restaurant
   %h3 Shifts
-- elsif caller == 'rider'
+- when :rider
   %h3 Assignments
-= render 'shifts/tables/wrapper', shifts: shifts.first(5), caller: caller
-/ .center
-/   - shifts.first(5).each do |shift|
-/     .row 
-/       .span2
-/         = shift.start.strftime("%m/%d/%y | %I:%M%p")
-/       .span1
-/         = shift.end.strftime("%I:%M%p")
-/       .span1
-/         = shift.urgency
-/       .span1
-/         = shift.billing_rate
-/       .span2
-/         = link_to 'Edit', edit_shift_path(shift)
-/         |
-/         = link_to 'Delete', shift, method: :delete, data: { confirm: 'Are you sure?' }
+.row
+  .span8.offset1
+    = render 'shifts/tables/wrapper', shifts: shifts, caller: caller, paths: paths
 %p.center
-  - if caller == 'restaurant'
-    = link_to 'See full list of shifts', restaurant_shifts_path(@restaurant.id)
-  - if caller == 'rider'
-    = link_to 'See full list of assignments', rider_shifts_path(@rider.id)
+  - if caller == :restaurant
+    = link_to 'See full list of shifts', paths[:index]
+  - if caller == :rider
+    = link_to 'See full list of assignments', paths[:index]

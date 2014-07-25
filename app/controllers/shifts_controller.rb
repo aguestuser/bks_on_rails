@@ -1,6 +1,6 @@
 class ShiftsController < ApplicationController
   include ShiftPaths
-  
+
   before_action :load_shift, only: [ :show, :edit, :update, :destroy ]
   before_action :load_caller # will call load_restaurant or load_rider if applicable, load_paths always
   before_action :load_form_args, only: [ :edit, :update ]
@@ -19,7 +19,7 @@ class ShiftsController < ApplicationController
     @it = @shift
     if @shift.save
       flash[:success] = "Shift created"
-      redirect_to @paths[:index]
+      redirect_to @shift_paths[:index]
     else
       render 'new'
     end
@@ -35,7 +35,7 @@ class ShiftsController < ApplicationController
     @shift.update(shift_params)
     if @shift.save
       flash[:success] = "Shift updated"
-      redirect_to @paths[:index]
+      redirect_to @shift_paths[:index]
     else
       render 'edit'
     end
@@ -47,7 +47,7 @@ class ShiftsController < ApplicationController
   def destroy
     @shift.destroy
     flash[:success] = "Shift deleted"
-    redirect_to @paths[:index]
+    redirect_to @shift_paths[:index]
   end
 
   private
@@ -67,7 +67,7 @@ class ShiftsController < ApplicationController
       else 
         @caller = nil
       end
-      load_paths
+      load_shift_paths
     end   
 
     def load_restaurant

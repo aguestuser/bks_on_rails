@@ -1,2 +1,11 @@
-%h1 Conflicts#edit
-%p Find me in app/views/conflicts/edit.html.haml
+- case @caller
+- when :rider
+  %h1 Edit Conflict for #{@rider.contact.name}
+- when nil
+  %h1 Edit Conflict
+.row
+  .span6.offset3
+    = form_for @form_args do |f|
+      = render 'conflicts/fields', f: f, caller: @caller
+      .center
+        = f.submit "Save changes", class: "btn btn-primary"

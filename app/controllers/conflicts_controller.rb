@@ -1,5 +1,6 @@
 class ConflictsController < ApplicationController
-  
+  include ConflictPaths
+
   before_action :load_conflict, only: [ :edit, :update, :show, :destroy ]
   before_action :load_caller # callbacks: load_rider (if applicable), load_paths
   before_action :load_form_args, only: [ :new, :create, :edit, :update ]
@@ -7,15 +8,32 @@ class ConflictsController < ApplicationController
   # before_action :load_rider, only: [ :index, :destroy ]
 
   def new
+    @conflict = Conflict.new
+    load_form_args
   end
 
   def create
+    @conflict = Conflict.new(conflict_params)
+    load_form_args
+    if @conflict.save
+      flash[:success] = "Created conflict for #{@conflict.rider.contact.name}"
+      redirect_to @conflict_paths[:index]
+    else
+      render 'new'
+    end
   end
 
   def edit
   end
 
   def update
+    @conflict.update(conflict_params)
+    if @conflict.save
+      flash[:success] = "Edited conflict for #{@conflict.rider.contact.name}"
+      redirect_to @conflict_paths[:index]
+    else
+      render 'edit'
+    end
   end
 
   def show
@@ -27,7 +45,7 @@ class ConflictsController < ApplicationController
   def destroy
     @conflict.destroy
     flash[:success] = "Conflict deleted"
-    render 'index'
+    redirect_to @conflict_paths[:index]
   end
 
   private
@@ -43,30 +61,11 @@ class ConflictsController < ApplicationController
       else
         @caller = nil
       end
-      load_paths
+      load_conflict_paths #included from controllers/concerns/conflict_paths.rb
     end
 
     def load_rider
       @rider = Rider.find(params[:rider_id])
-    end
-
-    def load_paths
-      case @caller
-      when :rider
-        @paths = {
-          index: rider_conflicts_path(@rider),
-          show: lambda { |conflict| rider_conflict_path(@rider, conflict) },
-          edit: lambda { |conflict| edit_rider_conflict_path(@rider, conflict) },
-          :new => new_rider_conflict_path(@rider)
-        }
-      when nil
-        @paths = {
-          index: conflicts_path,
-          show: lambda { |conflict| conflict_path(conflict) },
-          edit: lambda { |conflict| edit_conflict_path(conflict) },
-          :new => new_conflict_path
-        }
-      end
     end
 
     def load_form_args
@@ -85,5 +84,9 @@ class ConflictsController < ApplicationController
       when nil
         @conflicts = Conflict.all
       end
+    end
+
+    def conflict_params
+      params.require(:conflict).permit(:date, :period, :rider_id)
     end
 end

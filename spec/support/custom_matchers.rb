@@ -1,5 +1,9 @@
 module CustomMatchers
 
+  Capybara.add_selector(:link_by_href) do
+    xpath {|href| ".//a[@href='#{href}']"}
+  end
+
   RSpec::Matchers.define :have_an_error_message do
     match do |page|
       expect(page).to have_selector('div.alert.alert-error')

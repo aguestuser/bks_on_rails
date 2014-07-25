@@ -1,0 +1,6 @@
+%h3 Conflicts
+.row
+  .span5.offset2
+    = render 'conflicts/table/wrapper', conflicts: conflicts, caller: caller, paths: paths
+%p.center
+  = link_to 'See full list of conflicts', paths[:index]

@@ -21,7 +21,7 @@ class AssignmentsController < ApplicationController
 
     if @assignment.save
       flash[:success] = "Shift assigned to #{@assignment.rider.contact.name}"
-      redirect_to @paths[:index]
+      redirect_to @shift_paths[:index]
     else
       render 'new'
     end
@@ -35,7 +35,7 @@ class AssignmentsController < ApplicationController
     @assignment.update(assignment_params)
     if @assignment.save
       flash[:success] = "Assignment updated (Rider: #{@assignment.rider.name}, Status: #{@assignment.status.text})"
-      redirect_to @paths[:index]
+      redirect_to @shift_paths[:index]
     else
       render 'edit'
     end
@@ -50,7 +50,7 @@ class AssignmentsController < ApplicationController
   def destroy
     @assignment.destroy
     flash[:success] = 'Assignment deleted'
-    redirect_to @paths[:index]
+    redirect_to @shift_paths[:index]
   end
 
   private 
@@ -79,7 +79,7 @@ class AssignmentsController < ApplicationController
       else 
         @caller = nil
       end
-      load_paths # included from concerns/shift_paths.rb
+      load_shift_paths # included from concerns/shift_paths.rb
     end
 
     def load_restaurant
@@ -104,7 +104,7 @@ class AssignmentsController < ApplicationController
     def redirect_to_rider_shifts
       if @caller == :rider
         flash[:error] = "You can't create an assignment from a list of rider shifts. Try again from the shifts index or a list of restaurant shifts."
-        redirect_to @paths[:index]
+        redirect_to @shift_paths[:index]
       end
     end  
 

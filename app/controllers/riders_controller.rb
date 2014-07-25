@@ -1,5 +1,5 @@
 class RidersController < ApplicationController
-  include UsersController, ContactablesController, LocatablesController, EquipablesController
+  include UsersController, ContactablesController, LocatablesController, EquipablesController, ShiftPaths, ConflictPaths
 
   before_action :load_rider, only: [ :show, :edit, :update, :destroy ]
 
@@ -28,6 +28,8 @@ class RidersController < ApplicationController
   end
 
   def show
+    load_shift_paths # included from /controllers/concerns/shift_paths.rb
+    load_conflict_paths # included from /controllers/concerns/conflict_paths.rb
   end
 
   def index
@@ -57,6 +59,7 @@ class RidersController < ApplicationController
 
     def load_rider
       @rider = Rider.find(params[:id])
+      @caller = :rider
       @it = @rider
       # get_associations @rider
     end

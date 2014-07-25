@@ -3,7 +3,8 @@
   = render 'users/profile_header', it: @it
   .row
     .span10.offset1
-      = render 'shifts/tables/teaser', shifts: @rider.shifts, caller: 'rider'
+      = render 'shifts/tables/teaser', shifts: @rider.shifts.first(5), caller: @caller, paths: @shift_paths
+      = render 'conflicts/table/teaser', conflicts: @rider.conflicts.first(5), caller: @caller, paths: @conflict_paths
       = render @rider.contact
       = render @rider.location
       = render @rider.rider_rating

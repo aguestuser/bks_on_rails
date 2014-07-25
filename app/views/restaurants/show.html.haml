@@ -3,7 +3,7 @@
   = render 'profile_header'
   .row
     .span10.offset1
-      = render 'shifts/tables/teaser', shifts: @restaurant.shifts, caller: 'restaurant'
+      = render 'shifts/tables/teaser', shifts: @restaurant.shifts.first(5), caller: @caller, paths: @shift_paths
       = render @restaurant.mini_contact
       = render @restaurant.location
       = render @restaurant.managers, managers: @restaurant.managers

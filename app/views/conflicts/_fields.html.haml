@@ -1,0 +1,15 @@
+= render 'shared/error_messages', object: f.object
+- if caller == :rider
+  %p
+    %strong
+      Rider: 
+    = @rider.contact.name
+  = f.hidden_field :rider_id, value: @rider.id
+- else
+  = f.label :rider
+  = f.collection_select :rider_id, Rider.all, :id, :name, include_blank: true
+.datepicker
+  = f.label :date
+  = f.date_select :date
+  = f.label :period
+  = f.select :period, Period.select_options
