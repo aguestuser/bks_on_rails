@@ -127,12 +127,12 @@ class AssignmentsController < ApplicationController
 
     def no_conflicts?
       conflicts = @rider.conflicts_on @start
-      !@assignment.conflicts_with? conflicts
+      !@assignment.shift.conflicts_with? conflicts
     end
 
     def no_double_bookings?
-      assignments = @rider.assignemnts_on @start
-      !@assignment.double_books_with? assignments
+      shifts = @rider.shifts_on @start
+      !@assignment.shift.double_books_with? shifts
     end
 
     def assignment_params
