@@ -51,16 +51,6 @@ describe Rider do
         )
       end
     end
-    # assign shifts to rider (store as assignments)
-    let(:assignments) do
-      shifts.each.map do |shift|
-        Assignment.create!(
-          shift_id: shift.id,
-          rider_id: rider.id
-        )
-      end
-    end
-    # give rider conflicts 
     let(:conflicts) do
       2.times.map do |n|
         Conflict.create!(
@@ -70,16 +60,21 @@ describe Rider do
         )
       end
     end
-    describe "assignments_on(date)" do
-      it "should retrieve correct assignments" do
-        expect( rider.assignments_on(Date.new(2014,1,1)).include? assignments[0] ).to eq true        
-        expect( rider.assignments_on(Date.new(2014,1,1)).include? assignments[1] ).to eq false
+    describe "shifts_on(date)" do
+      before do 
+        shifts.each { |shift| shift.assign_to rider }
+      end
+      it "should retrieve correct shifts" do
+        expect( rider.shifts_on(Date.new(2014,1,1)).include? shifts[0] ).to eq true        
+        expect( rider.shifts_on(Date.new(2014,1,1)).include? shifts[1] ).to eq false
+        expect( rider.shifts_on(Date.new(2014,1,2)).include? shifts[0] ).to eq false        
+        expect( rider.shifts_on(Date.new(2014,1,2)).include? shifts[1] ).to eq true
       end
       it "should retrieve empty array for date with no assignments" do
-        expect( rider.assignments_on(Date.new(2014,2,1)) ).to eq []
+        expect( rider.shifts_on(Date.new(2014,2,1)) ).to eq []
       end
       it "should retrieve empty array for rider with no assignments on any date" do
-        expect( other_rider.assignments_on(Date.new(2014,1,1)) ).to eq []
+        expect( other_rider.shifts_on(Date.new(2014,1,1)) ).to eq []
       end
     end
 
@@ -87,6 +82,8 @@ describe Rider do
       it "should retrieve correct conflicts" do
         expect( rider.conflicts_on(Date.new(2014,1,1)).include? conflicts[0] ).to eq true        
         expect( rider.conflicts_on(Date.new(2014,1,1)).include? conflicts[1] ).to eq false
+        expect( rider.conflicts_on(Date.new(2014,1,2)).include? conflicts[0] ).to eq false        
+        expect( rider.conflicts_on(Date.new(2014,1,2)).include? conflicts[1] ).to eq true        
       end
       it "should retrieve empty array for date with no conflicts" do
         expect( rider.conflicts_on(Date.new(2014,2,1)) ).to eq []
