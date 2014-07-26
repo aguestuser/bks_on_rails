@@ -5,7 +5,7 @@
 - when :rider
   %h1 Conflicts for #{@rider.contact.name}
   %p.center
-    = link_to 'Create conflict', @conflict_paths[:new]
+    = link_to 'Create conflict', 'conflicts/new' #@conflict_paths[:new]
     |
     = link_to "#{@rider.contact.name}'s profile", rider_path(@rider)
   .row

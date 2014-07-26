@@ -7,6 +7,6 @@
   .span1
     = conflict.period.text
   .span2
-    = link_to 'Edit', paths[:edit].call(conflict)
+    = link_to 'Edit', "conflicts/#{conflict.id}/edit" 
     |
-    = link_to 'Delete', paths[:conflict].call(conflict), method: :delete, data: { confirm: 'Are you sure?' }
+    = link_to 'Delete', "conflicts/#{conflict.id}", method: :delete, data: { confirm: 'Are you sure?' }
