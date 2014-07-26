@@ -112,16 +112,17 @@ describe "Conflict Requests" do
         it { should have_h1("New Conflict for #{rider.contact.name}") }
         check_conflict_form_contents :new, :rider
       end
-    end
 
-    describe "form submission" do
-      before { click_button submit }
+      describe "form submission" do
+        before { click_button submit }
+        let(:new_counts){ count_models models }
 
-        it "should create a new conflict" do
-          check_model_counts_incremented old_counts, new_counts
-        end
-        it { should have_h1("Conflicts for #{rider.contact.name}") }
-        it { should have_success_message("Created conflict for #{rider.contact.name}") }
+          it "should create a new conflict" do
+            check_model_counts_incremented old_counts, new_counts
+          end
+          it { should have_h1("Conflicts for #{rider.contact.name}") }
+          it { should have_success_message("Created conflict for #{rider.contact.name}") }
+      end
     end
   end
 
