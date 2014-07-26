@@ -32,7 +32,7 @@ describe Shift do
 
   describe "validation" do
     let(:req_attrs) { attrs[0..4] }
-    let(:enums) { [ :period, :billing_rate, :urgency ] }  
+    let(:enums) { [ :billing_rate, :urgency ] }  
     it "shouldn't be valid without required attributes" do
       check_required_attributes shift, req_attrs
     end

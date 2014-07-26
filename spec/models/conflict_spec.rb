@@ -28,8 +28,20 @@ describe Conflict do
     
     it { should be_valid }
     it "should be invalid without required attribtues" do
-      check_required_attributes conflict, attrs[0..2]
+      check_required_attributes conflict, attrs
     end
+
+    describe "with end before start" do
+      before do
+        conflict.end = 5.years.ago
+      end
+      it { should_not be_valid }
+    end
+  end
+
+  describe "after save" do
+    before { conflict.save }
+    its(:period){ should_not be nil }
   end
 
   it "should respond to association messages" do

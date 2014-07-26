@@ -25,9 +25,8 @@ class Shift < ActiveRecord::Base
   classy_enum_attr :billing_rate
   classy_enum_attr :urgency
 
-  validates :restaurant_id, :start, :end, :billing_rate, :urgency,
+  validates :restaurant_id, :billing_rate, :urgency,
     presence: true
-  validate :start_before_end
 
   def assigned? #output: bool
     !self.assignment.nil?
@@ -40,8 +39,6 @@ class Shift < ActiveRecord::Base
       self.assignment = Assignment.create!(shift_id: self.id, rider_id: rider.id)
     end
   end
-
-
 
   private
 
