@@ -54,6 +54,9 @@ BksOnRails::Application.routes.draw do
     resources :assignments
   end
 
+  get 'assignments/override_conflict'
+  get 'assignments/override_double_booking'
+
   resources :conflicts
 
 

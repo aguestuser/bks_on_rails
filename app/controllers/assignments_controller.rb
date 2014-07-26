@@ -38,14 +38,11 @@ class AssignmentsController < ApplicationController
     end
   end
 
-  def no_conflicts?
-    conflicts = @rider.conflicts_on @start
-    !@assignment.conflicts_with? conflicts
+  def override_double_booking
   end
 
-  def no_double_bookings?
-    assignments = @rider.assignemnts_on @start
-    !@assignment.double_books_with? assignments
+  def override_conflict
+    
   end
 
   def edit
@@ -128,11 +125,22 @@ class AssignmentsController < ApplicationController
       end
     end  
 
+    def no_conflicts?
+      conflicts = @rider.conflicts_on @start
+      !@assignment.conflicts_with? conflicts
+    end
+
+    def no_double_bookings?
+      assignments = @rider.assignemnts_on @start
+      !@assignment.double_books_with? assignments
+    end
+
     def assignment_params
       params
         .require(:assignment)
         .permit(:rider_id, :shift_id, :status)
     end
+
 
 
 end

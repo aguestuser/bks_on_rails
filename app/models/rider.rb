@@ -32,11 +32,11 @@ class Rider < ActiveRecord::Base
     self.contact.name
   end
 
-  def assignments_on(date)
+  def assignments_on(date) #input: date obj, #output Arr of Assignments (possibly empty)
     self.assignments.joins(:shift).where( shifts: { start: (date.beginning_of_day..date.end_of_day) } )
   end
 
-  def conflicts_on(date)
+  def conflicts_on(date) #input: date obj, #output Arr of Conflicts (possibly empty)
     self.conflicts.where( start: (date.beginning_of_day..date.end_of_day) )
   end
 end

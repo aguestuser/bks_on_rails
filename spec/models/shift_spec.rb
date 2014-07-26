@@ -52,4 +52,15 @@ describe Shift do
     check_associations shift, associations
   end
 
+  describe "methods" do
+    let(:rider){ FactoryGirl.create(:rider) }
+    
+    describe "assign_to(rider)" do
+      before do
+        shift.save
+        shift.assign_to rider
+      end
+      specify { expect(shift.assignment.rider).to eq rider }
+    end
+  end
 end
