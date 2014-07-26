@@ -22,8 +22,12 @@ describe "Conflict Requests" do
     end
 
     it { should have_h3('Conflict Details') }
-    it { should have_content('Date:') }
-    it { should have_content(conflict.date.strftime("%m/%d")) }
+    it { should have_content('Rider:') }
+    it { should have_content(conflict.rider.contact.name) }
+    it { should have_content('Start:') }
+    it { should have_content(conflict.start.strftime("%m/%d | %I:%M%p")) }
+    it { should have_content('End:') }
+    it { should have_content(conflict.end.strftime("%I:%M%p")) }
     it { should have_content('Period:') }
     it { should have_content(conflict.period.text) }
   end
@@ -37,21 +41,24 @@ describe "Conflict Requests" do
 
     #table headers
     it { should have_h1("Conflicts for #{rider.contact.name}") }
-    it { should have_row_header('Date') }
+    it { should have_row_header('Start') }
+    it { should have_row_header('Start') }
     it { should have_row_header('Period') }
 
     #table rows
-    it { should have_content(conflicts[0].date.strftime("%m/%d")) }
-    it { should have_content(conflicts[1].date.strftime("%m/%d")) }
-    it { should have_content(conflict.period.text) }
-    it { should have_content(conflict.period.text) }
-    it { should have_link('Delete', href: rider_conflict_path(rider, conflicts[0])) }
-    it { should have_link('Delete', href: rider_conflict_path(rider, conflicts[1])) }
+    it { should have_content(conflicts[0].start.strftime("%m/%d | %I:%M%p")) }
+    it { should have_content(conflicts[1].end.strftime("%I:%M%p")) }
+    it { should have_content(conflicts[0].period.text) }
+    it { should have_content(conflicts[1].period.text) }
+    it { should have_link('Edit', href: "conflicts/#{conflicts[0].id}/edit") }
+    it { should have_link('Edit', href: "conflicts/#{conflicts[1].id}/edit") }
+    it { should have_link('Delete', href: "conflicts/#{conflicts[0].id}") }
+    it { should have_link('Delete', href: "conflicts/#{conflicts[1].id}") }
 
-    it { should_not have_content(other_conflict.date.strftime("%m/%d")) }
+    it { should_not have_content(other_conflict.start.strftime("%m/%d | %I:%M%p")) }
 
     it "should be able to delete a conflict" do
-      expect{ click_link('Delete', href: rider_conflict_path(rider, conflicts[0])) }.to change(Conflict, :count).by(-1)
+      expect{ click_link('Delete', href: "conflicts/#{conflicts[0].id}") }.to change(Conflict, :count).by(-1)
     end
   end
 
@@ -82,15 +89,12 @@ describe "Conflict Requests" do
       describe "form submission" do
 
         describe "with invalid input" do
-          before { click_button submit }
+          before { make_invalid_conflict_submission }
           it { should have_an_error_message }
         end
 
         describe "with valid input" do
-          before do
-            select rider.contact.name, from: 'conflict_rider_id'
-            click_button submit
-          end
+          before { make_valid_conflict_submission }
           let(:new_counts){ count_models models }
 
           it "should create a new conflict" do
@@ -114,14 +118,22 @@ describe "Conflict Requests" do
       end
 
       describe "form submission" do
-        before { click_button submit }
-        let(:new_counts){ count_models models }
+
+        describe "with invalid input" do
+          before { make_invalid_conflict_submission }
+          it { should have_an_error_message }          
+        end
+
+        describe "with valid input" do
+          before { make_valid_conflict_submission(:rider) }
+          let(:new_counts){ count_models models }
 
           it "should create a new conflict" do
             check_model_counts_incremented old_counts, new_counts
           end
           it { should have_h1("Conflicts for #{rider.contact.name}") }
           it { should have_success_message("Created conflict for #{rider.contact.name}") }
+        end
       end
     end
   end
@@ -131,7 +143,6 @@ describe "Conflict Requests" do
       rider
       conflict.save
     end
-
     let(:submit) { 'Save changes' }
 
     describe "from root path" do
@@ -145,23 +156,17 @@ describe "Conflict Requests" do
       describe "form submission" do
 
         describe "with invalid input" do
-          before do 
-            select '', from: 'conflict_rider_id'
-            click_button submit 
-          end
+          before { make_invalid_conflict_submission }
           it { should have_an_error_message }
         end
 
         describe "with valid input" do
-          before do
-            select Period::Double.new.text, from: 'Period'
-            click_button submit
-          end
+          before { make_valid_conflict_edit }
 
           it { should have_h1('Conflicts for All Riders') }
           it { should have_success_message("Edited conflict for #{rider.contact.name}") }
           it "should save edit" do
-            expect( conflict.reload.period ).to be_an_instance_of Period::Double
+            expect( conflict.reload.start.hour ).to eq 1
           end
         end
       end
@@ -176,54 +181,48 @@ describe "Conflict Requests" do
       end
 
       describe "form submission" do
-        before do 
-          select Period::Double.new.text, from: 'Period'
-          click_button submit
+
+        describe "with invalid input" do
+          before { make_invalid_conflict_submission }
+          it { should have_an_error_message }
         end
 
-        it { should have_h1("Conflicts for #{rider.contact.name}") }
-        it { should have_success_message("Edited conflict for #{rider.contact.name}") }
-        it "should edit the conflict" do
-          expect( conflict.reload.period ).to be_an_instance_of Period::Double
+        describe "with valid input" do
+          before { make_valid_conflict_edit }
+
+          it { should have_h1("Conflicts for #{rider.contact.name}") }
+          it { should have_success_message("Edited conflict for #{rider.contact.name}") }
+          it "should edit the conflict" do
+            expect( conflict.reload.start.hour ).to eq 1
+          end                    
         end
       end
     end
   end  
 
-  describe "Conflicts#delete" do
+  describe "Conflicts#delete redirects" do
     
     before do
       rider
       conflicts.each(&:save)     
-    end
-    let(:models){ [Conflict] }
-    let!(:old_counts) { count_models models }    
+    end 
 
     describe "from (root) conflicts index" do
-      before do 
+      before do
         visit conflicts_path
-        find(:link_by_href, conflict_path(conflict)).click
+        click_link('Delete', href: "conflicts/#{conflicts[0].id}")
       end
-      let(:new_counts) { count_models models }
 
       it { should have_h1('Conflicts for All Riders') }
-      it "should delete conflict " do
-        check_model_counts_decremented old_counts, new_counts
-      end
     end
-
 
     describe "from rider conflicts index" do
       before do 
         visit rider_conflicts_path(rider)
-        find(:link_by_href, rider_conflict_path(rider, conflict)).click
+        click_link('Delete', href: "conflicts/#{conflicts[0].id}") 
       end
-      let(:new_counts) { count_models models }
 
       it { should have_h1("Conflicts for #{rider.contact.name}") }
-      it "should delete conflict " do
-        check_model_counts_decremented old_counts, new_counts
-      end
     end
   end
 end

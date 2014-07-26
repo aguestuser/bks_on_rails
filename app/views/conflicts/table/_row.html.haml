@@ -3,7 +3,9 @@
     .span2
       = conflict.rider.contact.name
   .span2
-    = conflict.date.strftime("%m/%d")
+    = conflict.start.strftime("%m/%d | %I:%M%p")
+  .span1
+    = conflict.end.strftime("%I:%M%p")
   .span1
     = conflict.period.text
   .span2

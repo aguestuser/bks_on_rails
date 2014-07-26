@@ -9,7 +9,7 @@
   = f.label :rider
   = f.collection_select :rider_id, Rider.all, :id, :name, include_blank: true
 .datepicker
-  = f.label :date
-  = f.date_select :date
-  = f.label :period
-  = f.select :period, Period.select_options
+  = f.label :start
+  = f.datetime_select :start, minute_step: 30, ampm: true
+  = f.label :end
+  = f.datetime_select :end, minute_step: 30, ampm: true

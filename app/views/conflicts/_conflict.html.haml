@@ -1,8 +1,14 @@
 %h3 Conflict Details
 %ul
   %li
-    %strong Date:
-    = conflict.date.strftime("%m/%d")
+    %strong Rider:
+    = conflict.rider.contact.name
+  %li
+    %strong Start:
+    = conflict.start.strftime("%m/%d | %I:%M%p")
+  %li
+    %strong End:
+    = conflict.end.strftime("%I:%M%p")
   %li
     %strong Period:
     = conflict.period.text
