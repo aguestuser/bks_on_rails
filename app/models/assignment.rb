@@ -33,6 +33,22 @@ class Assignment < ActiveRecord::Base
   #   Account.find(self.last_modified_by_id)
   # end
 
+  def conflicts_with?(conflicts)
+    conflicts.each do |conflict|
+      return true if conflict.start < self.shift.end || conflict.end > self.shift.start 
+      # ie: if the conflict starts before shift end or ends after shift start 
+    end
+    false
+  end
+
+  def double_books_with?(assignments)
+    assignments.each do |assignment|
+      return true if assignment.shift.start < self.shift.end || assignment.shift.end > self.shift.start 
+      # ie: if the assignment starts before shift end or ends after shift start
+    end
+    false
+  end
+
   private
 
     def status_nil?

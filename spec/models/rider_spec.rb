@@ -13,6 +13,7 @@ include ValidationMacros
 
 describe Rider do
   let(:rider) { FactoryGirl.build(:rider) }
+  let!(:restaurant) { FactoryGirl.create(:restaurant) }
   let(:attrs) { [ :active ] }
   let(:associations) { [ :account, :contact, :equipment_set, :qualification_set, :rider_rating, :location, :assignments, :shifts ] }
 
@@ -32,6 +33,67 @@ describe Rider do
   describe "associations" do
     it "should respond to references to all associated models" do
       check_associations rider, associations
+    end
+  end
+
+  describe "methods" do
+    before { rider.save }
+    let(:other_rider) { FactoryGirl.create(:rider) }
+    # create 2 shifts on 1/1/14
+    let(:shifts) do
+      2.times.map do |n| 
+        Shift.create!(
+          restaurant_id: 1,
+          start: DateTime.new(2014,1,n+1,11),
+          :end => DateTime.new(2014,1,n+1,17),
+          billing_rate: :normal,
+          urgency: :weekly
+        )
+      end
+    end
+    # assign shifts to rider (store as assignments)
+    let(:assignments) do
+      shifts.each.map do |shift|
+        Assignment.create!(
+          shift_id: shift.id,
+          rider_id: rider.id
+        )
+      end
+    end
+    # give rider conflicts 
+    let(:conflicts) do
+      2.times.map do |n|
+        Conflict.create!(
+          rider_id: rider.id,
+          start: DateTime.new(2014,1,n+1,17),
+          :end => DateTime.new(2014,1,n+1,23),          
+        )
+      end
+    end
+    describe "assignments_on(date)" do
+      it "should retrieve correct assignments" do
+        expect( rider.assignments_on(Date.new(2014,1,1)).include? assignments[0] ).to eq true        
+        expect( rider.assignments_on(Date.new(2014,1,1)).include? assignments[1] ).to eq false
+      end
+      it "should retrieve empty array for date with no assignments" do
+        expect( rider.assignments_on(Date.new(2014,2,1)) ).to eq []
+      end
+      it "should retrieve empty array for rider with no assignments on any date" do
+        expect( other_rider.assignments_on(Date.new(2014,1,1)) ).to eq []
+      end
+    end
+
+    describe "conflicts_on(date)" do
+      it "should retrieve correct conflicts" do
+        expect( rider.conflicts_on(Date.new(2014,1,1)).include? conflicts[0] ).to eq true        
+        expect( rider.conflicts_on(Date.new(2014,1,1)).include? conflicts[1] ).to eq false
+      end
+      it "should retrieve empty array for date with no conflicts" do
+        expect( rider.conflicts_on(Date.new(2014,2,1)) ).to eq []
+      end
+      it "should retrieve empty array for rider with no conflicts on any date" do
+        expect( other_rider.conflicts_on(Date.new(2014,1,1)) ).to eq []
+      end      
     end
   end
 end

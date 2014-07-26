@@ -19,13 +19,33 @@ class AssignmentsController < ApplicationController
     @assignment = Assignment.new(assignment_params)
     load_form_args
 
-    if @assignment.save
-      flash[:success] = "Shift assigned to #{@assignment.rider.contact.name}"
-      redirect_to @shift_paths[:index]
-    else
-      render 'new'
+    @start = @assignment.shift.start
+    @end = @assignment.shift.end
+
+    if no_conflicts?
+      if no_double_bookings?
+        if @assignment.save
+          flash[:success] = "Shift assigned to #{@assignment.rider.contact.name}"
+          redirect_to @shift_paths[:index]
+        else
+          render 'new'
+        end        
+      else
+        render 'override_double_booking'
+      end
+    else 
+      render 'override_conflict'
     end
-    
+  end
+
+  def no_conflicts?
+    conflicts = @rider.conflicts_on @start
+    !@assignment.conflicts_with? conflicts
+  end
+
+  def no_double_bookings?
+    assignments = @rider.assignemnts_on @start
+    !@assignment.double_books_with? assignments
   end
 
   def edit
