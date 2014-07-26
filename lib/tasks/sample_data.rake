@@ -155,10 +155,10 @@ def make_restaurants
   def make_shifts
     Restaurant.all.each do |restaurant|
       21.times do |n|
-        start_1 = n.days.from_now.beginning_of_day + 12.hours
-        end_1 = start_1 + 6.hours
-        start_2 = end_1
-        end_2 = start_2 + 6.hours
+        start_1 = times(n)[0][:start]
+        end_1 = times(n)[0][:end]
+        start_2 = times(n)[1][:start]
+        end_2 = times(n)[1][:end]
 
         Shift.create!(
           restaurant_id: restaurant.id,
@@ -252,10 +252,12 @@ end
 def make_conflicts
   Rider.all.each_with_index do |rider|
     7.times do |n|
+      start = times(n)[0][:start] + (n+14).days
+      end_ = times(n)[0][:end] + (n+14).days
       Conflict.create!(
         rider_id: rider.id,
-        date: (n+14).days.from_now.beginning_of_day,
-        period: pick_period
+        start: start,
+        :end => end_
       )
     end
   end
@@ -297,6 +299,21 @@ def pick_assignment_status
     :proposed, :delegated, :confirmed, :cancelled_by_rider, :cancelled_by_restaurant 
   ].sample
 end
+
+def times(n)
+  start = n.days.from_now.beginning_of_day + 12.hours
+  [
+    {
+      start: start,
+      :end => start + 6.hours
+    },
+    {
+      start: start + 6.hours,
+      :end => start + 12.hours
+    }
+  ]
+end
+
 
 def pick_period
   [

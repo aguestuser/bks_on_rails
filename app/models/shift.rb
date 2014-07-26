@@ -15,15 +15,17 @@
 #
 
 class Shift < ActiveRecord::Base
+  include Timeboxable
+
   belongs_to :restaurant
   has_one :assignment, dependent: :destroy
     accepts_nested_attributes_for :assignment
 
-  classy_enum_attr :period, allow_nil: true
+  
   classy_enum_attr :billing_rate
   classy_enum_attr :urgency
 
-  validates :start, :end, :billing_rate, :urgency,
+  validates :restaurant_id, :start, :end, :billing_rate, :urgency,
     presence: true
   validate :start_before_end
 
@@ -43,9 +45,5 @@ class Shift < ActiveRecord::Base
 
   private
 
-    def start_before_end
-      if self.end.present? && start.present? && self.end <= start
-        errors.add(:end, "can't be before start")
-      end  
-    end
+
 end

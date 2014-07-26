@@ -3,11 +3,12 @@
 # Table name: conflicts
 #
 #  id         :integer          not null, primary key
-#  date       :datetime
 #  period     :string(255)
 #  rider_id   :integer
 #  created_at :datetime
 #  updated_at :datetime
+#  start      :datetime
+#  end        :datetime
 #
 
 require 'spec_helper'
@@ -15,7 +16,7 @@ include ValidationMacros
 
 describe Conflict do
   let(:conflict) { FactoryGirl.build(:conflict, :without_rider) }
-  let(:attrs) { [ :rider_id, :date, :period ] }
+  let(:attrs) { [ :rider_id, :start, :end, :period ] }
 
   subject { conflict }
 
@@ -27,7 +28,7 @@ describe Conflict do
     
     it { should be_valid }
     it "should be invalid without required attribtues" do
-      check_required_attributes conflict, attrs
+      check_required_attributes conflict, attrs[0..2]
     end
   end
 

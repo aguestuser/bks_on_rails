@@ -3,19 +3,20 @@
 # Table name: conflicts
 #
 #  id         :integer          not null, primary key
-#  date       :datetime
 #  period     :string(255)
 #  rider_id   :integer
 #  created_at :datetime
 #  updated_at :datetime
+#  start      :datetime
+#  end        :datetime
 #
 
 # Read about factories at https://github.com/thoughtbot/factory_girl
 
 FactoryGirl.define do
   factory :conflict do
-    sequence(:date) { |n| n.days.from_now.beginning_of_day }
-    sequence(:period) { |n| [ :am, :pm, :double ][n % 3] }
+    sequence(:start) { |n| n.days.from_now.beginning_of_day + 11.hours }
+    sequence(:end) { |n| n.days.from_now.beginning_of_day + 16.hours }
     trait :with_rider do |rider|
       rider
     end
