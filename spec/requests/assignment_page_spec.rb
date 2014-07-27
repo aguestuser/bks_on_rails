@@ -158,6 +158,7 @@ describe "Assignment Requests" do
             make_valid_assignment_submission
           end
 
+
           describe "override page contents" do
             it { should have_h1('Conflict Alert') }
             it { should have_content("You tried to assign the following shift:") }
@@ -167,6 +168,18 @@ describe "Assignment Requests" do
             it { should have_content("Do you want to assign it to them anyway?") }
             it { should have_button('Assign Shift') }  
             it { should have_link('Cancel') }
+          end
+
+          describe "clicking 'Cancel'" do
+            it "should cancel the assignment" do
+              expect{ click_link('Cancel') }.to change(Assignment, :count).by(0)              
+            end
+          end
+
+          describe "clicking 'Assign Shift'" do
+            it "should create a new Assignment" do
+              expect{ click_button('Assign Shift') }.to change(Assignment, :count).by(1)              
+            end
           end
         end
       end
