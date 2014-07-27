@@ -12,6 +12,7 @@ class Ability
       can :update, Manager, id: account.user.id # own account
       can :read, Staffer
       can :read, Shift, restaurant_id: account.user.restaurant.id
+      can :read, Assignment, shift: { restaurant_id: account.user.restaurant.id }
       can [ :read, :update ], Contact, contactable_id: account.user.contact.id
       can [ :read, :update ], Account, user_id: account.user.id
 

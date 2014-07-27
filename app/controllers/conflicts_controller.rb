@@ -87,6 +87,6 @@ class ConflictsController < ApplicationController
     end
 
     def conflict_params
-      params.require(:conflict).permit(:date, :period, :rider_id)
+      params.require(:conflict).permit(:id, :start, :end, :period, :rider_id)
     end
 end

@@ -11,31 +11,63 @@ class AssignmentsController < ApplicationController
 
   def new
     @assignment = Assignment.new
+    @assignment.shift = @shift
     load_form_args
     # @assignment.shift = @shift      
   end
 
+  # def create
+  #   @assignment = Assignment.new(assignment_params)
+  #   load_form_args
+
+  #   @start = @assignment.shift.start
+  #   @end = @assignment.shift.end
+
+  #   if no_conflicts?
+  #     if no_double_bookings?
+  #       if @assignment.save
+  #         flash[:success] = "Shift assigned to #{@assignment.rider.contact.name}"
+  #         redirect_to @shift_paths[:index]
+  #       else
+  #         render 'new'
+  #       end        
+  #     else
+  #       render 'override_double_booking'
+  #     end
+  #   else 
+  #     render 'override_conflict'
+  #   end
+  # end
+
+  # def create
+  #   @assignment = Assignment.new(assignment_params)
+  #   load_form_args
+
+  #   if no_conflicts?
+  #     if no_double_bookings?
+  #       if @assignment.save
+  #         flash[:success] = "Shift assigned to #{@assignment.rider.contact.name}"
+  #         redirect_to @shift_paths[:index]
+  #       else
+  #         render 'new'
+  #       end        
+  #     else
+  #       render 'override_double_booking'
+  #     end
+  #   else 
+  #     render 'override_conflict'
+  #   end
+  # end
+
   def create
     @assignment = Assignment.new(assignment_params)
     load_form_args
-
-    @start = @assignment.shift.start
-    @end = @assignment.shift.end
-
-    if no_conflicts?
-      if no_double_bookings?
-        if @assignment.save
-          flash[:success] = "Shift assigned to #{@assignment.rider.contact.name}"
-          redirect_to @shift_paths[:index]
-        else
-          render 'new'
-        end        
-      else
-        render 'override_double_booking'
-      end
-    else 
-      render 'override_conflict'
-    end
+    if @assignment.save
+      flash[:success] = "Shift assigned to #{@assignment.rider.contact.name}"
+      redirect_to @shift_paths[:index]
+    else
+      render 'new'
+    end      
   end
 
   def override_double_booking
@@ -126,12 +158,12 @@ class AssignmentsController < ApplicationController
     end  
 
     def no_conflicts?
-      conflicts = @rider.conflicts_on @start
+      conflicts = @assignment.rider.conflicts_on @assignment.shift.start
       !@assignment.shift.conflicts_with? conflicts
     end
 
     def no_double_bookings?
-      shifts = @rider.shifts_on @start
+      shifts = @rider.shifts_on @assignment.shift.start
       !@assignment.shift.double_books_with? shifts
     end
 

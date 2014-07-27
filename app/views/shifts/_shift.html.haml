@@ -21,6 +21,6 @@
 .center
   = link_to 'Edit', paths[:edit_shift].call(@shift)
   |
-  = link_to 'Delete', paths[:show_shift].call(@shift), method: :delete, data: { confirm: 'Are you sure?' }
+  = link_to 'Delete', paths[:shift].call(@shift), method: :delete, data: { confirm: 'Are you sure?' }
   |
   = link_to 'All Shifts', paths[:index]

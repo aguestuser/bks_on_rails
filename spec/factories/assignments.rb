@@ -14,7 +14,7 @@
 
 FactoryGirl.define do
   factory :assignment do
-    shift
+    association :shift, :without_restaurant
     rider
     status :proposed
   end

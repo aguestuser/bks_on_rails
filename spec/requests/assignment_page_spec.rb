@@ -86,22 +86,26 @@ describe "Assignment Requests" do
       
       before { visit restaurant_shifts_path(restaurant) }
 
-      it { should_not have_link(restaurant.mini_contact.name) }
-      it { should have_content('Assigned to')}
+      it { should_not have_row_header('Restaurant') }
+      it { should have_row_header('Start')}
+      it { should have_row_header('End')}
+      it { should have_row_header('Assigned to')}
+      it { should have_row_header('Status')}
+      
       it { should have_link('Create shift') }
-      it { should have_link('See all shifts') }
+      it { should have_link('All shifts') }
     end
 
     describe "from rider path" do
       
       before { visit rider_shifts_path(rider) }
 
-      it { should have_content('Restaurant') }
+      it { should have_row_header('Restaurant') }
       it { should have_content(restaurant.mini_contact.name) }
       it { should_not have_content('Assigned to')}
       it { should_not have_content('--') }
       it { should_not have_link('Create new shift') }      
-      it { should have_link('See all shifts') }
+      it { should have_link('All shifts') }
     end
   end
 
