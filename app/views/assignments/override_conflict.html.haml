@@ -1,0 +1,28 @@
+- provide(:title, 'Override Conflict')
+%h1 Conflict Alert
+.row
+  .span6.offset3
+    %p
+      You tried to assign the following shift:
+    %p.indent
+      = render 'assignments/shift_include', shift: @assignment.shift
+    %p 
+      to 
+      %strong 
+        #{@assignment.rider.contact.name},
+      who has the following conflict(s):
+    %p.indent
+      = render 'assignments/conflicts_include', conflicts: @conflicts
+    %br/
+    %p.center
+      %strong
+        Do you want to assign it to them anyway? 
+    = form_for @form_args do |f|
+      %p.center
+        = f.hidden_field :override_conflict, value: true
+        = f.hidden_field :rider_id, value: @assignment.rider_id
+        = f.hidden_field :shift_id, value: @assignment.shift_id
+        = f.hidden_field :status, value: @assignment.status
+        = f.submit "Assign Shift", class: 'btn btn-primary'
+        = link_to "Cancel", "../", class: 'btn btn-primary'
+

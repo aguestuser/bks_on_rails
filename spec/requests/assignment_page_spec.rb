@@ -11,8 +11,12 @@ describe "Assignment Requests" do
   let(:restaurant) { FactoryGirl.create(:restaurant) }
   # let(:other_restaurant) { FactoryGirl.create(:restaurant) }
 
-  let!(:shift){ FactoryGirl.create(:shift, :with_restaurant, restaurant: restaurant) }
-  let!(:other_shift) { FactoryGirl.create(:shift, :with_restaurant, restaurant: restaurant) }
+  let(:start){ DateTime.new(2014,1,1,11) }
+  let(:_end){ DateTime.new(2014,1,1,17) }
+
+  let!(:shift){ FactoryGirl.create(:shift, :with_restaurant, restaurant: restaurant, start: start, :end => _end) }
+  let!(:other_shift) { FactoryGirl.create(:shift, :with_restaurant, restaurant: restaurant, start: start + 1.day, :end => _end + 1.day) }
+  let(:conflict){ FactoryGirl.create(:conflict, rider: rider, start: start + 1.day, :end => _end + 1.day) }
 
   let(:assignment) { Assignment.new( rider_id: rider.id, shift_id: shift.id) }
   let(:other_assignment) { Assignment.new( rider_id: rider.id, shift_id: other_shift.id) }
@@ -145,6 +149,25 @@ describe "Assignment Requests" do
           end
           it { should have_success_message("Shift assigned to #{rider.name}") }
           it { should have_h1('Shifts') }
+        end
+
+        describe "to rider with conflict" do
+          before do
+            conflict
+            visit new_shift_assignment_path(other_shift)
+            make_valid_assignment_submission
+          end
+
+          describe "override page contents" do
+            it { should have_h1('Conflict Alert') }
+            it { should have_content("You tried to assign the following shift:") }
+            it { should have_content( other_shift.start.strftime( "%m/%d | %I:%M%p" ) ) }  
+            it { should have_content("to #{rider.contact.name}, who has the following conflict(s):") }
+            it { should have_content(conflict.start.strftime("%m/%d | %I:%M%p")) }
+            it { should have_content("Do you want to assign it to them anyway?") }
+            it { should have_button('Assign Shift') }  
+            it { should have_link('Cancel') }
+          end
         end
       end
     end

@@ -2,7 +2,9 @@
 %h1 Edit Shift Assignment
 .row
   .span6.offset3
-    %p.center
+    %strong
+      Shift:
+    %p.indent
       = render 'assignments/shift_include', shift: @assignment.shift
     = form_for @form_args do |f|
       = render 'shared/error_messages', object: f.object

@@ -252,8 +252,8 @@ end
 def make_conflicts
   Rider.all.each_with_index do |rider|
     7.times do |n|
-      start = times(n)[0][:start] + (n+14).days
-      end_ = times(n)[0][:end] + (n+14).days
+      start = times(n)[0][:start] + n.days
+      end_ = times(n)[0][:end] + n.days
       Conflict.create!(
         rider_id: rider.id,
         start: start,
