@@ -32,5 +32,5 @@
       - when 'Manager'
         - edit_profile = edit_restaurant_path(it.restaurant)
       = link_to 'Edit Profile', edit_profile, class: 'btn btn-primary'
-- if it == current_account.user || it == current_account.user.restaurant
+- if it == current_account.user
   = render 'users/hotlinks', user_type: current_account.user_type

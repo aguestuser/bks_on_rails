@@ -309,7 +309,7 @@ describe "Assignment Requests" do
 
       describe "reassigning shift to rider with conflict" do
         before do
-          conflict # on next day
+          conflict # on next day, belongs to rider
           next_day_shift.assign_to other_rider
           visit edit_shift_assignment_path(next_day_shift, next_day_shift.assignment)
           select rider.contact.name, from: 'assignment_rider_id'
@@ -327,33 +327,14 @@ describe "Assignment Requests" do
           it { should have_link('Cancel') }
         end
 
-        # describe "clicking 'Cancel'" do  
-        #   before { click_link('Cancel') }            
-        #   it { should have_h1("Shifts") } 
-        #   # redirect to right page
-        # end
-
-        # describe "clicking 'Assign Shift'" do
-        #   before { click_button('Assign Shift') }              
-          
-
-        #   it { should have_success_message("Assignment updated (Rider: #{rider.name}, Status: #{next_day_shift.assignment.status.text})") }
-        #   it { should have_h1("Shifts") } 
-
-        #   describe "updating assignment attributes" do
-        #     subject { next_day_shift.assignment.reload }
-
-        #     its(:rider) { should eq rider }         
-        #   end
-        # end
         describe "clicking 'Cancel'" do
           before{ click_link 'Cancel' }
 
           it "should not change the assignment" do
-            expect( other_rider.reload.shifts.include? next_day_shift ).to eq false
-            expect( rider.reload.shifts.include? next_day_shift ).to eq true
-            expect( next_day_shift.assignment.reload.rider ).not_to eq other_rider
-            expect( next_day_shift.assignment.reload.rider ).to eq rider                            
+            expect( other_rider.reload.shifts.include? next_day_shift ).to eq true
+            expect( rider.reload.shifts.include? next_day_shift ).to eq false
+            expect( next_day_shift.assignment.reload.rider ).to eq other_rider
+            expect( next_day_shift.assignment.reload.rider ).not_to eq rider                            
           end
         end
 

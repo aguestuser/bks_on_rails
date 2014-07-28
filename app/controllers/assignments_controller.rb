@@ -106,17 +106,17 @@ class AssignmentsController < ApplicationController
       
       case action
       when :create
-        message = "Shift assigned to #{@assignment.rider.contact.name}"
+        message = lambda { |assignment| "Shift assigned to #{assignment.rider.contact.name}" }
         do_over = 'new'
       when :update
-        message = "Assignment updated (Rider: #{@assignment.rider.name}, Status: #{@assignment.status.text})"
+        message = lambda { |assignment| "Assignment updated (Rider: #{assignment.rider.contact.name}, Status: #{@assignment.status.text})" } 
         do_over = 'edit'
       end
 
       if no_conflicts?
         if no_double_bookings?
           if @assignment.save
-            flash[:success] = message
+            flash[:success] = message.call(@assignment)
             redirect_to @shift_paths[:index]
           else
             render do_over
@@ -132,6 +132,7 @@ class AssignmentsController < ApplicationController
     end  
 
     def no_conflicts?
+      return true if @assignment.rider.nil?
       @conflicts = @assignment.rider.conflicts_on @assignment.shift.start
       if @assignment.override_conflict
         @conflicts.each(&:destroy)
@@ -143,6 +144,7 @@ class AssignmentsController < ApplicationController
     end
 
     def no_double_bookings?
+      return true if @assignment.rider.nil?
       shifts = @assignment.rider.shifts_on @assignment.shift.start
       @other_shifts = shifts.reject { |shift| shift.id == @assignment.shift.id }
       if @assignment.override_double_booking

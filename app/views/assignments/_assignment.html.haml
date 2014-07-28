@@ -1,10 +1,11 @@
 %h3 Assignment Details
 %ul
   %li
+    %strong Shift:
     = render 'assignments/shift_include', shift: @assignment.shift
   %li
     %strong Assigned to:
-    = assignment.rider.contact.name
+    = link_to assignment.rider.contact.name, assignment.rider
   %li
     %strong Status:
     = assignment.status.text
