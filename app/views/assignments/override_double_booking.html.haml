@@ -1,5 +1,5 @@
-- provide(:title, 'Conflict Alert')
-%h1 Conflict Alert
+- provide(:title, 'Double Booking Alert')
+%h1 Double Booking Alert
 .row
   .span6.offset3
     %p
@@ -10,12 +10,11 @@
       to 
       %strong 
         #{@assignment.rider.contact.name},
-      who has the following conflict(s):
+      which would double book them with the following shift(s):
     %p.indent
-      = render 'assignments/conflicts_include', conflicts: @conflicts
+      = render 'assignments/double_bookings_include', conflicts: @conflicts
     %br/
     %p.center
       %strong
         Do you want to assign it to them anyway? 
     = render 'assignments/override_form'
-

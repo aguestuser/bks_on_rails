@@ -15,7 +15,7 @@
 
 FactoryGirl.define do
   factory :contact do
-    name 'Wonderful Person'
+    sequence (:name) { |n| "Wonderful Person #{n}" }
     title 'Head of Wonder'
     sequence(:email) { |n| "wonderful#{n}@example.com" }
     phone '917-345-3200'
