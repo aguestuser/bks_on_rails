@@ -285,6 +285,12 @@ label {
 
 /* Profile pages */
 
+.hotlinks{
+  border-top: 1px solid $grayLighter;
+  border-bottom: 1px solid $grayLighter;
+  padding: .2em;
+}
+
 .profile {
   @include grey_h3;
   .name {

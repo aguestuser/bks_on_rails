@@ -1,0 +1,36 @@
+.row
+  .span10.offset1
+    .hotlinks.center
+      - case user_type
+      - when 'Staffer'
+        = link_to 'Create Shift', new_shift_path
+        |
+        = link_to 'Create Restaurant', new_restaurant_path
+        |
+        = link_to 'Create Rider', new_rider_path
+        |
+        = link_to "This Week's Shifts", '#'
+        |
+        = link_to "Request Availability", '#'
+        |
+        = link_to 'Recent Activity', '#'
+      - when 'Manager'
+        = link_to 'Your Invoices', '#'
+        |
+        = link_to 'Request Shift', '#'
+        |
+        = link_to "This Week's Shifts", '#'
+        |
+        = link_to "Browse Riders", '#'
+        |
+        = link_to "Contact a Staffer", '#'
+        |
+        = link_to "Recent Activity", '#'
+      - when 'Rider'
+        = link_to 'Confirm Shifts', '#'
+        |
+        = link_to 'Report Availability', '#'
+        |
+        = link_to 'See Available Shifts', '#'
+        |
+        = link_to 'Browse Restaurants', '#'

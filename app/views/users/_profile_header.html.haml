@@ -1,17 +1,27 @@
 .row
-  .span6.offset2
+  .span7.offset2
     = gravatar_for @it.contact, size: 80
     %section
-      %h1.name= @it.name
-      %h2.title 
-        - if it.class == Rider
+      %h1.name= @it.contact.name
+      %h2.title
+        - case it.class.name
+        - when 'Rider'
           = it.location.borough.text
           |
           = it.active? ? 'Active' : 'Inactive'
-        - else 
-          = it.title
-        |
-        = it.phone
+          |
+          = it.phone
+        - when 'Manager'
+          = it.contact.title
+          |
+          = it.contact.phone
+          |
+          = link_to @manager.restaurant.name, @manager.restaurant
+        - when 'Staffer'
+          = it.contact.title
+          |
+          = it.contact.phone
+
   .span2
     .edit
       - case it.class.name
@@ -22,3 +32,5 @@
       - when 'Manager'
         - edit_profile = edit_restaurant_path(it.restaurant)
       = link_to 'Edit Profile', edit_profile, class: 'btn btn-primary'
+- if it == current_account.user || it == current_account.user.restaurant
+  = render 'users/hotlinks', user_type: current_account.user_type

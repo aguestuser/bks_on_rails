@@ -1,12 +1,6 @@
 - provide(:title, @manager.contact.name)
 .profile
-  .row
-    .span10.offset1
-      = gravatar_for @manager, size: 80
-      %section
-        %h1.name= @manager.contact.name
-        %h2.title
-          #{@manager.contact.title} | #{link_to @manager.restaurant.name, @manager.restaurant}
+  = render 'users/profile_header', it: @it
   .row
     .span10.offset1
       %h3 Contact Info
