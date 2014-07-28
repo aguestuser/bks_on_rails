@@ -9,5 +9,8 @@
 %p.center
   - if caller == :restaurant
     = link_to 'See full list of shifts', paths[:index]
+    - if can? :create, Shift
+      |
+      = link_to 'Create shift', new_restaurant_shift_path(@restaurant)
   - if caller == :rider
     = link_to 'See full list of assignments', paths[:index]

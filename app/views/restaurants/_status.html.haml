@@ -1,0 +1,11 @@
+%h3 Status
+%ul  
+  %li
+    %strong Active: 
+    = @restaurant.active? ? 'Yes' : 'No'
+  %li
+    %strong Status: 
+    = @restaurant.status.text
+  %li
+    %strong Brief:
+    = @restaurant.brief

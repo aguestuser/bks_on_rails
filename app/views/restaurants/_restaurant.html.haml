@@ -1,9 +1,12 @@
 .profile
   %li
     %h2
-      = gravatar_for restaurant.managers.first.contact, size: 40
+      = gravatar_for restaurant.managers.first.contact, size: 50
       = link_to restaurant.mini_contact.name, restaurant 
       %br/
       = restaurant.location.neighborhood.text
       |
       = restaurant.status.text
+      %br/
+      %span{:style => "font-size: small;"}
+        = link_to 'Create Shift', new_restaurant_shift_path(restaurant)
