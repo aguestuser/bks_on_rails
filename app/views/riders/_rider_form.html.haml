@@ -8,9 +8,9 @@
           = render 'accounts/fields', f: f
         = render 'contacts/fields', f: f
         = render 'locations/fields', f: f
-        = render 'rider_ratings/fields', f: f
-        = render 'qualification_sets/fields', f: f
-        = render 'skill_sets/fields', f: f
+        = render 'rider_ratings/fields', f: f if can? :edit, RiderRating
+        = render 'qualification_sets/fields', f: f if can? :edit, QualificationSet
+        = render 'skill_sets/fields', f: f if can? :edit, SkillSet
         = render 'equipment_sets/fields', f: f
         %br/
         %br/

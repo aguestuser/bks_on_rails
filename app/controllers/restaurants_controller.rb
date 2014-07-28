@@ -1,7 +1,7 @@
 class RestaurantsController < ApplicationController
   include LocatablesController, EquipablesController, ShiftPaths
   before_action :load_restaurant, only: [:show, :edit, :update, :destroy]
-  before_action :build_associations, only: [ :edit, :update ]
+  before_action :build_associations, only: [ :edit, :update ], if: :unedited?
 
   def new
       @restaurant = Restaurant.new
@@ -44,10 +44,16 @@ class RestaurantsController < ApplicationController
   end
 
   def update
-    @restaurant.update(restaurant_params)
+    @restaurant.attributes  = restaurant_params
+    @restaurant.unedited = false
     if @restaurant.save
       flash[:success] = "#{@restaurant.mini_contact.name}'s profile has been updated"
-      redirect_to restaurants_path
+      case credentials
+      when 'Staffer'
+        redirect_to restaurants_path
+      when 'Manager'
+        redirect_to restaurant_path(@restaurant)
+      end
     else
       render 'edit'
     end
@@ -59,6 +65,10 @@ class RestaurantsController < ApplicationController
       @restaurant = Restaurant.find(params[:id])
       @caller = :restaurant
       @it = @restaurant
+    end
+
+    def unedited?
+      @restaurant.unedited?
     end
 
     def build_associations

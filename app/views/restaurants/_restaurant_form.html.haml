@@ -3,7 +3,7 @@
     .span6.offset3
       = form_for(@restaurant) do |f|
         = render 'shared/error_messages', object: f.object
-        = render 'fields', f: f
+        = render 'fields', f: f if credentials == 'Staffer'
         = render 'mini_contacts/fields', f: f
         = render 'locations/fields', f: f
         = render 'managers/fields', it: @it, f: f

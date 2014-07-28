@@ -7,9 +7,9 @@
       = render 'conflicts/table/teaser', conflicts: @rider.conflicts.first(5), caller: @caller, paths: @conflict_paths
       = render @rider.contact
       = render @rider.location
-      = render @rider.rider_rating
-      = render @rider.qualification_set
-      = render @rider.skill_set
+      = render @rider.rider_rating if can? :read, RiderRating
+      = render @rider.qualification_set if can? :read, QualificationSet
+      = render @rider.skill_set if can? :read, SkillSet
       = render @rider.equipment_set
       
 - if can? :manage, Rider

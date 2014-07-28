@@ -17,7 +17,7 @@ class ManagersController < ApplicationController
     @it = @manager
     if @manager.save
       flash[:success] = "Profile created for #{@manager.contact.name}."
-      redirect_to restaurant_path(@restaurant.id)
+      redirect_to @redirect_path
     else
       render 'new'
     end
@@ -30,10 +30,9 @@ class ManagersController < ApplicationController
   end
 
   def update
-    @manager.update(manager_params)
-    if @manager.save
+    if @manager.update(manager_params)
       flash[:success] = "#{@manager.contact.name}'s profile has been updated"
-      redirect_to @manager.restaurant
+      redirect_to redirect_path
     else
       render 'edit'
     end    
@@ -58,6 +57,14 @@ class ManagersController < ApplicationController
 
     def refresh_restaurant(manager)
       manager.restaurant
+    end
+
+    def redirect_path
+      if current_account.user == @manager
+        restaurant_manager_path(@manager.restaurant, @manager)
+      else
+        restaurant_path(@manager.restaurant)
+      end
     end
 
     def manager_params

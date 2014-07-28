@@ -8,8 +8,13 @@ class Ability
       can :manage, :all 
     elsif account.user_type == 'Manager'
       can [ :read, :update ], Restaurant, id: account.user.restaurant.id # own restaurant
-      can :read, Manager, restaurant_id: account.user.restaurant.id # any manager at own restaurant
-      can :update, Manager, id: account.user.id # own account
+      can [ :read, :update ], [ MiniContact,
+                                RiderPaymentInfo,
+                                WorkSpecification, 
+                                EquipmentSet,
+                                AgencyPaymentInfo
+                              ], restaurant_id: account.user.restaurant.id
+      can [ :manage ], Manager, restaurant_id: account.user.restaurant.id # any manager at own restaurant
       can :read, Staffer
       can :read, Shift, restaurant_id: account.user.restaurant.id
       can :read, Assignment, shift: { restaurant_id: account.user.restaurant.id }
@@ -19,6 +24,7 @@ class Ability
       # Riders blocked
     elsif account.user_type == 'Rider'
       can [ :read, :update ], Rider, :id => account.user.id
+      can [ :read, :update ], [ Contact, EquipmentSet ]
       can :read, Staffer 
       can :read, Assignment, rider_id: account.user.id
       can :read, Shift, assignment: { rider_id: account.user.id }

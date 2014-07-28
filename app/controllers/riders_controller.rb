@@ -49,7 +49,12 @@ class RidersController < ApplicationController
     @rider.update(rider_params)
     if @rider.save
       flash[:success] = "#{@rider.contact.name}'s profile has been updated"
-      redirect_to riders_path
+      case current_account.user
+      when @rider
+        redirect_to root_path
+      else
+        redirect_to riders_path
+      end
     else
       render 'edit'
     end

@@ -1,6 +1,7 @@
 - if params[:action] == 'new' || params[:action] == 'create'
   = f.hidden_field :active, id: 'rider_active', value: true
 - else
-  .checkbox
-    = f.check_box :active
-    = f.label :active, 'Active?'
+  - unless credentials == 'Rider'
+    .checkbox
+      = f.check_box :active
+      = f.label :active, 'Active?'

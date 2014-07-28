@@ -139,6 +139,7 @@ def make_restaurants
     )
 
     Restaurant.create!(
+      unedited: false,
       active: true,
       status: status,
       brief: "is a newly signed up account. They say it gets busy. Let us know how it goes!",

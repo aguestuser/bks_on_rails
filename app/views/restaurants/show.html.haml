@@ -4,6 +4,7 @@
   .row
     .span10.offset1
       = render 'shifts/tables/teaser', shifts: @restaurant.shifts.first(5), caller: @caller, paths: @shift_paths
+      = render 'restaurants/status' if credentials == 'Staffer'
       = render @restaurant.mini_contact
       = render @restaurant.location
       = render @restaurant.managers, managers: @restaurant.managers
