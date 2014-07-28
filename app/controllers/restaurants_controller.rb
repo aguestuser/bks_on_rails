@@ -45,8 +45,8 @@ class RestaurantsController < ApplicationController
 
   def update
     @restaurant.attributes  = restaurant_params
-    @restaurant.unedited = false
     if @restaurant.save
+      @restaurant.unedited = false
       flash[:success] = "#{@restaurant.mini_contact.name}'s profile has been updated"
       case credentials
       when 'Staffer'
@@ -96,7 +96,7 @@ class RestaurantsController < ApplicationController
 
     def restaurant_params
       params.require(:restaurant)
-        .permit( :active, :status, :brief,
+        .permit( :active, :status, :brief, :unedited,
           mini_contact_params, 
           managers_params,
           rider_payment_params,

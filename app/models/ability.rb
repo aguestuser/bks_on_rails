@@ -15,6 +15,7 @@ class Ability
                                 AgencyPaymentInfo
                               ], restaurant_id: account.user.restaurant.id
       can [ :manage ], Manager, restaurant_id: account.user.restaurant.id # any manager at own restaurant
+      cannot [ :destroy ], Manager, id: account.user.id
       can :read, Staffer
       can :read, Shift, restaurant_id: account.user.restaurant.id
       can :read, Assignment, shift: { restaurant_id: account.user.restaurant.id }

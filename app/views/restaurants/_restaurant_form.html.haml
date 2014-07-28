@@ -2,6 +2,8 @@
   .row
     .span6.offset3
       = form_for(@restaurant) do |f|
+        - if params[:action] == 'new' || params[:action] == 'create'
+          = f.hidden_field :unedited, value: true
         = render 'shared/error_messages', object: f.object
         = render 'fields', f: f if credentials == 'Staffer'
         = render 'mini_contacts/fields', f: f

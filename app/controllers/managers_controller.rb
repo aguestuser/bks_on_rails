@@ -17,7 +17,7 @@ class ManagersController < ApplicationController
     @it = @manager
     if @manager.save
       flash[:success] = "Profile created for #{@manager.contact.name}."
-      redirect_to @redirect_path
+      redirect_to redirect_path
     else
       render 'new'
     end

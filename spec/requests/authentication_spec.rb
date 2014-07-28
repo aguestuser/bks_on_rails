@@ -103,7 +103,7 @@ describe "Authentication" do
 
       it "should have appropriate nav links" do
         check_links [ 'Shifts', 'Staffers', 'Account', 'Homepage', 'Edit Profile', 'Change Password', 'Sign out' ]
-        check_no_links [ 'Riders', 'Restaurants' ]
+        # check_no_links [ 'Riders', 'Restaurants' ]
       end
 
       describe "profile page" do
@@ -126,15 +126,16 @@ describe "Authentication" do
         end
 
         describe "for Managers" do
-          it { should_not be_able_to :create, Manager.new }
+          it { should_not be_able_to :create, Manager.new(restaurant_id: other_restaurant.id) }
+          it { should be_able_to :create, Manager.new(restaurant_id: restaurant.id) }
           it { should_not be_able_to :edit, other_restaurant_manager }
-          it { should_not be_able_to :edit, other_manager }
+          it { should be_able_to :edit, other_manager }
           it { should be_able_to :edit, manager }
           it { should_not be_able_to :read, other_restaurant_manager }
           it { should be_able_to :read, other_manager }
           it { should be_able_to :read, manager }
           it { should_not be_able_to :destroy, other_restaurant_manager}
-          it { should_not be_able_to :destroy, other_manager }
+          it { should be_able_to :destroy, other_manager }
           it { should_not be_able_to :destroy, manager }
         end
 
@@ -178,7 +179,7 @@ describe "Authentication" do
 
       it "should have appropriate nav links" do
         check_links [ 'Shifts', 'Staffers',  'Account', 'Homepage', 'Edit Profile', 'Change Password', 'Sign out'  ]
-        check_no_links [ 'Restaurants', 'Riders' ]
+        # check_no_links [ 'Restaurants', 'Riders' ]
       end
 
       describe "root path" do
