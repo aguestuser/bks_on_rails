@@ -322,9 +322,27 @@ label {
   text-align: center;
   .header {
     font-weight: bold;
-    border-bottom: 2px solid $grayLight
+    border-top: 1px solid $grayLight;
+    border-bottom: 1px solid $grayLight !important;
+    padding-top: .5em;
+    padding-bottom: .5em;
+    margin-bottom: .5em;
+    .current {
+      padding-right: 1.3em;
+      background-repeat: no-repeat;
+      background-position: right center;
+    }
+    .asc {
+      background-image: image-url("up_arrow.png"); 
+      // url(/app/assets/images/up_circle.png);
+    }
+    .desc {
+      background-image: image-url("down_arrow.png") ;
+      // background-image: url(/app/assets/images/down_circle.png);
+
+    }
   }
   .row{
-    border-bottom: 1px solid $grayLighter
+    border-bottom: 1px solid $grayLighter;
   }
 }
