@@ -9,14 +9,18 @@
   - wrapper_class = 'span8 offset2'
 - when nil
   - header = "Shifts"
-  - wrapper_class = "span10 offset 1"
+  - wrapper_class = "span10 offset1"
 
 %h1= header
 - if can? :manage, Shift
   = render 'shifts/index_and_new_links', caller: @caller, paths: @shift_paths
+.center
+  = will_paginate @shifts
 .row
   %div{ :class => wrapper_class }
     = render 'shifts/tables/wrapper', shifts: @shifts, caller: @caller, paths: @shift_paths
-- if can?(:manage, Shift)
+.center
+  = will_paginate @shifts
+- if can? :manage, Shift
   %p.center
     = render 'shifts/index_and_new_links', caller: @caller, paths: @shift_paths
