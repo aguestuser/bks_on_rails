@@ -7,6 +7,7 @@ describe "Shift Requests" do
   let!(:restaurant) { FactoryGirl.create(:restaurant) }
   let!(:other_restaurant) { FactoryGirl.create(:restaurant) }
   let(:shift) { FactoryGirl.build(:shift, :with_restaurant, restaurant: restaurant) }
+  let(:shifts) { 31.times.map { FactoryGirl.create(:shift, :without_restaurant) } }
   let(:staffer) { FactoryGirl.create(:staffer) }
   before { mock_sign_in staffer }
 
@@ -53,6 +54,16 @@ describe "Shift Requests" do
           it { should have_link('Action') }
           it { should have_content(restaurant.mini_contact.name) }
           it { should have_content(other_restaurant.mini_contact.name) }          
+        end
+
+        describe "pagination" do
+          before do
+            shifts
+            visit shifts_path
+          end
+
+          it { should_not have_content format_start(shifts[30].start) }
+
         end
       end
 

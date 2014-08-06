@@ -16,5 +16,12 @@ module ApplicationHelper
     image_tag(gravatar_url, alt: user.name, class: "gravatar")
   end 
 
+  def format_start start
+    start.strftime "%m/%d | %I:%M%p"
+  end
+
+  def format_end end_time
+    end_time.strftime "%I:%M%p"
+  end
 
 end
