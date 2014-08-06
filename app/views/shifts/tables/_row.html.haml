@@ -1,12 +1,27 @@
 .row
+  
   - unless caller == :restaurant
-    .span2
-      = link_to shift.restaurant.mini_contact.name, restaurant_path(shift.restaurant)
+    .span2  
+      = link_to shift.restaurant.mini_contact.name, restaurant_path(shift.restaurant) #Rider
   .span2
-    = shift.start.strftime("%m/%d | %I:%M%p")
+    = shift.start.strftime("%m/%d | %I:%M%p") #Start
   .span1
-    = shift.end.strftime("%I:%M%p")
-  = render 'shifts/tables/row_partial', shift: shift, caller: caller
+    = shift.end.strftime("%I:%M%p") #End
+
+  - if shift.assigned?
+    - unless caller == :rider
+      .span2 
+        = link_to shift.assignment.rider.contact.name, shift.assignment.rider #Assigned to
+    .span2
+      = shift.assignment.status.text #Status
+  
+  - else 
+    - unless caller == :rider
+      .span2
+        = '--' #Assigned to 
+    .span2
+      = '--' #Status
+
   - if can? :manage, @shift
     .span1
-      = render 'shifts/tables/dropdown', shift: shift, paths: paths
+      = render 'shifts/tables/dropdown', shift: shift, paths: paths #Action v

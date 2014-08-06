@@ -1,6 +1,8 @@
 class ShiftsController < ApplicationController
   include ShiftPaths
 
+  helper_method :sort_column, :sort_direction
+
   before_action :load_shift, only: [ :show, :edit, :update, :destroy ]
   before_action :load_caller # will call load_restaurant or load_rider if applicable, load_paths always
   before_action :load_form_args, only: [ :edit, :update ]
@@ -97,12 +99,31 @@ class ShiftsController < ApplicationController
         @shifts = Shift.joins(:assignment).where("assignments.rider_id = ?", @rider.id).page(params[:page]).order('start ASC')
       when nil
         if credentials == 'Staffer'
-          @shifts = Shift.all.page(params[:page]).order('start ASC')
+          # @shifts = Shift.all.page(params[:page]).order('start ASC')
+          # @shifts = Shift.includes( restaurant: :mini_contact ).page(params[:page]).order('mini_contacts.name DESC') 
+          @shifts = Shift
+            .includes( restaurant: :mini_contact, assignment: { rider: :contact } )
+            .page(params[:page])
+            .order(sort_column + " " + sort_direction) 
         else 
-          flash[:error] = "You don't have permssion to view that page"
+          flash[:error] = "You don't have permission to view that page"
           redirect_to root_path
         end
       end
+    end
+
+    def sort_column
+      #protect against SQL injection
+      # .column_names.include?(params[:sort]) ? params[:sort] : "name"
+      params[:sort] || "start" # default sort by date
+      # 'mini_contacts.name DESC'
+      # 'contacts.name ASC'
+      # 'start ASC'
+      # 'assignments.status'
+    end
+
+    def sort_direction
+      params[:direction] || "asc"
     end
 
     def shift_params # permit :restaurant_id?

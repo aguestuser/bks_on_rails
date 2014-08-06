@@ -1,13 +1,13 @@
 .row.header
   - unless caller == :restaurant
     .span2
-      Restaurant
+      = sortable 'mini_contacts.name', 'Restaurant'
   .span2
-    Start
+    = sortable 'start'
   .span1
     End
   - unless caller == :rider
     .span2
-      Assigned to
+      = sortable 'contacts.name', 'Assigned to'
   .span2
-    Status
+    = sortable 'assignments.status', 'Status'
