@@ -6,6 +6,7 @@ class ShiftsController < ApplicationController
   before_action :load_shift, only: [ :show, :edit, :update, :destroy ]
   before_action :load_caller # will call load_restaurant or load_rider if applicable, load_paths always
   before_action :load_form_args, only: [ :edit, :update ]
+  before_action :redirect_non_staffers, only: [ :index ]
   before_action :load_shifts, only: [ :index ]
 
   def new
@@ -59,7 +60,7 @@ class ShiftsController < ApplicationController
       @it = @shift
     end
 
-   def load_caller
+    def load_caller
       if params.include? :restaurant_id
         @caller = :restaurant
         load_restaurant
@@ -91,52 +92,39 @@ class ShiftsController < ApplicationController
       end
     end
 
-    def load_shifts
-      case @caller
-      when :restaurant
-        @shifts = Shift.includes(associations)
-          .where(restaurant_id: @restaurant.id)
-          .page(params[:page])
-          .order(sort_column + " " + sort_direction)
-      when :rider
-        @shifts = Shift.includes(associations)
-          .where("assignments.rider_id = ?", @rider.id)
-          .page(params[:page])
-          .order(sort_column + " " + sort_direction)
-      when nil
-        if credentials == 'Staffer'
-          # @shifts = Shift.all.page(params[:page]).order('start ASC')
-          # @shifts = Shift.includes( restaurant: :mini_contact ).page(params[:page]).order('mini_contacts.name DESC') 
-          @shifts = Shift.includes(shift_associations)
-            .page(params[:page])
-            .order(sort_column + " " + sort_direction) 
-        else 
+    def redirect_non_staffers
+      if @caller.nil?
+        unless credentials == 'Staffer'
           flash[:error] = "You don't have permission to view that page"
-          redirect_to root_path
+          redirect_to root_path          
         end
       end
-      # @shifts = Shift.includes(associations)
-      #   .matching_caller.call(@caller)
-      #   .page(params[:page])
-      #   .order(sort_column + " " + sort_direction)
+    end
+
+    def load_shifts
+      @shifts = Shift.includes(associations)
+        .where(*caller_filter)
+        .page(params[:page])
+        .order(sort_column + " " + sort_direction)
     end
 
     def associations
       { restaurant: :mini_contact, assignment: { rider: :contact } }
     end
 
-    def matching_caller
-      
+    def caller_filter
+      case @caller
+      when :restaurant
+        [ "restaurants.id = ?",  @restaurant.id ]
+      when :rider
+        [ "assignments.rider_id = ?", @rider.id ]
+      when nil
+        [ '', '' ]
+      end
     end
 
     def sort_column
-      #protect against SQL injection
-      # .column_names.include?(params[:sort]) ? params[:sort] : "name"
       params[:sort] || "start" # default sort by date
-      # 'mini_contacts.name DESC'
-      # 'contacts.name ASC'
-      # 'start ASC'
-      # 'assignments.status'
     end
 
     def sort_direction
