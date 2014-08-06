@@ -3,8 +3,8 @@
   - unless caller == :restaurant
     .span2  
       = link_to shift.restaurant.mini_contact.name, restaurant_path(shift.restaurant) #Rider
-    .span3
-      = shift.start.strftime("%m/%d | %I:%M%p - %I:%M%p") #Time
+  .span3
+    = shift.start.strftime("%m/%d | %I:%M%p - %I:%M%p") #Time
 
   - if shift.assigned?
     - unless caller == :rider

@@ -94,15 +94,20 @@ class ShiftsController < ApplicationController
     def load_shifts
       case @caller
       when :restaurant
-        @shifts = Shift.where(restaurant_id: @restaurant.id).page(params[:page]).order('start ASC')
+        @shifts = Shift.includes(associations)
+          .where(restaurant_id: @restaurant.id)
+          .page(params[:page])
+          .order(sort_column + " " + sort_direction)
       when :rider
-        @shifts = Shift.joins(:assignment).where("assignments.rider_id = ?", @rider.id).page(params[:page]).order('start ASC')
+        @shifts = Shift.includes(associations)
+          .where("assignments.rider_id = ?", @rider.id)
+          .page(params[:page])
+          .order(sort_column + " " + sort_direction)
       when nil
         if credentials == 'Staffer'
           # @shifts = Shift.all.page(params[:page]).order('start ASC')
           # @shifts = Shift.includes( restaurant: :mini_contact ).page(params[:page]).order('mini_contacts.name DESC') 
-          @shifts = Shift
-            .includes( restaurant: :mini_contact, assignment: { rider: :contact } )
+          @shifts = Shift.includes(shift_associations)
             .page(params[:page])
             .order(sort_column + " " + sort_direction) 
         else 
@@ -110,6 +115,18 @@ class ShiftsController < ApplicationController
           redirect_to root_path
         end
       end
+      # @shifts = Shift.includes(associations)
+      #   .matching_caller.call(@caller)
+      #   .page(params[:page])
+      #   .order(sort_column + " " + sort_direction)
+    end
+
+    def associations
+      { restaurant: :mini_contact, assignment: { rider: :contact } }
+    end
+
+    def matching_caller
+      
     end
 
     def sort_column
