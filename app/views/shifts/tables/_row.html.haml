@@ -1,25 +1,26 @@
+- if shift.assigned?
+  - rider = link_to shift.assignment.rider.contact.name, shift.assignment.rider
+  - status = shift.assignment.status.text
+- else
+  - rider = '--'
+  - status = '--'
+
 .row
-  
+  /Restaurant
   - unless caller == :restaurant
-    .span2  
-      = link_to shift.restaurant.mini_contact.name, restaurant_path(shift.restaurant) #Rider
-  .span3
-    = shift.start.strftime("%m/%d | %I:%M%p - %I:%M%p") #Time
-
-  - if shift.assigned?
-    - unless caller == :rider
-      .span2 
-        = link_to shift.assignment.rider.contact.name, shift.assignment.rider #Assigned to
-    .span2
-      = shift.assignment.status.text #Status
-  
-  - else 
-    - unless caller == :rider
-      .span2
-        = '--' #Assigned to 
-    .span2
-      = '--' #Status
-
+    %div{ :class => "span2 restaurant", :id => "shift#{shift.id}_restaurant" }    
+      = link_to shift.restaurant.mini_contact.name, restaurant_path(shift.restaurant) 
+  /Time
+  %div{ :class => "span3 time", :id => "shift#{shift.id}_time" }
+    = shift.table_time
+  /Assigned to (Rider)
+  - unless caller == :rider
+    %div{ :class => "span2 rider", :id => "shift#{shift.id}_assignment_rider" } 
+      = rider
+  /Status    
+  %div{ :class => "span2 status", :id => "shift#{shift.id}_assignment_status" }
+    = status
+  /Action
   - if can? :manage, @shift
-    .span1
+    %div{ :class => "span1 action", :id => "shift#{shift.id}_action" }
       = render 'shifts/tables/dropdown', shift: shift, paths: paths #Action v

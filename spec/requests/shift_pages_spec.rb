@@ -46,6 +46,25 @@ describe "Shift Requests" do
 
         before { visit shifts_path }
 
+        let(:first_shift){ 
+          FactoryGirl.create(:shift, 
+            :with_restaurant, 
+            restaurant: restaurant,
+            start: DateTime.new(1917,1,1,11),
+            :end => DateTime.new(1917,1,1,16)
+          )
+        }
+        let(:second_shift){
+          FactoryGirl.create(:shift, 
+            :with_restaurant, 
+            restaurant: other_restaurant,
+            start: DateTime.new(3030,1,1,11),
+            :end => DateTime.new(3030,1,1,16)
+          )
+        }
+        let(:rider){ FactoryGirl.create(:rider) }
+        let(:other_rider){ FactoryGirl.create(:rider) }
+
         describe "page contents" do
 
           it { should have_h1('Shifts')}
@@ -63,7 +82,100 @@ describe "Shift Requests" do
           end
 
           it { should_not have_content format_start(shifts[30].start) }
+        end
 
+        describe "sorting" do
+          before do
+            #configure first shift
+            first_shift.restaurant.mini_contact.name = 'A'*10
+            first_shift.restaurant.mini_contact.save
+            rider.contact.name = 'A'*10
+            rider.contact.save
+            first_shift.assign_to rider
+
+            #configure second shift
+            second_shift.restaurant.mini_contact.name = 'z'*10
+            second_shift.restaurant.mini_contact.save
+            other_rider.contact.name = 'z'*10
+
+            visit shifts_path
+          end
+
+          it "should order shifts by time by default" do
+            expect( page.all('div.time')[0].text ).to eq first_shift.table_time
+          end
+
+          describe "sorting by restaurant name" do
+            describe "ascending" do
+              before { click_link('Restaurant') }
+              
+              it "should sort by restaurants, ascending" do
+                expect( page.all('div.restaurant')[0].text ).to eq restaurant.name
+              end
+
+              describe "descending" do
+                before { click_link('Restaurant') }            
+
+                it "should sort by restaurant name, descending" do
+                  expect( page.all('div.restaurant')[0].text ).to eq other_restaurant.name
+                end  
+              end
+            end
+          end
+
+          describe "sorting by time" do
+            describe "descending" do
+              before { click_link('Time') }
+              
+              it "should sort by time, descending" do
+                expect( page.all('div.time')[0].text ).to eq first_shift.table_time
+              end
+              
+              describe "descending" do
+                before { click_link('Time') }            
+
+                it "should sort by time, ascending" do
+                  expect( page.all('div.time')[0].text ).to eq second_shift.table_time
+                end  
+              end
+            end
+          end
+
+          describe "sorting by rider name" do
+            describe "ascending" do
+              before { click_link('Assigned to') }
+              
+              it "should sort by riders, ascending" do
+                expect( page.all('div.rider')[0].text ).to eq rider.name
+              end
+
+              describe "descending" do
+                before { click_link('Assigned to') }            
+
+                it "should sort by rider name, descending" do
+                  expect( page.all('div.rider')[0].text ).to eq '--'
+                end  
+              end
+            end
+          end
+
+          describe "sorting by assignment status" do
+            describe "ascending" do
+              before { click_link('Status') }
+              
+              it "should sort by statuses, ascending" do
+                expect( page.all('div.status')[0].text ).to eq AssignmentStatus::CancelledByRestaurant.new.text
+              end
+
+              describe "descending" do
+                before { click_link('Status') }            
+
+                it "should sort by statuses, descending" do
+                  expect( page.all('div.status')[0].text ).to eq '--'
+                end 
+              end
+            end
+          end
         end
       end
 

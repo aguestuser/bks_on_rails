@@ -8,6 +8,10 @@ module Timeboxable
     validates :start, :end, :period, presence: true
     validate :start_before_end
 
+    def table_time
+      self.start.strftime("%m/%d | %I:%M%p")+' - '+ self.end.strftime("%I:%M%p")
+    end
+
     private
 
       def set_period
