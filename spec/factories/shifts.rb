@@ -22,12 +22,17 @@ FactoryGirl.define do
     billing_rate :normal
     urgency :weekly
     notes 'Nobody wants to work this shift!'
+
     trait :with_restaurant do |restaurant|
       restaurant
     end
     trait :without_restaurant do
       # restaurant_id 1
       sequence(:restaurant_id) { |n| n + 1 }
+    end
+    
+    after(:build) do |f|
+      f.assignment = FactoryGirl.build(:assignment, shift: f)
     end
   end
 end

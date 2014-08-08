@@ -166,13 +166,17 @@ def make_restaurants
           start: start_1,
           :end => end_1,
           billing_rate: :normal,
-          urgency: :weekly )
+          urgency: :weekly,
+          assignment: Assignment.new
+        )
         Shift.create!(
           restaurant_id: restaurant.id,
           start: start_2,
           :end => end_2,
           billing_rate: :normal,
-          urgency: :weekly )
+          urgency: :weekly,
+          assignment: Assignment.new
+        )
       end
     end
   end
@@ -241,8 +245,7 @@ def make_assignments
     restaurant.shifts.first(14).each do |shift|
       rider_id = Rider.all.sample.id
       status = pick_assignment_status
-      Assignment.create!(
-        shift_id: shift.id, 
+      shift.assignment.update(
         rider_id: rider_id, 
         status: status
       )

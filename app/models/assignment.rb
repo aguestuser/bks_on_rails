@@ -22,7 +22,7 @@ class Assignment < ActiveRecord::Base
   # before_validation :set_assigned_by_id, on: :create
   # before_validation :set_last_modified_by_id
 
-  validates :shift_id, :status, presence: true
+  validates :status, presence: true
 
   # validates :status, :assigned_by, :last_modified_by
   #   presence: true
