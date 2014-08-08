@@ -118,18 +118,16 @@ class ShiftsController < ApplicationController
           :end => parse_time_filter_params( f[:end] ),
           restaurants: @caller == :restaurant ? [ @restaurant.id ] : f[:restaurants].map(&:to_i),
           riders: @caller == :rider ? [ @rider.id ] : f[:riders].map(&:to_i),
-          status: f[:status]#.map(&:capitalize)
+          status: f[:status]
         }
-        # @filter.merge! restaurants: f[:restaurants].map(&:to_i) unless @caller == :restaurant
       else # on first load
         @filter = { 
           start: DateTime.now.beginning_of_week,
           :end => DateTime.now.end_of_week + 24.hours,
           restaurants: @caller == :restaurant ? [ @restaurant.id ] : Restaurant.all.map(&:id),
-          riders: @caller == :rider ? [ @rider.id ] : Rider.all.map(&:id),
+          riders: @caller == :rider ? [ @rider.id ] : Rider.all.map(&:id).push(0) ,
           status: AssignmentStatus.select_options.map(&:last)
         }
-        # @filter.merge! restaurants: Restaurant.all.map(&:id) unless @caller == :restaurant
       end
     end
 
@@ -155,62 +153,35 @@ class ShiftsController < ApplicationController
       { restaurant: :mini_contact, assignment: { rider: :contact } }
     end
 
-    # def filters
-    #   caller_filter << param_filters
-    # end
-
-    # def caller_filter
-    #   case @caller
-    #   when :restaurant
-    #     [ "restaurants.id = ?",  @restaurant.id ]
-    #   when :rider
-    #     [ "assignments.rider_id = ?", @rider.id ]
-    #   when nil
-    #     [ '', '' ]
-    #   end
-    # end
-
-    # def param_filters
-    #   [ params_filter_sql_str, params_filter_hash ]
-    # end
-
-    # def params_filter_sql_str
-    #   str = "start > :filter_start AND start < :filter_end AND assignments.status IN (:filter_status)"
-    #   str << " AND riders.id IN (:filter_riders)" unless @caller == :rider
-    #   str << " AND restaurants.id IN (:filter_restaurants)" unless @caller == :restaurant
-    # end
-
     def filters
-      [ "start > :filter_start AND start < :filter_end 
-          AND riders.id IN (:filter_riders) 
-          AND restaurants.id IN (:filter_restaurants)
-          AND assignments.status IN (:filter_status)", 
-        { 
-          filter_start: @filter[:start], 
-          filter_end: @filter[:end], 
-          filter_restaurants: @filter[:restaurants],
-          filter_riders: @filter[:riders],
-          filter_status: @filter[:status] 
-        }
-      ]
+      [ filter_sql_str , filter_hash ]
     end
 
-    # def params_filter_sql_str
-    #   "start > :filter_start AND start < :filter_end 
-    #     AND riders.id IN (:filter_riders) 
-    #     AND restaurants.id IN (:filter_restaurants)
-    #     AND assignments.status IN (:filter_status)"
-    # end
+    def filter_sql_str
+      str = "start > :filter_start 
+        AND start < :filter_end 
+        AND restaurants.id IN (:filter_restaurants)
+        AND assignments.status IN (:filter_status)"
+      str << rider_sql_str
+    end
 
-    # def params_filter_hash
-    #   { 
-    #     filter_start: @filter[:start], 
-    #     filter_end: @filter[:end], 
-    #     filter_restaurants: @filter[:restaurants],
-    #     filter_riders: @filter[:riders],
-    #     filter_status: @filter[:status] 
-    #   }
-    # end
+    def rider_sql_str
+      if @filter[:riders].include? 0
+        " AND (riders.id IN (:filter_riders) OR riders.id IS null)"
+      else
+        " AND riders.id IN (:filter_riders)"
+      end      
+    end
+
+    def filter_hash #translates @filter hash built in load_filters
+      { 
+        filter_start: @filter[:start], 
+        filter_end: @filter[:end], 
+        filter_restaurants: @filter[:restaurants],
+        filter_riders: @filter[:riders],
+        filter_status: @filter[:status] 
+      }      
+    end
 
     def sort_column
       params[:sort] || "start" # default sort by date
@@ -222,7 +193,7 @@ class ShiftsController < ApplicationController
 
     def shift_params # permit :restaurant_id?
       params.require(:shift)
-        .permit( :id, :restaurant_id, :start, :end, :urgency, :billing_rate, :notes
+        .permit( :id, :restaurant_id, :start, :end, :urgency, :billing_rate, :notes,
           assignment_attributes: [ :id, :shift_id, :rider_id, :status ]
         )
     end
