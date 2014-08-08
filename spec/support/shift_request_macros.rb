@@ -35,7 +35,7 @@ module ShiftRequestMacros
     rider.contact.save
     first_shift.assign_to rider
     #configure second shift
-    second_shift.restaurant.mini_contact.name = '-'*10
+    second_shift.restaurant.mini_contact.name = 'z'*10
     second_shift.restaurant.mini_contact.save
     other_rider.contact.name = 'z'*10    
   end

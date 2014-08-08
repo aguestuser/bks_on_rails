@@ -165,7 +165,7 @@ describe "Shift Requests" do
                 before { click_link('Status') }            
 
                 it "should sort by statuses, descending" do
-                  expect( page.all('div.status')[0].text ).to eq '--'
+                  expect( page.all('div.status')[0].text ).to eq AssignmentStatus::Unassigned.new.text
                 end 
               end
             end
@@ -215,10 +215,7 @@ describe "Shift Requests" do
             end
           end
 
-          describe "by restaurant" do
-            before { filter_shifts_by_time_inclusively }
 
-          end
         end
       end
 
