@@ -75,7 +75,7 @@ describe "Shift Requests" do
           it { should have_content(other_restaurant.mini_contact.name) }          
         end
 
-        describe "pagination" do
+        describe "PAGINATION" do
           before do
             shifts
             visit shifts_path
@@ -86,20 +86,10 @@ describe "Shift Requests" do
 
         describe "SORTING" do
           before do
-            #configure first shift
-            first_shift.restaurant.mini_contact.name = 'A'*10
-            first_shift.restaurant.mini_contact.save
-            rider.contact.name = 'A'*10
-            rider.contact.save
-            first_shift.assign_to rider
-
-            #configure second shift
-            second_shift.restaurant.mini_contact.name = 'z'*10
-            second_shift.restaurant.mini_contact.save
-            other_rider.contact.name = 'z'*10
-
+            configure_shifts_for_sort_tests
             visit shifts_path
             filter_shifts_by_time_inclusively
+            # page.all('div.restaurant').each { |div| puts div.text }
           end
 
           it "should order shifts by time by default" do
@@ -115,7 +105,10 @@ describe "Shift Requests" do
               end
 
               describe "descending" do
-                before { click_link('Restaurant') }            
+                before do  
+                  click_link('Restaurant') 
+                  page.all('div.restaurant').each { |div| puts div.text }
+                end           
 
                 it "should sort by restaurant name, descending" do
                   expect( page.all('div.restaurant')[0].text ).to eq other_restaurant.name
@@ -220,6 +213,11 @@ describe "Shift Requests" do
                 end
               end              
             end
+          end
+
+          describe "by restaurant" do
+            before { filter_shifts_by_time_inclusively }
+
           end
         end
       end

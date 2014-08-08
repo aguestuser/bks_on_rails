@@ -109,18 +109,20 @@ class ShiftsController < ApplicationController
         @filter = { # on filter or sort
           start: parse_time_filter_params( f[:start] ),
           :end => parse_time_filter_params( f[:end] ),
-          riders: f[:riders].map(&:to_i),
-          restaurants: f[:restaurants].map(&:to_i),
+          restaurants: @caller == :restaurant ? [ @restaurant.id ] : f[:restaurants].map(&:to_i),
+          riders: @caller == :rider ? [ @rider.id ] : f[:riders].map(&:to_i),
           status: f[:status]#.map(&:capitalize)
         }
+        # @filter.merge! restaurants: f[:restaurants].map(&:to_i) unless @caller == :restaurant
       else # on first load
         @filter = { 
           start: DateTime.now.beginning_of_week,
           :end => DateTime.now.end_of_week + 24.hours,
-          riders: Rider.all.map(&:id),
-          restaurants: Restaurant.all.map(&:id),
+          restaurants: @caller == :restaurant ? [ @restaurant.id ] : Restaurant.all.map(&:id),
+          riders: @caller == :rider ? [ @rider.id ] : Rider.all.map(&:id),
           status: AssignmentStatus.select_options.map(&:last)
         }
+        # @filter.merge! restaurants: Restaurant.all.map(&:id) unless @caller == :restaurant
       end
     end
 
@@ -134,47 +136,74 @@ class ShiftsController < ApplicationController
     end
 
     def load_shifts
-      @shifts = Shift.includes(associations)
-        .where(*caller_filter)
-        .where(*param_filters)
+      @shifts = Shift
+        .includes(associations)
+        .where(*filters)
         .page(params[:page])
         .order(sort_column + " " + sort_direction)
+        .references(associations)
     end
 
     def associations
       { restaurant: :mini_contact, assignment: { rider: :contact } }
     end
 
+    # def filters
+    #   caller_filter << param_filters
+    # end
+
+    # def caller_filter
+    #   case @caller
+    #   when :restaurant
+    #     [ "restaurants.id = ?",  @restaurant.id ]
+    #   when :rider
+    #     [ "assignments.rider_id = ?", @rider.id ]
+    #   when nil
+    #     [ '', '' ]
+    #   end
+    # end
+
+    # def param_filters
+    #   [ params_filter_sql_str, params_filter_hash ]
+    # end
+
+    # def params_filter_sql_str
+    #   str = "start > :filter_start AND start < :filter_end AND assignments.status IN (:filter_status)"
+    #   str << " AND riders.id IN (:filter_riders)" unless @caller == :rider
+    #   str << " AND restaurants.id IN (:filter_restaurants)" unless @caller == :restaurant
+    # end
+
     def filters
-      caller_filter << param_filters
+      [ "start > :filter_start AND start < :filter_end 
+          AND riders.id IN (:filter_riders) 
+          AND restaurants.id IN (:filter_restaurants)
+          AND assignments.status IN (:filter_status)", 
+        { 
+          filter_start: @filter[:start], 
+          filter_end: @filter[:end], 
+          filter_restaurants: @filter[:restaurants],
+          filter_riders: @filter[:riders],
+          filter_status: @filter[:status] 
+        }
+      ]
     end
 
-    def caller_filter
-      case @caller
-      when :restaurant
-        [ "restaurants.id = ?",  @restaurant.id ]
-      when :rider
-        [ "assignments.rider_id = ?", @rider.id ]
-      when nil
-        [ '', '' ]
-      end
-    end
+    # def params_filter_sql_str
+    #   "start > :filter_start AND start < :filter_end 
+    #     AND riders.id IN (:filter_riders) 
+    #     AND restaurants.id IN (:filter_restaurants)
+    #     AND assignments.status IN (:filter_status)"
+    # end
 
-    def param_filters
-      [ params_filter_sql_str, params_filter_hash ]
-    end
-
-    def params_filter_sql_str
-      str = "start > :filter_start AND start < :filter_end AND assignments.status IN (:filter_status)"
-      str << " AND riders.id IN (:filter_riders)" unless @caller == :rider
-      str << " AND restaurants.id IN (:filter_restaurants)" unless @caller == :restaurant
-    end
-
-    def params_filter_hash
-      hash = { filter_start: @filter[:start], filter_end: @filter[:end], filter_status: @filter[:status] }
-      hash.merge! filter_riders: @filter[:riders] unless @caller == :rider
-      hash.merge! filter_restaurants: @filter[:restaurants] unless @caller == :restaurant   
-    end
+    # def params_filter_hash
+    #   { 
+    #     filter_start: @filter[:start], 
+    #     filter_end: @filter[:end], 
+    #     filter_restaurants: @filter[:restaurants],
+    #     filter_riders: @filter[:riders],
+    #     filter_status: @filter[:status] 
+    #   }
+    # end
 
     def sort_column
       params[:sort] || "start" # default sort by date

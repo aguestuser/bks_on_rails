@@ -1,21 +1,30 @@
 .row.header
   Filters
-= form_tag shifts_path, method: :get do
-  .row
-    .span2
-      = label_tag :start, 'Start'
-      = select_date @filter[:start], prefix: 'filter[start]' #'filter_start'
-    .span2
-      = label_tag :end, 'End'
-      = select_date @filter[:end], prefix: 'filter[end]'# 'filter_end'
-    .span2
-      = label_tag :restaurants, 'Restaurants'
-      = select_tag "filter[restaurants]", options_from_collection_for_select(Restaurant.includes(:mini_contact).order('mini_contacts.name asc'), :id, :name, selected: @filter[:restaurants] ), multiple: true, class: 'multi_select'
-    .span2
-      = label_tag :riders, 'Riders'
-      = select_tag "filter[riders]", options_from_collection_for_select(Rider.includes(:contact).order('contacts.name asc'), :id, :name, selected: @filter[:riders] ), multiple: true, class: 'multi_select'
-    .span2
-      = label_tag :statuses, 'Status'
-      = select_tag "filter[status]", options_for_select( AssignmentStatus.select_options, @filter[:status] ), multiple: true, class: 'multi_select'
-  .row.center
-    = submit_tag 'Filter', class: 'btn btn-primary'
+.row
+  = form_tag 'shifts', method: :get do   
+    .row
+      /Start
+      .span2
+        = label_tag :start, 'Start'
+        = select_date @filter[:start], prefix: 'filter[start]'
+      /End
+      .span2
+        = label_tag :end, 'End'
+        = select_date @filter[:end], prefix: 'filter[end]'
+      /Restaurant
+      - unless @caller == :restaurant
+        .span2
+          = label_tag :restaurants, 'Restaurants'
+          = select_tag "filter[restaurants]", options_from_collection_for_select(Restaurant.includes(:mini_contact).order('mini_contacts.name asc'), :id, :name, selected: @filter[:restaurants] ), multiple: true, class: 'multi_select'
+      /Rider
+      - unless @caller == :rider
+        .span2
+          = label_tag :riders, 'Riders'
+          = select_tag "filter[riders]", options_from_collection_for_select(Rider.includes(:contact).order('contacts.name asc'), :id, :name, selected: @filter[:riders] ), multiple: true, class: 'multi_select'
+      /Status
+      .span2
+        = label_tag :statuses, 'Status'
+        = select_tag "filter[status]", options_for_select( AssignmentStatus.select_options, @filter[:status] ), multiple: true, class: 'multi_select'
+    /Filter
+    .row.center
+      = submit_tag 'Filter', class: 'btn btn-primary'

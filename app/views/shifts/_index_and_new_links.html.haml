@@ -1,4 +1,4 @@
-- case caller
+- case @caller
 - when :restaurant
   .center
     = link_to "#{@restaurant.mini_contact.name}'s profile", @restaurant
@@ -11,6 +11,6 @@
     = link_to "#{@rider.contact.name}'s profile", @rider
     |
     = link_to 'All shifts', paths[:index]
-- when nil
+- else #when nil
   .center
     = link_to 'Create shift', paths[:new_shift]

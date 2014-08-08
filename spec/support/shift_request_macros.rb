@@ -27,28 +27,41 @@ module ShiftRequestMacros
     click_button submit    
   end
 
+  def configure_shifts_for_sort_tests
+    #configure first shift
+    first_shift.restaurant.mini_contact.name = 'A'*10
+    first_shift.restaurant.mini_contact.save
+    rider.contact.name = 'A'*10
+    rider.contact.save
+    first_shift.assign_to rider
+    #configure second shift
+    second_shift.restaurant.mini_contact.name = '-'*10
+    second_shift.restaurant.mini_contact.save
+    other_rider.contact.name = 'z'*10    
+  end
+
   def filter_shifts_by_time_inclusively
     #set start filter
-    select '2011', from: 'filters_start_year'
-    select 'January', from: 'filters_start_month'
-    select '1', from: 'filters_start_day'
+    select '2011', from: 'filter_start_year'
+    select 'January', from: 'filter_start_month'
+    select '1', from: 'filter_start_day'
     #set end filter
-    select '2017', from: 'filters_end_year'
-    select 'January', from: 'filters_end_month'
-    select '1', from: 'filters_end_day'
+    select '2017', from: 'filter_end_year'
+    select 'January', from: 'filter_end_month'
+    select '1', from: 'filter_end_day'
     
     click_button 'Filter'    
   end
 
   def filter_shifts_by_time_exclusively
     #set start filter
-    select '2014', from: 'filters_start_year'
-    select 'January', from: 'filters_start_month'
-    select '1', from: 'filters_start_day'
+    select '2014', from: 'filter_start_year'
+    select 'January', from: 'filter_start_month'
+    select '1', from: 'filter_start_day'
     #set end filter
-    select '2014', from: 'filters_start_year'
-    select 'January', from: 'filters_start_month'
-    select '2', from: 'filters_start_day'
+    select '2014', from: 'filter_start_year'
+    select 'January', from: 'filter_start_month'
+    select '2', from: 'filter_start_day'
     
     click_button 'Filter'    
   end
