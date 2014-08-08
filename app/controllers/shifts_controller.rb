@@ -108,12 +108,14 @@ class ShiftsController < ApplicationController
 
         @filters = {
           start: parse_time_filter_params( f[:start] ), #DateTime.new( s[:year].to_i, s[:month].to_i, s[:day].to_i, 0 ),
-          :end => parse_time_filter_params( f[:end] ) #DateTime.new( e[:year].to_i, e[:month].to_i, e[:day].to_i, 23, 59 )
+          :end => parse_time_filter_params( f[:end] ), #DateTime.new( e[:year].to_i, e[:month].to_i, e[:day].to_i, 23, 59 )
+          riders: f[:riders].map(&:to_i)
         }
       else # on first load
         @filters = { 
           start: DateTime.now.beginning_of_week,
-          :end => DateTime.now.end_of_week + 24.hours
+          :end => DateTime.now.end_of_week + 24.hours,
+          riders: Rider.all.map(&:id)#.map(&:to_s)
         }
       end
     end
@@ -154,13 +156,35 @@ class ShiftsController < ApplicationController
       end
     end
 
+    # def param_filters
+    #   [ "start > :filter_start AND start < :filter_end" + rider_filter, 
+    #     { 
+    #       filter_start: @filters[:start], 
+    #       filter_end: @filters[:end]
+    #     } 
+    #   ]
+    # end
+
     def param_filters
-      [ "start > :filter_start AND start < :filter_end", 
-        { 
-          filter_start: @filters[:start], 
-          filter_end: @filters[:end]
-        } 
-      ]
+      [ params_filter_sql_str, params_filter_hash ]
+    end
+
+    def params_filter_sql_str
+      str = "start > :filter_start AND start < :filter_end"
+      str << " AND riders.id IN (:filter_riders)" unless @caller == :rider
+      str
+    end
+
+    def params_filter_hash
+      # raise @filters[:riders].inspect
+      hash = { 
+        filter_start: @filters[:start], 
+        filter_end: @filters[:end]
+      }
+      unless @caller == :rider
+        hash[:filter_riders] = @filters[:riders]#.map(&:id)#.map(&:to_i) 
+      end
+      hash     
     end
 
     def sort_column

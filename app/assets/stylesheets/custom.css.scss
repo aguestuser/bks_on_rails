@@ -359,4 +359,7 @@ label {
   .header {
     @include header_row;  
   }
+  #filters_riders{
+    height: 10em;
+  }
 }
