@@ -1,6 +1,9 @@
 class AssignmentStatus < ClassyEnum::Base
 end
 
+class AssignmentStatus::Unassigned < AssignmentStatus
+end
+
 class AssignmentStatus::Proposed < AssignmentStatus
 end
 

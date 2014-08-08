@@ -17,8 +17,8 @@ include ValidationMacros
 
 describe Assignment do
   let(:assignment) { FactoryGirl.build(:assignment) }
-  let(:attrs) { [ :status, :shift_id, :rider_id ] }
-  let(:required_attrs) { attrs[1..2] }
+  let(:attrs) { [ :shift_id, :status, :rider_id ] }
+  let(:required_attrs) { [ :shift_id ]  }
   let(:associations) { [ :shift, :rider ] }
   let(:enums) { [ :status ] }
 

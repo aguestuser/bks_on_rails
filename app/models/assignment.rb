@@ -16,13 +16,13 @@ class Assignment < ActiveRecord::Base
   belongs_to :shift
   belongs_to :rider
 
+  classy_enum_attr :status, allow_nil: true, enum: 'AssignmentStatus'
+
   before_validation :set_status, if: :status_nil?
   # before_validation :set_assigned_by_id, on: :create
   # before_validation :set_last_modified_by_id
 
-  classy_enum_attr :status, allow_nil: true, enum: 'AssignmentStatus'
-
-  validates :shift_id, :rider_id, :status, presence: true
+  validates :shift_id, :status, presence: true
 
   # validates :status, :assigned_by, :last_modified_by
   #   presence: true
@@ -42,7 +42,7 @@ class Assignment < ActiveRecord::Base
     end
 
     def set_status
-      self.status = :proposed
+      self.status = :unassigned
     end
 
   #   def set_assigned_by_id
