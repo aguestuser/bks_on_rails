@@ -355,11 +355,20 @@ label {
 .filters {
   margin-top: 1em;
   margin-bottom: 1em;
-  border-bottom: 1px solid $grayLight;
+  // border-bottom: 1px solid $grayLight;
   .header {
     @include header_row;  
   }
-  #filters_riders{
+  label {
+    text-align: center;
+  }
+  .multi_select{ 
     height: 10em;
   }
+  // #filter_riders{
+  //   height: 10em;
+  // }
+  // #filter_restaurants{
+  //   height: 10em;
+  // }
 }

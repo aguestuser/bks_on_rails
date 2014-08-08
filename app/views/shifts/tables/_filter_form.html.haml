@@ -3,13 +3,19 @@
 = form_tag shifts_path, method: :get do
   .row
     .span2
-      = label_tag 'start', 'Start'
-      = select_date @filters[:start], prefix: 'filters[start]' #'filter_start'
+      = label_tag :start, 'Start'
+      = select_date @filter[:start], prefix: 'filter[start]' #'filter_start'
     .span2
-      = label_tag 'end', 'End'
-      = select_date @filters[:end], prefix: 'filters[end]'# 'filter_end'
+      = label_tag :end, 'End'
+      = select_date @filter[:end], prefix: 'filter[end]'# 'filter_end'
     .span2
-      = label_tag 'rider', 'Rider'
-      = select_tag "filters[riders]", options_from_collection_for_select(Rider.includes(:contact).order('contacts.name asc'), :id, :name, selected: @filters[:riders] ), multiple: true
+      = label_tag :restaurants, 'Restaurants'
+      = select_tag "filter[restaurants]", options_from_collection_for_select(Restaurant.includes(:mini_contact).order('mini_contacts.name asc'), :id, :name, selected: @filter[:restaurants] ), multiple: true, class: 'multi_select'
+    .span2
+      = label_tag :riders, 'Riders'
+      = select_tag "filter[riders]", options_from_collection_for_select(Rider.includes(:contact).order('contacts.name asc'), :id, :name, selected: @filter[:riders] ), multiple: true, class: 'multi_select'
+    .span2
+      = label_tag :statuses, 'Status'
+      = select_tag "filter[status]", options_for_select( AssignmentStatus.select_options, @filter[:status] ), multiple: true, class: 'multi_select'
   .row.center
     = submit_tag 'Filter', class: 'btn btn-primary'
