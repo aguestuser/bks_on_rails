@@ -29,15 +29,13 @@ class Shift < ActiveRecord::Base
     presence: true
 
   def assigned? #output: bool
-    !self.assignment.nil?
+    !self.assignment.rider.nil?
   end
 
-  def assign_to(rider) #input: Rider, #output: self.Assignment
-    if self.assigned?
-      self.assignment.update(rider_id: rider.id)
-    else 
-      self.assignment = Assignment.create!(shift_id: self.id, rider_id: rider.id)
-    end
+  def assign_to(rider, status=:proposed) 
+    #input: Rider, AssignmentStatus(Symbol) 
+    #output: self.Assignment
+    self.assignment.update(rider_id: rider.id, status: status)
   end
 
   def conflicts_with?(conflicts)
