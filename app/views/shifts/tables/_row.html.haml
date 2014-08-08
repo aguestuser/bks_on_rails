@@ -1,9 +1,7 @@
 - if shift.assigned?
   - rider = link_to shift.assignment.rider.contact.name, shift.assignment.rider
-  - status = shift.assignment.status.text
 - else
   - rider = '--'
-  - status = '--'
 
 .row
   /Restaurant
@@ -19,7 +17,7 @@
       = rider
   /Status    
   %div{ :class => "span2 status", :id => "shift#{shift.id}_assignment_status" }
-    = status
+    = shift.assignment.status.text
   /Action
   - if can? :manage, @shift
     %div{ :class => "span1 action", :id => "shift#{shift.id}_action" }

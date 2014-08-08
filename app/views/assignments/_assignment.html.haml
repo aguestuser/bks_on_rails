@@ -1,3 +1,8 @@
+- if @assignment.rider.nil?
+  - rider = '--'  
+- else
+  - rider = link_to shift.assignment.rider.contact.name, shift.assignment.rider
+
 %h3 Assignment Details
 %ul
   %li
@@ -5,7 +10,7 @@
     = render 'assignments/shift_include', shift: @assignment.shift
   %li
     %strong Assigned to:
-    = link_to assignment.rider.contact.name, assignment.rider
+    = rider
   %li
     %strong Status:
     = assignment.status.text
