@@ -50,16 +50,16 @@ describe "Shift Requests" do
           FactoryGirl.create(:shift, 
             :with_restaurant, 
             restaurant: restaurant,
-            start: DateTime.new(1917,1,1,11),
-            :end => DateTime.new(1917,1,1,16)
+            start: DateTime.new(2012,1,1,11),
+            :end => DateTime.new(2012,1,1,16)
           )
         }
         let(:second_shift){
           FactoryGirl.create(:shift, 
             :with_restaurant, 
             restaurant: other_restaurant,
-            start: DateTime.new(3030,1,1,11),
-            :end => DateTime.new(3030,1,1,16)
+            start: DateTime.new(2016,1,1,11),
+            :end => DateTime.new(2016,1,1,16)
           )
         }
         let(:rider){ FactoryGirl.create(:rider) }
@@ -84,7 +84,7 @@ describe "Shift Requests" do
           it { should_not have_content format_start(shifts[30].start) }
         end
 
-        describe "sorting" do
+        describe "SORTING" do
           before do
             #configure first shift
             first_shift.restaurant.mini_contact.name = 'A'*10
@@ -99,6 +99,7 @@ describe "Shift Requests" do
             other_rider.contact.name = 'z'*10
 
             visit shifts_path
+            filter_shifts_by_time_inclusively
           end
 
           it "should order shifts by time by default" do
@@ -174,6 +175,50 @@ describe "Shift Requests" do
                   expect( page.all('div.status')[0].text ).to eq '--'
                 end 
               end
+            end
+          end
+        end
+
+        describe "FILTERING" do
+          before do
+            first_shift
+            second_shift
+            visit shifts_path
+            # page.all('div.time').each { |time| puts time.text }
+          end
+          
+          describe "by time" do
+
+            describe "when shift times are inside filters" do
+              before { filter_shifts_by_time_inclusively }
+
+              it "should include first shift" do
+                expect( page.all('div.time')[0].text ).to eq first_shift.table_time
+              end
+
+              describe "after sorting by time (descending)" do
+                before { click_link 'Time' }
+
+                it "should include second shift" do
+                  expect( page.all('div.time')[0].text ).to eq second_shift.table_time
+                end  
+              end
+            end
+
+            describe "after filtering" do
+              before { filter_shifts_by_time_exclusively }
+
+              it "should exclude first shift" do
+                expect( page.all('div.time')[0].text ).not_to eq first_shift.table_time
+              end
+
+              describe "after sorting by time, descending" do
+                before { click_link 'Time' }
+
+                it "should exclude second shift" do
+                  expect( page.all('div.time')[0].text ).not_to eq second_shift.table_time
+                end
+              end              
             end
           end
         end

@@ -105,18 +105,25 @@ class ShiftsController < ApplicationController
     def load_filters
       if params[:filters]
         f = params[:filters]
-        s = f[:start]
-        e = f[:end]
 
         @filters = {
-          start: DateTime.new( s[:year].to_i, s[:month].to_i, s[:day].to_i, 0 ),
-          :end => DateTime.new( e[:year].to_i, e[:month].to_i, e[:day].to_i, 23, 59 )
+          start: parse_time_filter_params( f[:start] ), #DateTime.new( s[:year].to_i, s[:month].to_i, s[:day].to_i, 0 ),
+          :end => parse_time_filter_params( f[:end] ) #DateTime.new( e[:year].to_i, e[:month].to_i, e[:day].to_i, 23, 59 )
         }
       else # on first load
         @filters = { 
           start: DateTime.now.beginning_of_week,
           :end => DateTime.now.end_of_week + 24.hours
         }
+      end
+    end
+
+    def parse_time_filter_params p
+      case p.class.name
+      when 'String' # from sort click
+        p.to_datetime
+      when 'ActionController::Parameters' # from filter click
+        DateTime.new( p[:year].to_i, p[:month].to_i, p[:day].to_i, 0 )
       end
     end
 

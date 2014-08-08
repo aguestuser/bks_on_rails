@@ -27,4 +27,30 @@ module ShiftRequestMacros
     click_button submit    
   end
 
+  def filter_shifts_by_time_inclusively
+    #set start filter
+    select '2011', from: 'filters_start_year'
+    select 'January', from: 'filters_start_month'
+    select '1', from: 'filters_start_day'
+    #set end filter
+    select '2017', from: 'filters_end_year'
+    select 'January', from: 'filters_end_month'
+    select '1', from: 'filters_end_day'
+    
+    click_button 'Filter'    
+  end
+
+  def filter_shifts_by_time_exclusively
+    #set start filter
+    select '2014', from: 'filters_start_year'
+    select 'January', from: 'filters_start_month'
+    select '1', from: 'filters_start_day'
+    #set end filter
+    select '2014', from: 'filters_start_year'
+    select 'January', from: 'filters_start_month'
+    select '2', from: 'filters_start_day'
+    
+    click_button 'Filter'    
+  end
+
 end
