@@ -7,6 +7,7 @@ class ShiftsController < ApplicationController
   before_action :load_caller # will call load_restaurant or load_rider if applicable, load_paths always
   before_action :load_form_args, only: [ :edit, :update ]
   before_action :redirect_non_staffers, only: [ :index ]
+  before_action :load_filters, only: [ :index ]
   before_action :load_shifts, only: [ :index ]
 
   def new
@@ -101,15 +102,38 @@ class ShiftsController < ApplicationController
       end
     end
 
+    def load_filters
+      if params[:filters]
+        f = params[:filters]
+        s = f[:start]
+        e = f[:end]
+
+        @filters = {
+          start: DateTime.new( s[:year].to_i, s[:month].to_i, s[:day].to_i, 0 ),
+          :end => DateTime.new( e[:year].to_i, e[:month].to_i, e[:day].to_i, 23, 59 )
+        }
+      else # on first load
+        @filters = { 
+          start: DateTime.now.beginning_of_week,
+          :end => DateTime.now.end_of_week + 24.hours
+        }
+      end
+    end
+
     def load_shifts
       @shifts = Shift.includes(associations)
         .where(*caller_filter)
+        .where(*param_filters)
         .page(params[:page])
         .order(sort_column + " " + sort_direction)
     end
 
     def associations
       { restaurant: :mini_contact, assignment: { rider: :contact } }
+    end
+
+    def filters
+      caller_filter << param_filters
     end
 
     def caller_filter
@@ -121,6 +145,15 @@ class ShiftsController < ApplicationController
       when nil
         [ '', '' ]
       end
+    end
+
+    def param_filters
+      [ "start > :filter_start AND start < :filter_end", 
+        { 
+          filter_start: @filters[:start], 
+          filter_end: @filters[:end]
+        } 
+      ]
     end
 
     def sort_column

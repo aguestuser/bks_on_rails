@@ -14,6 +14,10 @@
 %h1= header
 - if can? :manage, Shift
   = render 'shifts/index_and_new_links', caller: @caller, paths: @shift_paths
+
+.row
+  %div{ class: wrapper_class+' filters' }
+    = render 'shifts/tables/filter_form', paths: @shift_paths
 .center
   = will_paginate @shifts
 .row

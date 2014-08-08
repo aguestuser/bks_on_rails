@@ -10,6 +10,16 @@ $grayMediumLight: #eaeaea;
   box-sizing: border-box;
 }
 
+@mixin header_row {
+  text-align: center;
+  font-weight: bold;
+  border-top: 1px solid $grayLight;
+  border-bottom: 1px solid $grayLight !important;
+  padding-top: .5em;
+  padding-bottom: .5em;
+  margin-bottom: .5em;
+}
+
 /* universal */
 
 html {
@@ -319,14 +329,9 @@ label {
 /* Shift display */
 
 .table {
-  text-align: center;
+  text-align: center;  
   .header {
-    font-weight: bold;
-    border-top: 1px solid $grayLight;
-    border-bottom: 1px solid $grayLight !important;
-    padding-top: .5em;
-    padding-bottom: .5em;
-    margin-bottom: .5em;
+    @include header_row;
     .current {
       padding-right: 1.3em;
       background-repeat: no-repeat;
@@ -344,5 +349,14 @@ label {
   }
   .row{
     border-bottom: 1px solid $grayLighter;
+  }
+}
+
+.filters {
+  margin-top: 1em;
+  margin-bottom: 1em;
+  border-bottom: 1px solid $grayLight;
+  .header {
+    @include header_row;  
   }
 }

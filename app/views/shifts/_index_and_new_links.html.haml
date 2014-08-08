@@ -1,16 +1,16 @@
 - case caller
 - when :restaurant
-  %p.center
+  .center
     = link_to "#{@restaurant.mini_contact.name}'s profile", @restaurant
     |
     = link_to 'All shifts', paths[:index]
     |
     = link_to 'Create shift', paths[:new_shift] 
 - when :rider
-  %p.center
+  .center
     = link_to "#{@rider.contact.name}'s profile", @rider
     |
     = link_to 'All shifts', paths[:index]
 - when nil
-  %p.center
+  .center
     = link_to 'Create shift', paths[:new_shift]
