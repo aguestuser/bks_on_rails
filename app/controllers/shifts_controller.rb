@@ -12,8 +12,9 @@ class ShiftsController < ApplicationController
 
   def new
     @shift = Shift.new
+    @shift.build_assignment
+
     load_form_args
-    @restaurants = Restaurant.all if !params.include? :restaurant_id
     @it = @shift
   end
 
@@ -67,15 +68,21 @@ class ShiftsController < ApplicationController
         load_restaurant
       elsif params.include? :rider_id
         @caller = :rider
+        load_restaurants
         load_rider
       else 
         @caller = nil
+        load_restaurants
       end
       load_shift_paths
     end   
 
     def load_restaurant
       @restaurant = Restaurant.find(params[:restaurant_id])
+    end
+
+    def load_restaurants
+      @restaurants = Restaurant.all
     end
 
     def load_rider
@@ -215,6 +222,8 @@ class ShiftsController < ApplicationController
 
     def shift_params # permit :restaurant_id?
       params.require(:shift)
-        .permit( :id, :restaurant_id, :start, :end, :urgency, :billing_rate, :notes )
+        .permit( :id, :restaurant_id, :start, :end, :urgency, :billing_rate, :notes
+          assignment_attributes: [ :id, :shift_id, :rider_id, :status ]
+        )
     end
 end
