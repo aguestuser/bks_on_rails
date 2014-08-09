@@ -1,5 +1,7 @@
 BksOnRails::Application.routes.draw do
 
+  get "schedule/shift_grid"
+  get "schedule/availability_grid"
   root 'static_pages#home'
 
   match '/sign_in', to:'sessions#new', via: 'get'

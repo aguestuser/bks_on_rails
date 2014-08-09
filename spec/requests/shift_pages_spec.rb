@@ -174,16 +174,15 @@ describe "Shift Requests" do
 
         describe "FILTERING" do
           before do
-            first_shift
-            second_shift
+            configure_shifts_for_sort_tests
             visit shifts_path
-            # page.all('div.time').each { |time| puts time.text }
+            # page.all('div.time').each { |div| puts div.text }
           end
           
           describe "by time" do
 
-            describe "when shift times are inside filters" do
-              before { filter_shifts_by_time_inclusively }
+            describe "before filtering" do
+              before { filter_shifts_by_time_inclusively } # for default view
 
               it "should include first shift" do
                 expect( page.all('div.time')[0].text ).to eq first_shift.table_time
@@ -215,7 +214,145 @@ describe "Shift Requests" do
             end
           end
 
+          describe "by restaurant" do
+            before { filter_shifts_by_time_inclusively } # for default view
 
+            describe "before filtering" do
+
+              describe "after sorting by restaurant (ascending)" do
+                before { click_link 'Restaurant' }
+
+                it "should include first shift" do
+                  expect( page.all('div.restaurant')[0].text ).to eq first_shift.restaurant.name
+                end
+
+                describe "after sorting by restaurant (descending)" do
+                  before { click_link 'Restaurant' }
+
+                  it "should include second shift" do
+                    expect( page.all('div.restaurant')[0].text ).to eq second_shift.restaurant.name
+                  end                
+                end
+              end
+            end
+
+            describe "after filtering for 2nd rest (and sorting by rest asc)" do
+              before do 
+                filter_shifts_by_restaurant [ second_shift.restaurant ] 
+                click_link 'Restaurant'
+              end
+
+              it "should exclude first shift" do
+                expect( page.all('div.restaurant')[0].text ).not_to eq first_shift.restaurant.name
+              end
+            end
+
+            describe "after filtering for 1st rest. (& sorting by rest desc)" do
+              before do 
+                filter_shifts_by_restaurant [ first_shift.restaurant ]
+                click_link 'Restaurant'
+                click_link 'Restaurant'
+              end
+
+              it "should exclude first shift" do
+                expect( page.all('div.restaurant')[0].text ).not_to eq second_shift.restaurant.name
+              end
+            end
+          end
+
+
+          describe "by rider" do
+            before { filter_shifts_by_time_inclusively } # for default view
+
+            describe "before filtering" do
+
+              describe "after sorting by rider (ascending)" do
+                before { click_link 'Assigned to' }
+
+                it "should include first shift" do
+                  expect( page.all('div.rider')[0].text ).to eq first_shift.assignment.rider.name
+                end
+
+                describe "after sorting by rider (descending)" do
+                  before { click_link 'Assigned to' }
+
+                  it "should include second shift" do
+                    expect( page.all('div.rider')[0].text ).to eq '--'
+                  end                
+                end
+              end
+            end  
+
+            describe "after filtering for 2nd rider (and sorting by rider asc)" do
+              before do 
+                filter_shifts_by_rider [ second_shift.assignment.rider ] 
+                click_link 'Assigned to'
+              end
+
+              it "should exclude first shift" do
+                expect( page.all('div.rider')[0].text ).not_to eq first_shift.assignment.rider.name
+              end
+            end
+
+            describe "after filtering for 1st rider (& sorting by rider desc)" do
+              before do 
+                filter_shifts_by_rider [ first_shift.assignment.rider ]
+                click_link 'Assigned to'
+                click_link 'Assigned to'
+              end
+              it "should exclude first shift" do
+                expect( page.all('div.rider')[0].text ).not_to eq '--'
+              end
+            end
+          end
+
+          describe "by status" do
+            before do 
+              filter_shifts_by_time_inclusively # for default view
+              filter_shifts_by_restaurant [ first_shift.restaurant, second_shift.restaurant ]
+            end
+            
+            describe "before filtering" do
+
+              describe "after sorting by status (ascending)" do
+                before { click_link 'Status' }
+
+                it "should include first shift" do
+                  expect( page.all('div.status')[0].text ).to eq first_shift.assignment.status.text
+                end
+
+                describe "after sorting by rider (descending)" do
+                  before { click_link 'Status' }
+
+                  it "should include second shift" do
+                    expect( page.all('div.status')[0].text ).to eq second_shift.assignment.status.text
+                  end                
+                end
+              end
+            end  
+
+            describe "after filtering for 2nd status (and sorting by status asc)" do
+              before do 
+                filter_shifts_by_status [ second_shift.assignment.status.text ] 
+                click_link 'Status'
+              end
+
+              it "should exclude first shift" do
+                expect( page.all('div.status')[0].text ).not_to eq first_shift.assignment.status.text
+              end
+            end
+
+            describe "after filtering for 1st status (& sorting by status desc)" do
+              before do 
+                filter_shifts_by_status [ first_shift.assignment.status.text ]
+                click_link 'Status'
+                click_link 'Status'
+              end
+              it "should exclude first shift" do
+                expect( page.all('div.status')[0].text ).not_to eq second_shift.assignment.status.text
+              end
+            end
+          end
         end
       end
 

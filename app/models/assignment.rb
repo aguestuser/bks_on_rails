@@ -13,7 +13,7 @@
 #
 
 class Assignment < ActiveRecord::Base
-  belongs_to :shift
+  belongs_to :shift, inverse_of: :assignment
   belongs_to :rider
 
   classy_enum_attr :status, allow_nil: true, enum: 'AssignmentStatus'

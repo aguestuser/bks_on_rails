@@ -10,6 +10,12 @@ module CustomMatchers
     end
   end
 
+  RSpec::Matchers.define :is_selected? do |select_id, option|
+    match do |page|
+      expect(page).to have_select(select_id, selected: option)
+    end    
+  end
+
   RSpec::Matchers.define :have_error_message do |message|
     match do |page|
       expect(page).to have_selector('div.alert.alert-error', text: message)

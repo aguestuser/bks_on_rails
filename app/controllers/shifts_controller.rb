@@ -125,7 +125,7 @@ class ShiftsController < ApplicationController
           start: DateTime.now.beginning_of_week,
           :end => DateTime.now.end_of_week + 24.hours,
           restaurants: @caller == :restaurant ? [ @restaurant.id ] : Restaurant.all.map(&:id),
-          riders: @caller == :rider ? [ @rider.id ] : Rider.all.map(&:id).push(0) ,
+          riders: @caller == :rider ? [ @rider.id ] : Rider.all.map(&:id).push(0),
           status: AssignmentStatus.select_options.map(&:last)
         }
       end

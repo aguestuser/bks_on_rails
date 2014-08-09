@@ -18,7 +18,7 @@ class Shift < ActiveRecord::Base
   include Timeboxable
 
   belongs_to :restaurant
-  has_one :assignment, dependent: :destroy
+  has_one :assignment, dependent: :destroy, inverse_of: :shift
     accepts_nested_attributes_for :assignment
 
   
@@ -36,6 +36,10 @@ class Shift < ActiveRecord::Base
     #input: Rider, AssignmentStatus(Symbol) 
     #output: self.Assignment
     self.assignment.update(rider_id: rider.id, status: status)
+  end
+
+  def unassign
+    self.assignment.update(rider_id: nil, status: :unassigned)
   end
 
   def conflicts_with?(conflicts)

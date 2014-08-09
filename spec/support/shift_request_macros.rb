@@ -37,7 +37,10 @@ module ShiftRequestMacros
     #configure second shift
     second_shift.restaurant.mini_contact.name = 'z'*10
     second_shift.restaurant.mini_contact.save
-    other_rider.contact.name = 'z'*10    
+    second_shift.unassign
+    # other_rider.contact.name = 'z'*10
+    # other_rider.contact.save
+    # second_shift.assign_to other_rider    
   end
 
   def filter_shifts_by_time_inclusively
@@ -64,6 +67,41 @@ module ShiftRequestMacros
     select '2', from: 'filter_start_day'
     
     click_button 'Filter'    
+  end
+
+  def filter_shifts_by_restaurant restaurants
+    Restaurant.all.each { |r| unselect r.name, from: 'filter_restaurants' }
+    restaurants.each { |r| select r.name, from: 'filter_restaurants' }
+    click_button 'Filter'
+  end
+
+  def filter_shifts_by_rider riders
+    id = 'filter_riders'
+    # clear multiselect
+    Rider.all.each { |r| unselect r.name, from: id }
+    unselect '--', from: 'filter_riders' 
+    # make new selections
+    riders.each do |r|
+      if r.nil?
+        select '--', from: 'filter_riders'
+      else
+        select r.name, from: 'filter_riders'
+      end
+    end
+    #submit
+    click_button 'Filter'
+  end
+
+  def filter_shifts_by_status status_strs
+    id = 'filter_status'
+    #clear multiselect
+    AssignmentStatus.select_options.map(&:first).each do |status|
+      unselect status, from: id
+    end
+    #make new selections
+    status_strs.each { |status| select status, from: id }
+    #submit
+    click_button 'Filter'
   end
 
 end
