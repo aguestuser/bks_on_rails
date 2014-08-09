@@ -1,0 +1,27 @@
+- provide(:title, 'Shift Grid')
+
+%h1 Shift Grid
+%table.grid
+  %tr.header
+    %th#restaurant Restaurant
+    - periods.each do |period|
+      - id = header_to_selector(period)
+      %th{ id: id }
+        = period
+  - @restaurants.each_with_index do |restaurant, i|
+    - row_num = i + 1
+    - rest_class = header_to_selector(restaurant.name)
+    %tr{ id: "#{rest_class}_row" }
+      %td{ class: "row#{row_num} col1 rest_{rest_class} per_nil" }
+        = restaurant.name
+      - periods.each_with_index do |period, j|
+        - col_num = j + 1
+        - per_class = header_to_selector(period)
+        %td{ class: "row#{row_num} col#{col_num} rest_{rest_class} per_#{per_class}" }
+          Hello!
+          / - shifts = Shift.matches_period( period, restaurant: restaurant )
+          / - shifts.each do |shift|
+          /   = shift.grid_time
+          /   |
+          /   = shift.assignment.rider.name
+  

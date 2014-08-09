@@ -12,6 +12,10 @@ module Timeboxable
       self.start.strftime("%m/%d | %I:%M%p")+' - '+ self.end.strftime("%I:%M%p")
     end
 
+    def grid_time
+      self.start.strftime("%I:%M") << "-" << self.end.strftime("%I%M")
+    end
+
     private
 
       def set_period
@@ -35,5 +39,13 @@ module Timeboxable
   end
 
   module ClassMethods
+    def self.matches_period(period, **options)
+      if options.key? :restaurant
+        rest = options[:restaurant]
+        
+      elsif options.key? :rider
+      
+      end
+    end
   end
 end

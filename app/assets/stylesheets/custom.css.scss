@@ -365,10 +365,48 @@ label {
   .multi_select{ 
     height: 10em;
   }
-  // #filter_riders{
-  //   height: 10em;
+}
+
+table.grid {
+  width: 98%;
+  border: 1px solid gray;
+  position: absolute;
+  left: 1%;
+  margin-right: 2%;
+  margin-bottom: 2%;
+  // .header{ 
+    
   // }
-  // #filter_restaurants{
-  //   height: 10em;
-  // }
+  th {
+    @include header_row;
+    border: 1px solid gray;
+  }
+  td {
+    text-align: center;
+    border: 1px solid gray;
+  }
+  #restaurant{
+    background-color: $grayLight
+  }
+  #mon_am, #mon_pm { 
+    background-color: red;
+  }
+  #tue_am, #tue_pm {
+    background-color: orange;
+  }
+  #wed_am, #wed_pm {
+    background-color: yellow;
+  }
+  #thu_am, #thu_pm {
+    background-color: forestgreen;
+  }
+  #fri_am, #fri_pm {
+    background-color: royalblue;
+  }
+  #sat_am, #sat_pm {
+    background-color: blueviolet;
+  }
+  #sun_am, #sun_pm {
+    background-color: violet;
+  }
 }
