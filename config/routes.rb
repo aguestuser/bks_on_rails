@@ -1,7 +1,5 @@
 BksOnRails::Application.routes.draw do
 
-  get "schedule/shift_grid"
-  get "schedule/availability_grid"
   root 'static_pages#home'
 
   match '/sign_in', to:'sessions#new', via: 'get'
@@ -55,6 +53,9 @@ BksOnRails::Application.routes.draw do
   resources :shifts do
     resources :assignments
   end
+
+  get "schedule/shift_grid"
+  get "schedule/availability_grid"
 
   get 'assignments/override_conflict'
   get 'assignments/override_double_booking'
