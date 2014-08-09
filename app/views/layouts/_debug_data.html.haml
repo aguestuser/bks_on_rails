@@ -1,4 +1,9 @@
-#debug-data{:style => "vertical-align: bottom;"}
+- if request.original_fullpath == '/schedule/shift_grid'
+  - debug_class = "grid_debug"
+- else
+  - debug_class = "debug"
+
+#debug-data{ class: debug_class }
   = debug(params)
   \---! Request data:
   %br/

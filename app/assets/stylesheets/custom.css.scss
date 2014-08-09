@@ -59,6 +59,19 @@ textarea {
   @include box_sizing;
 }
 
+.grid_debug {
+  position: absolute;
+  z-index: -1;
+  bottom: 2%;
+  left: 1%;
+  width: 98%;
+  margin-right: 1%;
+}
+
+.debug {
+  vertical-align: bottom;
+}
+
 .center {
   text-align: center;
   btn {

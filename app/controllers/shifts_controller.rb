@@ -1,5 +1,5 @@
 class ShiftsController < ApplicationController
-  include ShiftPaths
+  include ShiftPaths, Filters
 
   helper_method :sort_column, :sort_direction
 
@@ -7,7 +7,7 @@ class ShiftsController < ApplicationController
   before_action :load_caller # will call load_restaurant or load_rider if applicable, load_paths always
   before_action :load_form_args, only: [ :edit, :update ]
   before_action :redirect_non_staffers, only: [ :index ]
-  before_action :load_filters, only: [ :index ]
+  before_action :load_filter_wrapper, only: [ :index ]
   before_action :load_shifts, only: [ :index ]
 
   def new
@@ -109,35 +109,8 @@ class ShiftsController < ApplicationController
       end
     end
 
-    def load_filters
-      if params[:filter]
-        f = params[:filter]
-
-        @filter = { # on filter or sort
-          start: parse_time_filter_params( f[:start] ),
-          :end => parse_time_filter_params( f[:end] ),
-          restaurants: @caller == :restaurant ? [ @restaurant.id ] : f[:restaurants].map(&:to_i),
-          riders: @caller == :rider ? [ @rider.id ] : f[:riders].map(&:to_i),
-          status: f[:status]
-        }
-      else # on first load
-        @filter = { 
-          start: DateTime.now.beginning_of_week,
-          :end => DateTime.now.end_of_week + 24.hours,
-          restaurants: @caller == :restaurant ? [ @restaurant.id ] : Restaurant.all.map(&:id),
-          riders: @caller == :rider ? [ @rider.id ] : Rider.all.map(&:id).push(0),
-          status: AssignmentStatus.select_options.map(&:last)
-        }
-      end
-    end
-
-    def parse_time_filter_params p
-      case p.class.name
-      when 'String' # from sort click
-        p.to_datetime
-      when 'ActionController::Parameters' # from filter click
-        DateTime.new( p[:year].to_i, p[:month].to_i, p[:day].to_i, 0 )
-      end
+    def load_filter_wrapper
+      load_filters for: :shifts, by: [ :time, :restaurants, :riders, :status ]
     end
 
     def load_shifts
@@ -151,36 +124,6 @@ class ShiftsController < ApplicationController
 
     def associations
       { restaurant: :mini_contact, assignment: { rider: :contact } }
-    end
-
-    def filters
-      [ filter_sql_str , filter_hash ]
-    end
-
-    def filter_sql_str
-      str = "start > :filter_start 
-        AND start < :filter_end 
-        AND restaurants.id IN (:filter_restaurants)
-        AND assignments.status IN (:filter_status)"
-      str << rider_sql_str
-    end
-
-    def rider_sql_str
-      if @filter[:riders].include? 0
-        " AND (riders.id IN (:filter_riders) OR riders.id IS null)"
-      else
-        " AND riders.id IN (:filter_riders)"
-      end      
-    end
-
-    def filter_hash #translates @filter hash built in load_filters
-      { 
-        filter_start: @filter[:start], 
-        filter_end: @filter[:end], 
-        filter_restaurants: @filter[:restaurants],
-        filter_riders: @filter[:riders],
-        filter_status: @filter[:status] 
-      }      
     end
 
     def sort_column
