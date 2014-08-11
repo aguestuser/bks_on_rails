@@ -66,13 +66,31 @@ module Filters
         #input: Symbol (:load or :request), Hash of filter params (optional)
         #does: retrieves correct filter query based on context and appends it to hash
         #output: Hash of filter key/value pairs to be appended to master filter hash
+        
         case context
+        
         when :load 
           start_value = DateTime.now.beginning_of_week
+          end_value = start_value + 6.days + 23.hours + 59.minutes
         when :request
           start_value = parse_time_filter_params( fp[:start] )
+
+          case view
+          
+          when :shift_table
+            end_value = parse_time_filter_params( fp[:end] )
+          when :shift_grid
+            end_value = start_value + 6.days + 23.hours + 59.minutes
+          end
         end
-        end_value = start_value + 6.days + 23.hours + 59.minutes
+        
+        # case view
+        # when :shift_table
+          
+        # when :shift_grid
+          
+        # end
+
         { start: start_value, :end => end_value }
       end
 

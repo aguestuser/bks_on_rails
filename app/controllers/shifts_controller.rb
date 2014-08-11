@@ -111,7 +111,7 @@ class ShiftsController < ApplicationController
     end
 
     def load_filter_wrapper
-      load_filters for: :shifts, by: [ :time, :restaurants, :riders, :status ]
+      load_filters subject: :shifts, view: :shift_table, by: [ :time, :restaurants, :riders, :status ]
     end
 
     def load_shifts
