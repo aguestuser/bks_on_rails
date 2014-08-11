@@ -22,7 +22,7 @@
   = will_paginate @shifts
 .row
   %div{ :class => wrapper_class }
-    = render 'shifts/tables/wrapper', shifts: @shifts, caller: @caller, paths: @shift_paths
+    = render 'shifts/tables/wrapper', shifts: @shifts, caller: @caller, paths: @shift_paths, teaser: false
 .center
   = will_paginate @shifts
 - if can? :manage, Shift

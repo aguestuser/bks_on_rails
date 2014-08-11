@@ -5,7 +5,7 @@
   %h3 Assignments
 .row
   .span8.offset1
-    = render 'shifts/tables/wrapper', shifts: shifts, caller: caller, paths: paths
+    = render 'shifts/tables/wrapper', shifts: shifts, caller: caller, paths: paths, teaser: true
 %p.center
   - if caller == :restaurant
     = link_to 'See full list of shifts', paths[:index]

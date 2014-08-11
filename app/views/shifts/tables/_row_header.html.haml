@@ -1,11 +1,27 @@
 .row.header
+  /Restaurant
   - unless caller == :restaurant
     .span2
-      = sortable 'mini_contacts.name', 'Restaurant'
+      - if teaser
+        Restaurant
+      - else
+        = sortable 'mini_contacts.name', 'Restaurant'
+  /Time
   .span3
-    = sortable 'start', 'Time'
+    - if teaser
+      Time
+    - else
+      = sortable 'start', 'Time'
+  /Rider
   - unless caller == :rider
     .span2
-      = sortable 'contacts.name', 'Assigned to'
+      - if teaser
+        Assigned to
+      - else
+        = sortable 'contacts.name', 'Assigned to'
+  /Status
   .span2
-    = sortable 'assignments.status', 'Status'
+    - if teaser
+      Status
+    - else
+      = sortable 'assignments.status', 'Status'
