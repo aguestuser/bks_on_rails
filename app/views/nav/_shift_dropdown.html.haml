@@ -1,0 +1,10 @@
+%li#fat-menu.dropdown
+  %a.dropdown-toggle{"data-toggle" => "dropdown", :href => "#"}
+    Shifts
+    %b.caret
+  %ul.dropdown-menu
+    %li= link_to "List", shifts_path
+    %li= link_to "Grid", shift_grid_path
+    - if can? :create, Shift
+      %li.divider
+      %li= link_to "Create", new_shift_path

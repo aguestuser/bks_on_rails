@@ -5,15 +5,17 @@ module Filters
     
     def load_filters lf_params
       #input: Hash of params with following form:
-        # { for: Symbol corresponding to Timeboxable class name }
+        # { subject: Symbol corresponding to Timeboxable class name }
           # permitted values: :shifts, :conflicts, :assignments
+        # { view: Symbol corresponding to view rendering filtered records }
+          # permitted values: :shift_table, :shift_grid, :conflict_table, :availability_grid
         # { by: [ Arr of Symbols corresponding to filter keys ]}
           # permitted values: :time, :restaurants, :riders, :status
       #does: builds hash of filter params based on object type and filter keys passed as args
       #output: Hash of filter params
       
       if params[:filter]
-        f = params[:filter]
+        fp = params[:filter]
         context = :request
       else
         context = :load
@@ -21,7 +23,7 @@ module Filters
 
       lf_params[:by].each do |by|
         @filter ||= {}
-        @filter.merge!(load_filter by, context, f) ## <-- breaks up filter retrieval to component parts
+        @filter.merge!(load_filter by, context, fp, lf_params[:view]) ## <-- breaks up filter retrieval to component parts
       end
     end
 
@@ -39,7 +41,7 @@ module Filters
 
       #helpers for load_filters
 
-      def load_filter by, context, f
+      def load_filter by, context, fp, view
         #input: 
           # Sybmol for filter type(: time, :restaurants, :riders, or :status), 
           # Symbol for context (:load or :request)
@@ -50,32 +52,31 @@ module Filters
           # to be appended to master filter hash next level up
         case by
         when :time
-          load_time_filter context, f
+          load_time_filter context, fp, view
         when :restaurants
-          load_restaurants_filter context, f
+          load_restaurants_filter context, fp
         when :riders
-          load_riders_filter context, f
+          load_riders_filter context, fp
         when :status
-          load_status_filter context, f
+          load_status_filter context, fp
         end
       end
 
-      def load_time_filter context, f=nil
+      def load_time_filter context, fp=nil, view=nil
         #input: Symbol (:load or :request), Hash of filter params (optional)
         #does: retrieves correct filter query based on context and appends it to hash
         #output: Hash of filter key/value pairs to be appended to master filter hash
         case context
         when :load 
           start_value = DateTime.now.beginning_of_week
-          end_value = DateTime.now.end_of_week + 24.hours
         when :request
-          start_value = parse_time_filter_params( f[:start] )
-          end_value = parse_time_filter_params( f[:end] )
+          start_value = parse_time_filter_params( fp[:start] )
         end
+        end_value = start_value + 6.days + 23.hours + 59.minutes
         { start: start_value, :end => end_value }
       end
 
-      def load_restaurants_filter context, f=nil
+      def load_restaurants_filter context, fp=nil
         #input: Symbol (:load or :request), Hash of filter params (optional)
         #does: retrieves correct filter query based on context and appends it to hash
         #output: Hash of filter key/value pairs to be appended to master filter hash
@@ -86,13 +87,13 @@ module Filters
           when :load
             value = Restaurant.all.map(&:id)
           when :request
-            value = f[:restaurants].map(&:to_i)
+            value = fp[:restaurants].map(&:to_i)
           end 
         end
         { restaurants: value }
       end
 
-      def load_riders_filter context, f=nil
+      def load_riders_filter context, fp=nil
         #input: Symbol (:load or :request), Hash of filter params (optional)
         #does: retrieves correct filter query based on context and appends it to hash
         #output: Hash of filter key/value pairs to be appended to master filter hash
@@ -103,13 +104,13 @@ module Filters
           when :load
             value = Rider.all.map(&:id).push(0)
           when :request
-            value = f[:riders].map(&:to_i)
+            value = fp[:riders].map(&:to_i)
           end
         end
         { riders: value }
       end
 
-      def load_status_filter context, f=nil
+      def load_status_filter context, fp=nil
         #input: Symbol (:load or :request), Hash of filter params (optional)
         #does: retrieves correct filter query based on context and appends it to hash
         #output: Hash of filter key/value pairs to be appended to master filter hash
@@ -117,7 +118,7 @@ module Filters
         when :load
           value = AssignmentStatus.select_options.map(&:last)
         when :request
-          value = f[:status]
+          value = fp[:status]
         end
         { status: value }
       end

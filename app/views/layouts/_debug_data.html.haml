@@ -1,4 +1,4 @@
-- if request.original_fullpath == '/schedule/shift_grid'
+- if request.original_fullpath.include? '/schedule/shift_grid'
   - debug_class = "grid_debug"
 - else
   - debug_class = "debug"

@@ -305,7 +305,7 @@ def pick_assignment_status
 end
 
 def times(n)
-  start = n.days.from_now.beginning_of_day + 12.hours
+  start = Time.zone.now.beginning_of_week.beginning_of_day + n.days + 12.hours
   [
     {
       start: start,
@@ -313,7 +313,7 @@ def times(n)
     },
     {
       start: start + 6.hours,
-      :end => start + 12.hours
+      :end => start + 11.hours
     }
   ]
 end

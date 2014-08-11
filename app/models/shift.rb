@@ -18,7 +18,7 @@ class Shift < ActiveRecord::Base
   include Timeboxable
 
   belongs_to :restaurant
-  has_one :assignment, dependent: :destroy, inverse_of: :shift
+  has_one :assignment, dependent: :destroy #inverse_of: :shift
     accepts_nested_attributes_for :assignment
 
   

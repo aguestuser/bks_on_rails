@@ -12,7 +12,7 @@ class ShiftsController < ApplicationController
 
   def new
     @shift = Shift.new
-    @shift.build_assignment
+    # @shift.build_assignment
 
     load_form_args
     @it = @shift
@@ -20,6 +20,7 @@ class ShiftsController < ApplicationController
 
   def create
     @shift = Shift.new(shift_params)
+    @shift.assignment = Assignment.new
     load_form_args
     @it = @shift
     if @shift.save

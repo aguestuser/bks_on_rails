@@ -4,6 +4,11 @@ module ValidationMacros
       expect(model).to respond_to attr
     end
   end
+  def check_private_methods(model, methods)
+    methods.each do |method|
+      expect(model).not_to respond_to method
+    end
+  end
   def check_required_attributes(model, attributes)
     attributes.each do |attr|
       model[attr] = nil

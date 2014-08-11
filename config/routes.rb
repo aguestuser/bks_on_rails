@@ -55,6 +55,8 @@ BksOnRails::Application.routes.draw do
   end
 
   get "schedule/shift_grid"
+  match '/shift_grid', to: 'schedule#shift_grid', via: 'get'
+
   get "schedule/availability_grid"
 
   get 'assignments/override_conflict'

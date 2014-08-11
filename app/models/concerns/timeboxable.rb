@@ -9,18 +9,25 @@ module Timeboxable
     validate :start_before_end
 
     def table_time
-      self.start.strftime("%m/%d | %I:%M%p")+' - '+ self.end.strftime("%I:%M%p")
+      self.start.strftime("%m/%d | %l:%M%p")+' - '+ self.end.strftime("%l:%M%p")
     end
 
     def grid_time
-      self.start.strftime("%I:%M") << "-" << self.end.strftime("%I%M")
+      start_min = self.start.min == 0 ? '' : ":%M"
+      end_min = self.start.min == 0 ? '' : "%M"
+
+      self.start.strftime("%l"<<start_min) << "-" << self.end.strftime("%l"<<end_min)
+    end
+
+    def formal_date
+      self.strftime("%B %e, %Y")
     end
 
     private
 
       def set_period
         if self.end && self.start
-          if self.end.hour <= 18 && self.start.hour >= 6
+          if self.end.hour <= 18 && ( self.start.hour >= 6 && self.start.hour < self.end.hour )
             self.period = :am
           elsif self.start.hour >= 16
             self.period = :pm
