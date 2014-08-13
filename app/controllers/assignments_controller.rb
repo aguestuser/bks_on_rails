@@ -106,10 +106,22 @@ class AssignmentsController < ApplicationController
       
       case action
       when :create
-        message = lambda { |assignment| "Shift assigned to #{assignment.rider.contact.name}" }
+        message = lambda do |assignment| 
+          if assignment.rider.nil?
+            "Shift unassigned."
+          else 
+            "Shift assigned to #{assignment.rider.contact.name}"
+          end
+        end
         do_over = 'new'
       when :update
-        message = lambda { |assignment| "Assignment updated (Rider: #{assignment.rider.contact.name}, Status: #{@assignment.status.text})" } 
+        message = lambda do |assignment| 
+          if assignment.rider.nil?
+            "Assignment updated (currently unassigned)."
+          else
+            "Assignment updated (Rider: #{assignment.rider.contact.name}, Status: #{@assignment.status.text})"
+          end
+        end
         do_over = 'edit'
       end
 

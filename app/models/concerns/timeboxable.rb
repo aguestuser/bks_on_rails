@@ -9,7 +9,7 @@ module Timeboxable
     validate :start_before_end
 
     def table_time
-      self.start.strftime("%m/%d | %l:%M%p")+' - '+ self.end.strftime("%l:%M%p")
+      self.start.strftime("%m/%d | %l:%M%p").sub('  ', ' ')+' - '+ self.end.strftime("%l:%M%p").sub('  ', ' ')
     end
 
     def grid_time

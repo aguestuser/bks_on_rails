@@ -18,7 +18,6 @@ include ValidationMacros
 describe Assignment do
   let(:assignment) { FactoryGirl.build(:assignment) }
   let(:attrs) { [ :shift_id, :status, :rider_id ] }
-  let(:required_attrs) { [ :shift_id ]  }
   let(:associations) { [ :shift, :rider ] }
   let(:enums) { [ :status ] }
 
@@ -32,10 +31,6 @@ describe Assignment do
 
   describe "validations" do
     it { should be_valid }
-
-    it "should be invalid when required fields are nil" do
-      check_required_attributes assignment, required_attrs
-    end
 
     it "should be invalid when enum attrs don't corresond to enum values" do
       check_enums assignment, enums

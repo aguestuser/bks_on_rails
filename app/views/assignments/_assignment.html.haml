@@ -1,7 +1,7 @@
 - if @assignment.rider.nil?
   - rider = '--'  
 - else
-  - rider = link_to shift.assignment.rider.contact.name, shift.assignment.rider
+  - rider = link_to @assignment.rider.contact.name, @assignment.rider
 
 %h3 Assignment Details
 %ul
@@ -13,6 +13,6 @@
     = rider
   %li
     %strong Status:
-    = assignment.status.text
+    = @assignment.status.text
 %p.center
   = link_to 'Edit', paths[:edit_assignment].call(@assignment.shift, @assignment)

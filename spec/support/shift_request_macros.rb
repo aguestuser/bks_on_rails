@@ -29,18 +29,16 @@ module ShiftRequestMacros
 
   def configure_shifts_for_sort_tests
     #configure first shift
-    first_shift.restaurant.mini_contact.name = 'A'*10
-    first_shift.restaurant.mini_contact.save
-    rider.contact.name = 'A'*10
-    rider.contact.save
+    first_shift.restaurant.mini_contact.update(name: 'A'*10)
+    rider.contact.update(name: 'A'*10)
     first_shift.assign_to rider
+    first_shift.assignment.update(status: :cancelled_by_restaurant)
     #configure second shift
     second_shift.restaurant.mini_contact.name = 'z'*10
     second_shift.restaurant.mini_contact.save
     second_shift.unassign
-    # other_rider.contact.name = 'z'*10
-    # other_rider.contact.save
-    # second_shift.assign_to other_rider    
+    #initialize dummy shift
+    dummy_shift
   end
 
   def filter_shifts_by_time_inclusively
@@ -62,9 +60,9 @@ module ShiftRequestMacros
     select 'January', from: 'filter_start_month'
     select '1', from: 'filter_start_day'
     #set end filter
-    select '2014', from: 'filter_start_year'
-    select 'January', from: 'filter_start_month'
-    select '2', from: 'filter_start_day'
+    select '2014', from: 'filter_end_year'
+    select 'January', from: 'filter_end_month'
+    select '2', from: 'filter_end_day'
     
     click_button 'Filter'    
   end

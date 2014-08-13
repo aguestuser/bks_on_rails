@@ -47,7 +47,8 @@ describe Rider do
           start: DateTime.new(2014,1,n+1,11),
           :end => DateTime.new(2014,1,n+1,17),
           billing_rate: :normal,
-          urgency: :weekly
+          urgency: :weekly,
+          assignment: Assignment.new
         )
       end
     end
@@ -61,8 +62,8 @@ describe Rider do
       end
     end
     describe "shifts_on(date)" do
-      before do 
-        shifts.each { |shift| shift.assign_to rider }
+      before do
+        shifts.each  { |shift| shift.assign_to rider }
       end
       it "should retrieve correct shifts" do
         expect( rider.shifts_on(Date.new(2014,1,1)).include? shifts[0] ).to eq true        

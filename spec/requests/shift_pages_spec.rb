@@ -44,7 +44,10 @@ describe "Shift Requests" do
 
       describe "from root path" do
 
-        before { visit shifts_path }
+        before do 
+          visit shifts_path 
+          filter_shifts_by_time_inclusively
+        end
 
         let(:first_shift){ 
           FactoryGirl.create(:shift, 
@@ -58,8 +61,16 @@ describe "Shift Requests" do
           FactoryGirl.create(:shift, 
             :with_restaurant, 
             restaurant: other_restaurant,
-            start: DateTime.new(2016,1,1,11),
+            start: DateTime.new(2016,1,1,12),
             :end => DateTime.new(2016,1,1,16)
+          )
+        }
+        let(:dummy_shift){
+          FactoryGirl.create(:shift, 
+            :with_restaurant, 
+            restaurant: other_restaurant,
+            start: DateTime.new(2014,1,1,13),
+            :end => DateTime.new(2014,1,1,16)
           )
         }
         let(:rider){ FactoryGirl.create(:rider) }
@@ -107,7 +118,6 @@ describe "Shift Requests" do
               describe "descending" do
                 before do  
                   click_link('Restaurant') 
-                  page.all('div.restaurant').each { |div| puts div.text }
                 end           
 
                 it "should sort by restaurant name, descending" do
@@ -122,14 +132,14 @@ describe "Shift Requests" do
               before { click_link('Time') }
               
               it "should sort by time, descending" do
-                expect( page.all('div.time')[0].text ).to eq first_shift.table_time
+                expect( page.all('div.time')[0].text ).to eq second_shift.table_time
               end
               
               describe "descending" do
                 before { click_link('Time') }            
 
                 it "should sort by time, ascending" do
-                  expect( page.all('div.time')[0].text ).to eq second_shift.table_time
+                  expect( page.all('div.time')[0].text ).to eq first_shift.table_time
                 end  
               end
             end
@@ -180,9 +190,9 @@ describe "Shift Requests" do
           end
           
           describe "by time" do
+            before { filter_shifts_by_time_inclusively } # for default view
 
             describe "before filtering" do
-              before { filter_shifts_by_time_inclusively } # for default view
 
               it "should include first shift" do
                 expect( page.all('div.time')[0].text ).to eq first_shift.table_time
@@ -394,6 +404,9 @@ describe "Shift Requests" do
               let(:new_counts){ count_models models }
               it "should create a new shift" do
                 expect( model_counts_incremented? old_counts, new_counts ).to eq true 
+              end
+              it "should give the shift a blank assignment" do
+                expect( shift.assignment.nil? ).to eq false
               end
               it { should have_success_message('Shift created') }
               it { should have_h1('Shifts') }                

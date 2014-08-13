@@ -16,21 +16,7 @@ describe Timeboxable do
 
   describe "methods" do
     describe "set_period" do
-      before do
-
-        puts "NOW:"
-        pp DateTime.now
-
-        pm_shift
-        
-        pp pm_shift.end
-        puts pm_shift.end.hour
-        puts pm_shift.end.hour <= 18
-        
-        pp pm_shift.start
-        puts pm_shift.start.hour
-        puts pm_shift.start.hour >= 6
-      end
+      
       it "should set period correctly" do
         expect( pm_shift.period.text.upcase ).to eq 'PM'
       end  

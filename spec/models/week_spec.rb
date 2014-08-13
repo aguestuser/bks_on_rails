@@ -94,8 +94,8 @@ describe Week do
 
     describe "load_record_hash" do
       let(:record_hash){ shift_week.record_hash }
-      let(:am_values) { record_hash.select { |k,v| k.to_s.include?('am') && !v.nil? }.values.map(&:first) }
-      let(:pm_values) { record_hash.select { |k,v| k.to_s.include?('pm') && !v.nil? }.values.map(&:first) }
+      let(:am_values) { record_hash.select { |k,v| k.to_s.include?('am') && !v.empty? }.values.map(&:first) }
+      let(:pm_values) { record_hash.select { |k,v| k.to_s.include?('pm') && !v.empty? }.values.map(&:first) }
       # before do
       #   puts "RECORDS:"
       #   pp shift_week.records

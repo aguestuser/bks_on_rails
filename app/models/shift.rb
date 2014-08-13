@@ -35,11 +35,16 @@ class Shift < ActiveRecord::Base
   def assign_to(rider, status=:proposed) 
     #input: Rider, AssignmentStatus(Symbol) 
     #output: self.Assignment
-    self.assignment.update(rider_id: rider.id, status: status)
+    params = { rider_id: rider.id, status: status } 
+    if self.assigned?
+      self.assignment.update params
+    else
+      self.assignment = Assignment.create! params
+    end
   end
 
   def unassign
-    self.assignment.update(rider_id: nil, status: :unassigned)
+    self.assignment.update(rider_id: nil, status: :unassigned) if self.assigned?
   end
 
   def conflicts_with?(conflicts)
