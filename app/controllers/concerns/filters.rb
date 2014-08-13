@@ -77,9 +77,9 @@ module Filters
 
           case view
           
-          when :shift_table
+          when :table
             end_value = parse_time_filter_params( fp[:end] )
-          when :shift_grid
+          when :grid
             end_value = start_value + 6.days + 23.hours + 59.minutes
           end
         end
