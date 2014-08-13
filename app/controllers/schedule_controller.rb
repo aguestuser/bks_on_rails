@@ -4,8 +4,6 @@ class ScheduleController < ApplicationController
   skip_authorize_resource
   include TimeboxableHelper, Filters
 
-  # before_action :load_shift_filters, only: :shift_grid
-  # before_action :load_shifts, only: :shift_grid
   before_action :load_subject # callbacks: load_restaurants OR load_riders
   before_action :load_filter_wrapper
   before_action :load_week
@@ -91,48 +89,7 @@ class ScheduleController < ApplicationController
         if record.class == Conflict
           :status
         end
-
+      end
     end
-
-
-    grid = {
-      header: ,
-      rows: [
-        { 
-          label: ,
-          entity: ,
-          {
-            mon_am: 
-            {
-              entity: ,
-              value: 
-            },
-            ..
-          }
-         }
-      ]
-    }
-
-    rows = rows.sort_by{ |row| row[sort_key] }
-
-    row[col_key]
-
-    # def load_shifts
-    #   @shifts = Shift
-    #     .includes(associations)
-    #     .where(*filters)
-    #     .references(associations)
-    # end
-
-    # def associations
-    #   { restaurant: :mini_contact, assignment: { rider: :contact } }
-    # end
-
-        # def load_restaurants
-    #   @restaurants = @shifts.map(&:restaurant).uniq
-    # end
-
-
-
 
 end

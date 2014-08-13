@@ -81,3 +81,31 @@
 
 end
 
+
+    # grid = {
+    #   header: ,
+    #   rows: [
+    #     { 
+    #       label: ,
+    #       entity: ,
+    #       {
+    #         mon_am: 
+    #         {
+    #           entity: ,
+    #           value: 
+    #         },
+    #         ..
+    #       }
+    #      }
+    #   ]
+    # }
+
+    # class Grid 
+    #   def initialize (week, sort_key)
+    #   end
+    # end
+
+    # rows = rows.sort_by{ |row| row[sort_key] }
+
+    row[col_key]
+

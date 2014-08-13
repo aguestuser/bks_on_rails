@@ -8,12 +8,14 @@
   /Grid
   %table
     /Header Row
-    %tr.header
+    %tr{ id: "row_0" }
       /Rest Col
-      %th#restaurant Restaurant
+      %th{ id: "row_0_col_1" } 
+        Restaurant
       /Shift Cols
       - 14.times do |n|
-        %th{ id: Week::SELECTORS[n] }
+        - col_num = n+2
+        %th{ id: "row_0_col_#{col_num}", class: "day_per_#{Week::SELECTORS[n]}" }
           = Week::HEADERS[n]
     
     /Data Rows
@@ -21,16 +23,16 @@
       - row_num = i + 1
       - rest_class = header_to_selector(restaurant.name)
       /Data Row
-      %tr{ id: "#{rest_class}_row" }
+      %tr{ id: "row_#{row_num}", class: "rest_#{rest_class}" }
         /Rest Col
-        %td{ class: "row#{row_num} col1 rest_{rest_class} per_nil" }
+        %td{ id: "row_#{row_num}_col_1", class: "rest_#{rest_class} y_axis_label" }
           = restaurant.name
         /Data Cols
         - 14.times do |n|
-          - col_num = n + 1
+          - col_num = n + 2
           - day_period = Week::SELECTORS[n]
           /Data Col
-          %td{ style: "padding: 0px;", class: "row#{row_num} col#{col_num} rest_#{rest_class} day_per_#{day_period}" }
+          %td{ style: "padding: 0px;", id: "row_#{row_num}_col_#{col_num}", class: "rest_#{rest_class} day_per_#{day_period}" }
             / Hello!
             / - raise @week.record_hash.inspect
             - shifts = @week.records_for day_period, restaurant: restaurant
@@ -38,11 +40,11 @@
               - shifts.each do |shift|
                 - rider_name = !shift.assigned? ? '--' : shift.assignment.rider.short_name
                 - color = @week.bg_color_for shift.assignment.status
-                %div
-                  .time_cell
-                    = shift.grid_time 
-                  %div{ :class => "record_cell #{color}" }
-                    = rider_name.to_s << ' ' << shift.assignment.status.short_code
+                / %div
+                /   .time_cell
+                /     = shift.grid_time 
+                %div{ :class => "record_cell #{color}" }
+                  = rider_name.to_s << ' ' << shift.assignment.status.short_code
                   
                   
 
