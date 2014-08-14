@@ -16,7 +16,7 @@ module Timeboxable
       start_min = self.start.min == 0 ? '' : ":%M"
       end_min = self.start.min == 0 ? '' : "%M"
 
-      self.start.strftime("%l"<<start_min) << "-" << self.end.strftime("%l"<<end_min)
+      self.start.strftime("%l"<<start_min) << " -" << self.end.strftime("%l"<<end_min).sub('  ',' ')
     end
 
     def formal_date

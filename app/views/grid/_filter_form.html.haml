@@ -1,6 +1,6 @@
 .row
   .span10.offset2
-    = form_tag 'shift_grid', method: :get do
+    = form_tag params[:action], method: :get do
       /Start
       .span.datepicker
         = label_tag :start, 'Start'

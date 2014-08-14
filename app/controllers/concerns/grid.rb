@@ -1,57 +1,105 @@
- class WeekGrid 
+ class Grid 
+  include TimeboxableHelper
+
+  attr_accessor :headers, :rows
+
   def initialize (week, y_axis, entities, sort_key)
-
-    @y_axis # [ :rider, :restaurant ]
-    @header = load_header
-    @rows = load_rows week, sort_key
+    # raise week.record_hash.to_yaml
+    @y_axis= y_axis # [ :rider, :restaurant ]
+    @headers = load_headers
+    @rows = load_rows week, entities, sort_key
   end
 
-  def load_header
-    
-  end
+  private
 
-  #######
-  #NEED TO INCLUDE FIRST COL VAL IN ROW IF I"M GOING TO SORT BY IT!
-  #####
+  #Main Functions
+
+  def load_headers 
+    row = [ {
+      value: @y_axis.to_s.capitalize,
+      id_str: "row_0_col_1",
+      class_str: "x_label",
+    } ]
+    row + Week::SELECTORS.each_with_index.map do |day_per_str, i|
+      col_num = i + 2
+      {
+        value: Week::HEADERS[i],
+        id_str: "row_0_col_#{col_num}",
+        class_str: "day_per_#{day_per_str}"
+      }
+    end
+  end
 
   def load_rows week, entities, sort_key
     rows = []
-    entities.each_with_index do |entity, i|  
-      rows[i][:y_label] = y_axis_label_for entity, i+1
-      week_record_hash.each do |day_per, resources|  
-        rows[i][day_per] = {
-          resources: resources,
-          value: cell_values_from resources
-          class_str: class_str_from i+1, day_per, entity
-        }
+    entities.each_with_index do |entity, i|
+      
+      entity_class_str = entity_class_str_from entity
+
+      rows[i] = []  
+      rows[i][0] = y_label_cell_from entity, i, entity_class_str
+      
+      Week::SELECTORS.each_with_index do | day_per_str, j| 
+
+        case @y_axis
+        when :rider
+          entity_hash = { rider: entity }
+        when :restaurant
+          entity_hash = { restaurant: entity }
+        end
+
+        day_per_sym = day_per_str.to_sym
+        resources = week.records_for day_per_str, entity_hash
+
+        rows[i][j+1] = data_cell_from day_per_str, resources, i, j, entity_class_str
       end
     end
-    rows.sorty_by{ |row| row[sort_key] } 
+    rows
   end
 
-  def y_axis_label_from entity, row_num
-    entity_class_str = header_to_selector entity.name
+  #Helper Functions
+
+
+
+  def entity_class_str_from entity
+    prefix = @y_axis.to_s
+    val = header_to_selector entity.name
+    "#{prefix}_#{val}"
+  end
+
+  def y_label_cell_from entity, i, entity_class_str
+    row_num = i + 1
     {
-      resource: entity,
-      value: entity.name,
-      class_str: "row_#{row_num} col_1 "
+      resources: [ entity ],
+      values: [ entity.name ],
+      id_str: "row_#{row_num}_col_1",
+      class_str: "#{entity_class_str} y_axis_label"
+      # sort_key: 0
     }
   end
 
-  def y_axis_label_class_str_from entity
-    case entity.class
-      prefix = 
+  def data_cell_from day_per_str, resources, i, j, entity_class_str
+    row_num = i + 1
+    col_num = j + 2
+    values = data_cell_vals_from resources 
+    {
+      resources: resources,
+      values: values,
+      id_str: "row_#{row_num}_col_#{col_num}",
+      class_str: "#{entity_class_str} day_per_#{day_per_str}" #{color_from values}
+      # sort_key: sort_key
+    }
   end
 
-  def cell_values_from resources
-    resources.map{ |r| cell_value_from r }.join(', ') unless resources.empty?
+  def data_cell_vals_from resources
+    resources.empty? ? ['--'] : resources.map{ |r| data_cell_val_from r }
   end
 
-  def cell_value_from resource
-    case resource.class
-    when Shift
+  def data_cell_val_from resource
+    case resource.class.name
+    when 'Shift'
       parse_shift resource
-    when Conflict
+    when 'Conflict'
       parse_conflict resource
     end
       
@@ -60,52 +108,16 @@
   def parse_shift s
     case @y_axis
     when :restaurant
-      s.assignment.rider.short_name 
+      s.assignment.rider.short_name.to_s + ' ' + s.assignment.status.short_code
     when :rider
-      s.restaurant
+      s.restaurant.name + ' ' + s.assignment.status.short_code
     end
   end
 
   def parse_conflict c
-    c.nil? ? '[AVAIL]' : "[UNAVAIL]: #{c.grid_time}"
-  end
-
-  def data_class_str_from row_num, day_per, entity
-    r2_prefix = @y_axis.to_s << '_'
-    r2_val = header_to_selector entity
-    c_prefix = 'per_'
-    col_num = Week.SELECTORS.index(day_num.to_s) + 1
-    "row_#{row_num} col_#{col_num} #{r_prefix}#{r2_val}"
+    "[NA] #{c.grid_time}"
   end
 
 
 end
-
-
-    # grid = {
-    #   header: ,
-    #   rows: [
-    #     { 
-    #       label: ,
-    #       entity: ,
-    #       {
-    #         mon_am: 
-    #         {
-    #           entity: ,
-    #           value: 
-    #         },
-    #         ..
-    #       }
-    #      }
-    #   ]
-    # }
-
-    # class Grid 
-    #   def initialize (week, sort_key)
-    #   end
-    # end
-
-    # rows = rows.sort_by{ |row| row[sort_key] }
-
-    row[col_key]
 

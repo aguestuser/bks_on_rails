@@ -409,28 +409,28 @@ label {
       text-align: center;
       border: 1px solid gray;
     }
-    #restaurant{
+    #row_0_col_1{
       background-color: $grayLight
     }
-    #mon_am, #mon_pm { 
+    #row_0_col_2, #row_0_col_3 { 
       background-color: red;
     }
-    #tue_am, #tue_pm {
+    #row_0_col_4, #row_0_col_5 {
       background-color: orange;
     }
-    #wed_am, #wed_pm {
+    #row_0_col_6, #row_0_col_7  {
       background-color: yellow;
     }
-    #thu_am, #thu_pm {
+    #row_0_col_8, #row_0_col_9  {
       background-color: forestgreen;
     }
-    #fri_am, #fri_pm {
+    #row_0_col_10, #row_0_col_11  {
       background-color: royalblue;
     }
-    #sat_am, #sat_pm {
+    #row_0_col_12, #row_0_col_13  {
       background-color: blueviolet;
     }
-    #sun_am, #sun_pm {
+    #row_0_col_14, #row_0_col_15  {
       background-color: violet;
     }
     .time_cell{

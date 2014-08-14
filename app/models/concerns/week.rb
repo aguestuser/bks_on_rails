@@ -26,11 +26,20 @@ class Week
 
     records = @record_hash[rh_key]
 
+    # raise records.to_yaml if rh_key == :mon_pm
+    # if rh_key == :mon_pm #&& entity.id == 86
+    #   raise 'ENTITY_KEY: '+ entity_key.inspect + 'ENTITY:' +entity.inspect 
+    # end
+
     if records.nil?
       matches = []
     else
-      matches = records.select { |r| r.send(entity_key) == entity }
+      matches = records.select do |r| 
+        r.send(entity_key) == entity 
+      end
     end
+    raise matches.to_yaml if rh_key == :mon_pm && entity.id == 86 && entity.class.name == 'Shift'
+    matches
   end
 
   def bg_color_for status
@@ -56,6 +65,7 @@ class Week
       @klass.where("start > :start AND start < :end", 
         { start: @start, :end => @end })
         .order("start asc")
+        .to_a
     end
 
     def load_record_hash

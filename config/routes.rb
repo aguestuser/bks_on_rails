@@ -54,10 +54,11 @@ BksOnRails::Application.routes.draw do
     resources :assignments
   end
 
-  get "schedule/shift_grid"
-  match '/shift_grid', to: 'schedule#shift_grid', via: 'get'
+  get "grid/shifts"
+  match '/shift_grid', to: 'grid#shifts', via: 'get'
 
-  get "schedule/availability_grid"
+  get "grid/availability"
+  match '/availability_grid', to: 'grid#availability', via: 'get'
 
   get 'assignments/override_conflict'
   get 'assignments/override_double_booking'

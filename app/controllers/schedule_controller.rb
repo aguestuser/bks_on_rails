@@ -1,6 +1,6 @@
 # require 'week.rb'
 
-class ScheduleController < ApplicationController  
+class GridController < ApplicationController  
   skip_authorize_resource
   include TimeboxableHelper, Filters
 
@@ -10,10 +10,10 @@ class ScheduleController < ApplicationController
   before_action :load_y_axis_resource
   # before_action :load_restaurants, only: :shift_grid
 
-  def shift_grid
+  def shifts
   end
 
-  def availability_grid
+  def availability
   end
 
   private
@@ -37,23 +37,22 @@ class ScheduleController < ApplicationController
       case @subject
       when :shifts
         load_shift_week
-      when 
-        load_availability_week
-      end
+      # when :availability
+      #   load_availability_week
+      # end
     end
 
       def load_shift_week
         @week = Week.new( @filter[:start], @filter[:end], Shift )
       end
 
-      def load_availability_week
-        start__ = @filter[:start]
-        end__ = @filter[:end]
-        
-        shift_wk = Week.new( start__, end__, Shift ).records
-        conflict_wk = Week.new( start__, end__, Conflict ).records
-        @week = CompoundWeek.new( start__, end__, shift_wk, conflict_wk  )
-      end
+      # def load_availability_week
+      #   start__ = @filter[:start]
+      #   end__ = @filter[:end]
+      #   shift_wk = Week.new( start__, end__, Shift ).records
+      #   conflict_wk = Week.new( start__, end__, Conflict ).records
+      #   @week = CompoundWeek.new( start__, end__, shift_wk, conflict_wk  )
+      # end
 
     def load_y_axis_resource
       case @subject

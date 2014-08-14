@@ -20,6 +20,7 @@ class Shift < ActiveRecord::Base
   belongs_to :restaurant
   has_one :assignment, dependent: :destroy #inverse_of: :shift
     accepts_nested_attributes_for :assignment
+  has_one :rider, through: :assignment
 
   
   classy_enum_attr :billing_rate

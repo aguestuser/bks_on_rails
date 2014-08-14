@@ -242,7 +242,7 @@ end
 
 def make_assignments
   Restaurant.all.each do |restaurant|
-    restaurant.shifts.first(14).each do |shift|
+    restaurant.shifts.last(14).each do |shift|
       rider_id = Rider.all.sample.id
       status = pick_assignment_status
       shift.assignment.update(
@@ -256,8 +256,8 @@ end
 def make_conflicts
   Rider.all.each_with_index do |rider|
     7.times do |n|
-      start = times(n)[0][:start] + n.days
-      end_ = times(n)[0][:end] + n.days
+      start = times(n)[0][:start] + 14.days
+      end_ = times(n)[0][:end] + 14.days
       Conflict.create!(
         rider_id: rider.id,
         start: start,
