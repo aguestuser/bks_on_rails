@@ -19,10 +19,11 @@
   end
 
   def load_rows week, entities, sort_key
-    entities.each_with_index.map do |entity, i|
-      row = [ y_label_data_cell_from(entity, i) ]
-      row.concat data_cells_from(entity, i, week)
-    end
+    rows = entities.map do |entity|
+      row = [ y_label_data_cell_from(entity) ]
+      row.concat data_cells_from(entity, week)
+    end.sort_by{ |row| row[sort_key][:values].join }
+    rows = add_id_selectors_to rows
   end
 
   #Main Helper Functions
@@ -46,25 +47,33 @@
     end
   end
 
-  def y_label_data_cell_from entity, i
-    row_num = i + 1
+  def y_label_data_cell_from entity
     entity_class_str = entity_class_str_from entity
     {
       resources: [ entity ],
       values: [ entity.name ],
-      id_str: "row_#{row_num}_col_1",
       class_str: "#{entity_class_str} y_axis_label"
     }
   end
 
-  def data_cells_from entity, i, week
-    Week::SELECTORS.each_with_index.map do | day_per_str, j| 
+  def data_cells_from entity, week
+    Week::SELECTORS.map do |day_per_str| 
       entity_hash = {}
       entity_hash[@y_axis] = entity
       entity_class_str = entity_class_str_from entity
       resources = week.records_for day_per_str, entity_hash
 
-      data_cell_from day_per_str, resources, i, j, entity_class_str
+      data_cell_from day_per_str, resources, entity_class_str
+    end
+  end
+
+  def add_id_selectors_to rows
+    rows.each_with_index do |row, i|
+      row_num = i+1
+      row.each_with_index do |cell, j|
+        col_num = j+1
+        cell[:id_str] = "row_#{row_num}_col_#{col_num}"
+      end 
     end
   end
 
@@ -76,22 +85,19 @@
     "#{prefix}_#{val}"
   end
 
-  def data_cell_from day_per_str, resources, i, j, entity_class_str
-    row_num = i + 1
-    col_num = j + 2 
+  def data_cell_from day_per_str, resources, entity_class_str
     values = data_cell_vals_from resources
     color = color_from resources
     {
       resources: resources,
       values: values,
-      id_str: "row_#{row_num}_col_#{col_num}",
       class_str: "#{entity_class_str} day_per_#{day_per_str} #{color}" 
     }
   end
 
   def data_cell_vals_from resources
     if resources.empty?
-      @y_axis == :rider ? [ '[AVAIL]' ] : [ '--' ]
+      @y_axis == :rider ? [ '[AVAIL]' ] : [ '' ]
     else
       resources.map{ |r| data_cell_val_from r }
     end
@@ -112,6 +118,7 @@
       prefix = s.assigned? ? s.assignment.rider.short_name.to_s : '--'
       prefix + ' ' + s.assignment.status.short_code
     when :rider
+      pp s if s.restaurant.nil?
       s.restaurant.name + ' ' + s.assignment.status.short_code
     end
   end

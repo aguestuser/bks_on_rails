@@ -9,18 +9,18 @@ module Timeboxable
     validate :start_before_end
 
     def table_time
-      self.start.strftime("%m/%d | %l:%M%p").sub('  ', ' ')+' - '+ self.end.strftime("%l:%M%p").sub('  ', ' ')
+      self.start.strftime("%m/%d | %l:%M%p").strip << ' - ' << self.end.strftime("%l:%M%p").strip
     end
 
     def grid_time
       start_min = self.start.min == 0 ? '' : ":%M"
       end_min = self.start.min == 0 ? '' : "%M"
 
-      self.start.strftime("%l"<<start_min) << " -" << self.end.strftime("%l"<<end_min).sub('  ',' ')
+      self.start.strftime("%l").strip << start_min << "-" << self.end.strftime("%l").strip << end_min
     end
 
-    def formal_date
-      self.strftime("%B %e, %Y")
+    def formal_time
+      self.start.strftime("%B %e, %Y")
     end
 
     private

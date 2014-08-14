@@ -2,6 +2,7 @@ require 'spec_helper'
 include ShiftRequestMacros, GridRequestMacros
 
 describe "Grid Requests" do
+
   describe "Shift Grid" do
     load_shift_week_vars
     # creates memoized local vars for: 
@@ -14,12 +15,14 @@ describe "Grid Requests" do
       before do
         visit shift_grid_path
         select_first_week_of_2014
-
-        # puts page.find("/html/body/div/div/table/tr[2]/td[2]").text
-        # puts page.find("table/tr[2]/td[1]").text
-        # puts page.within('table/tr[2]'){ find('td.col_2') }.text
+        # puts page.find("/table/tr[2]/td[2]").text
       end
 
+      it { should have_h1('Shift Grid') }
+      
+      describe "filter contents" do
+        check_grid_filter_form_contents  
+      end
 
       it "should populate header row correctly" do
         expect( page.find( "#row_0_col_1" ).text ).to eq 'Restaurant'
@@ -79,16 +82,27 @@ describe "Grid Requests" do
 
   describe "Availability Grid" do
     load_avail_grid_vars
-    subject { page }
+    before { configure_avail_grid_vars }
 
     describe "page contents" do
       before do
         visit availability_grid_path
         select_first_week_of_2014
+        # last_row = Rider.all.count
+        # pp page.find("#row_#{last_row}").text
       end
 
-    it "should populate header row correctly" do
-        expect( page.find( "#row_0_col_1" ).text ).to eq 'Restaurant'
+      let!(:last_row){ Rider.all.count }
+      subject { page }
+
+      it { should have_h1('Availability Grid') }
+
+      describe "filter contents" do
+        check_grid_filter_form_contents        
+      end
+
+      it "should populate header row correctly" do
+        expect( page.find( "#row_0_col_1" ).text ).to eq 'Rider'
         expect( page.find( "#row_0_col_2" ).text ).to eq 'Mon AM'
         expect( page.find( "#row_0_col_3" ).text ).to eq 'Mon PM'
         expect( page.find( "#row_0_col_4" ).text ).to eq 'Tue AM'
@@ -103,6 +117,42 @@ describe "Grid Requests" do
         expect( page.find( "#row_0_col_13" ).text ).to eq 'Sat PM'
         expect( page.find( "#row_0_col_14" ).text ).to eq 'Sun AM'
         expect( page.find( "#row_0_col_15" ).text ).to eq 'Sun PM'
+      end
+
+      it "should populate first row correctly" do
+        expect( page.find( "#row_1_col_1" ).text ).to eq rider.name
+        expect( page.find( "#row_1_col_2" ).text ).to eq avail_grid_cell_text_for shifts[0]
+        expect( page.find( "#row_1_col_3" ).text ).to eq '[AVAIL]'
+        expect( page.find( "#row_1_col_4" ).text ).to eq avail_grid_cell_text_for shifts[1]
+        expect( page.find( "#row_1_col_5" ).text ).to eq '[AVAIL]'
+        expect( page.find( "#row_1_col_6" ).text ).to eq avail_grid_cell_text_for shifts[2]
+        expect( page.find( "#row_1_col_7" ).text ).to eq '[AVAIL]'
+        expect( page.find( "#row_1_col_8" ).text ).to eq avail_grid_cell_text_for shifts[3]
+        expect( page.find( "#row_1_col_9" ).text ).to eq '[AVAIL]'
+        expect( page.find( "#row_1_col_10" ).text ).to eq avail_grid_cell_text_for shifts[4]
+        expect( page.find( "#row_1_col_11" ).text ).to eq '[AVAIL]'
+        expect( page.find( "#row_1_col_12" ).text ).to eq avail_grid_cell_text_for shifts[5]
+        expect( page.find( "#row_1_col_13" ).text ).to eq '[AVAIL]'
+        expect( page.find( "#row_1_col_14" ).text ).to eq avail_grid_cell_text_for shifts[6]
+        expect( page.find( "#row_1_col_15" ).text ).to eq '[AVAIL]'
+      end
+
+      it "should populate last row correctly" do
+        expect( page.find( "#row_#{last_row}_col_1" ).text ).to eq other_rider.name
+        expect( page.find( "#row_#{last_row}_col_2" ).text ).to eq '[AVAIL]'
+        expect( page.find( "#row_#{last_row}_col_3" ).text ).to eq avail_grid_cell_text_for conflicts[0]
+        expect( page.find( "#row_#{last_row}_col_4" ).text ).to eq '[AVAIL]'
+        expect( page.find( "#row_#{last_row}_col_5" ).text ).to eq avail_grid_cell_text_for conflicts[1]
+        expect( page.find( "#row_#{last_row}_col_6" ).text ).to eq '[AVAIL]'
+        expect( page.find( "#row_#{last_row}_col_7" ).text ).to eq avail_grid_cell_text_for conflicts[2]
+        expect( page.find( "#row_#{last_row}_col_8" ).text ).to eq '[AVAIL]'
+        expect( page.find( "#row_#{last_row}_col_9" ).text ).to eq '[AVAIL]'
+        expect( page.find( "#row_#{last_row}_col_10" ).text ).to eq '[AVAIL]'
+        expect( page.find( "#row_#{last_row}_col_11" ).text ).to eq '[AVAIL]'
+        expect( page.find( "#row_#{last_row}_col_12" ).text ).to eq '[AVAIL]'
+        expect( page.find( "#row_#{last_row}_col_13" ).text ).to eq '[AVAIL]'
+        expect( page.find( "#row_#{last_row}_col_14" ).text ).to eq '[AVAIL]'
+        expect( page.find( "#row_#{last_row}_col_15" ).text ).to eq '[AVAIL]'
       end
 
     end

@@ -5,13 +5,13 @@
   /Grid
   %table
     /Header Row
-    %tr
-    - @grid.headers.each do |header|
-      %th{ id: "#{header[:id_str]}", class: "#{header[:class_str]}" }
-        = header[:value]
+    %tr 
+      - @grid.headers.each do |header|
+        %th{ id: "#{header[:id_str]}", class: "#{header[:class_str]}" }
+          = header[:value]
     /Data Rows
     - @grid.rows.each_with_index do |row, i|
-      %tr{ class: "row_#{i+1}" }
-      - row.each do |cell|
-        %td{ id: "#{cell[:id_str]}", class: "#{cell[:class_str]}" }
-          = cell[:values].join(', ')
+      %tr{ id: "row_#{i+1}" }
+        - row.each do |cell|
+          %td{ id: "#{cell[:id_str]}", class: "#{cell[:class_str]}" }
+            = cell[:values].join(', ')

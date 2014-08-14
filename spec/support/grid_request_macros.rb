@@ -63,25 +63,21 @@ module GridRequestMacros
   end
 
   def load_avail_grid_vars
-    let(:monday){ Time.zone.local(2014, 1, 6, 0) }
-    let(:sunday){ monday + 6.days }
+    load_shift_week_vars
 
-    let(:contact){ FactoryGirl.create(:contact, name: 'A'*10) }
-    let(:other_contact){ FactoryGirl.create(:contact, name: 'z'*10) }
-    
-    let(:rider){ FactoryGirl.create(:rider, contact: contact) }
-    let(:other_rider){ FactoryGirl.create(:rider, contact: other_contact) }
+    let(:rider){ FactoryGirl.create(:rider) }
+    let(:other_rider){ FactoryGirl.create(:rider) }
 
-    let!(:shifts) do 
-      7.times.map do |n|
-        FactoryGirl.create(:shift, 
-          :without_restaurant, 
-          start: monday + n.days + 11.hours,
-          :end => monday + n.days + 16.hours,
-          assignment: Assignment.new(rider_id: rider.id) 
-        )
-      end
-    end
+    # let!(:shifts) do 
+    #   7.times.map do |n|
+    #     FactoryGirl.create(:shift, 
+    #       :without_restaurant, 
+    #       start: monday + n.days + 11.hours,
+    #       :end => monday + n.days + 16.hours,
+    #       assignment: Assignment.new(rider_id: rider.id) 
+    #     )
+    #   end
+    # end
     let!(:conflicts) do
       3.times.map do |n|
         FactoryGirl.create(:conflict,
@@ -94,7 +90,27 @@ module GridRequestMacros
     end
   end
 
-  # def configure_avail_grid_vars
-  #   shifts.each{ |s| s.assign_to rider }
-  # end
+  def configure_avail_grid_vars
+    shifts.each { |s| s.assign_to rider }
+    rider.contact.update(name: 'A'*10)
+    other_rider.contact.update(name: 'z'*10)
+  end
+
+  def check_grid_filter_form_contents
+    it { should have_label('Start') }
+    it { should have_select('filter_start_year')}
+    it { should have_select('filter_start_month')}
+    it { should have_select('filter_start_day')}
+    it { should have_content('End:') }
+    it { should have_content(shifts[6].formal_time) }
+  end
+
+  def avail_grid_cell_text_for record
+    case record.class.name
+    when 'Shift'
+      record.restaurant.name + ' ' + record.assignment.status.short_code
+    when 'Conflict'
+      "[NA] #{record.grid_time}"
+    end
+  end
 end

@@ -56,6 +56,7 @@ BksOnRails::Application.routes.draw do
 
   get "grid/shifts"
   match '/shift_grid', to: 'grid#shifts', via: 'get'
+  # match '/shift_grid', to: 'grid#shifts', via: 'post'
 
   get "grid/availability"
   match '/availability_grid', to: 'grid#availability', via: 'get'

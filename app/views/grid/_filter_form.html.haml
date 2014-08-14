@@ -1,14 +1,10 @@
 .row
   .span10.offset2
-    = form_tag params[:action], method: :get do
+    = form_tag '/grid/'<<params[:action], method: :get do
       /Start
       .span.datepicker
         = label_tag :start, 'Start'
         = select_date @filter[:start], prefix: 'filter[start]', date_step: 7
-      /End
-      / .span.datepicker
-      /   = label_tag :end, 'End'
-      /   = select_date @filter[:end], prefix: 'filter[end]'
       .span
         %div{ style: "margin-top: .3em;" }
           %strong
