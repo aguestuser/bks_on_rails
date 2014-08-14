@@ -80,32 +80,33 @@
 
   def data_cell_from day_per_str, resources, i, j, entity_class_str
     row_num = i + 1
-    col_num = j + 2
-    values = data_cell_vals_from resources 
+    col_num = j + 2 
+    values = data_cell_vals_from resources
+    color = color_from resources
     {
       resources: resources,
       values: values,
       id_str: "row_#{row_num}_col_#{col_num}",
-      class_str: "#{entity_class_str} day_per_#{day_per_str}" #{color_from values}
+      class_str: "#{entity_class_str} day_per_#{day_per_str} #{color}" 
       # sort_key: sort_key
     }
   end
 
   def data_cell_vals_from resources
-    resources.empty? ? ['--'] : resources.map{ |r| data_cell_val_from r }
+    resources.empty? ? [ '[AVAIL]' ] : resources.map{ |r| data_cell_val_from r }
   end
 
   def data_cell_val_from resource
     case resource.class.name
     when 'Shift'
-      parse_shift resource
+      parse_shift_for_val resource
     when 'Conflict'
-      parse_conflict resource
+      parse_conflict_for_val resource
     end
       
   end
 
-  def parse_shift s
+  def parse_shift_for_val s
     case @y_axis
     when :restaurant
       s.assignment.rider.short_name.to_s + ' ' + s.assignment.status.short_code
@@ -114,10 +115,33 @@
     end
   end
 
-  def parse_conflict c
+  def parse_conflict_for_val c
     "[NA] #{c.grid_time}"
   end
 
+  def color_from resources
+    unless resources.empty? # if so: color will be white in absence of css declaration
+      case resources[0].class.name
+      when 'Shift'
+        parse_shifts_for_color resources
+      when 'Conflict'
+        'black'
+      end
+    end
+  end
+
+  def parse_shifts_for_color shifts 
+    statuses = shifts.map{ |shift| shift.assignment.status.text }
+    if statuses.include? 'Confirmed'
+      'green'
+    elsif statuses.include? 'Delegated'
+      'yellow'
+    elsif statuses.include? 'Proposed'
+      'orange'
+    else # if 'Cancelled (Rider)' or 'Cancelled (Restaurant)'
+      'gray'
+    end
+  end
 
 end
 
