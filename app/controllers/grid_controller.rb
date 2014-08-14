@@ -11,6 +11,7 @@ class GridController < ApplicationController
   # before_action :load_restaurants, only: :shift_grid
 
   def shifts
+    @grid = Grid.new(@week, :restaurant, @restaurants, 0)
   end
 
   def availability
