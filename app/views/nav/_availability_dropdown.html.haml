@@ -1,0 +1,10 @@
+%li#fat-menu.dropdown
+  %a.dropdown-toggle{"data-toggle" => "dropdown", :href => "#"}
+    Availability
+    %b.caret
+  %ul.dropdown-menu
+    %li= link_to "List", conflicts_path
+    %li= link_to "Grid", 'grid/availability'
+    - if can? :create, Conflict
+      %li.divider
+      %li= link_to "Create Conflict", new_conflict_path
