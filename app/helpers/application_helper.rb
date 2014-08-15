@@ -31,4 +31,10 @@
     link_to title, { sort: column, direction: direction, filter: @filter}, {:class => css_class}
   end
 
+  def grid_sortable(column, title)
+    css_class = column == @sort_key ? "current #{@sort_dir}" : nil
+    direction = column == @sort_key && @sort_dir == "asc" ? "desc" : "asc"
+    link_to title, { sort: column, direction: direction, filter: @filter}, {:class => css_class}
+  end
+
 end

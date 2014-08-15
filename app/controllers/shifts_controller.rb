@@ -1,7 +1,7 @@
 class ShiftsController < ApplicationController
-  include ShiftPaths, Filters
+  include ShiftPaths, Filters, Sortable
 
-  helper_method :sort_column, :sort_direction
+  # helper_method :sort_column, :sort_direction
 
   before_action :load_shift, only: [ :show, :edit, :update, :destroy ]
   before_action :load_caller # will call load_restaurant or load_rider if applicable, load_paths always
@@ -127,13 +127,13 @@ class ShiftsController < ApplicationController
       { restaurant: :mini_contact, assignment: { rider: :contact } }
     end
 
-    def sort_column
-      params[:sort] || "start" # default sort by date
-    end
+    # def sort_column
+    #   params[:sort] || "start" # default sort by date
+    # end
 
-    def sort_direction
-      params[:direction] || "asc"
-    end
+    # def sort_direction
+    #   params[:direction] || "asc"
+    # end
 
     def shift_params # permit :restaurant_id?
       params.require(:shift)

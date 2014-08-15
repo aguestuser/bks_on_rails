@@ -6,9 +6,12 @@
   %table
     /Header Row
     %tr 
-      - @grid.headers.each do |header|
+      - @grid.headers.each_with_index do |header, i|
         %th{ id: "#{header[:id_str]}", class: "#{header[:class_str]}" }
-          = header[:value]
+          - if params[:action] == 'availability'
+            = grid_sortable i, header[:value]
+          - else
+            = header[:value]
     /Data Rows
     - @grid.rows.each_with_index do |row, i|
       %tr{ id: "row_#{i+1}" }

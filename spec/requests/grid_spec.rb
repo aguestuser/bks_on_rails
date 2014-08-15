@@ -82,18 +82,17 @@ describe "Grid Requests" do
 
   describe "Availability Grid" do
     load_avail_grid_vars
-    before { configure_avail_grid_vars }
+
+    before do 
+      configure_avail_grid_vars
+      visit availability_grid_path
+      select_first_week_of_2014
+    end
+    
+    let!(:last_row){ Rider.all.count }
+    subject { page }
 
     describe "page contents" do
-      before do
-        visit availability_grid_path
-        select_first_week_of_2014
-        # last_row = Rider.all.count
-        # pp page.find("#row_#{last_row}").text
-      end
-
-      let!(:last_row){ Rider.all.count }
-      subject { page }
 
       it { should have_h1('Availability Grid') }
 
@@ -122,39 +121,95 @@ describe "Grid Requests" do
       it "should populate first row correctly" do
         expect( page.find( "#row_1_col_1" ).text ).to eq rider.name
         expect( page.find( "#row_1_col_2" ).text ).to eq avail_grid_cell_text_for shifts[0]
-        expect( page.find( "#row_1_col_3" ).text ).to eq '[AVAIL]'
+        expect( page.find( "#row_1_col_3" ).text ).to eq avail_grid_cell_text_for extra_shift
         expect( page.find( "#row_1_col_4" ).text ).to eq avail_grid_cell_text_for shifts[1]
-        expect( page.find( "#row_1_col_5" ).text ).to eq '[AVAIL]'
+        expect( page.find( "#row_1_col_5" ).text ).to eq 'AVAIL'
         expect( page.find( "#row_1_col_6" ).text ).to eq avail_grid_cell_text_for shifts[2]
-        expect( page.find( "#row_1_col_7" ).text ).to eq '[AVAIL]'
+        expect( page.find( "#row_1_col_7" ).text ).to eq 'AVAIL'
         expect( page.find( "#row_1_col_8" ).text ).to eq avail_grid_cell_text_for shifts[3]
-        expect( page.find( "#row_1_col_9" ).text ).to eq '[AVAIL]'
+        expect( page.find( "#row_1_col_9" ).text ).to eq 'AVAIL'
         expect( page.find( "#row_1_col_10" ).text ).to eq avail_grid_cell_text_for shifts[4]
-        expect( page.find( "#row_1_col_11" ).text ).to eq '[AVAIL]'
+        expect( page.find( "#row_1_col_11" ).text ).to eq 'AVAIL'
         expect( page.find( "#row_1_col_12" ).text ).to eq avail_grid_cell_text_for shifts[5]
-        expect( page.find( "#row_1_col_13" ).text ).to eq '[AVAIL]'
+        expect( page.find( "#row_1_col_13" ).text ).to eq 'AVAIL'
         expect( page.find( "#row_1_col_14" ).text ).to eq avail_grid_cell_text_for shifts[6]
-        expect( page.find( "#row_1_col_15" ).text ).to eq '[AVAIL]'
+        expect( page.find( "#row_1_col_15" ).text ).to eq 'AVAIL'
       end
 
       it "should populate last row correctly" do
         expect( page.find( "#row_#{last_row}_col_1" ).text ).to eq other_rider.name
-        expect( page.find( "#row_#{last_row}_col_2" ).text ).to eq '[AVAIL]'
+        expect( page.find( "#row_#{last_row}_col_2" ).text ).to eq 'AVAIL'
         expect( page.find( "#row_#{last_row}_col_3" ).text ).to eq avail_grid_cell_text_for conflicts[0]
-        expect( page.find( "#row_#{last_row}_col_4" ).text ).to eq '[AVAIL]'
+        expect( page.find( "#row_#{last_row}_col_4" ).text ).to eq 'AVAIL'
         expect( page.find( "#row_#{last_row}_col_5" ).text ).to eq avail_grid_cell_text_for conflicts[1]
-        expect( page.find( "#row_#{last_row}_col_6" ).text ).to eq '[AVAIL]'
+        expect( page.find( "#row_#{last_row}_col_6" ).text ).to eq 'AVAIL'
         expect( page.find( "#row_#{last_row}_col_7" ).text ).to eq avail_grid_cell_text_for conflicts[2]
-        expect( page.find( "#row_#{last_row}_col_8" ).text ).to eq '[AVAIL]'
-        expect( page.find( "#row_#{last_row}_col_9" ).text ).to eq '[AVAIL]'
-        expect( page.find( "#row_#{last_row}_col_10" ).text ).to eq '[AVAIL]'
-        expect( page.find( "#row_#{last_row}_col_11" ).text ).to eq '[AVAIL]'
-        expect( page.find( "#row_#{last_row}_col_12" ).text ).to eq '[AVAIL]'
-        expect( page.find( "#row_#{last_row}_col_13" ).text ).to eq '[AVAIL]'
-        expect( page.find( "#row_#{last_row}_col_14" ).text ).to eq '[AVAIL]'
-        expect( page.find( "#row_#{last_row}_col_15" ).text ).to eq '[AVAIL]'
+        expect( page.find( "#row_#{last_row}_col_8" ).text ).to eq 'AVAIL'
+        expect( page.find( "#row_#{last_row}_col_9" ).text ).to eq 'AVAIL'
+        expect( page.find( "#row_#{last_row}_col_10" ).text ).to eq 'AVAIL'
+        expect( page.find( "#row_#{last_row}_col_11" ).text ).to eq 'AVAIL'
+        expect( page.find( "#row_#{last_row}_col_12" ).text ).to eq 'AVAIL'
+        expect( page.find( "#row_#{last_row}_col_13" ).text ).to eq 'AVAIL'
+        expect( page.find( "#row_#{last_row}_col_14" ).text ).to eq 'AVAIL'
+        expect( page.find( "#row_#{last_row}_col_15" ).text ).to eq 'AVAIL'
+      end
+    end
+
+    describe "SORTING" do
+
+      describe "default sort" do
+        it "should be rider, asc" do
+          expect( page.find( "#row_1_col_1" ).text ).to eq rider.name
+        end
       end
 
+      describe "sorting by rider" do
+        
+        describe "ascending" do
+          before do 
+            click_link 'Rider'
+            click_link 'Rider'
+          end
+
+          it "should sort rider to top and other_rider to bottom" do
+            expect( page.find( "#row_1_col_1" ).text ).to eq rider.name
+            expect( page.find( "#row_#{last_row}_col_1" ).text ).to eq other_rider.name
+          end
+        end
+        
+        describe "descending" do
+          before { click_link 'Rider' }
+
+          it "should sort other_rider to top and rider to bottom" do
+            expect( page.find( "#row_1_col_1" ).text ).to eq other_rider.name
+            expect( page.find( "#row_#{last_row}_col_1" ).text ).to eq rider.name
+          end
+        end
+      end
+
+      describe "sorting by period" do
+        
+        describe "ascending" do
+          before { click_link 'Mon PM' }
+
+          it "should sort other_rider to top and rider to bottom" do
+            expect( page.find( "#row_1_col_1" ).text ).to eq rider.name
+            expect( page.find( "#row_#{last_row}_col_1" ).text ).to eq other_rider.name
+          end
+        end
+        
+        describe "descending" do
+          before do 
+            click_link 'Mon PM'
+            click_link 'Mon PM'
+          end
+
+          it "should sort other_rider to top and rider to bottom" do
+            expect( page.find( "#row_1_col_1" ).text ).to eq other_rider.name
+            expect( page.find( "#row_#{last_row}_col_1" ).text ).to eq rider.name
+          end
+        end
+      end       
     end
   end
 end

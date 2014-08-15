@@ -3,10 +3,12 @@
 
   attr_accessor :headers, :rows
 
-  def initialize (week, y_axis, entities, sort_key)
+  def initialize (week, y_axis, entities, sort_key=0, sort_dir='asc')
     @y_axis= y_axis # [ :rider, :restaurant ]
+    @sort_key = sort_key
+    @sort_dir = sort_dir
     @headers = load_headers
-    @rows = load_rows week, entities, sort_key
+    @rows = load_rows week, entities
   end
 
   private
@@ -18,11 +20,12 @@
     row.concat header_cells
   end
 
-  def load_rows week, entities, sort_key
+  def load_rows week, entities
     rows = entities.map do |entity|
       row = [ y_label_data_cell_from(entity) ]
       row.concat data_cells_from(entity, week)
-    end.sort_by{ |row| row[sort_key][:values].join }
+    end.sort_by{ |row| row[@sort_key][:values].join }
+    rows = rows.reverse if @sort_dir == 'desc'
     rows = add_id_selectors_to rows
   end
 
@@ -97,7 +100,7 @@
 
   def data_cell_vals_from resources
     if resources.empty?
-      @y_axis == :rider ? [ '[AVAIL]' ] : [ '' ]
+      @y_axis == :rider ? [ 'AVAIL' ] : [ '' ]
     else
       resources.map{ |r| data_cell_val_from r }
     end

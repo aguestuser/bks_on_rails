@@ -68,16 +68,14 @@ module GridRequestMacros
     let(:rider){ FactoryGirl.create(:rider) }
     let(:other_rider){ FactoryGirl.create(:rider) }
 
-    # let!(:shifts) do 
-    #   7.times.map do |n|
-    #     FactoryGirl.create(:shift, 
-    #       :without_restaurant, 
-    #       start: monday + n.days + 11.hours,
-    #       :end => monday + n.days + 16.hours,
-    #       assignment: Assignment.new(rider_id: rider.id) 
-    #     )
-    #   end
-    # end
+    let!(:extra_shift) do
+      FactoryGirl.create(:shift, 
+        :with_restaurant, 
+        restaurant: restaurant, 
+        start: monday +  18.hours,
+        :end => monday + 23.hours
+      )
+    end
     let!(:conflicts) do
       3.times.map do |n|
         FactoryGirl.create(:conflict,
@@ -92,8 +90,10 @@ module GridRequestMacros
 
   def configure_avail_grid_vars
     shifts.each { |s| s.assign_to rider }
+    extra_shift.assign_to rider
     rider.contact.update(name: 'A'*10)
     other_rider.contact.update(name: 'z'*10)
+    restaurant.mini_contact.update(name: 'A'*10)
   end
 
   def check_grid_filter_form_contents

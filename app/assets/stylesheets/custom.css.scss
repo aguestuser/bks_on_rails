@@ -20,6 +20,20 @@ $grayMediumLight: #eaeaea;
   margin-bottom: .5em;
 }
 
+@mixin sortable{
+  .current {
+    padding-right: 1.3em;
+    background-repeat: no-repeat;
+    background-position: right center;
+  }
+  .asc {
+    background-image: image-url("up_arrow.png"); 
+  }
+  .desc {
+    background-image: image-url("down_arrow.png") ;
+  }
+}
+
 /* universal */
 
 html {
@@ -345,20 +359,7 @@ label {
   text-align: center;  
   .header {
     @include header_row;
-    .current {
-      padding-right: 1.3em;
-      background-repeat: no-repeat;
-      background-position: right center;
-    }
-    .asc {
-      background-image: image-url("up_arrow.png"); 
-      // url(/app/assets/images/up_circle.png);
-    }
-    .desc {
-      background-image: image-url("down_arrow.png") ;
-      // background-image: url(/app/assets/images/down_circle.png);
-
-    }
+    @include sortable
   }
   .row{
     border-bottom: 1px solid $grayLighter;
@@ -403,7 +404,11 @@ label {
     margin-bottom: 2%;
     th {
       @include header_row;
+      @include sortable;
       border: 1px solid gray;
+      a{
+        color: black;
+      }
     }
     td {
       text-align: center;

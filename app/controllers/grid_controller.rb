@@ -2,7 +2,7 @@
 
 class GridController < ApplicationController  
   skip_authorize_resource
-  include TimeboxableHelper, Filters
+  include TimeboxableHelper, Filters, Sortable
 
   before_action :load_subject # callbacks: load_restaurants OR load_riders
   before_action :load_filter_wrapper
@@ -11,11 +11,13 @@ class GridController < ApplicationController
   # before_action :load_restaurants, only: :shift_grid
 
   def shifts
-    @grid = Grid.new(@week, :restaurant, @restaurants, 0)
+    @grid = Grid.new(@week, :restaurant, @restaurants)
   end
 
   def availability
-    @grid = Grid.new(@week, :rider, @riders, 0)
+    @sort_key = params[:sort].to_i || 0
+    @sort_dir = params[:direction] || 'asc'
+    @grid = Grid.new(@week, :rider, @riders, @sort_key, @sort_dir)
   end
 
   private
