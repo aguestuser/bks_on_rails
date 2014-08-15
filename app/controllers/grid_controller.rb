@@ -8,16 +8,15 @@ class GridController < ApplicationController
   before_action :load_filter_wrapper
   before_action :load_week
   before_action :load_y_axis_resource
+  before_action :load_sort_params
   # before_action :load_restaurants, only: :shift_grid
 
   def shifts
-    @grid = Grid.new(@week, :restaurant, @restaurants)
+    @grid = Grid.new(@week, :restaurant, @restaurants, @sort_key, @sort_dir)
     @root_path = '/grid/shifts'
   end
 
   def availability
-    @sort_key = params[:sort].to_i || 0
-    @sort_dir = params[:direction] || 'asc'
     @grid = Grid.new(@week, :rider, @riders, @sort_key, @sort_dir)
     @root_path = '/grid/availability'
   end
@@ -71,7 +70,12 @@ class GridController < ApplicationController
 
       def load_riders
         @riders = Rider.all.to_a.uniq
-      end    
+      end
+
+    def load_sort_params
+      @sort_key = params[:sort].to_i || 0
+      @sort_dir = params[:direction] || 'asc'      
+    end    
 
 
 end
