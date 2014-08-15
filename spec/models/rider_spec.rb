@@ -44,8 +44,8 @@ describe Rider do
       2.times.map do |n| 
         Shift.create!(
           restaurant_id: 1,
-          start: DateTime.new(2014,1,n+1,11),
-          :end => DateTime.new(2014,1,n+1,17),
+          start: Time.zone.local(2014,1,n+1,11),
+          :end => Time.zone.local(2014,1,n+1,17),
           billing_rate: :normal,
           urgency: :weekly,
           assignment: Assignment.new
@@ -56,8 +56,8 @@ describe Rider do
       2.times.map do |n|
         Conflict.create!(
           rider_id: rider.id,
-          start: DateTime.new(2014,1,n+1,17),
-          :end => DateTime.new(2014,1,n+1,23),          
+          start: Time.zone.local(2014,1,n+1,17),
+          :end => Time.zone.local(2014,1,n+1,23),          
         )
       end
     end

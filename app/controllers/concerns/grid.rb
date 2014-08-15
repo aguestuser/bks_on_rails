@@ -1,7 +1,7 @@
  class Grid 
   include TimeboxableHelper
 
-  attr_accessor :headers, :rows
+  attr_accessor :headers, :rows, :y_axis
 
   def initialize (week, y_axis, entities, sort_key=0, sort_dir='asc')
     @y_axis= y_axis # [ :rider, :restaurant ]

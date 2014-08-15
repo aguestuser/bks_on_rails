@@ -1,10 +1,6 @@
 require 'spec_helper'
 
 describe Timeboxable do
-  # let(:_11am){ DateTime.new(2014,1,1,11,0,0,'-5') }
-  # let(:_5pm){ DateTime.new(2014,1,1,17,0,0,'-5') }
-  # let(:_6pm){ DateTime.new(2014,1,1,18,0,0,'-5') }
-  # let(:_11pm){ DateTime.new(2014,1,1,23,0,0,'-5') }
   let(:_11am){ Time.zone.local(2014,1,1,11) }
   let(:_5pm){ Time.zone.local(2014,1,1,17) }
   let(:_6pm){ Time.zone.local(2014,1,1,18) }

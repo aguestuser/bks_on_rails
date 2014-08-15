@@ -70,7 +70,7 @@ module Filters
         case context
         
         when :load 
-          start_value = DateTime.now.beginning_of_week
+          start_value = Time.zone.now.beginning_of_week
           end_value = start_value + 6.days + 23.hours + 59.minutes
         when :request
           start_value = parse_time_filter_params( fp[:start] )
@@ -152,7 +152,7 @@ module Filters
         when 'String' # from server load
           p.to_datetime
         when 'ActionController::Parameters' # from user request
-          DateTime.new( p[:year].to_i, p[:month].to_i, p[:day].to_i, 0 )
+          Time.zone.local( p[:year].to_i, p[:month].to_i, p[:day].to_i, 0 )
         end
       end
 

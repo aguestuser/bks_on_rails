@@ -12,8 +12,8 @@ describe "Assignment Requests" do
   let(:restaurant) { FactoryGirl.create(:restaurant) }
   let(:other_restaurant) { FactoryGirl.create(:restaurant) }
 
-  let(:start){ DateTime.new(2014,1,1,11) }
-  let(:_end){ DateTime.new(2014,1,1,17) }
+  let(:start){ Time.zone.local(2014,1,1,11) }
+  let(:_end){ Time.zone.local(2014,1,1,17) }
 
   let!(:shift){ FactoryGirl.create(:shift, :with_restaurant, restaurant: restaurant, start: start, :end => _end) }
   let!(:next_day_shift) { FactoryGirl.create(:shift, :with_restaurant, restaurant: restaurant, start: start + 1.day, :end => _end + 1.day) }

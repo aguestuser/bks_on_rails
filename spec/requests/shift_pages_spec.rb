@@ -53,24 +53,24 @@ describe "Shift Requests" do
           FactoryGirl.create(:shift, 
             :with_restaurant, 
             restaurant: restaurant,
-            start: DateTime.new(2012,1,1,11),
-            :end => DateTime.new(2012,1,1,16)
+            start: Time.zone.local(2012,1,1,11),
+            :end => Time.zone.local(2012,1,1,16)
           )
         }
         let(:second_shift){
           FactoryGirl.create(:shift, 
             :with_restaurant, 
             restaurant: other_restaurant,
-            start: DateTime.new(2016,1,1,12),
-            :end => DateTime.new(2016,1,1,16)
+            start: Time.zone.local(2016,1,1,12),
+            :end => Time.zone.local(2016,1,1,16)
           )
         }
         let(:dummy_shift){
           FactoryGirl.create(:shift, 
             :with_restaurant, 
             restaurant: other_restaurant,
-            start: DateTime.new(2014,1,1,13),
-            :end => DateTime.new(2014,1,1,16)
+            start: Time.zone.local(2014,1,1,13),
+            :end => Time.zone.local(2014,1,1,16)
           )
         }
         let(:rider){ FactoryGirl.create(:rider) }
