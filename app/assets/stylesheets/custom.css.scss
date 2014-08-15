@@ -405,14 +405,14 @@ label {
     th {
       @include header_row;
       @include sortable;
-      border: 1px solid gray;
+      border: 1px solid black !important;
       a{
         color: black;
       }
     }
     td {
       text-align: center;
-      border: 1px solid gray;
+      border: 1px solid black;
     }
     #row_0_col_1{
       background-color: $grayLight
@@ -438,11 +438,11 @@ label {
     #row_0_col_14, #row_0_col_15  {
       background-color: violet;
     }
-    .time_cell{
-      border-bottom: 1px solid gray; 
-      background-color: lightgray;
-    }
-    .record_cell{
+    .y_axis_label{
+      background-color: $grayLight;
+      a{
+        color: black;
+      }
     }
     .red{
       background-color: indianred;
@@ -457,7 +457,7 @@ label {
       background-color: lightgreen;
     }
     .gray{
-      background-color: gray;
+      background-color: lightgray;
     }
     .black{
       color: white;

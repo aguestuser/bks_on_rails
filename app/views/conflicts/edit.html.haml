@@ -9,3 +9,4 @@
       = render 'conflicts/fields', f: f, caller: @caller
       .center
         = f.submit "Save changes", class: "btn btn-primary"
+        = link_to 'Delete', conflict_path(@conflict, root_path: @root_path), method: :delete, data: { confirm: 'Are you sure?' }, root_path: @root_path, class: "btn btn-primary"

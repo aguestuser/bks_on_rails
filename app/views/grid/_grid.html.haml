@@ -15,6 +15,27 @@
     /Data Rows
     - @grid.rows.each_with_index do |row, i|
       %tr{ id: "row_#{i+1}" }
-        - row.each do |cell|
+        - row.each_with_index do |cell, j|
           %td{ id: "#{cell[:id_str]}", class: "#{cell[:class_str]}" }
-            = cell[:values].join(', ')
+            / - cell[:values].join(', ')
+            - if cell[:resources].empty?
+              - rider = row[0][:resources][0]
+              - day_offset =  ( (j+1) * 7 )/14
+              - hour_offset = (j+2)%2 == 1 ? 12 : 18
+              - start = @week.start + day_offset.days + hour_offset.hours
+              - end_ = start + 6.hours
+              - path = new_rider_conflict_path(rider, root_path: @root_path, start: start, :end => end_)
+              = link_to cell[:values][0], path
+              / , start: start }
+            - else 
+              - cell[:values].each_with_index do |value, i|
+                %div
+                - resource = cell[:resources][i]
+                - case resource.class.name
+                - when 'Shift' 
+                  - path = edit_shift_assignment_path resource, resource.assignment, root_path: @root_path
+                - when 'Conflict'
+                  - path = edit_conflict_path resource, root_path: @root_path
+                = link_to value, path
+                / , root_path: @root_path
+            

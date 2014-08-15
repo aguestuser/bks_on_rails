@@ -4,3 +4,5 @@
 = f.label :status
 = f.select :status, AssignmentStatus.select_options
 = f.hidden_field :shift_id, value: shift.id
+/ Hidden Fields 
+= f.hidden_field :root_path, value: params[:root_path]

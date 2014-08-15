@@ -1,4 +1,5 @@
 = render 'shared/error_messages', object: f.object
+/Restaurant
 - if caller == :restaurant
   %p
     %strong
@@ -8,28 +9,29 @@
 - else
   = f.label :restaurant
   = f.collection_select :restaurant_id, Restaurant.all, :id, :name, include_blank: true
-
+/Start
 .datepicker
   = f.label :start
   = f.datetime_select :start, ampm: true, minute_step: 30
+/End
 .datepicker
   = f.label :end
   = f.datetime_select :end, ampm: true, minute_step: 30
 = f.label :urgency
-
+/Urgency
 - if params[:action] == 'new' || params[:action] == 'create'
   = f.select :urgency, Urgency.select_options, selected: :extra
 - else
   = f.select :urgency, Urgency.select_options
 = f.label :billing_rate
-
+/Billing Rate
 - if params[:action] == 'new' || params[:action] == 'create'
   = f.select :billing_rate, BillingRate.select_options, selected: :normal
 - else 
   = f.select :billing_rate, BillingRate.select_options
-
+/Notes
 = f.label :notes
 = f.text_area :notes
-
+/Submit
 - if params[:action] == 'new '|| params[:action] == 'create'
   / = f.fields_for :assignment 

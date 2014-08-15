@@ -35,13 +35,18 @@ class ShiftsController < ApplicationController
   end
 
   def edit
+    @root_path = params[:root_path]
   end
 
   def update
     @shift.update(shift_params)
     if @shift.save
       flash[:success] = "Shift updated"
-      redirect_to @shift_paths[:index]
+      if params[:root_path]
+        redirect_to params[:root_path]
+      else
+        redirect_to @shift_paths[:index]
+      end
     else
       render 'edit'
     end
@@ -127,17 +132,10 @@ class ShiftsController < ApplicationController
       { restaurant: :mini_contact, assignment: { rider: :contact } }
     end
 
-    # def sort_column
-    #   params[:sort] || "start" # default sort by date
-    # end
-
-    # def sort_direction
-    #   params[:direction] || "asc"
-    # end
-
     def shift_params # permit :restaurant_id?
       params.require(:shift)
         .permit( :id, :restaurant_id, :start, :end, :urgency, :billing_rate, :notes,
+          :root_path,
           assignment_attributes: [ :id, :shift_id, :rider_id, :status ]
         )
     end

@@ -12,12 +12,14 @@ class GridController < ApplicationController
 
   def shifts
     @grid = Grid.new(@week, :restaurant, @restaurants)
+    @root_path = '/grid/shifts'
   end
 
   def availability
     @sort_key = params[:sort].to_i || 0
     @sort_dir = params[:direction] || 'asc'
     @grid = Grid.new(@week, :rider, @riders, @sort_key, @sort_dir)
+    @root_path = '/grid/availability'
   end
 
   private

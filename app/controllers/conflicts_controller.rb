@@ -1,23 +1,26 @@
 class ConflictsController < ApplicationController
   include ConflictPaths
 
+  before_action :load_root_path
   before_action :load_conflict, only: [ :edit, :update, :show, :destroy ]
   before_action :load_caller # callbacks: load_rider (if applicable), load_paths
-  before_action :load_form_args, only: [ :new, :create, :edit, :update ]
+  before_action :load_form_args, only: [ :edit, :update ]
   before_action :load_conflicts, only: [ :index ]
   # before_action :load_rider, only: [ :index, :destroy ]
 
   def new
-    @conflict = Conflict.new
+    @conflict = Conflict.new(start: params[:start], :end => params[:end])
     load_form_args
   end
 
   def create
-    @conflict = Conflict.new(conflict_params)
+    @conflict = Conflict.new(conflict_params.except(:root_path))
+    # @root_path = params[:conflict][:root_path]
     load_form_args
     if @conflict.save
       flash[:success] = "Created conflict for #{@conflict.rider.contact.name}"
-      redirect_to @conflict_paths[:index]
+      path = @root_path ? @root_path : @conflict_paths[:index]
+      redirect_to path
     else
       render 'new'
     end
@@ -28,9 +31,12 @@ class ConflictsController < ApplicationController
 
   def update
     @conflict.update(conflict_params)
+    # @root_path = params[:conflict][:root_path]
+    raise @root_path.inspect
     if @conflict.save
       flash[:success] = "Edited conflict for #{@conflict.rider.contact.name}"
-      redirect_to @conflict_paths[:index]
+      path = !@root_path.nil? ? @root_path : @conflict_paths[:index]
+      redirect_to path
     else
       render 'edit'
     end
@@ -40,12 +46,14 @@ class ConflictsController < ApplicationController
   end
 
   def index
+    
   end
 
   def destroy
     @conflict.destroy
     flash[:success] = "Conflict deleted"
-    redirect_to @conflict_paths[:index]
+    path = @root_path ? @root_path : @conflict_paths[:index]
+    redirect_to path
   end
 
   private
@@ -77,6 +85,10 @@ class ConflictsController < ApplicationController
       end
     end
 
+    def load_root_path
+      @root_path = params[:root_path] || params[:conflict][:root_path]
+    end
+
     def load_conflicts
       case @caller
       when :rider
@@ -87,6 +99,6 @@ class ConflictsController < ApplicationController
     end
 
     def conflict_params
-      params.require(:conflict).permit(:id, :start, :end, :period, :rider_id)
+      params.require(:conflict).permit(:id, :start, :end, :period, :rider_id, :root_path, :start)
     end
 end

@@ -32,6 +32,8 @@ class AssignmentsController < ApplicationController
 
   def update
     @assignment.attributes = assignment_params
+    # raise params[:assignment][:root_path].inspect
+    @root_path = params[:assignment][:root_path]
     attempt_save_from :update
   end
 
@@ -45,6 +47,10 @@ class AssignmentsController < ApplicationController
     @assignment.destroy
     flash[:success] = 'Assignment deleted'
     redirect_to @shift_paths[:index]
+  end
+
+  def root_path
+    @root_path = params[:root_path]
   end
 
   private 
@@ -103,7 +109,6 @@ class AssignmentsController < ApplicationController
     end
 
     def attempt_save_from(action)
-      
       case action
       when :create
         message = lambda do |assignment| 
@@ -125,11 +130,14 @@ class AssignmentsController < ApplicationController
         do_over = 'edit'
       end
 
+      save_loop message, do_over
+    end  
+
+    def save_loop message, do_over
       if no_conflicts?
         if no_double_bookings?
           if @assignment.save
-            flash[:success] = message.call(@assignment)
-            redirect_to @shift_paths[:index]
+            handle_save message, do_over
           else
             render do_over
           end        
@@ -140,8 +148,8 @@ class AssignmentsController < ApplicationController
       else 
         @override_subject = :conflict
         render 'override_conflict'
-      end
-    end  
+      end      
+    end
 
     def no_conflicts?
       return true if @assignment.rider.nil?
@@ -164,6 +172,15 @@ class AssignmentsController < ApplicationController
         true
       else
         !@assignment.shift.double_books_with? @other_shifts
+      end
+    end
+
+    def handle_save message, do_over
+      flash[:success] = message.call(@assignment)
+      if @root_path
+        redirect_to @root_path
+      else
+        redirect_to @shift_paths[:index]
       end
     end
 
