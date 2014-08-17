@@ -74,9 +74,8 @@ module Filters
           end_value = start_value + 6.days + 23.hours + 59.minutes
         when :request
           start_value = parse_time_filter_params( fp[:start] )
-
+          # raise start_value.inspect
           case view
-          
           when :table
             end_value = parse_time_filter_params( fp[:end] )
           when :grid

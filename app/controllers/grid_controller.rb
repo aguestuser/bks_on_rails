@@ -29,6 +29,7 @@ class GridController < ApplicationController
     end
 
     def load_filter_wrapper #included from controllers/concerns/filters.rb
+      # raise params[:filter][:start].to_json
       load_filters view: @view, by: [ :time ]
     end
 

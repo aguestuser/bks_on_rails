@@ -1,30 +1,4 @@
 .grid
-  %div{ id: "date", data: { start: @week.start.to_i } }
-  .input-append.date.form_datetime
-    %input{ size: "18", type: "text", value: @week.start.strftime("%B %e, %Y"), readonly: true }
-    %span{ class: "add-on" }
-      %i.icon-th
-
-    :javascript
-      var start = $("#date").data("start")
-      $(".form_datetime").datetimepicker({
-        format: "MM dd, yyyy",
-        autoclose: true,
-        todayBtn: true,
-        pickerPosition: "bottom-left",
-        weekStart: 0,
-        autoclose: true,
-        minView: 2,
-        todayButton: true,
-        todayHighlight: true,
-        minuteStep: 30,
-        showMeridian: true,
-        initialDate: new Date(start * 1000)
-      });
-    
-  / @week.start.strftime("%Y-%m-%d")
-   
-
   /Filters
   .filters
     = render 'grid/filter_form.html.haml'
@@ -35,10 +9,6 @@
       - @grid.headers.each_with_index do |header, i|
         %th{ id: "#{header[:id_str]}", class: "#{header[:class_str]}" }
           = grid_sortable i, header[:value]
-          / - if params[:action] == 'availability'
-          /   = grid_sortable i, header[:value]
-          / - else
-          /   = header[:value]
     /Data Rows
     - @grid.rows.each_with_index do |row, i|
       %tr{ id: "row_#{i+1}" }
