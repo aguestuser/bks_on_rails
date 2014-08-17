@@ -22,10 +22,7 @@ describe "Grid Requests" do
       end
 
       it { should have_h1('Shift Grid') }
-      
-      describe "filter contents" do
-        check_grid_filter_form_contents  
-      end
+      it { should have_field('filter[start]') }
 
       it "should populate header row correctly" do
         expect( page.find( "#row_0_col_1" ).text ).to eq 'Restaurant'
