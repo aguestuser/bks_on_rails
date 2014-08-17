@@ -1,0 +1,24 @@
+%div{ id: "date", data: { start: start_i } }
+  .span.datepicker
+    = label_tag :start, 'Start:'
+    .input-append.date.form_datetime
+      %input{ size: "18", type: "text", name: name, value: start_str, readonly: true }
+      %span{ class: "add-on" }
+        %i.icon-th
+        
+:javascript
+  var start = $("#date").data("start")
+  $(".form_datetime").datetimepicker({
+    format: "MM dd, yyyy",
+    autoclose: true,
+    todayBtn: true,
+    pickerPosition: "bottom-left",
+    weekStart: 0,
+    autoclose: true,
+    minView: 2,
+    todayButton: true,
+    todayHighlight: true,
+    minuteStep: 30,
+    showMeridian: true,
+    initialDate: new Date(start * 1000)
+  });

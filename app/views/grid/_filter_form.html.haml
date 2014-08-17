@@ -1,17 +1,20 @@
 .row   
   /Pass default start from controller to JS
-  %div{ id: "date", data: { start: @week.start.to_i } }
+  
 
   .span10.offset2
     = form_tag '/grid/'<<params[:action], method: :get do
       /Start
-      .span.datepicker
-        = label_tag :start, 'Start:'
-        .input-append.date.form_datetime
-          %input{ size: "18", type: "text", name: 'filter[start]', value: @week.start.strftime("%B %e, %Y"), readonly: true }
-          %span{ class: "add-on" }
-            %i.icon-th        
-        / = select_date @filter[:start], prefix: 'filter[start]', date_step: 7
+      = render '/shared/datepicker', name: 'filter[start]', start_i: @week.start.to_i, start_str: @week.start.strftime("%B %e, %Y")
+
+      / %div{ id: "date", data: { start: @week.start.to_i } }
+      / .span.datepicker
+      /   = label_tag :start, 'Start:'
+      /   .input-append.date.form_datetime
+      /     %input{ size: "18", type: "text", name: 'filter[start]', value: @week.start.strftime("%B %e, %Y"), readonly: true }
+      /     %span{ class: "add-on" }
+      /       %i.icon-th        
+      / = select_date @filter[:start], prefix: 'filter[start]', date_step: 7
       .span
         %div{ style: "margin-top: .3em;" }
           %strong
@@ -21,20 +24,4 @@
       /Submit
       .span
         = submit_tag 'Filter', class: 'btn btn-primary'
-  :javascript
-    var start = $("#date").data("start")
-    $(".form_datetime").datetimepicker({
-      format: "MM dd, yyyy",
-      autoclose: true,
-      todayBtn: true,
-      pickerPosition: "bottom-left",
-      weekStart: 0,
-      autoclose: true,
-      minView: 2,
-      todayButton: true,
-      todayHighlight: true,
-      minuteStep: 30,
-      showMeridian: true,
-      initialDate: new Date(start * 1000)
-    });
 
