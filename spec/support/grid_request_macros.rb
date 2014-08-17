@@ -49,13 +49,16 @@ module GridRequestMacros
     let(:shift_week){ Week.new( monday, sunday, Shift ) }
   end
 
-  def select_first_week_of_2014
+  def select_first_week_of_2014 grid_type
+
+    visit "/grid/"+grid_type+"?utf8=%E2%9C%93&filter%5Bstart%5D=January+06%2C+2014&end=%7B%3Avalue%3D%3ESun%2C+17+Aug+2014+23%3A59%3A00+EDT+-04%3A00%7D&commit=Filter"
     #set start filter
-    select '2014', from: 'filter_start_year'
-    select 'January', from: 'filter_start_month'
-    select '6', from: 'filter_start_day'
+    # select '2014', from: 'filter_start_year'
+    # select 'January', from: 'filter_start_month'
+    # select '6', from: 'filter_start_day'
     
-    click_button 'Filter'
+  
+    # click_button 'Filter'
   end
 
   def shift_grid_cell_text_for shift

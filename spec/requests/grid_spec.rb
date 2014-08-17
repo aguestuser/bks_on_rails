@@ -1,7 +1,10 @@
 require 'spec_helper'
-include ShiftRequestMacros, GridRequestMacros
+include RequestSpecMacros, ShiftRequestMacros, GridRequestMacros
 
 describe "Grid Requests" do
+
+  let(:staffer){ FactoryGirl.create(:staffer) }
+  before { mock_sign_in staffer }
 
   describe "Shift Grid" do
     load_shift_week_vars
@@ -14,7 +17,7 @@ describe "Grid Requests" do
     describe "page contents" do
       before do
         visit shift_grid_path
-        select_first_week_of_2014
+        select_first_week_of_2014 'shifts'
         # puts page.find("/table/tr[2]/td[2]").text
       end
 
@@ -86,7 +89,7 @@ describe "Grid Requests" do
     before do 
       configure_avail_grid_vars
       visit availability_grid_path
-      select_first_week_of_2014
+      select_first_week_of_2014 'availability'
     end
     
     let!(:last_row){ Rider.all.count }
@@ -153,6 +156,53 @@ describe "Grid Requests" do
         expect( page.find( "#row_#{last_row}_col_14" ).text ).to eq 'AVAIL'
         expect( page.find( "#row_#{last_row}_col_15" ).text ).to eq 'AVAIL'
       end
+    end
+
+    describe "links" do
+
+      subject { current_path }
+      
+      describe "clicking on rider name" do
+        before{ click_link(rider.name) }
+        it { should eq rider_path(rider) }
+      end
+
+      describe "clicking on assignment" do
+        before { click_link(avail_grid_cell_text_for(shifts[0]), match: :first ) }
+        
+        it { should include( shift_assignment_path( shifts[0], shifts[0].assignment ) ) }
+
+        describe "saving edit" do
+          before { click_button('Save changes') }
+
+          it { should eq '/grid/availability' }
+        end
+      end
+
+      describe "clicking on conflict" do
+        before { click_link( avail_grid_cell_text_for(conflicts[0]), match: :first ) }
+        
+        it { should include(conflict_path(conflicts[0])) }
+
+        describe "saving edit" do
+          before { click_button('Save changes') }
+
+          it { should eq '/grid/availability' }
+        end
+      end
+
+      describe "clicking on 'AVAIL'" do
+        before { click_link('AVAIL', match: :first) }
+        it { should include(new_conflict_path) }
+
+        describe "creating conflict" do
+          before { click_button('Create conflict') }
+
+          it { should eq '/grid/availability' }
+        end        
+      end
+
+
     end
 
     describe "SORTING" do

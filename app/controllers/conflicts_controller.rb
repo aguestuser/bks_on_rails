@@ -15,7 +15,6 @@ class ConflictsController < ApplicationController
 
   def create
     @conflict = Conflict.new(conflict_params.except(:root_path))
-    # @root_path = params[:conflict][:root_path]
     load_form_args
     if @conflict.save
       flash[:success] = "Created conflict for #{@conflict.rider.contact.name}"
@@ -30,9 +29,7 @@ class ConflictsController < ApplicationController
   end
 
   def update
-    @conflict.update(conflict_params)
-    # @root_path = params[:conflict][:root_path]
-    raise @root_path.inspect
+    @conflict.update(conflict_params.except(:root_path))
     if @conflict.save
       flash[:success] = "Edited conflict for #{@conflict.rider.contact.name}"
       path = !@root_path.nil? ? @root_path : @conflict_paths[:index]
