@@ -36,29 +36,78 @@ describe "Conflict Requests" do
     before do
       conflicts.each(&:save) 
       other_conflict.save
-      visit rider_conflicts_path rider
     end
 
-    #table headers
-    it { should have_h1("Conflicts for #{rider.contact.name}") }
-    it { should have_row_header('Start') }
-    it { should have_row_header('Start') }
-    it { should have_row_header('Period') }
+    describe "from root path" do
+      before do
+        visit conflicts_path
+        # pp page.all("div div.row div div div div a")[0][:href]
+      end
+      #table headers
+      it { should have_h1("Conflicts") }
 
-    #table rows
-    it { should have_content(conflicts[0].start.strftime("%m/%d | %I:%M%p")) }
-    it { should have_content(conflicts[1].end.strftime("%I:%M%p")) }
-    it { should have_content(conflicts[0].period.text) }
-    it { should have_content(conflicts[1].period.text) }
-    it { should have_link('Edit', href: "conflicts/#{conflicts[0].id}/edit") }
-    it { should have_link('Edit', href: "conflicts/#{conflicts[1].id}/edit") }
-    it { should have_link('Delete', href: "conflicts/#{conflicts[0].id}") }
-    it { should have_link('Delete', href: "conflicts/#{conflicts[1].id}") }
+      #table rows
+      it { should have_content(conflicts[0].start.strftime("%m/%d | %I:%M%p")) }
+      it { should have_content(conflicts[1].end.strftime("%I:%M%p")) }
+      it { should have_content(other_conflict.end.strftime("%I:%M%p")) }
+      
+      it { should have_content(conflicts[0].period.text) }
+      it { should have_content(conflicts[1].period.text) }
+      it { should have_content(other_conflict.period.text) }
 
-    it { should_not have_content(other_conflict.start.strftime("%m/%d | %I:%M%p")) }
+      it { should have_link('Edit', href: "/conflicts/#{conflicts[0].id}/edit?root_path=/conflicts/") }
+      it { should have_link('Edit', href: "/conflicts/#{conflicts[1].id}/edit?root_path=/conflicts/") }
+      it { should have_link('Edit', href: "/conflicts/#{other_conflict.id}/edit?root_path=/conflicts/") }
 
-    it "should be able to delete a conflict" do
-      expect{ click_link('Delete', href: "conflicts/#{conflicts[0].id}") }.to change(Conflict, :count).by(-1)
+
+      it { should have_link('Delete', href: "/conflicts/#{conflicts[0].id}?root_path=/conflicts/") }
+      it { should have_link('Delete', href: "/conflicts/#{conflicts[1].id}?root_path=/conflicts/") }
+      it { should have_link('Delete', href: "/conflicts/#{other_conflict.id}?root_path=/conflicts/") }
+
+      it "should be able to delete a conflict" do
+        expect{ click_link('Delete', href: "/conflicts/#{conflicts[0].id}?root_path=/conflicts/") }.to change(Conflict, :count).by(-1)
+      end
+    end
+
+    describe "from rider path" do
+      before do
+        visit rider_conflicts_path rider
+        # pp page.all("div div.row div div div div a")[0][:href]
+      end
+      #table headers
+      it { should have_h1("Conflicts for #{rider.contact.name}") }
+      it { should have_row_header('Start') }
+      it { should have_row_header('Start') }
+      it { should have_row_header('Period') }
+
+      #table rows
+      it { should have_content(conflicts[0].start.strftime("%m/%d | %I:%M%p")) }
+      it { should have_content(conflicts[1].end.strftime("%I:%M%p")) }
+      it { should have_content(conflicts[0].period.text) }
+      it { should have_content(conflicts[1].period.text) }
+      it { should have_link('Edit', href: "/riders/#{rider.id}/conflicts/#{conflicts[0].id}/edit?root_path=/riders/#{rider.id}/conflicts/") }
+      it { should have_link('Edit', href: "/riders/#{rider.id}/conflicts/#{conflicts[1].id}/edit?root_path=/riders/#{rider.id}/conflicts/") }
+      it { should have_link('Delete', href: "/riders/#{rider.id}/conflicts/#{conflicts[0].id}?root_path=/riders/#{rider.id}/conflicts/") }
+      it { should have_link('Delete', href: "/riders/#{rider.id}/conflicts/#{conflicts[1].id}?root_path=/riders/#{rider.id}/conflicts/") }
+
+      it { should_not have_content(other_conflict.start.strftime("%m/%d | %I:%M%p")) }
+
+      it "should be able to delete a conflict" do
+        expect{ click_link('Delete', href: "/riders/#{rider.id}/conflicts/#{conflicts[0].id}?root_path=/riders/#{rider.id}/conflicts/") }.to change(Conflict, :count).by(-1)
+      end
+    end
+
+    describe "from rider profile page" do
+      before { visit rider_path rider }
+      
+      it { should have_h3("Conflicts") }
+      it { should have_content(conflicts[0].start.strftime("%m/%d | %I:%M%p")) }
+      it { should have_link('Edit', href: "/riders/#{rider.id}/conflicts/#{conflicts[0].id}/edit?root_path=/riders/#{rider.id}") }
+      it { should have_link('Delete', href: "/riders/#{rider.id}/conflicts/#{conflicts[1].id}?root_path=/riders/#{rider.id}") }
+
+      it "should be able to delete a conflict" do
+        expect{ click_link('Delete', href: "/riders/#{rider.id}/conflicts/#{conflicts[0].id}?root_path=/riders/#{rider.id}") }.to change(Conflict, :count).by(-1)
+      end
     end
   end
 
@@ -100,7 +149,7 @@ describe "Conflict Requests" do
           it "should create a new conflict" do
             check_model_counts_incremented old_counts, new_counts
           end
-          it { should have_h1('Conflicts for All Riders') }
+          it { should have_h1('Conflicts') }
           it { should have_success_message("Created conflict for #{rider.contact.name}") }
         end
       end
@@ -163,7 +212,7 @@ describe "Conflict Requests" do
         describe "with valid input" do
           before { make_valid_conflict_edit }
 
-          it { should have_h1('Conflicts for All Riders') }
+          it { should have_h1('Conflicts') }
           it { should have_success_message("Edited conflict for #{rider.contact.name}") }
           it "should save edit" do
             expect( conflict.reload.start.hour ).to eq 1
@@ -210,16 +259,16 @@ describe "Conflict Requests" do
     describe "from (root) conflicts index" do
       before do
         visit conflicts_path
-        click_link('Delete', href: "conflicts/#{conflicts[0].id}")
+        click_link('Delete', href: "/conflicts/#{conflicts[0].id}?root_path=/conflicts/")
       end
 
-      it { should have_h1('Conflicts for All Riders') }
+      it { should have_h1('Conflicts') }
     end
 
     describe "from rider conflicts index" do
       before do 
         visit rider_conflicts_path(rider)
-        click_link('Delete', href: "conflicts/#{conflicts[0].id}") 
+        click_link('Delete', href: "/riders/#{rider.id}/conflicts/#{conflicts[0].id}?root_path=/riders/#{rider.id}/conflicts/") 
       end
 
       it { should have_h1("Conflicts for #{rider.contact.name}") }

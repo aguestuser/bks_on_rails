@@ -1,9 +1,11 @@
 class ConflictsController < ApplicationController
-  include ConflictPaths
+  # include ConflictPaths
+  include Paths
 
-  before_action :load_root_path
   before_action :load_conflict, only: [ :edit, :update, :show, :destroy ]
-  before_action :load_caller # callbacks: load_rider (if applicable), load_paths
+  before_action :load_caller # callbacks: load_rider (if applicable), load_root_key -> load_root_path
+  # before_action :load_root_key
+  before_action :load_root_path
   before_action :load_form_args, only: [ :edit, :update ]
   before_action :load_conflicts, only: [ :index ]
   # before_action :load_rider, only: [ :index, :destroy ]
@@ -32,8 +34,8 @@ class ConflictsController < ApplicationController
     @conflict.update(conflict_params.except(:root_path))
     if @conflict.save
       flash[:success] = "Edited conflict for #{@conflict.rider.contact.name}"
-      path = !@root_path.nil? ? @root_path : @conflict_paths[:index]
-      redirect_to path
+      # path = !@root_path.nil? ? @root_path : @conflict_paths[:index]
+      redirect_to @root_path
     else
       render 'edit'
     end
@@ -63,10 +65,23 @@ class ConflictsController < ApplicationController
       if params.include? :rider_id
         @caller = :rider
         load_rider
-      else
-        @caller = nil
       end
-      load_conflict_paths #included from controllers/concerns/conflict_paths.rb
+      load_root_key
+    end
+
+    def load_root_key
+      @root_key = :conflict
+      load_root_path
+      # raise @root_path.inspect
+    end
+
+    def caller
+      case @caller
+      when :rider
+        @rider
+      when nil
+        nil
+      end
     end
 
     def load_rider
@@ -80,10 +95,6 @@ class ConflictsController < ApplicationController
       when nil
         @form_args = @conflict
       end
-    end
-
-    def load_root_path
-      @root_path = params[:root_path] || params[:conflict][:root_path]
     end
 
     def load_conflicts

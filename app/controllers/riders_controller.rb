@@ -1,7 +1,9 @@
 class RidersController < ApplicationController
-  include UsersController, ContactablesController, LocatablesController, EquipablesController, ShiftPaths, ConflictPaths
+  include UsersController, ContactablesController, LocatablesController, EquipablesController, ShiftPaths, Paths
+  # ShiftPaths, ConflictPaths, 
 
   before_action :load_rider, only: [ :show, :edit, :update, :destroy ]
+  before_action :load_root_path
 
   def new
     @rider = Rider.new
@@ -29,7 +31,7 @@ class RidersController < ApplicationController
 
   def show
     load_shift_paths # included from /controllers/concerns/shift_paths.rb
-    load_conflict_paths # included from /controllers/concerns/conflict_paths.rb
+    # load_conflict_paths # included from /controllers/concerns/conflict_paths.rb
   end
 
   def index
@@ -69,12 +71,9 @@ class RidersController < ApplicationController
       # get_associations @rider
     end
 
-    # def get_associations(rider)
-    #   @qualifications = rider.qualification_set
-    #   @skills = rider.skill_set
-    #   @rating = rider.rider_rating
-    #   # @account, @contact, @location, @equipment made accessible by included modules 
-    # end
+    def caller
+      @rider
+    end
 
     def rider_params
       params.require(:rider)

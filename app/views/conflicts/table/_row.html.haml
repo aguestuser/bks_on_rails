@@ -1,14 +1,17 @@
+- record_type = @teaser ? :conflicts : nil
+
 .row
-  - unless caller == :rider
+  - unless @caller == :rider
     .span2
-      = conflict.rider.contact.name
+      = link_to conflict.rider.contact.name, conflict.rider
   .span2
     = conflict.start.strftime("%m/%d | %I:%M%p")
   .span1
     = conflict.end.strftime("%I:%M%p")
   .span1
     = conflict.period.text
+  / - unless @root_key == :riders || @root_key == :restaurants
   .span2
-    = link_to 'Edit', edit_conflict_path(conflict, root_path: @root_path)
+    = link_to 'Edit', edit_path(conflict, record_type)
     |
-    = link_to 'Delete', conflict_path(conflict, root_path: @root_path), method: :delete, data: { confirm: 'Are you sure?' }
+    = link_to 'Delete', show_path(conflict, record_type), method: :delete, data: { confirm: 'Are you sure?' }
