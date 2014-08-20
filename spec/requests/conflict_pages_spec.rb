@@ -45,15 +45,17 @@ describe "Conflict Requests" do
       end
       #table headers
       it { should have_h1("Conflicts") }
+      it { should have_row_header('Time') }
+      it { should have_row_header('Period') }
 
       #table rows
-      it { should have_content(conflicts[0].start.strftime("%m/%d | %I:%M%p")) }
-      it { should have_content(conflicts[1].end.strftime("%I:%M%p")) }
-      it { should have_content(other_conflict.end.strftime("%I:%M%p")) }
-      
-      it { should have_content(conflicts[0].period.text) }
-      it { should have_content(conflicts[1].period.text) }
-      it { should have_content(other_conflict.period.text) }
+      it { should have_content(conflicts[0].table_time) }
+      it { should have_content(conflicts[1].table_time) }
+      it { should have_content(other_conflict.table_time) }
+
+      it { should have_content(conflicts[0].period.text.upcase) }
+      it { should have_content(conflicts[1].period.text.upcase) }
+      it { should have_content(other_conflict.period.text.upcase) }
 
       it { should have_link('Edit', href: "/conflicts/#{conflicts[0].id}/edit?root_path=/conflicts/") }
       it { should have_link('Edit', href: "/conflicts/#{conflicts[1].id}/edit?root_path=/conflicts/") }
@@ -76,15 +78,17 @@ describe "Conflict Requests" do
       end
       #table headers
       it { should have_h1("Conflicts for #{rider.contact.name}") }
-      it { should have_row_header('Start') }
-      it { should have_row_header('Start') }
+      it { should have_row_header('Time') }
       it { should have_row_header('Period') }
 
       #table rows
-      it { should have_content(conflicts[0].start.strftime("%m/%d | %I:%M%p")) }
-      it { should have_content(conflicts[1].end.strftime("%I:%M%p")) }
-      it { should have_content(conflicts[0].period.text) }
-      it { should have_content(conflicts[1].period.text) }
+
+      it { should have_content(conflicts[0].table_time) }
+      it { should have_content(conflicts[1].table_time) }
+
+      it { should have_content(conflicts[0].period.text.upcase) }
+      it { should have_content(conflicts[1].period.text.upcase) }
+
       it { should have_link('Edit', href: "/riders/#{rider.id}/conflicts/#{conflicts[0].id}/edit?root_path=/riders/#{rider.id}/conflicts/") }
       it { should have_link('Edit', href: "/riders/#{rider.id}/conflicts/#{conflicts[1].id}/edit?root_path=/riders/#{rider.id}/conflicts/") }
       it { should have_link('Delete', href: "/riders/#{rider.id}/conflicts/#{conflicts[0].id}?root_path=/riders/#{rider.id}/conflicts/") }
@@ -101,7 +105,7 @@ describe "Conflict Requests" do
       before { visit rider_path rider }
       
       it { should have_h3("Conflicts") }
-      it { should have_content(conflicts[0].start.strftime("%m/%d | %I:%M%p")) }
+      it { should have_content(conflicts[0].table_time) }
       it { should have_link('Edit', href: "/riders/#{rider.id}/conflicts/#{conflicts[0].id}/edit?root_path=/riders/#{rider.id}") }
       it { should have_link('Delete', href: "/riders/#{rider.id}/conflicts/#{conflicts[1].id}?root_path=/riders/#{rider.id}") }
 

@@ -4,12 +4,10 @@
   - unless @caller == :rider
     .span2
       = link_to conflict.rider.contact.name, conflict.rider
-  .span2
-    = conflict.start.strftime("%m/%d | %I:%M%p")
+  .span3
+    = conflict.table_time
   .span1
-    = conflict.end.strftime("%I:%M%p")
-  .span1
-    = conflict.period.text
+    = conflict.period.text.upcase
   / - unless @root_key == :riders || @root_key == :restaurants
   .span2
     = link_to 'Edit', edit_path(conflict, record_type)
