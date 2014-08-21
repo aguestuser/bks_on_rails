@@ -101,7 +101,7 @@ module GridRequestMacros
 
   def check_grid_filter_form_contents
     it { should have_label('Start:') }
-    it { should have_input('filter[start]')}
+    it { should have_field('filter[start]')}
     it { should have_content('End:') }
     it { should have_content(shifts[6].formal_time) }
   end

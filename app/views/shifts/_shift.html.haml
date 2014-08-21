@@ -19,8 +19,8 @@
     %strong Notes:
     = shift.notes
 .center
-  = link_to 'Edit', paths[:edit_shift].call(@shift)
+  = link_to 'Edit', edit_path(@shift)
   |
-  = link_to 'Delete', paths[:shift].call(@shift), method: :delete, data: { confirm: 'Are you sure?' }
+  = link_to 'Delete', show_path(@shift), method: :delete, data: { confirm: 'Are you sure?' }
   |
-  = link_to 'All Shifts', paths[:index]
+  = link_to 'All Shifts', @root_path

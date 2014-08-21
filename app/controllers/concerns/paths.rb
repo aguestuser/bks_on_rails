@@ -32,11 +32,17 @@ module Paths
     private
 
       def load_root_key
-        @root_key = params[:controller].to_s.singularize.to_sym
+        # controller = params[:controller]
+        # if controller == 'assignments'
+        #   @root_key = :shift
+        # else
+          @root_key = params[:controller].to_s.singularize.to_sym
+        # end
+          
       end
 
       def set_teaser
-        @teaser = true if @root_key == :rider || @root_key == :resstaurant
+        @teaser = true if @root_key == :rider || @root_key == :restaurant
       end
       
       def load_root_path
@@ -47,18 +53,24 @@ module Paths
         else
           @root_path = params[:root_path] || default
         end
+        # raise @root_path.inspect
       end
 
       def default_root_path
         # raise caller.inspect
+        controller = params[:controller].to_sym
         if @caller 
-          if @root_key == :rider || @root_key == :restaurant
-            "/#{@caller}s/#{caller.id}"
+          if controller == :riders || controller == :restaurants
+            "/#{@caller}s/#{caller.id}/"
           else
            "/#{@caller}s/#{caller.id}/#{@root_key}s/"
           end
         else
-          "/#{@root_key}s/"
+          if controller == :grid
+            "/grid/#{params[:action]}"
+          else
+            "/#{@root_key}s/"
+          end
         end
       end
 
@@ -74,14 +86,13 @@ module Paths
       end
 
       def rt_str record_type, record
-        if record_type
-          if record_type == :assignments
-            "#{record.shift.id}/assignments/"
-          else
-            "#{record_type}/"
-          end
-        else
+        case record_type
+        when :assignments
+          "shifts/#{record.shift.id}/assignments/"
+        when nil
           ""
+        else 
+          "#{record_type}/"
         end
       end
 

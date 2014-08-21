@@ -99,7 +99,7 @@ class AssignmentsController < ApplicationController
     def redirect_to_rider_shifts
       if @caller == :rider
         flash[:error] = "You can't create an assignment from a list of rider shifts. Try again from the shifts index or a list of restaurant shifts."
-        redirect_to @shift_paths[:index]
+        redirect_to index_path
       end
     end
 

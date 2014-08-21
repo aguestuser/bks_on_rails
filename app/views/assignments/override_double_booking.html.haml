@@ -1,17 +1,16 @@
 - provide(:title, 'Double Booking Alert')
+- rider = @assignment.rider
+
 %h1 Double Booking Alert
 .row
-  .span6.offset3
+  .span8.offset2
     %p
       You tried to assign the following shift:
-    %p.indent
+    %p.shift_box
       = render 'assignments/shift_include', shift: @assignment.shift
     %p 
-      to 
-      %strong 
-        #{@assignment.rider.contact.name},
-      which would double book them with the following shift(s):
-    %p.indent
+      to #{link_to rider.name, rider}, which would double book them with the following shift(s):
+    %p.shift_box
       = render 'assignments/double_bookings_include', conflicts: @conflicts
     %br/
     %p.center

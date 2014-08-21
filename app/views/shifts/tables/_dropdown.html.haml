@@ -8,6 +8,6 @@
   %ul.dropdown-menu
     %li= link_to edit_assignment_str, edit_path(shift.assignment, :assignments) 
     %li= link_to 'Assignment Details', show_path(shift.assignment, :assignments)
-    %li= link_to "Edit Shift", edit_path(shift)
-    %li= link_to "Shift Details", show_path(shift)
+    %li= link_to "Edit Shift", edit_path(shift, :shifts)
+    %li= link_to "Shift Details", show_path(shift, :shifts)
     %li= link_to 'Delete', show_path(shift), method: :delete, data: { confirm: 'Are you sure?' }

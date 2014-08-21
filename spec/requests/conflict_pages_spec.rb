@@ -106,11 +106,11 @@ describe "Conflict Requests" do
       
       it { should have_h3("Conflicts") }
       it { should have_content(conflicts[0].table_time) }
-      it { should have_link('Edit', href: "/riders/#{rider.id}/conflicts/#{conflicts[0].id}/edit?root_path=/riders/#{rider.id}") }
-      it { should have_link('Delete', href: "/riders/#{rider.id}/conflicts/#{conflicts[1].id}?root_path=/riders/#{rider.id}") }
+      it { should have_link('Edit', href: "/riders/#{rider.id}/conflicts/#{conflicts[0].id}/edit?root_path=/riders/#{rider.id}/") }
+      it { should have_link('Delete', href: "/riders/#{rider.id}/conflicts/#{conflicts[1].id}?root_path=/riders/#{rider.id}/") }
 
       it "should be able to delete a conflict" do
-        expect{ click_link('Delete', href: "/riders/#{rider.id}/conflicts/#{conflicts[0].id}?root_path=/riders/#{rider.id}") }.to change(Conflict, :count).by(-1)
+        expect{ click_link('Delete', href: "/riders/#{rider.id}/conflicts/#{conflicts[0].id}?root_path=/riders/#{rider.id}/") }.to change(Conflict, :count).by(-1)
       end
     end
   end

@@ -1,4 +1,4 @@
-- unless caller == :rider
+- unless @caller == :rider
   = f.label :rider
   = f.collection_select :rider_id, Rider.all, :id, :name, include_blank: true
 = f.label :status

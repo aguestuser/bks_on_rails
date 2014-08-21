@@ -2,23 +2,24 @@
 
 class GridController < ApplicationController  
   skip_authorize_resource
-  include TimeboxableHelper, Filters, Sortable
+  include TimeboxableHelper, Filters, Sortable, Paths
 
   before_action :load_subject # callbacks: load_restaurants OR load_riders
   before_action :load_filter_wrapper
   before_action :load_week
   before_action :load_y_axis_resource
   before_action :load_sort_params
+  before_action :load_root_path
   # before_action :load_restaurants, only: :shift_grid
 
   def shifts
     @grid = Grid.new(@week, :restaurant, @restaurants, @sort_key, @sort_dir)
-    @root_path = '/grid/shifts'
+    # @root_path = '/grid/shifts'
   end
 
   def availability
     @grid = Grid.new(@week, :rider, @riders, @sort_key, @sort_dir)
-    @root_path = '/grid/availability'
+    # @root_path = '/grid/availability'
   end
 
   private

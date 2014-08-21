@@ -32,6 +32,8 @@
 /Notes
 = f.label :notes
 = f.text_area :notes
+/Hiden Field
+= f.hidden_field :root_path, value: @root_path
 /Submit
 - if params[:action] == 'new '|| params[:action] == 'create'
   / = f.fields_for :assignment 

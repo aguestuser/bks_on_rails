@@ -4,10 +4,10 @@
   .span6.offset3
     %strong
       Shift:
-    %p.indent
+    %p.shift_box
       = render 'assignments/shift_include', shift: @assignment.shift
     = form_for @form_args do |f|
       = render 'shared/error_messages', object: f.object
-      = render 'assignments/fields', f: f, caller: @caller, shift: @shift
+      = render 'assignments/fields', f: f, shift: @shift
       .center
         = f.submit "Save changes", class: "btn btn-primary"

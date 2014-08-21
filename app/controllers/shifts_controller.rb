@@ -18,7 +18,7 @@ class ShiftsController < ApplicationController
   end
 
   def create
-    @shift = Shift.new(shift_params)
+    @shift = Shift.new(shift_params.except(:root_path))
     @shift.assignment = Assignment.new
     load_form_args
     @it = @shift
@@ -37,7 +37,7 @@ class ShiftsController < ApplicationController
   end
 
   def update
-    @shift.update(shift_params)
+    @shift.update(shift_params.except(:root_path))
     if @shift.save
       flash[:success] = "Shift updated"
       redirect_to @root_path

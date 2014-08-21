@@ -356,6 +356,13 @@ label {
 
 /* Shift display */
 
+.shift_box{
+  margin: 2em;
+  border: 1px solid black;
+  padding: 1em;
+  background: $grayLighter;
+}
+
 .table {
   text-align: center;  
   .header {

@@ -1,17 +1,16 @@
 - provide(:title, 'Conflict Alert')
+- rider = @assignment.rider
+
 %h1 Conflict Alert
 .row
-  .span6.offset3
+  .span8.offset2
     %p
       You tried to assign the following shift:
-    %p.indent
+    %p.shift_box
       = render 'assignments/shift_include', shift: @assignment.shift
     %p 
-      to 
-      %strong 
-        #{@assignment.rider.contact.name},
-      who has the following conflict(s):
-    %p.indent
+      to #{link_to rider.name, rider},, who has the following conflict(s):
+    %p.shift_box
       = render 'assignments/conflicts_include', conflicts: @conflicts
     %br/
     %p.center

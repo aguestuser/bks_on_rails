@@ -4,15 +4,22 @@
   - rider = link_to @assignment.rider.contact.name, @assignment.rider
 
 %h3 Assignment Details
-%ul
-  %li
-    %strong Shift:
-    = render 'assignments/shift_include', shift: @assignment.shift
-  %li
-    %strong Assigned to:
-    = rider
-  %li
-    %strong Status:
-    = @assignment.status.text
+
+.center
+  %strong
+    Shift:
+.shift_box
+  = render 'assignments/shift_include', shift: @assignment.shift
+
+.center
+  %strong 
+    Assigned to: 
+  = rider
+  %br/
+  %strong 
+    Status: 
+  = @assignment.status.text
+%br/
+
 %p.center
-  = link_to 'Edit', paths[:edit_assignment].call(@assignment.shift, @assignment)
+  = link_to 'Edit', edit_path(assignment, :assignments), class: "btn btn-primary"

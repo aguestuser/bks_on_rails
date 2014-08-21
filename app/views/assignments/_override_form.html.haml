@@ -3,8 +3,6 @@
   - override_field = lambda { |f| f.hidden_field :override_conflict, value: true }
 - when :double_booking
   - override_field = lambda { |f| f.hidden_field :override_double_booking, value: true }
-- when nil
-  - raise 'no override subject!'
 
 = form_for @form_args do |f|
   %p.center
@@ -12,5 +10,6 @@
     = f.hidden_field :rider_id, value: @assignment.rider_id
     = f.hidden_field :shift_id, value: @assignment.shift_id
     = f.hidden_field :status, value: @assignment.status
+    = f.hidden_field :root_path, value: @root_path
     = f.submit "Assign Shift", class: 'btn btn-primary'
-    = link_to "Cancel", @shift_paths[:index], class: 'btn btn-primary'
+    = link_to "Cancel", @root_path, class: 'btn btn-primary'

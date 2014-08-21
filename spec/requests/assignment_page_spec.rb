@@ -31,19 +31,76 @@ describe "Assignment Requests" do
   subject { page }
 
   describe "Assignments#show" do
-    
-    before do
-      shift.assign_to rider
-      visit shift_assignment_path(shift, shift.assignment)
+    before { shift.assign_to rider }
+
+    describe "from root path" do
+      before { visit shift_assignment_path(shift, shift.assignment) }
+
+      describe "page contents" do
+
+        it { should have_h3('Assignment Details') }
+        it { should have_content('Shift:') }
+        it { should have_content('Assigned to:') }
+        it { should have_content('Status:') }
+        it { should have_h3('Assignment History') }
+        it { should have_link('Edit', href: "/shifts/#{shift.id}/assignments/#{shift.assignment.id}/edit?root_path=/shifts/") }
+      end
+
+      describe "editing assignment from show page" do
+        before { click_link 'Edit' }
+
+        its(:current_path) { should eq "/shifts/#{shift.id}/assignments/#{shift.assignment.id}/edit" }
+        it { should have_h1("Edit Shift Assignment") }
+
+        describe "saving (no) changes" do
+          before { click_button 'Save changes' }
+
+          its(:current_path) { should eq "/shifts/" }
+          it { should have_h1("Shifts") }
+        end
+      end      
     end
 
-    describe "page contents" do
-      it { should have_h3('Assignment Details') }
-      it { should have_content('Shift:') }
-      it { should have_content('Assigned to:') }
-      it { should have_content('Status:') }
-      it { should have_h3('Assignment History') }
+    describe "from restaurants path" do
+      before { visit restaurant_shift_assignment_path(shift.restaurant, shift, shift.assignment) }
+      
+      it { should have_link('Edit', href: "/restaurants/#{shift.restaurant.id}/shifts/#{shift.id}/assignments/#{shift.assignment.id}/edit?root_path=/restaurants/#{shift.restaurant.id}/shifts/") }
+
+      describe "editing assignment from show page" do
+        before { click_link 'Edit' }
+
+        its(:current_path) { should eq "/restaurants/#{shift.restaurant.id}/shifts/#{shift.id}/assignments/#{shift.assignment.id}/edit" }
+        it { should have_h1 'Edit Shift Assignment' }
+
+        describe "saving changes" do
+          before { click_button 'Save changes' }
+
+          its(:current_path){ should eq "/restaurants/#{shift.restaurant.id}/shifts/" }
+          it { should have_h1 "Shifts for #{shift.restaurant.name}" }          
+        end
+      end
     end
+
+    describe "from riders path" do
+      before { visit rider_shift_assignment_path(shift.rider, shift, shift.assignment) }
+      
+      it { should have_link('Edit', href: "/riders/#{shift.rider.id}/shifts/#{shift.id}/assignments/#{shift.assignment.id}/edit?root_path=/riders/#{shift.rider.id}/shifts/") }
+
+      describe "editing assignment from show page" do
+        before { click_link 'Edit' }
+
+        its(:current_path) { should eq "/riders/#{shift.rider.id}/shifts/#{shift.id}/assignments/#{shift.assignment.id}/edit" }
+        it { should have_h1 'Edit Shift Assignment' }
+
+        describe "saving changes" do
+          before { click_button 'Save changes' }
+
+          its(:current_path){ should eq "/riders/#{shift.rider.id}/shifts/" }
+          it { should have_h1 "Assignments for #{shift.rider.name}" }          
+        end
+      end
+    end    
+    
   end
 
   describe "Assignments in Shifts#index" do
@@ -313,9 +370,10 @@ describe "Assignment Requests" do
         describe "override page contents" do
           it { should have_h1('Conflict Alert') }
           it { should have_content("You tried to assign the following shift:") }
-          it { should have_content( next_day_shift.start.strftime( "%m/%d | %I:%M%p" ) ) }  
-          it { should have_content("to #{rider.contact.name}, who has the following conflict(s):") }
-          it { should have_content(conflict.start.strftime("%m/%d | %I:%M%p")) }
+          it { should have_content( next_day_shift.table_time ) } 
+          it { should have_link( rider.contact.name ) } 
+          it { should have_content("who has the following conflict(s):") }
+          it { should have_content( conflict.table_time ) }
           it { should have_content("Do you want to assign it to them anyway?") }
           it { should have_button('Assign Shift') }  
           it { should have_link('Cancel') }
@@ -356,9 +414,9 @@ describe "Assignment Requests" do
           describe "override page contents" do
             it { should have_h1('Double Booking Alert') }
             it { should have_content("You tried to assign the following shift:") }
-            it { should have_content( same_time_shift.start.strftime( "%m/%d | %I:%M%p" ) ) }  
+            it { should have_content( shift.table_time ) }  
             it { should have_content("to #{other_rider.contact.name}, which would double book them with the following shift(s):") }
-            it { should have_content(same_time_shift.start.strftime("%m/%d | %I:%M%p")) }
+            it { should have_content(same_time_shift.table_time) }
             it { should have_content("Do you want to assign it to them anyway?") }
             it { should have_button('Assign Shift') }  
             it { should have_link('Cancel') }
