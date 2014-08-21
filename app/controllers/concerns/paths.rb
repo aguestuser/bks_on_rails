@@ -60,7 +60,7 @@ module Paths
         # raise caller.inspect
         controller = params[:controller].to_sym
         if @caller 
-          if controller == :riders || controller == :restaurants
+          if controller == :riders || controller == :restaurants || controller == :assignments
             "/#{@caller}s/#{caller.id}/"
           else
            "/#{@caller}s/#{caller.id}/#{@root_key}s/"
@@ -68,6 +68,8 @@ module Paths
         else
           if controller == :grid
             "/grid/#{params[:action]}"
+          elsif controller == :assignments
+            "/"
           else
             "/#{@root_key}s/"
           end
