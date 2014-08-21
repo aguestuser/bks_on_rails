@@ -7,6 +7,28 @@ module Paths
     before_action :load_root_key
     before_action :set_teaser
 
+    public
+
+      def index_path(record_type=nil)
+        if record_type
+          @root_path + "/#{record_type}"
+        else
+          @root_path
+        end
+      end 
+
+      def show_path(record, record_type=nil)
+        @root_path + rt_str(record_type, record) + "#{record.id}" + root_path_params
+      end
+
+      def edit_path(record, record_type=nil)
+        @root_path + rt_str(record_type, record) + "#{record.id}/edit" + root_path_params
+      end
+
+      def new_path
+        @root_path + "new" + root_path_params
+      end
+
     private
 
       def load_root_key
@@ -28,6 +50,7 @@ module Paths
       end
 
       def default_root_path
+        # raise caller.inspect
         if @caller 
           if @root_key == :rider || @root_key == :restaurant
             "/#{@caller}s/#{caller.id}"
@@ -39,28 +62,27 @@ module Paths
         end
       end
 
-      def index_path(record_type=nil)
+      def caller
+        case @caller
+        when :restaurant
+          @restaurant
+        when :rider
+          @rider
+        when nil
+          nil
+        end  
+      end
+
+      def rt_str record_type, record
         if record_type
-          @root_path + "/#{record_type}"
+          if record_type == :assignments
+            "#{record.shift.id}/assignments/"
+          else
+            "#{record_type}/"
+          end
         else
-          @root_path
+          ""
         end
-      end 
-
-      def show_path(record, record_type=nil)
-        @root_path + rt_str(record_type) + "#{record.id}" + root_path_params
-      end
-
-      def edit_path(record, record_type=nil)
-        @root_path + rt_str(record_type) + "#{record.id}/edit" + root_path_params
-      end
-
-      def new_path
-        @root_path + "new" + root_path_params
-      end
-
-      def rt_str record_type
-        record_type ? "/#{record_type}/" : ""
       end
 
       def root_path_params

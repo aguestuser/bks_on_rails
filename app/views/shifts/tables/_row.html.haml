@@ -1,18 +1,15 @@
-- if shift.assigned?
-  - rider = link_to shift.assignment.rider.contact.name, shift.assignment.rider
-- else
-  - rider = '--'
+- rider = shift.assigned? ? link_to(shift.assignment.rider.contact.name, shift.assignment.rider) : '--'
 
 .row
   /Restaurant
-  - unless caller == :restaurant
+  - unless @caller == :restaurant
     %div{ :class => "span2 restaurant", :id => "shift#{shift.id}_restaurant" }    
       = link_to shift.restaurant.mini_contact.name, restaurant_path(shift.restaurant) 
   /Time
   %div{ :class => "span3 time", :id => "shift#{shift.id}_time" }
     = shift.table_time
   /Assigned to (Rider)
-  - unless caller == :rider
+  - unless @caller == :rider
     %div{ :class => "span2 rider", :id => "shift#{shift.id}_assignment_rider" } 
       = rider
   /Status    
@@ -21,4 +18,4 @@
   /Action
   - if can? :manage, @shift
     %div{ :class => "span1 action", :id => "shift#{shift.id}_action" }
-      = render 'shifts/tables/dropdown', shift: shift, paths: paths #Action v
+      = render 'shifts/tables/dropdown', shift: shift

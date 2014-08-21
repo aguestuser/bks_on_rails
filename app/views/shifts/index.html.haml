@@ -13,16 +13,16 @@
 
 %h1= header
 - if can? :manage, Shift
-  = render 'shifts/index_and_new_links', caller: @caller, paths: @shift_paths
+  = render 'shifts/index_and_new_links'
 
 .row
   %div{ class: wrapper_class+' filters' }
-    = render 'shifts/tables/filter_form', paths: @shift_paths
+    = render 'shifts/tables/filter_form'
 .center
   = will_paginate @shifts
 .row
   %div{ :class => wrapper_class }
-    = render 'shifts/tables/wrapper', shifts: @shifts, caller: @caller, paths: @shift_paths, teaser: false
+    = render 'shifts/tables/wrapper', shifts: @shifts
 .center
   = will_paginate @shifts
 - if can? :manage, Shift

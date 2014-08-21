@@ -5,12 +5,14 @@
 .row
   .center
     = link_to 'Create Rider', new_rider_path
+    = will_paginate @riders
 .row
   .span10.offset1
     %ul.staff
       = render @riders
     .edit 
       .center
+        = will_paginate @riders
         = link_to 'Create Rider', new_rider_path
         |
         = link_to 'Home', root_path

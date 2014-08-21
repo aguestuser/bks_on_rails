@@ -6,6 +6,6 @@
 .row
   .span6.offset3
     = form_for @form_args do |f|
-      = render 'conflicts/fields', f: f, caller: @caller
+      = render 'conflicts/fields', f: f
       .center
         = f.submit "Create conflict", class: "btn btn-primary"

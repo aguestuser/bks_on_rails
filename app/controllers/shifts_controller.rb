@@ -1,10 +1,11 @@
 class ShiftsController < ApplicationController
-  include ShiftPaths, Filters, Sortable
+  include Filters, Sortable, Paths
 
   # helper_method :sort_column, :sort_direction
 
   before_action :load_shift, only: [ :show, :edit, :update, :destroy ]
   before_action :load_caller # will call load_restaurant or load_rider if applicable, load_paths always
+  before_action :load_root_path
   before_action :load_form_args, only: [ :edit, :update ]
   before_action :redirect_non_staffers, only: [ :index ]
   before_action :load_filter_wrapper, only: [ :index ]
@@ -12,8 +13,6 @@ class ShiftsController < ApplicationController
 
   def new
     @shift = Shift.new
-    # @shift.build_assignment
-
     load_form_args
     @it = @shift
   end
@@ -25,7 +24,7 @@ class ShiftsController < ApplicationController
     @it = @shift
     if @shift.save
       flash[:success] = "Shift created"
-      redirect_to @shift_paths[:index]
+      redirect_to @root_path
     else
       render 'new'
     end
@@ -35,18 +34,13 @@ class ShiftsController < ApplicationController
   end
 
   def edit
-    @root_path = params[:root_path]
   end
 
   def update
     @shift.update(shift_params)
     if @shift.save
       flash[:success] = "Shift updated"
-      if params[:root_path]
-        redirect_to params[:root_path]
-      else
-        redirect_to @shift_paths[:index]
-      end
+      redirect_to @root_path
     else
       render 'edit'
     end
@@ -58,7 +52,7 @@ class ShiftsController < ApplicationController
   def destroy
     @shift.destroy
     flash[:success] = "Shift deleted"
-    redirect_to @shift_paths[:index]
+    redirect_to @root_path
   end
 
   private
@@ -80,7 +74,6 @@ class ShiftsController < ApplicationController
         @caller = nil
         load_restaurants
       end
-      load_shift_paths
     end   
 
     def load_restaurant

@@ -1,27 +1,37 @@
+- def header str, sort_key
+  - if @teaser
+    - str
+  - else 
+    - sortable sort_key, str
+
 .row.header
   /Restaurant
-  - unless caller == :restaurant
+  - unless @caller == :restaurant
     .span2
-      - if teaser
-        Restaurant
-      - else
-        = sortable 'mini_contacts.name', 'Restaurant'
+      = header 'Restaurant', 'mini_contacts.name'
+      / - if @teaser
+      /   Restaurant
+      / - else
+      /   = sortable 'mini_contacts.name', 'Restaurant'
   /Time
   .span3
-    - if teaser
-      Time
-    - else
-      = sortable 'start', 'Time'
+    = header 'Time', 'start'
+    / - if @teaser
+    /   Time
+    / - else
+    /   = sortable 'start', 'Time'
   /Rider
-  - unless caller == :rider
+  - unless @caller == :rider
     .span2
-      - if teaser
-        Assigned to
-      - else
-        = sortable 'contacts.name', 'Assigned to'
+      - header "Assigned to", 'contacts.name'
+      / - if @teaser
+      /   Assigned to
+      / - else
+      /   = sortable 'contacts.name', 'Assigned to'
   /Status
   .span2
-    - if teaser
-      Status
-    - else
-      = sortable 'assignments.status', 'Status'
+    = header 'Status', 'assignments.status'
+    / - if @teaser
+    /   Status
+    / - else
+    /   = sortable 'assignments.status', 'Status'

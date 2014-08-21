@@ -3,14 +3,14 @@
   .center
     = link_to "#{@restaurant.mini_contact.name}'s profile", @restaurant
     |
-    = link_to 'All shifts', paths[:index]
+    = link_to 'All shifts', '/shifts/'
     |
-    = link_to 'Create shift', paths[:new_shift] 
+    = link_to 'Create shift', new_path
 - when :rider
   .center
     = link_to "#{@rider.contact.name}'s profile", @rider
     |
-    = link_to 'All shifts', paths[:index]
+    = link_to 'All shifts', '/shifts/'
 - else #when nil
   .center
-    = link_to 'Create shift', paths[:new_shift]
+    = link_to 'Create shift', new_path

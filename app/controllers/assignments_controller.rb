@@ -1,12 +1,14 @@
 class AssignmentsController < ApplicationController
-  include ShiftPaths
+  include Paths
 
   # NOTE: always call through shift_assignment_path, NEVER call directly through assignment_path
 
   before_action :load_shift
   before_action :load_assignment, only: [ :show, :edit, :update, :destroy ]
   before_action :load_caller # will call load_restaurant or load_rider if applicable, load_paths always
+  before_action :load_root_path
   before_action :load_form_args, only: [ :edit, :update, :override_conflict, :override_double_booking ]
+  
   before_action :redirect_to_rider_shifts, only: [ :new, :create ]
 
   def new
@@ -32,8 +34,6 @@ class AssignmentsController < ApplicationController
 
   def update
     @assignment.attributes = assignment_params
-    # raise params[:assignment][:root_path].inspect
-    @root_path = params[:assignment][:root_path]
     attempt_save_from :update
   end
 
@@ -46,11 +46,7 @@ class AssignmentsController < ApplicationController
   def destroy
     @assignment.destroy
     flash[:success] = 'Assignment deleted'
-    redirect_to @shift_paths[:index]
-  end
-
-  def root_path
-    @root_path = params[:root_path]
+    redirect_to @root_path
   end
 
   private 
@@ -79,7 +75,6 @@ class AssignmentsController < ApplicationController
       else 
         @caller = nil
       end
-      load_shift_paths # included from concerns/shift_paths.rb
     end
 
     def load_restaurant
@@ -111,25 +106,12 @@ class AssignmentsController < ApplicationController
     def attempt_save_from(action)
       case action
       when :create
-        message = lambda do |assignment| 
-          if assignment.rider.nil?
-            "Shift unassigned."
-          else 
-            "Shift assigned to #{assignment.rider.contact.name}"
-          end
-        end
+        message = lambda { |assignment| assignment.rider.nil? ? "Shift unassigned." : "Shift assigned to #{assignment.rider.contact.name}" }
         do_over = 'new'
       when :update
-        message = lambda do |assignment| 
-          if assignment.rider.nil?
-            "Assignment updated (currently unassigned)."
-          else
-            "Assignment updated (Rider: #{assignment.rider.contact.name}, Status: #{@assignment.status.text})"
-          end
-        end
+        message = lambda { |assignment| assignment.rider.nil? ? "Assignment updated (currently unassigned)." : "Assignment updated (Rider: #{assignment.rider.contact.name}, Status: #{@assignment.status.text})" }
         do_over = 'edit'
       end
-
       save_loop message, do_over
     end  
 
@@ -137,7 +119,8 @@ class AssignmentsController < ApplicationController
       if no_conflicts?
         if no_double_bookings?
           if @assignment.save
-            handle_save message, do_over
+            flash[:success] = message.call(@assignment)
+            redirect_to @root_path
           else
             render do_over
           end        
@@ -172,15 +155,6 @@ class AssignmentsController < ApplicationController
         true
       else
         !@assignment.shift.double_books_with? @other_shifts
-      end
-    end
-
-    def handle_save message, do_over
-      flash[:success] = message.call(@assignment)
-      if @root_path
-        redirect_to @root_path
-      else
-        redirect_to @shift_paths[:index]
       end
     end
 

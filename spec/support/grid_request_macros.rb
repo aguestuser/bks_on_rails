@@ -100,10 +100,8 @@ module GridRequestMacros
   end
 
   def check_grid_filter_form_contents
-    it { should have_label('Start') }
-    it { should have_select('filter_start_year')}
-    it { should have_select('filter_start_month')}
-    it { should have_select('filter_start_day')}
+    it { should have_label('Start:') }
+    it { should have_input('filter[start]')}
     it { should have_content('End:') }
     it { should have_content(shifts[6].formal_time) }
   end

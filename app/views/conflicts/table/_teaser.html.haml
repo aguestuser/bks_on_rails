@@ -1,7 +1,6 @@
 %h3 Conflicts
 .row
   .span6.offset2
-    = render 'conflicts/table/wrapper', conflicts: conflicts
-    / caller: caller, paths: paths
+    = render 'conflicts/table/wrapper'
 %p.center
   = link_to 'See full list of conflicts', index_path(:conflicts)

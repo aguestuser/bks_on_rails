@@ -6,7 +6,7 @@
 .row
   .span6.offset3
     = form_for @form_args do |f|
-      = render 'conflicts/fields', f: f, caller: @caller
+      = render 'conflicts/fields', f: f
       .center
         = f.submit "Save changes", class: "btn btn-primary"
         = link_to 'Delete', conflict_path(@conflict, root_path: @root_path), method: :delete, data: { confirm: 'Are you sure?' }, root_path: @root_path, class: "btn btn-primary"

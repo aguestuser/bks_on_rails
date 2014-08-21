@@ -30,15 +30,22 @@ class RidersController < ApplicationController
   end
 
   def show
-    load_shift_paths # included from /controllers/concerns/shift_paths.rb
-    # load_conflict_paths # included from /controllers/concerns/conflict_paths.rb
+    @shifts = @rider.shifts.order(:start).first(5)
+    @conflicts = @rider.conflicts.order(:start).first(5)
+
   end
 
   def index
     if credentials == 'Rider'
       @riders = Rider.find(current_account.user.id)
     elsif credentials == 'Staffer'
-      @riders = Rider.all
+      @riders = Rider
+        .all
+        .page(params[:page])
+        .joins(:contact)
+        .order('contacts.name asc')
+
+
     else
       redirect_to @manager
     end

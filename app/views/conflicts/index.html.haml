@@ -20,35 +20,5 @@
 .row
   %div{ class: wrapper_class }
     = render 'conflicts/table/wrapper', conflicts: @conflicts
-    / , caller: @caller, conflicts: @conflicts, paths: @conflict_paths
 %p.center
   = head_foot
-
-
-/ - when :rider
-/   %h1 Conflicts for #{@rider.contact.name}
-/   %p.center
-/     = link_to 'Create conflict', new_conflict_path(root_path: @root_path)
-/     |
-/     = link_to "#{@rider.contact.name}'s profile", rider_path(@rider)
-/   .row
-/     .span6.offset3
-/       = render 'conflicts/table/wrapper', caller: @caller, conflicts: @conflicts, paths: @conflict_paths
-/   %p.center
-/     = link_to 'Create conflict', @conflict_paths[:new]
-/     |
-/     = link_to "#{@rider.contact.name}'s profile", rider_path(@rider)
-
-/ - when nil
-/   %h1 Conflicts for All Riders
-/   %p.center
-/     = link_to 'Create conflict', @conflict_paths[:new]
-/     |
-/     = link_to 'Rider list', riders_path
-/   .row
-/     .span8.offset2
-/       = render 'conflicts/table/wrapper', caller: @caller, conflicts: @conflicts, paths: @conflict_paths
-/   %p.center
-/     = link_to 'Create conflict', @conflict_paths[:new]
-/     |
-/     = link_to 'Rider list', riders_path

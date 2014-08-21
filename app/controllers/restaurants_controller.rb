@@ -1,5 +1,5 @@
 class RestaurantsController < ApplicationController
-  include LocatablesController, EquipablesController, ShiftPaths
+  include LocatablesController, EquipablesController, Paths
   before_action :load_restaurant, only: [:show, :edit, :update, :destroy]
   before_action :build_associations, only: [ :edit, :update ], if: :unedited?
 
@@ -28,12 +28,15 @@ class RestaurantsController < ApplicationController
   end
 
   def show
-    load_shift_paths # included from /controllers/concerns/shift_paths.rb
+    @shifts = @restaurant.shifts.order(:start).first(5)
   end
 
   def index
     if credentials == 'Staffer'
       @restaurants = Restaurant.all
+      .page(params[:page])
+      .joins(:mini_contact)
+      .order('mini_contacts.name asc')
     else 
       flash[:error] = "You don't have permission to access that page."
       redirect_to root_path
@@ -80,19 +83,6 @@ class RestaurantsController < ApplicationController
     def load_restaurants
      
     end
-
-    # def get_associations(restaurant)
-    #   @work_specification = restaurant.work_specification
-    #   @contact = restaurant.mini_contact
-    #   @managers = restaurant.managers
-    #   @rider_payment = restaurant.rider_payment_info
-    #   @agency_payment = restaurant.agency_payment_info
-    #   @shifts = restaurant.shifts
-    # end
-
-    # def load_restaurant_and_children
-    #   @restaurant =Restaurant.includes(:managers).find(params[:id])
-    # end
 
     def restaurant_params
       params.require(:restaurant)
