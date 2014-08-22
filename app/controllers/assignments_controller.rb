@@ -1,5 +1,5 @@
 class AssignmentsController < ApplicationController
-  include Paths
+  include Paths, Sortable
 
   # NOTE: always call through shift_assignment_path, NEVER call directly through assignment_path
 
