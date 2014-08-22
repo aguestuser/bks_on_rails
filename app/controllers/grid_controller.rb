@@ -9,17 +9,17 @@ class GridController < ApplicationController
   before_action :load_week
   before_action :load_y_axis_resource
   before_action :load_sort_params
-  before_action :load_root_path
+  before_action :load_base_path
   # before_action :load_restaurants, only: :shift_grid
 
   def shifts
     @grid = Grid.new(@week, :restaurant, @restaurants, @sort_key, @sort_dir)
-    # @root_path = '/grid/shifts'
+    # @base_path = '/grid/shifts'
   end
 
   def availability
     @grid = Grid.new(@week, :rider, @riders, @sort_key, @sort_dir)
-    # @root_path = '/grid/availability'
+    # @base_path = '/grid/availability'
   end
 
   private

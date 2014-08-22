@@ -5,7 +5,7 @@ class ShiftsController < ApplicationController
 
   before_action :load_shift, only: [ :show, :edit, :update, :destroy ]
   before_action :load_caller # will call load_restaurant or load_rider if applicable, load_paths always
-  before_action :load_root_path
+  before_action :load_base_path
   before_action :load_form_args, only: [ :edit, :update ]
   before_action :redirect_non_staffers, only: [ :index ]
   before_action :load_filter_wrapper, only: [ :index ]
@@ -18,13 +18,13 @@ class ShiftsController < ApplicationController
   end
 
   def create
-    @shift = Shift.new(shift_params.except(:root_path))
+    @shift = Shift.new(shift_params.except(:base_path))
     @shift.assignment = Assignment.new
     load_form_args
     @it = @shift
     if @shift.save
       flash[:success] = "Shift created"
-      redirect_to @root_path
+      redirect_to @base_path
     else
       render 'new'
     end
@@ -37,10 +37,10 @@ class ShiftsController < ApplicationController
   end
 
   def update
-    @shift.update(shift_params.except(:root_path))
+    @shift.update(shift_params.except(:base_path))
     if @shift.save
       flash[:success] = "Shift updated"
-      redirect_to @root_path
+      redirect_to @base_path
     else
       render 'edit'
     end
@@ -52,7 +52,7 @@ class ShiftsController < ApplicationController
   def destroy
     @shift.destroy
     flash[:success] = "Shift deleted"
-    redirect_to @root_path
+    redirect_to @base_path
   end
 
   private
@@ -128,7 +128,7 @@ class ShiftsController < ApplicationController
     def shift_params # permit :restaurant_id?
       params.require(:shift)
         .permit( :id, :restaurant_id, :start, :end, :urgency, :billing_rate, :notes,
-          :root_path,
+          :base_path,
           assignment_attributes: [ :id, :shift_id, :rider_id, :status ]
         )
     end

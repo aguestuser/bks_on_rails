@@ -17,4 +17,4 @@
   = f.label :end
   = f.datetime_select :end, minute_step: 30, ampm: true
 /Root Path
-= f.hidden_field :root_path, value: params[:root_path]
+= f.hidden_field :base_path, value: @base_path

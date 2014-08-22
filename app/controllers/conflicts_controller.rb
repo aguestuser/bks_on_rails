@@ -3,7 +3,7 @@ class ConflictsController < ApplicationController
 
   before_action :load_conflict, only: [ :edit, :update, :show, :destroy ]
   before_action :load_caller # callbacks: load_rider (if applicable)
-  before_action :load_root_path
+  before_action :load_base_path
   before_action :load_form_args, only: [ :edit, :update ]
   before_action :load_conflicts, only: [ :index ]
   # before_action :load_rider, only: [ :index, :destroy ]
@@ -14,11 +14,11 @@ class ConflictsController < ApplicationController
   end
 
   def create
-    @conflict = Conflict.new(conflict_params.except(:root_path))
+    @conflict = Conflict.new(conflict_params.except(:base_path))
     load_form_args
     if @conflict.save
       flash[:success] = "Created conflict for #{@conflict.rider.contact.name}"
-      redirect_to @root_path
+      redirect_to @base_path
     else
       render 'new'
     end
@@ -28,11 +28,10 @@ class ConflictsController < ApplicationController
   end
 
   def update
-    @conflict.update(conflict_params.except(:root_path))
+    @conflict.update(conflict_params.except(:base_path))
     if @conflict.save
       flash[:success] = "Edited conflict for #{@conflict.rider.contact.name}"
-      # path = !@root_path.nil? ? @root_path : @conflict_paths[:index]
-      redirect_to @root_path
+      redirect_to @base_path
     else
       render 'edit'
     end
@@ -48,7 +47,7 @@ class ConflictsController < ApplicationController
   def destroy
     @conflict.destroy
     flash[:success] = "Conflict deleted"
-    path = @root_path ? @root_path : @conflict_paths[:index]
+    path = @base_path ? @base_path : @conflict_paths[:index]
     redirect_to path
   end
 
@@ -68,8 +67,8 @@ class ConflictsController < ApplicationController
 
     def load_root_key
       @root_key = :conflict
-      load_root_path
-      # raise @root_path.inspect
+      load_base_path
+      # raise @base_path.inspect
     end
 
     def load_rider
@@ -95,6 +94,6 @@ class ConflictsController < ApplicationController
     end
 
     def conflict_params
-      params.require(:conflict).permit(:id, :start, :end, :period, :rider_id, :root_path, :start)
+      params.require(:conflict).permit(:id, :start, :end, :period, :rider_id, :base_path, :start)
     end
 end

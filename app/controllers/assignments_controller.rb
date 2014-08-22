@@ -6,7 +6,7 @@ class AssignmentsController < ApplicationController
   before_action :load_shift
   before_action :load_assignment, only: [ :show, :edit, :update, :destroy ]
   before_action :load_caller # will call load_restaurant or load_rider if applicable, load_paths always
-  before_action :load_root_path
+  before_action :load_base_path
   before_action :load_form_args, only: [ :edit, :update, :override_conflict, :override_double_booking ]
   
   before_action :redirect_to_rider_shifts, only: [ :new, :create ]
@@ -46,7 +46,7 @@ class AssignmentsController < ApplicationController
   def destroy
     @assignment.destroy
     flash[:success] = 'Assignment deleted'
-    redirect_to @root_path
+    redirect_to @base_path
   end
 
   private 
@@ -120,7 +120,7 @@ class AssignmentsController < ApplicationController
         if no_double_bookings?
           if @assignment.save
             flash[:success] = message.call(@assignment)
-            redirect_to @root_path
+            redirect_to @base_path
           else
             render do_over
           end        

@@ -33,7 +33,7 @@
                 / - if j == 1
                 /   - raise start.inspect
                 - end_ = start + 6.hours
-                - path = new_rider_conflict_path(rider, root_path: @root_path, start: start, :end => end_)
+                - path = new_rider_conflict_path(rider, base_path: @base_path, start: start, :end => end_)
                 = link_to cell[:values][0], path
                 / , start: start }
               - else 
@@ -42,9 +42,9 @@
                   - resource = cell[:resources][i]
                   - case resource.class.name
                   - when 'Shift' 
-                    - path = edit_shift_assignment_path resource, resource.assignment, root_path: @root_path
+                    - path = edit_shift_assignment_path resource, resource.assignment, base_path: @base_path
                   - when 'Conflict'
-                    - path = edit_conflict_path resource, root_path: @root_path
+                    - path = edit_conflict_path resource, base_path: @base_path
                   = link_to value, path
-                  / , root_path: @root_path
+                  / , base_path: @base_path
               

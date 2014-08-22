@@ -3,7 +3,7 @@ class RidersController < ApplicationController
   # ShiftPaths, ConflictPaths, 
 
   before_action :load_rider, only: [ :show, :edit, :update, :destroy ]
-  before_action :load_root_path
+  before_action :load_base_path
 
   def new
     @rider = Rider.new
@@ -44,8 +44,6 @@ class RidersController < ApplicationController
         .page(params[:page])
         .joins(:contact)
         .order('contacts.name asc')
-
-
     else
       redirect_to @manager
     end

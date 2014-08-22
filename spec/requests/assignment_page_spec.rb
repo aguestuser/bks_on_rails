@@ -43,7 +43,7 @@ describe "Assignment Requests" do
         it { should have_content('Assigned to:') }
         it { should have_content('Status:') }
         it { should have_h3('Assignment History') }
-        it { should have_link('Edit', href: "/shifts/#{shift.id}/assignments/#{shift.assignment.id}/edit?root_path=/shifts/") }
+        it { should have_link('Edit', href: "/shifts/#{shift.id}/assignments/#{shift.assignment.id}/edit?base_path=/shifts/") }
       end
 
       describe "editing assignment from show page" do
@@ -64,7 +64,7 @@ describe "Assignment Requests" do
     describe "from restaurants path" do
       before { visit restaurant_shift_assignment_path(shift.restaurant, shift, shift.assignment) }
       
-      it { should have_link('Edit', href: "/restaurants/#{shift.restaurant.id}/shifts/#{shift.id}/assignments/#{shift.assignment.id}/edit?root_path=/restaurants/#{shift.restaurant.id}/shifts/") }
+      it { should have_link('Edit', href: "/restaurants/#{shift.restaurant.id}/shifts/#{shift.id}/assignments/#{shift.assignment.id}/edit?base_path=/restaurants/#{shift.restaurant.id}/shifts/") }
 
       describe "editing assignment from show page" do
         before { click_link 'Edit' }
@@ -84,7 +84,7 @@ describe "Assignment Requests" do
     describe "from riders path" do
       before { visit rider_shift_assignment_path(shift.rider, shift, shift.assignment) }
       
-      it { should have_link('Edit', href: "/riders/#{shift.rider.id}/shifts/#{shift.id}/assignments/#{shift.assignment.id}/edit?root_path=/riders/#{shift.rider.id}/shifts/") }
+      it { should have_link('Edit', href: "/riders/#{shift.rider.id}/shifts/#{shift.id}/assignments/#{shift.assignment.id}/edit?base_path=/riders/#{shift.rider.id}/shifts/") }
 
       describe "editing assignment from show page" do
         before { click_link 'Edit' }

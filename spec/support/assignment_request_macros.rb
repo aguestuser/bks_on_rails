@@ -2,8 +2,7 @@ module AssignmentRequestMacros
 
   def check_assignment_form_contents(action, caller=nil)
     it { should have_content('Shift:') }
-    it { should have_content(assignment_start) }
-    it { should have_content(assignment_end) }
+    it { should have_content(shift.table_time) }
     it { should have_select( 'Status', options: AssignmentStatus.select_options.map { |pair| pair[0] } ) }
 
     it { should have_select('assignment_rider_id', with_options: [ rider.name ] ) } unless caller == :rider

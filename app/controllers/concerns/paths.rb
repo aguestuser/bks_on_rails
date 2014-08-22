@@ -4,76 +4,85 @@ module Paths
   included do
 
     helper_method :index_path, :show_path, :edit_path, :new_path
-    before_action :load_root_key
+    before_action :load_controller
+    before_action :load_resource_str
+    before_action :load_resource_key
     before_action :set_teaser
 
     public
 
       def index_path(record_type=nil)
         if record_type
-          @root_path + "/#{record_type}"
+          @base_path + "/#{record_type}"
         else
-          @root_path
+          @base_path
         end
       end 
 
       def show_path(record, record_type=nil)
-        @root_path + rt_str(record_type, record) + "#{record.id}" + root_path_params
+        @base_path + rt_str(record, record_type) + "#{record.id}" + base_path_params
       end
 
       def edit_path(record, record_type=nil)
-        @root_path + rt_str(record_type, record) + "#{record.id}/edit" + root_path_params
+        @base_path + rt_str(record, record_type) + "#{record.id}/edit" + base_path_params
       end
 
       def new_path
-        @root_path + "new" + root_path_params
+        @base_path + "new" + base_path_params
       end
 
     private
 
-      def load_root_key
-        # controller = params[:controller]
-        # if controller == 'assignments'
-        #   @root_key = :shift
-        # else
-          @root_key = params[:controller].to_s.singularize.to_sym
-        # end
-          
+      def load_controller
+        @controller = params[:controller]
+      end
+
+      def load_resource_str
+        @resource_str = @controller
+      end
+
+      def load_resource_key
+        @resource_key = @controller.singularize.to_sym
       end
 
       def set_teaser
-        @teaser = true if @root_key == :rider || @root_key == :restaurant
+        @teaser = true if @controller == 'riders' || @controller == 'restaurants'
       end
       
-      def load_root_path
-        #input(implicit): @root_key (Sym), @root_path(Str)
-        default = default_root_path
-        if params[@root_key]
-          @root_path = params[@root_key][:root_path] || default
+      def load_base_path
+        if params[:base_path]
+          @base_path = params[:base_path]
+        elsif params[@resource_key]
+          @base_path = params[@resource_key][:base_path] if params[@resource_key][:base_path]
         else
-          @root_path = params[:root_path] || default
+          @base_path = default_base_path
         end
-        # raise @root_path.inspect
+        # raise @base_path.inspect
       end
 
-      def default_root_path
+      def default_base_path
         # raise caller.inspect
-        controller = params[:controller].to_sym
         if @caller 
-          if controller == :riders || controller == :restaurants || controller == :assignments
+          if caller_is_controller?
             "/#{@caller}s/#{caller.id}/"
+          elsif @controller == 'assignments'
+            "/#{@caller}s/#{caller.id}/shifts/"
           else
-           "/#{@caller}s/#{caller.id}/#{@root_key}s/"
+           "/#{@caller}s/#{caller.id}/#{@resource_str}/"
           end
         else
-          if controller == :grid
+          if @controller == 'grid'
             "/grid/#{params[:action]}"
-          elsif controller == :assignments
-            "/"
+          elsif @controller == 'assignments'
+            "/shifts/"
           else
-            "/#{@root_key}s/"
+            "/#{@resource_str}/"
           end
         end
+      end
+
+      def caller_is_controller?
+        @controller.singularize == @caller.to_s
       end
 
       def caller
@@ -87,10 +96,10 @@ module Paths
         end  
       end
 
-      def rt_str record_type, record
+      def rt_str record, record_type
         case record_type
         when :assignments
-          "shifts/#{record.shift.id}/assignments/"
+          "#{record.shift.id}/assignments/"
         when nil
           ""
         else 
@@ -98,8 +107,8 @@ module Paths
         end
       end
 
-      def root_path_params
-        "?root_path=" + URI.escape(@root_path)
+      def base_path_params
+        "?base_path=" + URI.escape(@base_path)
       end
 
   end
