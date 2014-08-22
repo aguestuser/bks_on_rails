@@ -1,6 +1,5 @@
 class RidersController < ApplicationController
-  include UsersController, ContactablesController, LocatablesController, EquipablesController, ShiftPaths, Paths
-  # ShiftPaths, ConflictPaths, 
+  include UsersController, ContactablesController, LocatablesController, EquipablesController, Paths
 
   before_action :load_rider, only: [ :show, :edit, :update, :destroy ]
   before_action :load_base_path
