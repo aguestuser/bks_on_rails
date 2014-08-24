@@ -47,7 +47,7 @@ class ShiftsController < ApplicationController
   end
 
   def index
-    @shift_table = Table.new(:shift, @shifts, @caller, @base_path)
+    @shift_table = Table.new(:shift, @shifts, @caller, @base_path, form: true)
   end
 
   def destroy
@@ -63,19 +63,49 @@ class ShiftsController < ApplicationController
   end
 
   def batch_edit
+    if params[:ids]
+      load_shift_batch
+      route_batch_edit params[:commit]
+    else
+      flash[:error] = "Oops! Looks like you didn't select any shifts to batch edit."
+      render 'index'
+    end
   end
 
-  def batch_update
+  def route_batch_edit commit
+    case commit
+    when 'Batch Edit'
+      batch_edit_shifts 
+    when 'Batch Assign'
+      load_assignment_batch
+      batch_edit_assignments
+    end
   end
 
-  def batch_edit_assignment
-    @shift_table = Table.new(:shift, @shifts, @caller, @base_path, form: true)
+  def batch_edit_shifts
+    render 'batch_edit_shifts'
   end
 
-  def batch_update_assignment
+  def batch_update_shifts
+    raise params.inspect
+  end
+
+  def batch_edit_assignments
+    # render 'batch_edit_assignments'
+  end
+
+  def batch_update_assignments
   end
 
   private
+
+    def load_shift_batch
+      @shifts = Shift.where("id IN (:ids)", { ids: params[:ids] } )
+    end
+
+    def load_assignment_batch
+      @assignments = @shifts.each(&:assignment)
+    end
 
     def load_shift
       @shift = Shift.find(params[:id])
@@ -86,10 +116,12 @@ class ShiftsController < ApplicationController
       if params.include? :restaurant_id
         @caller = :restaurant
         load_restaurant
+        @caller_obj = @restaurant
       elsif params.include? :rider_id
         @caller = :rider
         load_restaurants
         load_rider
+        @caller_obj = @rider
       else 
         @caller = nil
         load_restaurants

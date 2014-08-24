@@ -1,8 +1,6 @@
-/ = render 'shifts/table_wrapper'
-
 - provide(:title, 'Shifts')
 
-/ /Args
+/Args
 / - case @caller
 / - when :restaurant
 /   - header = "Shifts for #{@restaurant.name}"
@@ -18,7 +16,7 @@
 
 /Arguments
 - if @caller
-  - header_suffix = " for #{@caller_obj.name}"
+  - header_suffix = "for #{@caller_obj.name}"
   - span = "span8 offset2"
 - else
   - header_suffix = ""
@@ -33,20 +31,14 @@
 .row
   %div{ class: span+' filters' }
     = render 'filter_form'
+/Pagination
+.center
+  = will_paginate @shifts
 
-/Batch Edit Form Wrapper
+/Table
 .row
-  = form_tag 'shift/batch_edit', method: :get do
-    /Submit Buttons
-    .center
-      = submit_tag 'Batch Assign', class: 'btn btn-primary' 
-    /Pagination
-    .center
-      = will_paginate @shifts
-    /Table
-    .row
-      %div{ :class => span }
-        = render 'layouts/table', table: @shift_table
+  %div{ :class => span }
+    = render 'layouts/table', table: @shift_table
 
 /Pagination
 .center

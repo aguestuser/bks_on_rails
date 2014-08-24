@@ -20,12 +20,6 @@ class Table < ApplicationController
     @rows = load_rows records
   end
 
-  public
-
-  def is_form?
-    @form
-  end
-
   private
 
   ### SPANS ###
@@ -87,7 +81,11 @@ class Table < ApplicationController
   end
 
   def row_from record
-    { record_id: record.id, cells: cells_from(record), actions: actions_from(record)  }
+    row = { 
+      checkbox: { name: 'ids[]', val: record.id },
+      cells: cells_from(record), 
+      actions: actions_from(record) 
+    }
   end
 
   ### CELLS ###

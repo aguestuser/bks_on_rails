@@ -1,23 +1,7 @@
-- if entity
-  .center
-    = link_to "#{entity.send(:name)}'s profile", entity
+.center
+  = link_to 'Create shift', new_path unless @caller == :rider
+  - if entity
     |
-    = link_to 'All shifts', '/shifts/'    
-= link_to 'Create shift', new_path unless @caller == :rider
-
-/ - case @caller
-/ - when :restaurant
-/   .center
-/     = link_to "#{@restaurant.mini_contact.name}'s profile", @restaurant
-/     |
-/     = link_to 'All shifts', '/shifts/'
-/     |
-/     = link_to 'Create shift', new_path
-/ - when :rider
-/   .center
-/     = link_to "#{@rider.contact.name}'s profile", @rider
-/     |
-/     = link_to 'All shifts', '/shifts/'
-/ - else #when nil
-/   .center
-/     = link_to 'Create shift', new_path
+    = link_to 'All shifts', '/shifts/'
+    |
+    = link_to "#{entity.send(:name)}'s profile", entity

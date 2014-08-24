@@ -58,10 +58,10 @@ BksOnRails::Application.routes.draw do
   post 'shift/batch_create' => 'shifts#batch_create'
 
   get 'shift/batch_edit' => 'shifts#batch_edit'
-  post 'shift/batch_update' => 'shifts#batch_update'
+  post 'shift/batch_edit_shifts' => 'shifts#batch_update_shifts'
 
-  get 'shift/batch_assign' => 'shifts#batch_edit_assignment'
-  post 'shift/batch_assign' => 'shifts#batch_update_assignment'
+  # get 'shift/batch_assign' => 'shifts#batch_edit_assignment'
+  post 'shift/batch_edit_assignments' => 'shifts#batch_update_assignments'
 
   get "grid/shifts"
   match '/shift_grid', to: 'grid#shifts', via: 'get'

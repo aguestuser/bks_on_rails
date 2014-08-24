@@ -1,0 +1,60 @@
+/Args: shift, index
+- if params[:action].include?('new') || params[:action].include?('create')
+  - restaurant_val = nil
+  - urgency_val = :extra
+  - billing_rate_val = :normal
+  - start_val = Time.zone.now.begginning_of_day + 12.hours
+  - end_val = start_val + 6.hours
+  - notes_val = nil
+- else 
+  - restaurant_val = shift.restaurant.id
+  - urgency_val = shift.urgency
+  - billing_rate_val = shift.billing_rate
+  - start_val = shift.start
+  - end_val = shift.end
+  - notes_val = shift.notes
+
+= render 'shared/error_messages', object: shift
+
+/ID
+= hidden_field_tag "shifts[][id]", shift.id
+
+
+.row
+  /Restaurant
+  .span4
+    - if @caller == :restaurant
+      %p
+        %strong
+          Restaurant: 
+        = @restaurant.mini_contact.name
+      = hidden_field_tag "shifts[][restaurant_id]", restaurant_val
+    - else
+      = label_tag :restaurant
+      = select_tag "shifts[][restaurant_id]", options_for_select( Restaurant.all.joins(:mini_contact).order("mini_contacts.name asc").map{ |r| [ r.name, r.id ] }, restaurant_val)
+  /Urgency
+  .span2
+    = label_tag :urgency
+    = select_tag "shifts[][urgency]", options_for_select(Urgency.select_options, urgency_val)
+
+  /Billing Rate
+  .span2
+    = label_tag :billing_rate
+    = select_tag "shifts[][billing_rate]", options_for_select(BillingRate.select_options, billing_rate_val)
+
+/Start
+.datepicker
+  = label_tag :start
+  = select_datetime start_val, prefix: "shifts[][start]", ampm: true, minute_step: 30
+
+/End
+.datepicker
+  = label_tag :end
+  = select_datetime end_val, prefix: "shifts[][end]", ampm: true, minute_step: 30
+
+/Notes
+= label_tag :notes
+= text_area_tag "shifts[][notes]", notes_val
+
+/Hiden Field
+= hidden_field_tag :base_path, @base_path

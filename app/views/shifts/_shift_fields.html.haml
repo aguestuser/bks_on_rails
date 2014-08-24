@@ -1,14 +1,33 @@
 = render 'shared/error_messages', object: f.object
-/Restaurant
-- if caller == :restaurant
-  %p
-    %strong
-      Restaurant: 
-    = @restaurant.mini_contact.name
-  = f.hidden_field :restaurant_id, value: @restaurant.id
-- else
-  = f.label :restaurant
-  = f.collection_select :restaurant_id, Restaurant.all, :id, :name, include_blank: true
+
+.row
+  /Restaurant
+  .span4
+    - if @caller == :restaurant
+      %p
+        %strong
+          Restaurant: 
+        = @restaurant.mini_contact.name
+      = f.hidden_field :restaurant_id, value: @restaurant.id
+    - else
+      = f.label :restaurant
+      = f.collection_select :restaurant_id, Restaurant.all, :id, :name, include_blank: true 
+  /Urgency
+  .span2
+    = f.label :urgency
+    - if params[:action] == 'new' || params[:action] == 'create'
+      = f.select :urgency, Urgency.select_options, selected: :extra
+    - else
+      = f.select :urgency, Urgency.select_options
+  /Billing Rate
+  .span2
+    = f.label :billing_rate
+    - if params[:action] == 'new' || params[:action] == 'create'
+      = f.select :billing_rate, BillingRate.select_options, selected: :normal
+    - else 
+      = f.select :billing_rate, BillingRate.select_options
+
+
 /Start
 .datepicker
   = f.label :start
@@ -17,18 +36,7 @@
 .datepicker
   = f.label :end
   = f.datetime_select :end, ampm: true, minute_step: 30
-= f.label :urgency
-/Urgency
-- if params[:action] == 'new' || params[:action] == 'create'
-  = f.select :urgency, Urgency.select_options, selected: :extra
-- else
-  = f.select :urgency, Urgency.select_options
-= f.label :billing_rate
-/Billing Rate
-- if params[:action] == 'new' || params[:action] == 'create'
-  = f.select :billing_rate, BillingRate.select_options, selected: :normal
-- else 
-  = f.select :billing_rate, BillingRate.select_options
+
 /Notes
 = f.label :notes
 = f.text_area :notes

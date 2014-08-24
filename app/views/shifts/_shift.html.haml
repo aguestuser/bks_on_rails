@@ -2,7 +2,7 @@
 %ul
   %li
     %strong Restaurant:
-    = link_to shift.restaurant.mini_contact.name, restaurant_path(@shift.restaurant)
+    = link_to shift.restaurant.mini_contact.name, restaurant_path(shift.restaurant)
   %li
     %strong Start:
     = shift.start.strftime("%m/%d | %I:%M%p")
@@ -19,8 +19,8 @@
     %strong Notes:
     = shift.notes
 .center
-  = link_to 'Edit', edit_path(@shift)
+  = link_to 'Edit', edit_path(shift)
   |
-  = link_to 'Delete', show_path(@shift), method: :delete, data: { confirm: 'Are you sure?' }
+  = link_to 'Delete', show_path(shift), method: :delete, data: { confirm: 'Are you sure?' }
   |
   = link_to 'All Shifts', @base_path
