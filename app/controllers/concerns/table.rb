@@ -1,10 +1,10 @@
 class Table < ApplicationController
   include Paths
-  attr_accessor :spans, :headers, :rows
+  attr_accessor :spans, :headers, :rows, :form
 
   def initialize record_type, records, caller, base_path, options={}
     #input: Sym, Arr of ActiveRecords, Sym, Str, Hash of form:
-      # { teaser: <Bool>, checkboxes: <Bool> }
+      # { teaser: <Bool>, form: <Bool> }
     #output: Table obj
 
     #store private attributes
@@ -12,12 +12,18 @@ class Table < ApplicationController
     @caller = caller
     @base_path = base_path
     @teaser = options[:teaser] || false 
-    @checkboxes = options[:checkboxes] || false
-    
+    @form = options[:form] || false
+
     #load public attributes
     @spans = load_spans
     @headers = load_headers
     @rows = load_rows records
+  end
+
+  public
+
+  def is_form?
+    @form
   end
 
   private
@@ -81,7 +87,7 @@ class Table < ApplicationController
   end
 
   def row_from record
-    { cells: cells_from(record), actions: actions_from(record)  }
+    { record_id: record.id, cells: cells_from(record), actions: actions_from(record)  }
   end
 
   ### CELLS ###

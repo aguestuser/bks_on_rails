@@ -1,0 +1,19 @@
+- provide(:title, 'Batch Assign Shifts')
+
+- case @caller
+- when :restaurant
+  - header = "Shifts for #{@restaurant.mini_contact.name}"
+  - span = 'span8 offset2'
+  - entity = @restaurant
+- when :rider
+  - header = "Assignments for #{@rider.contact.name}"
+  - span = 'span8 offset2'
+  - entity = @rider
+- when nil
+  - header = "Shifts"
+  - span = "span10 offset1"
+
+/Table
+.row
+  %div{ :class => span }
+    = render 'layouts/table', table: @shift_table

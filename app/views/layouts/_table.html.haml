@@ -7,9 +7,13 @@
   /Data Rows
   - table.rows.each_with_index do |row, i|
     .row
+      - if table.is_form?
+        .checkbox
+          = check_box_tag 'ids[]', row[:record_id]
+
       /Cells
       - row[:cells].each_with_index do |cell, j|
-        %div{ id: "row_#{i+1}_col_#{j+1}", :class => "span#{table.spans[i]}" }
+        %div{ id: "row_#{i+1}_col_#{j+1}", :class => "span#{table.spans[j]}" }
           = link_if_linkable cell
       /Actions
       .span1.action.dropdown

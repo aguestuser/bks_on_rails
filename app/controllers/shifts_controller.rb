@@ -8,8 +8,8 @@ class ShiftsController < ApplicationController
   before_action :load_base_path
   before_action :load_form_args, only: [ :edit, :update ]
   before_action :redirect_non_staffers, only: [ :index ]
-  before_action :load_filter_wrapper, only: [ :index ]
-  before_action :load_shifts, only: [ :index ]
+  before_action :load_filter_wrapper, only: [ :index, :batch_edit_assignment, :batch_update_assignment ]
+  before_action :load_shifts, only: [ :index, :batch_edit_assignment, :batch_update_assignment ]
 
   def new
     @shift = Shift.new
@@ -54,6 +54,25 @@ class ShiftsController < ApplicationController
     @shift.destroy
     flash[:success] = "Shift deleted"
     redirect_to @base_path
+  end
+
+  def batch_new
+  end
+
+  def batch_create
+  end
+
+  def batch_edit
+  end
+
+  def batch_update
+  end
+
+  def batch_edit_assignment
+    @shift_table = Table.new(:shift, @shifts, @caller, @base_path, form: true)
+  end
+
+  def batch_update_assignment
   end
 
   private
