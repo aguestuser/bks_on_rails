@@ -1,5 +1,5 @@
 class ConflictsController < ApplicationController
-  include Paths
+  include Paths, Sortable
 
   before_action :load_conflict, only: [ :edit, :update, :show, :destroy ]
   before_action :load_caller # callbacks: load_rider (if applicable)
@@ -41,7 +41,7 @@ class ConflictsController < ApplicationController
   end
 
   def index
-    
+    @conflict_table = Table.new(:conflict, @conflicts, @caller, @base_path)
   end
 
   def destroy
@@ -87,10 +87,14 @@ class ConflictsController < ApplicationController
     def load_conflicts
       case @caller
       when :rider
-        @conflicts = Conflict.where("conflicts.rider_id = ?", params[:rider_id]).order(:start)        
+        base = Conflict.where("conflicts.rider_id = ?", params[:rider_id])       
       when nil
-        @conflicts = Conflict.all.order(:start)
+        base = Conflict.all
       end
+      @conflicts = base
+        .joins( rider: :contact)
+        .page(params[:page])
+        .order(sort_column + " " + sort_direction)
     end
 
     def conflict_params

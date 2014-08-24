@@ -13,17 +13,20 @@ module Paths
 
       def index_path(record_type=nil)
         if record_type
-          @base_path + "/#{record_type}"
+          @base_path + "#{record_type}/"
         else
           @base_path
         end
       end 
 
       def show_path(record, record_type=nil)
+        # raise record_type.inspect
         @base_path + rt_str(record, record_type) + "#{record.id}" + base_path_params
       end
 
       def edit_path(record, record_type=nil)
+        # raise record_type.inspect
+        # raise rt_str(record, record_type).inspect
         @base_path + rt_str(record, record_type) + "#{record.id}/edit" + base_path_params
       end
 
@@ -97,9 +100,11 @@ module Paths
       end
 
       def rt_str record, record_type
+        # raise record_type.inspect
         case record_type
         when :assignments
-          "#{record.shift.id}/assignments/"
+          prefix = @teaser ? "shifts/" : ""
+          prefix + "#{record.shift.id}/assignments/"
         when nil
           ""
         else 

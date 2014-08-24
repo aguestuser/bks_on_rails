@@ -47,6 +47,7 @@ class ShiftsController < ApplicationController
   end
 
   def index
+    @shift_table = Table.new(:shift, @shifts, @caller, @base_path)
   end
 
   def destroy

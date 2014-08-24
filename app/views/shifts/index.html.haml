@@ -1,5 +1,7 @@
 - provide(:title, 'Shifts')
 
+/Args
+
 - case @caller
 - when :restaurant
   - header = "Shifts for #{@restaurant.mini_contact.name}"
@@ -11,20 +13,31 @@
   - header = "Shifts"
   - wrapper_class = "span10 offset1"
 
+/Header
 %h1= header
 - if can? :manage, Shift
   = render 'shifts/index_and_new_links'
 
+/Filters
 .row
   %div{ class: wrapper_class+' filters' }
     = render 'shifts/tables/filter_form'
+
+/Pagination
 .center
   = will_paginate @shifts
+
+/Table
 .row
   %div{ :class => wrapper_class }
-    = render 'shifts/tables/wrapper', shifts: @shifts
+    / = render 'shifts/tables/wrapper', shifts: @shifts
+    = render 'layouts/table', table: @shift_table
+
+/Pagination
 .center
   = will_paginate @shifts
+
+/Index and New Breadcrumbs
 - if can? :manage, Shift
   %p.center
     = render 'shifts/index_and_new_links', caller: @caller, paths: @shift_paths

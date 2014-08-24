@@ -1,5 +1,5 @@
 module ApplicationHelper
-  include SessionsHelper, TimeboxableHelper, SortableHelper
+  include SessionsHelper, TimeboxableHelper, TableHelper
 
   def full_title(page_title)  #input: String
                               #output: String (with base title appended) 

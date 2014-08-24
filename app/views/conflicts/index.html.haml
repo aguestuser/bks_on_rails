@@ -1,24 +1,41 @@
 - provide(:title, "Conflicts" )
 
+/Arguments
 - case @caller
 - when :rider
   - header = "Conflicts for #{@rider.contact.name}"
-  - wrapper_class = "span6 offset3"
+  - span = "span6 offset3"
   - rider_link = link_to "#{@rider.contact.name}'s profile", rider_path(@rider)
 - when nil
   - header = "Conflicts"
-  - wrapper_class = "span8 offset2"
+  - span = "span8 offset2"
   - rider_link = link_to 'Rider list', riders_path
 
 - create_conflict_link = link_to 'Create conflict', new_path
-- head_foot = create_conflict_link + ' | ' + rider_link
+- hot_links = create_conflict_link + ' | ' + rider_link
 
+/Header
 %h1 
   = header
+
+/Hot Links 
 %p.center
-  = head_foot
+  = hot_links
+
+/Pagination
+.center
+  = will_paginate @conflicts
+
+/Table
 .row
-  %div{ class: wrapper_class }
-    = render 'conflicts/table/wrapper', conflicts: @conflicts
+  %div{ class: span }
+    = render 'layouts/table', table: @conflict_table
+    / = render 'conflicts/table/wrapper', conflicts: @conflicts
+
+/Pagination
+.center
+  = will_paginate @conflicts
+
+/Hot Links
 %p.center
-  = head_foot
+  = hot_links

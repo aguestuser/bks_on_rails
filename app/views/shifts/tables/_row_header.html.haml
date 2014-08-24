@@ -9,29 +9,13 @@
   - unless @caller == :restaurant
     .span2
       = header 'Restaurant', 'mini_contacts.name'
-      / - if @teaser
-      /   Restaurant
-      / - else
-      /   = sortable 'mini_contacts.name', 'Restaurant'
   /Time
   .span3
     = header 'Time', 'start'
-    / - if @teaser
-    /   Time
-    / - else
-    /   = sortable 'start', 'Time'
   /Rider
   - unless @caller == :rider
     .span2
       = header 'Assigned to', 'contacts.name'
-      / - if @teaser
-      /   Assigned to
-      / - else
-      /   = sortable 'contacts.name', 'Assigned to'
   /Status
   .span2
     = header 'Status', 'assignments.status'
-    / - if @teaser
-    /   Status
-    / - else
-    /   = sortable 'assignments.status', 'Status'

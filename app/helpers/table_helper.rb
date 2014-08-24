@@ -1,11 +1,11 @@
-module SortableHelper
-  
-  def sort_if_sortable(cell)
-    if cell.sortable
-      sortable( cell.val, cell.sort_key )
-    else
-      cell.val
-    end
+module TableHelper
+
+  def link_if_linkable cell
+    cell[:href] ? link_to(cell[:val], cell[:href]) : cell[:val]
+  end
+
+  def sort_if_sortable header 
+    header[:sort_key] ? sortable(header[:sort_key], header[:val]) : header[:val]
   end
 
   def sortable(column, title=nil)
@@ -20,4 +20,6 @@ module SortableHelper
     direction = column == @sort_key && @sort_dir == "asc" ? "desc" : "asc"
     link_to title, { sort: column, direction: direction, filter: @filter}, {:class => css_class}
   end
+
+
 end

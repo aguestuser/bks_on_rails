@@ -2,6 +2,7 @@ class RestaurantsController < ApplicationController
   include LocatablesController, EquipablesController, Paths
   before_action :load_restaurant, only: [:show, :edit, :update, :destroy]
   before_action :build_associations, only: [ :edit, :update ], if: :unedited?
+  before_action :load_base_path
 
   def new
       @restaurant = Restaurant.new
@@ -29,6 +30,7 @@ class RestaurantsController < ApplicationController
 
   def show
     @shifts = @restaurant.shifts.order(:start).first(5)
+    @shift_table = Table.new(:shift, @shifts, @caller, @base_path, teaser: true )
   end
 
   def index
