@@ -6,23 +6,24 @@
 - when :restaurant
   - header = "Shifts for #{@restaurant.mini_contact.name}"
   - wrapper_class = 'span8 offset2'
+  - entity = @restaurant
 - when :rider
   - header = "Assignments for #{@rider.contact.name}"
   - wrapper_class = 'span8 offset2'
+  - entity = @rider
 - when nil
   - header = "Shifts"
   - wrapper_class = "span10 offset1"
 
 /Header
 %h1= header
+/Hot Links
 - if can? :manage, Shift
-  = render 'shifts/index_and_new_links'
-
+  = render 'hot_links', entity: entity
 /Filters
 .row
   %div{ class: wrapper_class+' filters' }
-    = render 'shifts/tables/filter_form'
-
+    = render 'filter_form'
 /Pagination
 .center
   = will_paginate @shifts
@@ -30,14 +31,12 @@
 /Table
 .row
   %div{ :class => wrapper_class }
-    / = render 'shifts/tables/wrapper', shifts: @shifts
     = render 'layouts/table', table: @shift_table
 
 /Pagination
 .center
   = will_paginate @shifts
-
-/Index and New Breadcrumbs
+/Hot Links
 - if can? :manage, Shift
   %p.center
-    = render 'shifts/index_and_new_links', caller: @caller, paths: @shift_paths
+    = render 'hot_links', entity: entity
