@@ -6,9 +6,15 @@ include ConflictRequestMacros
 describe "Conflict Requests" do
   let(:rider){ FactoryGirl.create(:rider) }
   let(:other_rider) { FactoryGirl.create(:rider) }
-  let(:conflicts) { 2.times.map { FactoryGirl.build(:conflict, :with_rider, rider: rider) } }
+  let(:start){ Time.local(2014,1,1,12) }
+  let(:end_){ Time.local(2014,1,1,18) }
+  let(:conflicts) do
+    2.times.map do |n|
+      FactoryGirl.build(:conflict, :with_rider, rider: rider, start: start + n.days, :end => end_ + n.days)
+    end 
+  end
   let(:conflict) { conflicts[0] }
-  let(:other_conflict) { FactoryGirl.build(:conflict, :with_rider, rider: other_rider) }
+  let(:other_conflict) { FactoryGirl.build(:conflict, :with_rider, rider: other_rider, start: start, :end => end_) }
 
   let(:staffer) { FactoryGirl.create(:staffer) }
   before { mock_sign_in staffer }

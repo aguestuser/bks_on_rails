@@ -140,12 +140,16 @@ class Table < ApplicationController
   # helpers for actions_from
   def shift_actions
     [
-      Proc.new { |s| { val: 'Edit Assignment', href: edit_path(s.assignment, :assignments) } },
+      Proc.new { |s| { val: assign_str_from(s), href: edit_path(s.assignment, :assignments) } },
       Proc.new { |s| { val: 'Assignment Details', href: show_path(s.assignment, :assignments) } },
       Proc.new { |s| { val: 'Edit Shift', href: edit_path(s, :shifts) } },
       Proc.new { |s| { val: 'Shift Details', href: show_path(s, :shifts) } },
       Proc.new { |s| { val: 'Delete', href: show_path(s, :shifts), method: :delete, data: { confirm: 'Are you sure?' } } } 
     ]
+  end
+
+  def assign_str_from s
+    s.assigned? ? 'Edit Assignment' : 'Assign Shift'
   end
 
   def conflict_actions

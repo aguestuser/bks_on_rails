@@ -2,14 +2,14 @@
   /Headers
   .row.header
     - table.headers.each_with_index do |header, i|
-      %div{ :class => "span#{table.spans[i]}" }
+      %div{ id: "row_0_col_#{i+1}", :class => "span#{table.spans[i]}" }
         = sort_if_sortable header
   /Data Rows
-  - table.rows.each do |row|
+  - table.rows.each_with_index do |row, i|
     .row
       /Cells
-      - row[:cells].each_with_index do |cell, i|
-        %div{ :class => "span#{table.spans[i]}" }
+      - row[:cells].each_with_index do |cell, j|
+        %div{ id: "row_#{i+1}_col_#{j+1}", :class => "span#{table.spans[i]}" }
           = link_if_linkable cell
       /Actions
       .span1.action.dropdown

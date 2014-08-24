@@ -104,7 +104,7 @@ describe "Shift Requests" do
           end
 
           it "should order shifts by time by default" do
-            expect( page.all('div.time')[0].text ).to eq first_shift.table_time
+            expect( page.find('#row_1_col_2').text ).to eq first_shift.table_time
           end
 
           describe "sorting by restaurant name" do
@@ -112,7 +112,7 @@ describe "Shift Requests" do
               before { click_link('Restaurant') }
               
               it "should sort by restaurants, ascending" do
-                expect( page.all('div.restaurant')[0].text ).to eq restaurant.name
+                expect( page.find('#row_1_col_1').text ).to eq restaurant.name
               end
 
               describe "descending" do
@@ -121,7 +121,7 @@ describe "Shift Requests" do
                 end           
 
                 it "should sort by restaurant name, descending" do
-                  expect( page.all('div.restaurant')[0].text ).to eq other_restaurant.name
+                  expect( page.find('#row_1_col_1').text ).to eq other_restaurant.name
                 end  
               end
             end
@@ -132,14 +132,14 @@ describe "Shift Requests" do
               before { click_link('Time') }
               
               it "should sort by time, descending" do
-                expect( page.all('div.time')[0].text ).to eq second_shift.table_time
+                expect( page.find('#row_1_col_2').text ).to eq second_shift.table_time
               end
               
               describe "descending" do
                 before { click_link('Time') }            
 
                 it "should sort by time, ascending" do
-                  expect( page.all('div.time')[0].text ).to eq first_shift.table_time
+                  expect( page.find('#row_1_col_2').text ).to eq first_shift.table_time
                 end  
               end
             end
@@ -150,14 +150,14 @@ describe "Shift Requests" do
               before { click_link('Assigned to') }
               
               it "should sort by riders, ascending" do
-                expect( page.all('div.rider')[0].text ).to eq rider.name
+                expect( page.find('#row_1_col_3').text ).to eq rider.name
               end
 
               describe "descending" do
                 before { click_link('Assigned to') }            
 
                 it "should sort by rider name, descending" do
-                  expect( page.all('div.rider')[0].text ).to eq '--'
+                  expect( page.find('#row_1_col_3').text ).to eq '--'
                 end  
               end
             end
@@ -168,14 +168,14 @@ describe "Shift Requests" do
               before { click_link('Status') }
               
               it "should sort by statuses, ascending" do
-                expect( page.all('div.status')[0].text ).to eq AssignmentStatus::CancelledByRestaurant.new.text
+                expect( page.find('#row_1_col_4').text ).to eq AssignmentStatus::CancelledByRestaurant.new.text
               end
 
               describe "descending" do
                 before { click_link('Status') }            
 
                 it "should sort by statuses, descending" do
-                  expect( page.all('div.status')[0].text ).to eq AssignmentStatus::Unassigned.new.text
+                  expect( page.find('#row_1_col_4').text ).to eq AssignmentStatus::Unassigned.new.text
                 end 
               end
             end
@@ -195,14 +195,14 @@ describe "Shift Requests" do
             describe "before filtering" do
 
               it "should include first shift" do
-                expect( page.all('div.time')[0].text ).to eq first_shift.table_time
+                expect( page.find('#row_1_col_2').text ).to eq first_shift.table_time
               end
 
               describe "after sorting by time (descending)" do
                 before { click_link 'Time' }
 
                 it "should include second shift" do
-                  expect( page.all('div.time')[0].text ).to eq second_shift.table_time
+                  expect( page.find('#row_1_col_2').text ).to eq second_shift.table_time
                 end  
               end
             end
@@ -211,14 +211,14 @@ describe "Shift Requests" do
               before { filter_shifts_by_time_exclusively }
 
               it "should exclude first shift" do
-                expect( page.all('div.time')[0].text ).not_to eq first_shift.table_time
+                expect( page.find('#row_1_col_2').text ).not_to eq first_shift.table_time
               end
 
               describe "after sorting by time, descending" do
                 before { click_link 'Time' }
 
                 it "should exclude second shift" do
-                  expect( page.all('div.time')[0].text ).not_to eq second_shift.table_time
+                  expect( page.find('#row_1_col_2').text ).not_to eq second_shift.table_time
                 end
               end              
             end
@@ -233,14 +233,14 @@ describe "Shift Requests" do
                 before { click_link 'Restaurant' }
 
                 it "should include first shift" do
-                  expect( page.all('div.restaurant')[0].text ).to eq first_shift.restaurant.name
+                  expect( page.find('#row_1_col_1').text ).to eq first_shift.restaurant.name
                 end
 
                 describe "after sorting by restaurant (descending)" do
                   before { click_link 'Restaurant' }
 
                   it "should include second shift" do
-                    expect( page.all('div.restaurant')[0].text ).to eq second_shift.restaurant.name
+                    expect( page.find('#row_1_col_1').text ).to eq second_shift.restaurant.name
                   end                
                 end
               end
@@ -253,7 +253,7 @@ describe "Shift Requests" do
               end
 
               it "should exclude first shift" do
-                expect( page.all('div.restaurant')[0].text ).not_to eq first_shift.restaurant.name
+                expect( page.find('#row_1_col_1').text ).not_to eq first_shift.restaurant.name
               end
             end
 
@@ -265,7 +265,7 @@ describe "Shift Requests" do
               end
 
               it "should exclude first shift" do
-                expect( page.all('div.restaurant')[0].text ).not_to eq second_shift.restaurant.name
+                expect( page.find('#row_1_col_1').text ).not_to eq second_shift.restaurant.name
               end
             end
           end
@@ -280,14 +280,14 @@ describe "Shift Requests" do
                 before { click_link 'Assigned to' }
 
                 it "should include first shift" do
-                  expect( page.all('div.rider')[0].text ).to eq first_shift.assignment.rider.name
+                  expect( page.find('#row_1_col_3').text ).to eq first_shift.assignment.rider.name
                 end
 
                 describe "after sorting by rider (descending)" do
                   before { click_link 'Assigned to' }
 
                   it "should include second shift" do
-                    expect( page.all('div.rider')[0].text ).to eq '--'
+                    expect( page.find('#row_1_col_3').text ).to eq '--'
                   end                
                 end
               end
@@ -300,7 +300,7 @@ describe "Shift Requests" do
               end
 
               it "should exclude first shift" do
-                expect( page.all('div.rider')[0].text ).not_to eq first_shift.assignment.rider.name
+                expect( page.find('#row_1_col_3').text ).not_to eq first_shift.assignment.rider.name
               end
             end
 
@@ -311,7 +311,7 @@ describe "Shift Requests" do
                 click_link 'Assigned to'
               end
               it "should exclude first shift" do
-                expect( page.all('div.rider')[0].text ).not_to eq '--'
+                expect( page.find('#row_1_col_3').text ).not_to eq '--'
               end
             end
           end
@@ -328,14 +328,14 @@ describe "Shift Requests" do
                 before { click_link 'Status' }
 
                 it "should include first shift" do
-                  expect( page.all('div.status')[0].text ).to eq first_shift.assignment.status.text
+                  expect( page.find('#row_1_col_4').text ).to eq first_shift.assignment.status.text
                 end
 
                 describe "after sorting by rider (descending)" do
                   before { click_link 'Status' }
 
                   it "should include second shift" do
-                    expect( page.all('div.status')[0].text ).to eq second_shift.assignment.status.text
+                    expect( page.find('#row_1_col_4').text ).to eq second_shift.assignment.status.text
                   end                
                 end
               end
@@ -348,7 +348,7 @@ describe "Shift Requests" do
               end
 
               it "should exclude first shift" do
-                expect( page.all('div.status')[0].text ).not_to eq first_shift.assignment.status.text
+                expect( page.find('#row_1_col_4').text ).not_to eq first_shift.assignment.status.text
               end
             end
 
@@ -359,7 +359,7 @@ describe "Shift Requests" do
                 click_link 'Status'
               end
               it "should exclude first shift" do
-                expect( page.all('div.status')[0].text ).not_to eq second_shift.assignment.status.text
+                expect( page.find('#row_1_col_4').text ).not_to eq second_shift.assignment.status.text
               end
             end
           end

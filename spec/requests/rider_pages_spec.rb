@@ -5,6 +5,7 @@ include RequestSpecMacros # /spec/support/request_spec_macros.rb
 
 describe "Rider Pages" do
   let!(:rider) { FactoryGirl.build(:rider) }
+  let(:riders){ 3.times.map{ FactoryGirl.create(:rider) } }
   let!(:account) { rider.account }
   let(:contact) { rider.contact }
   let(:location) { rider.location }
@@ -38,10 +39,12 @@ describe "Rider Pages" do
     end    
     
     describe "Riders#index" do
-      before(:all) { 3.times { FactoryGirl.create(:rider) } }
-      after(:all) { Rider.last(3).each { |r| r.destroy } }
-      before(:each) { visit riders_path }
-      let(:names) { Rider.last(3).map { |r| r.contact.name } }
+      before do
+        riders.each_with_index{ |rider, i| rider.contact.update(name: "AAAAA"*i) }
+        visit riders_path
+      end
+
+      let(:names){ riders.map{ |r| r.contact.name } }
 
       it "should contain names of last 3 riders" do
         check_name_subheads names
