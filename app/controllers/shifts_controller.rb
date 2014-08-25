@@ -8,8 +8,8 @@ class ShiftsController < ApplicationController
   before_action :load_base_path
   before_action :load_form_args, only: [ :edit, :update ]
   before_action :redirect_non_staffers, only: [ :index ]
-  before_action :load_filter_wrapper, only: [ :index, :batch_edit_assignment, :batch_update_assignment ]
-  before_action :load_shifts, only: [ :index, :batch_edit_assignment, :batch_update_assignment ]
+  before_action :load_filter_wrapper, only: [ :index, :batch_edit ]
+  before_action :load_shifts, only: [ :index ]
 
   #CRUD ACTIONS
 
@@ -49,7 +49,7 @@ class ShiftsController < ApplicationController
   end
 
   def index
-    @shift_table = Table.new(:shift, @shifts, @caller, @base_path, form: true)
+    load_table
   end
 
   def destroy
@@ -72,51 +72,9 @@ class ShiftsController < ApplicationController
       route_batch_edit params[:commit]
     else
       flash[:error] = "Oops! Looks like you didn't select any shifts to batch edit."
+      load_shifts
+      load_table
       render 'index'
-    end
-  end
-
-  def route_batch_edit commit
-    case commit
-    when 'Batch Edit'
-      batch_edit_shifts 
-    when 'Batch Assign'
-      load_assignment_batch
-      batch_edit_assignments
-    end
-  end
-
-  def batch_edit_shifts
-    @errors = []
-    render 'batch_edit_shifts'
-  end
-
-  def batch_update_shifts
-    parse_shift_batch
-    @errors = Shift.batch_update(@shifts, params[:shifts])
-    
-    if @errors.empty?
-      flash[:success] = "Shifts successfully batch updated"
-      redirect_to @base_path
-    else
-      render 'batch_edit_shifts'
-    end
-  end
-
-  def batch_edit_assignments
-    @errors = []
-    render 'batch_edit_assignments'
-  end
-
-  def batch_update_assignments
-    parse_assignment_batch
-    @errors = Assignment.batch_update(@assignments, params[:assignments])
-
-    if @errors.empty?
-      flash[:success] = "Shifts successfully batch assigned"
-      redirect_to @base_path
-    else
-      render 'batch_edit_assignments'
     end
   end
 
@@ -133,12 +91,13 @@ class ShiftsController < ApplicationController
     def load_assignment_batch
       @assignments = @shifts.map(&:assignment)
     end
+
     def parse_assignment_batch
       @assignments = Assignment.where("id IN (:ids)", { ids: params[:assignments].map{ |a| a[:id] } } )
       # raise @assignments.inspect
     end    
 
-
+    #CRUD HELPERS
 
     def load_shift
       @shift = Shift.find(params[:id])
@@ -173,6 +132,62 @@ class ShiftsController < ApplicationController
       @rider = Rider.find(params[:rider_id])
     end
 
+    def load_shifts
+      @shifts = Shift
+        .includes(associations)
+        .where(*filters)
+        .page(params[:page])
+        .order(sort_column + " " + sort_direction)
+        .references(associations)
+    end
+
+    # BATCH CRUD HELPERS
+
+    def route_batch_edit commit
+      @errors = []
+      case commit
+      when 'Batch Edit'
+        render 'batch_edit_shifts' 
+      when 'Batch Assign'
+        load_assignment_batch
+        render 'batch_edit_assignments'
+      end
+    end
+
+    def batch_update_shifts
+      parse_shift_batch
+      batch_update Shift, @shifts
+    end
+
+    def batch_update_assignments
+      parse_assignment_batch
+      batch_update Assignment, @assignments
+    end
+
+    def batch_update klass, resources
+      name = klass.name.pluralize
+      key = name.downcase.to_sym
+
+      @errors = klass.batch_update(resources, params[key])
+
+      if @errors.empty?
+        flash[:success] = "#{name} successfully batch edited"
+        redirect_to @base_path
+      else
+        render 'batch_edit_#{name.downcase}'
+      end
+    end
+
+    # VIEW INTERACTION HELPERS
+
+    def load_table
+      @shift_table = Table.new(:shift, @shifts, @caller, @base_path, form: true)
+    end
+
+    def load_filter_wrapper
+      load_filters subject: :shifts, view: :table, by: [ :time, :restaurants, :riders, :status ]
+    end
+
     def load_form_args
       case @caller
       when :restaurant
@@ -184,27 +199,7 @@ class ShiftsController < ApplicationController
       end
     end
 
-    def redirect_non_staffers
-      if @caller.nil?
-        unless credentials == 'Staffer'
-          flash[:error] = "You don't have permission to view that page"
-          redirect_to root_path          
-        end
-      end
-    end
-
-    def load_filter_wrapper
-      load_filters subject: :shifts, view: :table, by: [ :time, :restaurants, :riders, :status ]
-    end
-
-    def load_shifts
-      @shifts = Shift
-        .includes(associations)
-        .where(*filters)
-        .page(params[:page])
-        .order(sort_column + " " + sort_direction)
-        .references(associations)
-    end
+    # HTTP HELPERS
 
     def associations
       { restaurant: :mini_contact, assignment: { rider: :contact } }
@@ -218,11 +213,20 @@ class ShiftsController < ApplicationController
         )
     end
 
-    def batch_shift_params
-      params.require(:shifts)
-        .permit( :id, :restaurant_id, :start, :end, :urgency, :billing_rate, :notes,
-          :base_path,
-          assignment_attributes: [ :id, :shift_id, :rider_id, :status ]
-        )
+    def redirect_non_staffers
+      if @caller.nil?
+        unless credentials == 'Staffer'
+          flash[:error] = "You don't have permission to view that page"
+          redirect_to root_path          
+        end
+      end
     end
+
+    # def batch_shift_params
+    #   params.require(:shifts)
+    #     .permit( :id, :restaurant_id, :start, :end, :urgency, :billing_rate, :notes,
+    #       :base_path,
+    #       assignment_attributes: [ :id, :shift_id, :rider_id, :status ]
+    #     )
+    # end
 end

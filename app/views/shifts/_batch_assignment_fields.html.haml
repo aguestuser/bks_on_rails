@@ -13,7 +13,7 @@
     .center
       = label_tag :rider
     - unless @caller == :rider
-      = select_tag name.call('rider_id'), options_for_select(Rider.select_options, a.rider.id || nil), include_blank: true
+      = select_tag name.call('rider_id'), options_for_select(Rider.select_options, a.rider ? a.rider.name : nil), include_blank: true
     - else 
       = a.rider.name
   /Status
