@@ -1,0 +1,25 @@
+- #args: shift
+- name = lambda { |attr| "assignments[][#{attr}]" }
+- a = shift.assignment
+
+%p.shift_box
+  = render 'assignments/shift_include', shift: shift
+
+.row
+  /Id
+  = hidden_field_tag name.call('id'), a.id
+  /Rider
+  .span4
+    .center
+      = label_tag :rider
+    - unless @caller == :rider
+      = select_tag name.call('rider_id'), options_for_select(Rider.select_options, a.rider.id || nil), include_blank: true
+    - else 
+      = a.rider.name
+  /Status
+  .span4
+    .center
+      = label_tag :status
+    = select_tag name.call('status'), options_for_select(AssignmentStatus.select_options, a.status)
+  / Base Path
+  = hidden_field_tag :base_path, @base_path

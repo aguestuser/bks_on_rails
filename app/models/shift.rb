@@ -15,7 +15,7 @@
 #
 
 class Shift < ActiveRecord::Base
-  include Timeboxable
+  include Timeboxable, BatchUpdatable
 
   belongs_to :restaurant
   has_one :assignment, dependent: :destroy #inverse_of: :shift
@@ -64,32 +64,28 @@ class Shift < ActiveRecord::Base
     false
   end
 
-  def Shift.batch_update new_shifts
-    errors = []
-    new_shifts.each do |new_shift|
-      
-      id = new_shift[:id].to_i
-      old_shift = Shift.find(id)
-      new_attrs = parse_batch_attrs new_shift
-      
-      unless old_shift.update_attributes(new_attrs)
-        errors.push old_shift.errors
-      end
-    end
-    errors
-  end
+  # def Shift.batch_update shifts, attr_arr
+  #   errors = []
+  #   shifts.each_with_index do |shift, i|
+  #     attrs = parse_batch_attrs attr_arr[i]
+  #     unless shift.update(attrs)
+  #       errors.push shift.errors
+  #     end
+  #   end
+  #   errors
+  # end
 
-  private
+  # private
 
-    def Shift.parse_batch_attrs attrs
-      attrs.reject! { |k,v| k == "id" }
-      attrs["start"] = parse_date attrs["start"]
-      attrs["end"] = parse_date attrs["end"]
-      attrs.to_h
-    end
+  #   def Shift.parse_batch_attrs attrs
+  #     attrs.reject! { |k,v| k == "id" }
+  #     attrs["start"] = parse_date attrs["start"]
+  #     attrs["end"] = parse_date attrs["end"]
+  #     attrs.to_h
+  #   end
 
-    def Shift.parse_date d
-      Time.zone.local( d["year"], d["month"], d["day"], d["hour"], d["minute"] )
-    end
+  #   def Shift.parse_date d
+  #     Time.zone.local( d["year"], d["month"], d["day"], d["hour"], d["minute"] )
+  #   end
 
 end

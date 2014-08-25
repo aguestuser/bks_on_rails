@@ -1,5 +1,7 @@
 - provide(:title, 'Batch Assign Shifts')
 
-Let's Assign some shifts:
-- @ids.each do |id|
-  = id
+- header = 'Batch Assign Shifts'
+- action = 'batch_edit_assignments'
+- fields = 'batch_assignment_fields'
+
+= render 'batch_edit_form', header: header, action: action, fields: fields

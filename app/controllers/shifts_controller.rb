@@ -92,8 +92,8 @@ class ShiftsController < ApplicationController
   end
 
   def batch_update_shifts
-    @shifts = Shift.where("id IN (:ids)", { ids: params[:shifts].map{ |s| s[:id] } } )
-    @errors = Shift.batch_update(params[:shifts])
+    parse_shift_batch
+    @errors = Shift.batch_update(@shifts, params[:shifts])
     
     if @errors.empty?
       flash[:success] = "Shifts successfully batch updated"
@@ -101,25 +101,44 @@ class ShiftsController < ApplicationController
     else
       render 'batch_edit_shifts'
     end
-    # Shift.batch_update(batch_shift_params.except(:base_path))
   end
 
   def batch_edit_assignments
-    # render 'batch_edit_assignments'
+    @errors = []
+    render 'batch_edit_assignments'
   end
 
   def batch_update_assignments
+    parse_assignment_batch
+    @errors = Assignment.batch_update(@assignments, params[:assignments])
+
+    if @errors.empty?
+      flash[:success] = "Shifts successfully batch assigned"
+      redirect_to @base_path
+    else
+      render 'batch_edit_assignments'
+    end
   end
 
   private
 
     def load_shift_batch
-      @shifts = Shift.where("id IN (:ids)", { ids: params[:ids] } )
+      @shifts = Shift.where("id IN (:ids)", { ids: params[:ids] } ).order(:start)
+    end
+
+    def parse_shift_batch
+      @shifts = Shift.where("id IN (:ids)", { ids: params[:shifts].map{ |s| s[:id] } } ).order(:start)
     end
 
     def load_assignment_batch
-      @assignments = @shifts.each(&:assignment)
+      @assignments = @shifts.map(&:assignment)
     end
+    def parse_assignment_batch
+      @assignments = Assignment.where("id IN (:ids)", { ids: params[:assignments].map{ |a| a[:id] } } )
+      # raise @assignments.inspect
+    end    
+
+
 
     def load_shift
       @shift = Shift.find(params[:id])

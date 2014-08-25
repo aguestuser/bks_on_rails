@@ -23,12 +23,6 @@ class AssignmentsController < ApplicationController
     attempt_save_from :create
   end
 
-  def override_double_booking
-  end
-
-  def override_conflict
-  end
-
   def edit
   end
 
@@ -47,6 +41,12 @@ class AssignmentsController < ApplicationController
     @assignment.destroy
     flash[:success] = 'Assignment deleted'
     redirect_to @base_path
+  end
+
+  def override_double_booking
+  end
+
+  def override_conflict
   end
 
   private 

@@ -1,14 +1,7 @@
 - provide(:title, 'Batch Edit Shifts')
 
-/ - raise @shifts.inspect
+- header = 'Batch Edit Shifts'
+- action = 'batch_edit_shifts'
+- fields = 'batch_shift_fields'
 
-%h1 Batch Edit Shifts
-.span8.offset2
-  = form_tag 'batch_edit_shifts', method: :post do
-    = render 'shared/batch_error_messages', errors: @errors
-    - @shifts.each_with_index.map do |shift, i|
-      .profile
-        %h3 Shift #{i+1}
-        = render 'batch_shift_fields', shift: shift
-    %p.center
-      = submit_tag 'Save changes', class: 'btn btn-primary'
+= render 'batch_edit_form', header: header, action: action, fields: fields

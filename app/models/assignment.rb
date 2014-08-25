@@ -13,6 +13,7 @@
 #
 
 class Assignment < ActiveRecord::Base
+  include BatchUpdatable
   belongs_to :shift #, inverse_of: :assignment
   belongs_to :rider
 
@@ -52,5 +53,9 @@ class Assignment < ActiveRecord::Base
   #   def set_last_modified_by_id
   #     self.last_modified_by = current_account.contact.name
   #   end
+
+  #class methods
+
+  #Assignment.batch_update (included from BatchUpdatable)
 
 end
