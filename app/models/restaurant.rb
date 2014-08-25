@@ -40,4 +40,10 @@ class Restaurant < ActiveRecord::Base
   def phone
     self.mini_contact.phone
   end
+
+  #class methods
+
+  def Restaurant.select_options
+    Restaurant.all.joins(:mini_contact).order("mini_contacts.name asc").map{ |r| [ r.name, r.id ] }
+  end
 end

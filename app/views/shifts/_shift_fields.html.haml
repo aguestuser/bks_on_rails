@@ -11,7 +11,7 @@
       = f.hidden_field :restaurant_id, value: @restaurant.id
     - else
       = f.label :restaurant
-      = f.collection_select :restaurant_id, Restaurant.all, :id, :name, include_blank: true 
+      = f.select :restaurant_id, Restaurant.select_options, include_blank: true 
   /Urgency
   .span2
     = f.label :urgency

@@ -1,20 +1,4 @@
-/ = render 'shifts/table_wrapper'
-
 - provide(:title, 'Shifts')
-
-/ /Args
-/ - case @caller
-/ - when :restaurant
-/   - header = "Shifts for #{@restaurant.name}"
-/   - span = 'span8 offset2'
-/   - entity = @restaurant
-/ - when :rider
-/   - header = "Assignments for #{@rider.contact.name}"
-/   - span = 'span8 offset2'
-/   - entity = @rider
-/ - when nil
-/   - header = "Shifts"
-/   - span = "span10 offset1"
 
 /Arguments
 - if @caller
@@ -42,7 +26,7 @@
       = submit_tag 'Batch Edit', class: 'btn btn-primary'
       = submit_tag 'Batch Assign', class: 'btn btn-primary' 
     /Pagination
-    .center
+    .centershif
       = will_paginate @shifts
     /Table
     .row

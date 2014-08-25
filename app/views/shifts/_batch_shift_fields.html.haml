@@ -27,7 +27,7 @@
       = hidden_field_tag "shifts[][restaurant_id]", restaurant_val
     - else
       = label_tag :restaurant
-      = select_tag "shifts[][restaurant_id]", options_for_select( Restaurant.all.joins(:mini_contact).order("mini_contacts.name asc").map{ |r| [ r.name, r.id ] }, restaurant_val)
+      = select_tag "shifts[][restaurant_id]", options_for_select(Restaurant.select_options, restaurant_val)
   /Urgency
   .span2
     = label_tag :urgency
