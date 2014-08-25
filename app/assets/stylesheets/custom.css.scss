@@ -377,7 +377,6 @@ label {
 .filters {
   margin-top: 1em;
   margin-bottom: 1em;
-  // border-bottom: 1px solid $grayLight;
   .header {
     @include header_row;  
   }
@@ -481,4 +480,10 @@ label {
     float: left;
     margin-left: -2em;
   }
+}
+
+.batch_form{
+  border-top: 1px solid $grayLight;
+  margin-top: -1em;
+  padding-top: 2em;
 }

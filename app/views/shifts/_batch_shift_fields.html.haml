@@ -14,20 +14,16 @@
   - end_val = shift.end
   - notes_val = shift.notes
 
-= render 'shared/error_messages', object: shift
-
 /ID
 = hidden_field_tag "shifts[][id]", shift.id
 
 
 .row
   /Restaurant
-  .span4
-    - if @caller == :restaurant
-      %p
-        %strong
-          Restaurant: 
-        = @restaurant.mini_contact.name
+  .span3
+    - if @caller == :restaurant || !params[:action].include?('new') || !params[:action].include?('create')
+      = label_tag :restaurant
+      = shift.restaurant.mini_contact.name
       = hidden_field_tag "shifts[][restaurant_id]", restaurant_val
     - else
       = label_tag :restaurant

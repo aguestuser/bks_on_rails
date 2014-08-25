@@ -35,10 +35,11 @@
     = render 'filter_form'
 
 /Batch Edit Form Wrapper
-.row
-  = form_tag 'shift/batch_edit', method: :get do
+.row.batch_form
+  = form_tag '/shift/batch_edit', method: :get do 
     /Submit Buttons
     .center
+      = submit_tag 'Batch Edit', class: 'btn btn-primary'
       = submit_tag 'Batch Assign', class: 'btn btn-primary' 
     /Pagination
     .center
@@ -47,11 +48,14 @@
     .row
       %div{ :class => span }
         = render 'layouts/table', table: @shift_table
-
-/Pagination
-.center
-  = will_paginate @shifts
-/Hot Links
-- if can? :manage, Shift
-  %p.center
-    = render 'hot_links', entity: @caller_obj
+    /Pagination
+    .center
+      = will_paginate @shifts
+    /Submit Buttons
+    .center
+      = submit_tag 'Batch Edit', class: 'btn btn-primary'
+      = submit_tag 'Batch Assign', class: 'btn btn-primary' 
+    /Hot Links
+    - if can? :manage, Shift
+      %p.center
+        = render 'hot_links', entity: @caller_obj

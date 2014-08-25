@@ -11,6 +11,8 @@ class ShiftsController < ApplicationController
   before_action :load_filter_wrapper, only: [ :index, :batch_edit_assignment, :batch_update_assignment ]
   before_action :load_shifts, only: [ :index, :batch_edit_assignment, :batch_update_assignment ]
 
+  #CRUD ACTIONS
+
   def new
     @shift = Shift.new
     load_form_args
@@ -56,6 +58,8 @@ class ShiftsController < ApplicationController
     redirect_to @base_path
   end
 
+  # BATCH CRUD ACTIONS
+
   def batch_new
   end
 
@@ -83,11 +87,21 @@ class ShiftsController < ApplicationController
   end
 
   def batch_edit_shifts
+    @errors = []
     render 'batch_edit_shifts'
   end
 
   def batch_update_shifts
-    raise params.inspect
+    @shifts = Shift.where("id IN (:ids)", { ids: params[:shifts].map{ |s| s[:id] } } )
+    @errors = Shift.batch_update(params[:shifts])
+    
+    if @errors.empty?
+      flash[:success] = "Shifts successfully batch updated"
+      redirect_to @base_path
+    else
+      render 'batch_edit_shifts'
+    end
+    # Shift.batch_update(batch_shift_params.except(:base_path))
   end
 
   def batch_edit_assignments
@@ -179,6 +193,14 @@ class ShiftsController < ApplicationController
 
     def shift_params # permit :restaurant_id?
       params.require(:shift)
+        .permit( :id, :restaurant_id, :start, :end, :urgency, :billing_rate, :notes,
+          :base_path,
+          assignment_attributes: [ :id, :shift_id, :rider_id, :status ]
+        )
+    end
+
+    def batch_shift_params
+      params.require(:shifts)
         .permit( :id, :restaurant_id, :start, :end, :urgency, :billing_rate, :notes,
           :base_path,
           assignment_attributes: [ :id, :shift_id, :rider_id, :status ]

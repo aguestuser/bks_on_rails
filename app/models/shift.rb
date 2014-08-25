@@ -64,7 +64,32 @@ class Shift < ActiveRecord::Base
     false
   end
 
+  def Shift.batch_update new_shifts
+    errors = []
+    new_shifts.each do |new_shift|
+      
+      id = new_shift[:id].to_i
+      old_shift = Shift.find(id)
+      new_attrs = parse_batch_attrs new_shift
+      
+      unless old_shift.update_attributes(new_attrs)
+        errors.push old_shift.errors
+      end
+    end
+    errors
+  end
+
   private
 
+    def Shift.parse_batch_attrs attrs
+      attrs.reject! { |k,v| k == "id" }
+      attrs["start"] = parse_date attrs["start"]
+      attrs["end"] = parse_date attrs["end"]
+      attrs.to_h
+    end
+
+    def Shift.parse_date d
+      Time.zone.local( d["year"], d["month"], d["day"], d["hour"], d["minute"] )
+    end
 
 end
