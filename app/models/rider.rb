@@ -28,13 +28,10 @@ class Rider < ActiveRecord::Base
     presence: true,
     inclusion: { in: [ true, false ] }
 
+  #public methods
   def name
     self.contact.name
   end
-
-  # def assignments_on(date) #input: date obj, #output Arr of Assignments (possibly empty)
-  #   self.assignments.joins(:shift).where( shifts: { start: (date.beginning_of_day..date.end_of_day) } )
-  # end
 
   def shifts_on(date) #input: date obj, #output Arr of Assignments (possibly empty)
     self.shifts.where( start: (date.beginning_of_day..date.end_of_day) )
@@ -43,4 +40,10 @@ class Rider < ActiveRecord::Base
   def conflicts_on(date) #input: date obj, #output Arr of Conflicts (possibly empty)
     self.conflicts.where( start: (date.beginning_of_day..date.end_of_day) )
   end
+
+  #class methods
+  def Rider.select_options
+    Rider.all.joins(:contact).order("contacts.name asc").map{ |r| [ r.name, r.id ] }
+  end
+
 end
