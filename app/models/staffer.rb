@@ -9,4 +9,6 @@
 
 class Staffer < ActiveRecord::Base
   include User, Contactable # ../concerns/user.rb
+
+  scope :tess, -> { joins(:contact).where("contacts.email = ?", "tess@bkshift.com").first }
 end

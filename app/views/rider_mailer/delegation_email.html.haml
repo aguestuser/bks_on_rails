@@ -1,0 +1,33 @@
+- pp @shifts.inspect
+
+- shift_ref = @shifts.count > 1 ? "shifts" : "shift"
+
+%p
+  We'd like to offer you the following extra #{shift_ref}:
+%table
+  %tr
+    %th
+      Time
+    %th
+      Restaurant
+  - @shifts.each do |shift|
+    %tr
+      %td
+        = shift.table_time
+      %td
+        = shift.restaurant.name
+
+= render 'mailer/signature'
+
+- @shifts.each do |shift|
+  - r = shift.restaurant
+  %p
+    %strong 
+      #{r.name}:
+    = r.brief
+    %br/
+    %strong 
+      Location:
+    = r.location.full_address
+
+

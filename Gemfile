@@ -25,6 +25,7 @@ gem 'RedCloth'
 
 gem 'classy_enum', '~> 3.5.0'
 gem 'cancancan', '~> 1.8'
+gem 'figaro'
 
 
 group :development, :test do

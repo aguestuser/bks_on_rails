@@ -28,6 +28,8 @@ class Rider < ActiveRecord::Base
     presence: true,
     inclusion: { in: [ true, false ] }
 
+  scope :testy, -> { joins(:contact).where("contacts.email = ?", "bkshifttester@gmail.com").first }
+
   #public methods
   def name
     self.contact.name
