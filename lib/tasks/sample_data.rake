@@ -184,12 +184,12 @@ end
 
 def make_riders
   30.times do |n|
-    name = make_name
-    phone = make_phone
-    email = make_email
-    address = make_address
-    borough = pick_borough
-    neighborhood = pick_neighorhood
+    name = n > 0 ? make_name : 'Testy McRider'
+    phone = n > 0 ? make_phone : '718-222-3333'
+    email = n > 0 ? make_email : 'bkshifttester@gmail.com'
+    address = n > 0 ? make_address : '416 Dean St.'
+    borough = n > 0 ? pick_borough : :brooklyn
+    neighborhood =  n > 0 ? pick_neighorhood : :park_slope
 
     Rider.create!(
       active: true,
