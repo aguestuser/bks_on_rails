@@ -7,6 +7,6 @@
     - @shifts.each_with_index do |shift, i|
       .profile
         %h3 Shift #{i+1}
-        = render fields, shift: shift
+        = render fields, shift: shift, new_shift: false
     %p.center
       = submit_tag 'Save changes', class: 'btn btn-primary'

@@ -1,32 +1,28 @@
-/Args: shift, index
-- if params[:action].include?('new') || params[:action].include?('create')
-  - restaurant_val = nil
-  - urgency_val = :extra
-  - billing_rate_val = :normal
-  - start_val = Time.zone.now.begginning_of_day + 12.hours
-  - end_val = start_val + 6.hours
-  - notes_val = nil
-- else 
-  - restaurant_val = shift.restaurant.id
-  - urgency_val = shift.urgency
-  - billing_rate_val = shift.billing_rate
-  - start_val = shift.start
-  - end_val = shift.end
-  - notes_val = shift.notes
+- #Args: shift(Shift), new_shift(Bool)
+/ - shift = nil if new_shift
+
+- #Local vars
+- shift_val = new_shift ? nil : shift.id
+- restaurant_val = new_shift ? nil : shift.restaurant.id
+- urgency_val = new_shift ? :extra : shift.urgency
+- billing_rate_val = new_shift ? :normal : shift.billing_rate
+- start_val = new_shift ? Time.zone.now.beginning_of_day + 12.hours : shift.start
+- end_val = new_shift ? start_val + 6.hours : shift.end
+- notes_val = new_shift ? nil : shift.notes
 
 /ID
-= hidden_field_tag "shifts[][id]", shift.id
+= hidden_field_tag "shifts[][id]", shift_val
 
 .row
   /Restaurant
   .span3
-    - if @caller == :restaurant || !params[:action].include?('new') || !params[:action].include?('create')
+    - if @caller == :restaurant || !new_shift
       = label_tag :restaurant
       = shift.restaurant.mini_contact.name
       = hidden_field_tag "shifts[][restaurant_id]", restaurant_val
     - else
       = label_tag :restaurant
-      = select_tag "shifts[][restaurant_id]", options_for_select(Restaurant.select_options, restaurant_val)
+      = select_tag "shifts[][restaurant_id]", options_for_select(Restaurant.select_options, restaurant_val), include_blank: true
   /Urgency
   .span2
     = label_tag :urgency

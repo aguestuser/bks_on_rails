@@ -10,6 +10,7 @@ class ShiftsController < ApplicationController
   before_action :redirect_non_staffers, only: [ :index ]
   before_action :load_filter_wrapper, only: [ :index, :batch_edit ]
   before_action :load_shifts, only: [ :index ]
+  # before_action :load_errors, only: [ :route_batch_edit, :batch_new ]
 
   #CRUD ACTIONS
 
@@ -60,10 +61,24 @@ class ShiftsController < ApplicationController
 
   # BATCH CRUD ACTIONS
 
+  def clone_new
+  end
+
   def batch_new
+    load_clone_shifts
+    render 'batch_new'
   end
 
   def batch_create
+    parse_clone_shifts
+    @errors = Shift.batch_create(params[:shifts])
+
+    if @errors.empty?
+      flash[:success] = "#{params[:shifts].count} shifts successfully created"
+      redirect_to @base_path
+    else
+      render 'batch_new'
+    end
   end
 
   def batch_edit
@@ -78,24 +93,17 @@ class ShiftsController < ApplicationController
     end
   end
 
-  private
+  def batch_update_shifts
+    parse_shift_batch
+    batch_update Shift, @shifts
+  end
 
-    def load_shift_batch
-      @shifts = Shift.where("id IN (:ids)", { ids: params[:ids] } ).order(:start)
-    end
+  def batch_update_assignments
+    parse_assignment_batch
+    batch_update Assignment, @assignments
+  end
 
-    def parse_shift_batch
-      @shifts = Shift.where("id IN (:ids)", { ids: params[:shifts].map{ |s| s[:id] } } ).order(:start)
-    end
-
-    def load_assignment_batch
-      @assignments = @shifts.map(&:assignment)
-    end
-
-    def parse_assignment_batch
-      @assignments = Assignment.where("id IN (:ids)", { ids: params[:assignments].map{ |a| a[:id] } } )
-      # raise @assignments.inspect
-    end    
+  private  
 
     #CRUD HELPERS
 
@@ -143,6 +151,47 @@ class ShiftsController < ApplicationController
 
     # BATCH CRUD HELPERS
 
+    def load_errors
+      @errors = []
+    end
+
+    def load_clone_shifts
+      # raise params[:shifts].inspect
+      attrs = Shift.parse_batch_attrs( params[:shifts].first )
+      @shifts = num_shifts.times.map { |n| increment_by( n.days, Shift.new( attrs ) ) }
+    end
+
+    def parse_clone_shifts
+      @shifts = num_shifts.times.map{ |i| Shift.new( Shift.parse_batch_attrs(params[:shifts][i]) ) }
+    end 
+
+    def num_shifts
+      params[:num_shifts] ? params[:num_shifts].to_i : params[:shifts].count
+    end
+
+    def increment_by increment, shift
+      shift.start += increment
+      shift.end += increment 
+      shift
+    end
+
+    def load_shift_batch
+      @shifts = Shift.where("id IN (:ids)", { ids: params[:ids] } ).order(:start)
+    end
+
+    def parse_shift_batch
+      @shifts = Shift.where("id IN (:ids)", { ids: params[:shifts].map{ |s| s[:id] } } ).order(:start)
+    end
+
+    def load_assignment_batch
+      @assignments = @shifts.map(&:assignment)
+    end
+
+    def parse_assignment_batch
+      @assignments = Assignment.where("id IN (:ids)", { ids: params[:assignments].map{ |a| a[:id] } } )
+      # raise @assignments.inspect
+    end  
+
     def route_batch_edit commit
       @errors = []
       case commit
@@ -152,16 +201,6 @@ class ShiftsController < ApplicationController
         load_assignment_batch
         render 'batch_edit_assignments'
       end
-    end
-
-    def batch_update_shifts
-      parse_shift_batch
-      batch_update Shift, @shifts
-    end
-
-    def batch_update_assignments
-      parse_assignment_batch
-      batch_update Assignment, @assignments
     end
 
     def batch_update klass, resources
@@ -174,7 +213,7 @@ class ShiftsController < ApplicationController
         flash[:success] = "#{name} successfully batch edited"
         redirect_to @base_path
       else
-        render 'batch_edit_#{name.downcase}'
+        render "batch_edit_#{name.downcase}"
       end
     end
 

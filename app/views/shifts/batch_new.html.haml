@@ -1,2 +1,11 @@
-- provide(:title, 'Batch Create Shift')
-Hello World
+-#Args: @shift (params[:shifts][0]), num_shifts (Int) 
+
+- provide(:title, 'Batch Create Shifts')
+
+/ - raise @shifts.inspect
+
+- header = 'Batch Create Shifts'
+- action = 'batch_create'
+- fields = 'batch_shift_fields'
+
+= render 'batch_edit_form', header: header, action: action, fields: fields

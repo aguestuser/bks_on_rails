@@ -29,6 +29,10 @@ class Shift < ActiveRecord::Base
   validates :restaurant_id, :billing_rate, :urgency,
     presence: true
 
+  def build_associations
+    self.assignment = Assignment.new
+  end
+
   def assigned? #output: bool
     !self.assignment.rider.nil?
   end
@@ -63,29 +67,5 @@ class Shift < ActiveRecord::Base
     end
     false
   end
-
-  # def Shift.batch_update shifts, attr_arr
-  #   errors = []
-  #   shifts.each_with_index do |shift, i|
-  #     attrs = parse_batch_attrs attr_arr[i]
-  #     unless shift.update(attrs)
-  #       errors.push shift.errors
-  #     end
-  #   end
-  #   errors
-  # end
-
-  # private
-
-  #   def Shift.parse_batch_attrs attrs
-  #     attrs.reject! { |k,v| k == "id" }
-  #     attrs["start"] = parse_date attrs["start"]
-  #     attrs["end"] = parse_date attrs["end"]
-  #     attrs.to_h
-  #   end
-
-  #   def Shift.parse_date d
-  #     Time.zone.local( d["year"], d["month"], d["day"], d["hour"], d["minute"] )
-  #   end
 
 end

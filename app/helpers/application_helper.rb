@@ -26,4 +26,8 @@ module ApplicationHelper
     end_time.strftime "%I:%M%p"
   end
 
+  def num_select_options n, m
+    (n..m).map{ |num| [ num, num ] }
+  end
+
 end
