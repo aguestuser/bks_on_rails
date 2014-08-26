@@ -27,6 +27,7 @@ class AssignmentsController < ApplicationController
   end
 
   def update
+    @old_assignment = Assignment.new(@assignment.attributes)
     @assignment.attributes = assignment_params
     attempt_save_from :update
   end
@@ -103,7 +104,7 @@ class AssignmentsController < ApplicationController
       end
     end
 
-    def attempt_save_from(action)
+    def attempt_save_from action
       case action
       when :create
         message = lambda { |assignment| assignment.rider.nil? ? "Shift unassigned." : "Shift assigned to #{assignment.rider.contact.name}" }
@@ -119,7 +120,8 @@ class AssignmentsController < ApplicationController
       if no_conflicts?
         if no_double_bookings?
           if @assignment.save
-            flash[:success] = message.call(@assignment)
+            email_alert = send_email ? " Email sent to rider." : ""
+            flash[:success] = message.call(@assignment) + email_alert
             redirect_to @base_path
           else
             render do_over
@@ -132,6 +134,15 @@ class AssignmentsController < ApplicationController
         @override_subject = :conflict
         render 'override_conflict'
       end      
+    end
+
+    def send_email 
+      if @assignment.status == :delegated && ( @old_assignment.status != :delegated || @old_assignment.rider != @assignment.rider )
+        RiderMailer.delegation_email(@assignment.rider, @assignment.shift).deliver
+        true
+      else 
+        false
+      end 
     end
 
     def no_conflicts?
