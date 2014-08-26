@@ -131,7 +131,6 @@
       prefix = s.assigned? ? s.assignment.rider.short_name.to_s : '--'
       prefix + ' ' + s.assignment.status.short_code
     when :rider
-      pp s if s.restaurant.nil?
       s.restaurant.name + ' ' + s.assignment.status.short_code
     end
   end
