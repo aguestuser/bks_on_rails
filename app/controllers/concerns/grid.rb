@@ -89,14 +89,24 @@
   end
 
   def data_cell_from day_per_str, resources, entity_class_str
+    checkboxes = checkboxes_from resources
     values = data_cell_vals_from resources
     color = color_from resources
     {
+      checkboxes: checkboxes,
       resources: resources,
       values: values,
       class_str: "#{entity_class_str} day_per_#{day_per_str} #{color}" 
     }
   end
+
+  def checkboxes_from resources
+    resources.map{ |r| checkbox_from r } unless resources.empty?
+  end
+
+  def checkbox_from resource
+    { name: 'ids[]', val: resource.id } if resource.class.name == 'Shift'
+  end  
 
   def data_cell_vals_from resources
     if resources.empty?

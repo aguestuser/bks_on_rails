@@ -1,12 +1,12 @@
 %strong.underline
   Restaurant Briefs:
-  - @shifts.each do |shift|
-    - r = shift.restaurant
-    %p
-      %strong 
-        #{r.name}:
-      = r.brief
-      %br/
-      %strong 
-        Location:
-      = r.location.full_address
+- @shifts.each do |shift|
+  - r = shift.restaurant
+  %p
+    %strong 
+      #{r.name}:
+    = r.brief
+    %br/
+    %strong 
+      Location:
+    = r.location.full_address

@@ -10,7 +10,7 @@ class ShiftsController < ApplicationController
   before_action :redirect_non_staffers, only: [ :index ]
   before_action :load_filter_wrapper, only: [ :index, :batch_edit ]
   before_action :load_shifts, only: [ :index ]
-  # before_action :load_errors, only: [ :route_batch_edit, :batch_new ]
+  before_action :load_empty_errors, only: [ :route_batch_edit, :clone_new, :batch_new ]
 
   #CRUD ACTIONS
 
@@ -151,7 +151,7 @@ class ShiftsController < ApplicationController
 
     # BATCH CRUD HELPERS
 
-    def load_errors
+    def load_empty_errors
       @errors = []
     end
 

@@ -2,49 +2,59 @@
   /Filters
   .filters
     = render 'grid/filter_form.html.haml'
-  /Grid
-  %table
-    /Header Row
-    %tr 
-      - @grid.headers.each_with_index do |header, i|
-        %th{ id: "#{header[:id_str]}", class: "#{header[:class_str]}" }
-          = grid_sortable i, header[:value]
-    /Data Rows
-    - @grid.rows.each_with_index do |row, i|
-      %tr{ id: "row_#{i+1}" }
-        - row.each_with_index do |cell, j|
-          %td{ id: "#{cell[:id_str]}", class: "#{cell[:class_str]}" }
-            - if j == 0
-              /Y Axis Label Column
-              - resource = cell[:resources].first
-              - case @grid.y_axis
-              - when :rider
-                - path = rider_path resource
-              - when :restaurant
-                - path = restaurant_path resource
-              = link_to resource.name, path
-            -else 
-              /Data Columns
-              - if cell[:resources].empty?
-                - rider = row[0][:resources][0]
-                - day_offset =  ( (j-1) * 7 )/14
-                - hour_offset = (j+2)%2 == 1 ? 12 : 18
-                - start = @week.start + day_offset.days + hour_offset.hours
-                / - if j == 1
-                /   - raise start.inspect
-                - end_ = start + 6.hours
-                - path = new_rider_conflict_path(rider, base_path: @base_path, start: start, :end => end_)
-                = link_to cell[:values][0], path
-                / , start: start }
-              - else 
-                - cell[:values].each_with_index do |value, i|
-                  %div
-                  - resource = cell[:resources][i]
-                  - case resource.class.name
-                  - when 'Shift' 
-                    - path = edit_shift_assignment_path resource, resource.assignment, base_path: @base_path
-                  - when 'Conflict'
-                    - path = edit_conflict_path resource, base_path: @base_path
-                  = link_to value, path
-                  / , base_path: @base_path
-              
+  /Batch Edit Form Wrapper
+  .row.batch_form
+    = form_tag '/shift/batch_edit', method: :get do 
+      /Submit Buttons
+      .center
+        = submit_tag 'Batch Assign', class: 'btn btn-primary' 
+        = hidden_field_tag :base_path, @base_path
+
+      /Grid
+      %table
+        /Header Row
+        %tr 
+          - @grid.headers.each_with_index do |header, i|
+            %th{ id: "#{header[:id_str]}", class: "#{header[:class_str]}" }
+              = grid_sortable i, header[:value]
+        /Data Rows
+        - @grid.rows.each_with_index do |row, i|
+          %tr{ id: "row_#{i+1}" }
+            - row.each_with_index do |cell, j|
+              %td{ id: "#{cell[:id_str]}", class: "#{cell[:class_str]}" }
+                - if j == 0
+                  /Y Axis Label Cell
+                  - resource = cell[:resources].first
+                  - case @grid.y_axis
+                  - when :rider
+                    - path = rider_path resource
+                  - when :restaurant
+                    - path = restaurant_path resource
+                  = link_to resource.name, path
+                -else 
+                  /Data Cells
+                  - if cell[:resources].empty?
+                    - rider = row[0][:resources][0]
+                    - day_offset =  ( (j-1) * 7 )/14
+                    - hour_offset = (j+2)%2 == 1 ? 12 : 18
+                    - start = @week.start + day_offset.days + hour_offset.hours
+                    / - if j == 1
+                    /   - raise start.inspect
+                    - end_ = start + 6.hours
+                    - path = new_rider_conflict_path(rider, base_path: @base_path, start: start, :end => end_)
+                    = link_to cell[:values][0], path
+                    / , start: start }
+                  - else 
+                    - cell[:values].each_with_index do |value, i|
+                      %div
+                      - resource = cell[:resources][i]
+                      - case resource.class.name
+                      - when 'Shift' 
+                        - path = edit_shift_assignment_path resource, resource.assignment, base_path: @base_path
+                      - when 'Conflict'
+                        - path = edit_conflict_path resource, base_path: @base_path
+                      .checkbox
+                        = cell_checkbox cell[:checkboxes][i]
+                      = link_to value, path
+                      / , base_path: @base_path
+                

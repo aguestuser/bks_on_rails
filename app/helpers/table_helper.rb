@@ -21,6 +21,10 @@ module TableHelper
     end
   end
 
+  def cell_checkbox checkbox_hash
+    check_box_tag( checkbox_hash[:name], checkbox_hash[:val] )
+  end
+
   def grid_sortable(column, title)
     css_class = column == @sort_key ? "current #{@sort_dir}" : nil
     direction = column == @sort_key && @sort_dir == "asc" ? "desc" : "asc"
