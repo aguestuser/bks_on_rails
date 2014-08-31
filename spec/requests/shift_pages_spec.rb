@@ -513,7 +513,6 @@ describe "Shift Requests" do
           describe "executing batch create" do
             before do 
               click_button 'Save changes' 
-              click_link 'Time'
             end
 
             it "should create 3 new shifts" do
@@ -538,7 +537,159 @@ describe "Shift Requests" do
     end  
 
     describe "BATCH EDIT" do
+      before { batch.each(&:save) }
+      let(:rider){ FactoryGirl.create(:rider) }
+      let(:other_rider){ FactoryGirl.create(:rider) }
+      
+      describe "from list" do
+        before do 
+          visit shifts_path
+          filter_shifts_by_time_inclusively 
+        end
+
+        describe "index page" do
+          it { should have_button 'Batch Edit' }
+          it { should have_button 'Batch Assign' }
           
+          it "should have correct form action" do
+            expect(page.find("form.batch")['action']).to eq '/shift/batch_edit'
+          end
+          
+          it "should have correct checkbox id values" do
+            expect(page.all("#ids_")[0]['value']).to eq batch[0].id.to_s
+            expect(page.all("#ids_")[1]['value']).to eq batch[1].id.to_s
+            expect(page.all("#ids_")[2]['value']).to eq batch[2].id.to_s
+          end 
+        end 
+
+        describe "batch edit shift page" do
+          before do
+            page.all("#ids_")[0].set true
+            page.all("#ids_")[1].set true
+            page.all("#ids_")[2].set true
+            click_button 'Batch Edit', match: :first
+          end
+
+          describe "page contents" do 
+            it "should have correct uri" do 
+              expect(current_path).to eq "/shift/batch_edit"
+              expect(URI.parse(current_url).to_s).to include("&ids[]=#{batch[0].id}&ids[]=#{batch[1].id}&ids[]=#{batch[2].id}&commit=Batch+Edit")
+            end
+            
+            it { should have_h1 'Batch Edit Shifts' }
+            it { should have_content(restaurant.name) }
+
+            it "should have correct start dates" do
+              expect(page.all("#shifts__start_day")[0].find('option[selected]').text).to eq batch[0].start.day.to_s
+              expect(page.all("#shifts__start_day")[1].find('option[selected]').text).to eq batch[1].start.day.to_s
+              expect(page.all("#shifts__start_day")[2].find('option[selected]').text).to eq batch[2].start.day.to_s
+            end
+
+            describe "executing batch edit" do
+              before do  
+                page.all("#shifts__start_hour")[0].select '6 AM'
+                page.all("#shifts__start_hour")[1].select '7 AM'
+                page.all("#shifts__start_hour")[2].select '8 AM'
+                click_button 'Save changes'
+              end
+
+              describe "after editing" do
+
+                it "should have correct URI" do
+                  expect(current_path).to eq "/shifts/"
+                end
+
+                describe "index page" do
+                  before { filter_shifts_by_time_inclusively }
+
+                  it "should show new values of edited shifts" do
+                    expect(page.find("#row_1_col_2").text).to include '6:00AM'
+                    expect(page.find("#row_2_col_2").text).to include '7:00AM'
+                    expect(page.find("#row_3_col_2").text).to include '8:00AM'
+                  end
+                end
+              end
+            end
+          end
+        end
+
+        describe "batch edit assignment page" do
+          before do
+            other_rider
+            page.all("#ids_")[0].set true
+            page.all("#ids_")[1].set true
+            page.all("#ids_")[2].set true
+            click_button 'Batch Assign', match: :first
+          end
+
+          describe "page contents" do 
+            it "should have correct uri" do 
+              expect(current_path).to eq "/shift/batch_edit"
+              expect(URI.parse(current_url).to_s).to include("&ids[]=#{batch[0].id}&ids[]=#{batch[1].id}&ids[]=#{batch[2].id}&commit=Batch+Assign")
+            end
+            
+            it { should have_h1 'Batch Assign Shifts' }
+            it { should have_content(restaurant.name) }
+
+            it "should have correct assignment values" do
+              expect(page.all("#assignments__rider_id")[0].find('option[selected]').text).to eq batch[0].rider.name
+              expect(page.all("#assignments__rider_id")[1].find('option[selected]').text).to eq batch[1].rider.name
+              expect(page.all("#assignments__rider_id")[2].find('option[selected]').text).to eq batch[2].rider.name
+
+              expect(page.all("#assignments__status")[0].find('option[selected]').text).to eq batch[0].assignment.status.text
+              expect(page.all("#assignments__status")[1].find('option[selected]').text).to eq batch[1].assignment.status.text
+              expect(page.all("#assignments__status")[2].find('option[selected]').text).to eq batch[2].assignment.status.text
+            end
+          end
+
+          describe "executing batch assignment edit" do
+            before do  
+              page.all("#assignments__rider_id")[0].select other_rider.name
+              page.all("#assignments__rider_id")[1].select other_rider.name
+              page.all("#assignments__rider_id")[2].select other_rider.name
+
+              page.all("#assignments__status")[0].select AssignmentStatus::Proposed.new.text
+              page.all("#assignments__status")[1].select AssignmentStatus::Proposed.new.text
+              page.all("#assignments__status")[2].select AssignmentStatus::Proposed.new.text
+
+              click_button 'Save changes'
+            end
+
+            describe "after editing" do
+              
+              it "should redirect to the correct page" do
+                expect(current_path).to eq "/shifts/"
+              end
+
+              describe "index page" do
+                before { filter_shifts_by_time_inclusively }
+
+                it "should show new values of edited shifts" do
+                  expect(page.find("#row_1_col_3").text).to eq other_rider.name
+                  expect(page.find("#row_2_col_3").text).to eq other_rider.name
+                  expect(page.find("#row_3_col_3").text).to eq other_rider.name
+
+                  expect(page.find("#row_1_col_4").text).to eq AssignmentStatus::Proposed.new.text
+                  expect(page.find("#row_2_col_4").text).to eq AssignmentStatus::Proposed.new.text
+                  expect(page.find("#row_3_col_4").text).to eq AssignmentStatus::Proposed.new.text
+
+                end
+              end              
+            end
+          end
+        end
+      end 
+
+      # describe "from grid" do
+      #   before do 
+      #     visit shift_grid_path
+
+      #   end 
+
+      #   describe "page contents" do
+          
+      #   end
+      # end 
     end  
   end
 end
