@@ -3,7 +3,7 @@
   
 
   .span10.offset2
-    = form_tag '/grid/'<<params[:action], method: :get do
+    = form_tag '/grid/'<<params[:action], :class => 'filter', method: :get do
       /Start
       = render '/shared/datepicker', name: 'filter[start]', start_i: @week.start.to_i, start_str: @week.start.strftime("%B %e, %Y")
 

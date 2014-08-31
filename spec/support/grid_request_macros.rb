@@ -114,4 +114,11 @@ module GridRequestMacros
       "[NA] #{record.grid_time}"
     end
   end
+
+  def filter_grid_for_jan_2014
+    fill_in 'filter[start]', with: 'December 30, 2013'
+    click_button 'Filter'
+  end
+
+
 end

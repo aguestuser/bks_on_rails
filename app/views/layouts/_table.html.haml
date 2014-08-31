@@ -7,19 +7,20 @@
   /Data Rows
   - table.rows.each_with_index do |row, i|
     .row
-      /Checkboxes (optional)
-      .checkbox
-        = checkbox_if_checkable row
-      /Cells
-      - row[:cells].each_with_index do |cell, j|
-        %div{ id: "row_#{i+1}_col_#{j+1}", :class => "span#{table.spans[j]}" }
-          = link_if_linkable cell
-      /Action Dropdown
-      .span1.action.dropdown
-        %a.dropdown-toggle{"data-toggle" => "dropdown", :href => "#"}
-          Action
-          %b.caret
-        /Action Options
-        %ul.dropdown-menu
-          - row[:actions].each do |action|
-            %li= link_to action[:val], action[:href], method: action[:method], data: action[:data]
+      %div{ id: "row_#{i+1}" }
+        /Checkboxes (optional)
+        .checkbox
+          = checkbox_if_checkable row
+        /Cells
+        - row[:cells].each_with_index do |cell, j|
+          %div{ id: "row_#{i+1}_col_#{j+1}", :class => "span#{table.spans[j]}" }
+            = link_if_linkable cell
+        /Action Dropdown
+        .span1.action.dropdown
+          %a.dropdown-toggle{"data-toggle" => "dropdown", :href => "#"}
+            Action
+            %b.caret
+          /Action Options
+          %ul.dropdown-menu
+            - row[:actions].each do |action|
+              %li= link_to action[:val], action[:href], method: action[:method], data: action[:data]

@@ -4,7 +4,7 @@
     = render 'grid/filter_form.html.haml'
   /Batch Edit Form Wrapper
   .row.batch_form
-    = form_tag '/shift/batch_edit', method: :get do 
+    = form_tag '/shift/batch_edit', :class => 'batch', method: :get do 
       /Submit Buttons
       .center
         = submit_tag 'Batch Assign', class: 'btn btn-primary' 

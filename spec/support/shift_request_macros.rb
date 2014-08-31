@@ -136,4 +136,19 @@ module ShiftRequestMacros
     click_button 'Filter'
   end
 
+  def check_batch_assign_uri
+    expect(current_path).to eq "/shift/batch_edit"
+    expect(URI.parse(current_url).to_s).to include("&ids[]=#{batch[0].id}&ids[]=#{batch[1].id}&ids[]=#{batch[2].id}&commit=Batch+Assign")
+  end
+
+  def check_batch_assign_select_values
+    expect(page.all("#assignments__rider_id")[0].find('option[selected]').text).to eq batch[0].rider.name
+    expect(page.all("#assignments__rider_id")[1].find('option[selected]').text).to eq batch[1].rider.name
+    expect(page.all("#assignments__rider_id")[2].find('option[selected]').text).to eq batch[2].rider.name
+
+    expect(page.all("#assignments__status")[0].find('option[selected]').text).to eq batch[0].assignment.status.text
+    expect(page.all("#assignments__status")[1].find('option[selected]').text).to eq batch[1].assignment.status.text
+    expect(page.all("#assignments__status")[2].find('option[selected]').text).to eq batch[2].assignment.status.text
+  end
+
 end
