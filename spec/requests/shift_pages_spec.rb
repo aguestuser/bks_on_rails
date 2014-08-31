@@ -456,4 +456,92 @@ describe "Shift Requests" do
       end
     end
   end
+
+  describe "BATCH REQUESTS" do
+    before { restaurant }
+    
+    let!(:old_count){ Shift.count }
+
+    let(:start_t){ Time.zone.local(2014,1,1,12) }
+    let(:end_t){ Time.zone.local(2014,1,1,18) }
+
+    let(:batch)do
+      3.times.map do |n|
+        FactoryGirl.build(:shift, :with_restaurant, restaurant: restaurant, start: start_t + n.days, :end => end_t + n.days)
+      end
+    end
+    subject { page }
+    
+    describe "BATCH CREATE" do
+      
+      describe "clone page" do 
+        before { visit '/shift/clone_new' }
+
+        describe "page contents" do
+          
+          it { should have_h1('Batch Create Shifts -- Base Shift') }
+          it "should have correct shift form labels" do 
+            check_shift_form_contents 'root' 
+          end
+          it "should have correct batch shift selects" do
+            check_batch_shift_selects
+          end
+          it { should have_label 'Number of Clones to Make:' }
+          it { should have_select 'num_shifts' }
+        end
+        
+        describe "batch create page" do
+          before { make_base_shift }
+
+          describe "page contents" do
+            
+            it "should have correct uri" do 
+              expect(current_path).to eq "/shift/batch_new"
+              expect(URI.parse(current_url).to_s).to include("?utf8=%E2%9C%93&shifts[][id]=&shifts[][restaurant_id]=#{restaurant.id}")
+            end
+            
+            it { should have_h1 'Batch Create Shifts' }
+            it { should have_content(restaurant.name) }
+
+            it "should have correct start dates" do
+              expect(page.all("#shifts__start_day")[0].find('option[selected]').text).to eq batch[0].start.day.to_s
+              expect(page.all("#shifts__start_day")[1].find('option[selected]').text).to eq batch[1].start.day.to_s
+              expect(page.all("#shifts__start_day")[2].find('option[selected]').text).to eq batch[2].start.day.to_s
+            end
+          end
+
+          describe "executing batch create" do
+            before do 
+              click_button 'Save changes' 
+              click_link 'Time'
+            end
+
+            it "should create 3 new shifts" do
+              expect(Shift.count).to eq old_count + 3
+            end
+            it "should have correct URI" do 
+              expect(current_path).to include '/shifts'
+            end
+
+            describe "shift listings" do
+              before { filter_shifts_by_time_inclusively }
+              
+              it "should show new shifts" do
+                expect(page.find("#row_1_col_2").text).to eq batch[0].table_time
+                expect(page.find("#row_2_col_2").text).to eq batch[1].table_time
+                expect(page.find("#row_3_col_2").text).to eq batch[2].table_time
+              end
+            end
+          end     
+        end 
+      end
+    end  
+
+    describe "BATCH EDIT" do
+          
+    end  
+  end
 end
+
+
+

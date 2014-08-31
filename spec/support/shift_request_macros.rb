@@ -14,6 +14,40 @@ module ShiftRequestMacros
     end
   end
 
+  def check_batch_shift_selects
+    expect(page).to have_select("shifts[][restaurant_id]")
+    expect(page).to have_select("shifts[][urgency]")
+    expect(page).to have_select("shifts[][billing_rate]")
+    expect(page).to have_select("shifts[][start][year]")
+    expect(page).to have_select("shifts[][start][month]")
+    expect(page).to have_select("shifts[][start][day]")
+    expect(page).to have_select("shifts[][start][hour]")
+    expect(page).to have_select("shifts[][start][minute]")
+    expect(page).to have_select("shifts[][end][year]")
+    expect(page).to have_select("shifts[][end][month]")
+    expect(page).to have_select("shifts[][end][day]")
+    expect(page).to have_select("shifts[][end][hour]")
+    expect(page).to have_select("shifts[][end][minute]")
+  end
+
+  def make_base_shift
+    select batch[0].restaurant.name, from: "shifts[][restaurant_id]"
+    select batch[0].urgency.text , from: "shifts[][urgency]" 
+    select batch[0].billing_rate.text , from: "shifts[][billing_rate]" 
+    select '2014' , from: "shifts[][start][year]" 
+    select 'January' , from: "shifts[][start][month]" 
+    select '1' , from: "shifts[][start][day]" 
+    select '12 PM', from: "shifts[][start][hour]" 
+    select '00' , from: "shifts[][start][minute]" 
+    select '2014' , from: "shifts[][end][year]" 
+    select 'January' , from: "shifts[][end][month]" 
+    select '1' , from: "shifts[][end][day]" 
+    select '6 PM', from: "shifts[][end][hour]" 
+    select '00' , from: "shifts[][end][minute]"  
+    select 3, from: "num_shifts"
+    click_button 'Clone'
+  end
+
   def make_invalid_shift_submission
     select '09 AM', from: 'shift_start_4i'
     select '08 AM', from: 'shift_end_4i'
