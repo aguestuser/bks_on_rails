@@ -1,7 +1,5 @@
-- shift_ref = @shifts.count > 1 ? "shifts" : "shift"
-
 %p
-  We'd like to offer you the following extra #{shift_ref}:
+  = @offering
 %table
   %tr
     %th
@@ -14,6 +12,8 @@
         = shift.table_time
       %td
         = shift.restaurant.name
+%p
+  = @confirmation_request
 
 = render 'mailer/signature'
 = render 'briefs'
