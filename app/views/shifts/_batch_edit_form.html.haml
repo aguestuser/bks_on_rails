@@ -1,11 +1,12 @@
 - #args: header, action, fields
 
 %h1 #{header}
-.span8.offset2
+.span8.offset2.profile
   = form_tag action, method: :post do
     = render 'shared/batch_error_messages', errors: @errors
     - @shifts.each_with_index do |shift, i|
-      .profile
+      - id_str = shift.id ? "shift_#{shift.id}" : "shift_nil_#{i}"  
+      %div{ id: id_str }
         %h3 Shift #{i+1}
         = render fields, shift: shift, new_shift: false
     %p.center
