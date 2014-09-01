@@ -12,7 +12,8 @@ module Contactable
   end
 
   def first_name
-    self.contact.name.match(/^[A-Z](\w|\.)*\s/)[0].strip
+    match = self.contact.name.match(/^[A-Z](\w|\.)*\s/)
+    match ? match[0].strip : self.contact.name 
   end
 
   def short_name

@@ -13,10 +13,8 @@ class RiderMailer < ActionMailer::Base
 
   def staffer
     Staffer.tess
-    # if current_user
-    #   if current_user.account_type == 'Staffer' 
-    #     current_user
-    #   end
+    # if current_user && current_user.account_type == 'Staffer' 
+    #   current_user
     # else
     #   Staffer.tess
     # end
