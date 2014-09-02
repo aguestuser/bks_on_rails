@@ -83,7 +83,7 @@ class ShiftsController < ApplicationController
 
   def batch_edit
     if params[:ids]
-      load_shift_batch
+      load_shift_batch # loads @shifts
       route_batch_edit params[:commit]
     else
       flash[:error] = "Oops! Looks like you didn't select any shifts to batch edit."
@@ -93,15 +93,33 @@ class ShiftsController < ApplicationController
     end
   end
 
-  def batch_update_shifts
-    parse_shift_batch
-    batch_update Shift, @shifts
+  def route_batch_edit commit
+    @errors = []
+    case commit
+    when 'Batch Edit'
+      render 'batch_edit' 
+    when 'Batch Assign'
+      load_assignment_batch # loads @assignments
+      render 'assignments/batch_edit'
+    end
   end
 
-  def batch_update_assignments
-    parse_assignment_batch
-    batch_update Assignment, @assignments
+  def batch_update
+    parse_shift_batch # loads @shifts
+    @errors = Shift.batch_update(@shifts, params[:shifts])
+
+    if @errors.empty?
+      flash[:success] = "Shifts successfully batch edited"
+      redirect_to @base_path
+    else
+      render "batch_edit"
+    end
   end
+
+  # def batch_update_assignments
+  #   parse_assignment_batch
+  #   batch_update Assignment, @assignments
+  # end
 
   private  
 
@@ -187,35 +205,26 @@ class ShiftsController < ApplicationController
       @assignments = @shifts.map(&:assignment)
     end
 
-    def parse_assignment_batch
-      @assignments = Assignment.where("id IN (:ids)", { ids: params[:assignments].map{ |a| a[:id] } } )
-      # raise @assignments.inspect
-    end  
+    # def parse_assignment_batch
+    #   @assignments = Assignment.where("id IN (:ids)", { ids: params[:assignments].map{ |a| a[:id] } } )
+    #   # raise @assignments.inspect
+    # end  
 
-    def route_batch_edit commit
-      @errors = []
-      case commit
-      when 'Batch Edit'
-        render 'batch_edit_shifts' 
-      when 'Batch Assign'
-        load_assignment_batch
-        render 'batch_edit_assignments'
-      end
-    end
 
-    def batch_update klass, resources
-      name = klass.name.pluralize
-      key = name.downcase.to_sym
 
-      @errors = klass.batch_update(resources, params[key])
+    # def batch_update klass, resources
+    #   name = klass.name.pluralize
+    #   key = name.downcase.to_sym
 
-      if @errors.empty?
-        flash[:success] = "#{name} successfully batch edited"
-        redirect_to @base_path
-      else
-        render "batch_edit_#{name.downcase}"
-      end
-    end
+    #   @errors = klass.batch_update(resources, params[key])
+
+    #   if @errors.empty?
+    #     flash[:success] = "#{name} successfully batch edited"
+    #     redirect_to @base_path
+    #   else
+    #     render "batch_edit_#{name.downcase}"
+    #   end
+    # end
 
     # VIEW INTERACTION HELPERS
 

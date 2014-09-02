@@ -4,7 +4,7 @@
 .span8.offset2
   = form_tag 'batch_new', method: :get do
     = render 'shared/batch_error_messages', errors: @errors
-    = render 'batch_shift_fields', new_shift: true
+    = render 'batch_fields', new_shift: true
     %hr/
     = label_tag :num_shifts, "Number of Clones to Make:"
     = select_tag "num_shifts", options_for_select(num_select_options(1,20), 1)

@@ -3,7 +3,7 @@ class AssignmentsController < ApplicationController
 
   # NOTE: always call through shift_assignment_path, NEVER call directly through assignment_path
 
-  before_action :load_shift
+  before_action :load_shift, only: [ :show, :edit, :update, :destroy ]
   before_action :load_assignment, only: [ :show, :edit, :update, :destroy ]
   before_action :load_caller # will call load_restaurant or load_rider if applicable, load_paths always
   before_action :load_base_path
@@ -50,7 +50,27 @@ class AssignmentsController < ApplicationController
   def override_conflict
   end
 
+  def batch_edit
+    load_shift_batch # loads @shifts
+    load_assignment_batch #loads @assignments
+    render 
+  end
+
+  def batch_update
+    parse_assignment_batch # loads @assignments
+    @errors = Assignment.batch_update(@assignments, params[:assignments])
+
+    if @errors.empty?
+      flash[:success] = "Assignments successfully batch edited"
+      redirect_to @base_path
+    else
+      render "assignments/batch_edit"
+    end
+  end
+
   private 
+
+    #CRUD HELPERS
 
     def load_shift
       @shift = Shift.find(params[:shift_id])
@@ -84,24 +104,6 @@ class AssignmentsController < ApplicationController
 
     def load_rider
       @rider = Rider.find(params[:rider_id])
-    end
-
-    def load_form_args
-      case @caller
-      when :restaurant
-        @form_args = [ @restaurant, @shift, @assignment ]
-      when :rider
-        @form_args = [ @rider, @shift, @assignment ]
-      when nil
-        @form_args = [ @shift, @assignment ]
-      end
-    end 
-
-    def redirect_to_rider_shifts
-      if @caller == :rider
-        flash[:error] = "You can't create an assignment from a list of rider shifts. Try again from the shifts index or a list of restaurant shifts."
-        redirect_to index_path
-      end
     end
 
     def attempt_save_from action
@@ -166,6 +168,42 @@ class AssignmentsController < ApplicationController
         true
       else
         !@assignment.shift.double_books_with? @other_shifts
+      end
+    end
+
+    # BATCH CRUD HELPERS
+
+    def load_shift_batch
+      @shifts = Shift.where("id IN (:ids)", { ids: params[:ids] } ).order(:start)
+    end
+
+    def load_assignment_batch
+      @assignments = @shifts.map(&:assignment)
+    end
+
+    def parse_assignment_batch
+      @assignments = Assignment.where("id IN (:ids)", { ids: params[:assignments].map{ |a| a[:id] } } )
+      # raise @assignments.inspect
+    end  
+
+
+    # VIEW INTERACTION HELPERS
+
+    def load_form_args
+      case @caller
+      when :restaurant
+        @form_args = [ @restaurant, @shift, @assignment ]
+      when :rider
+        @form_args = [ @rider, @shift, @assignment ]
+      when nil
+        @form_args = [ @shift, @assignment ]
+      end
+    end 
+
+    def redirect_to_rider_shifts
+      if @caller == :rider
+        flash[:error] = "You can't create an assignment from a list of rider shifts. Try again from the shifts index or a list of restaurant shifts."
+        redirect_to index_path
       end
     end
 

@@ -1,19 +1,5 @@
 - provide(:title, 'Shifts')
 
-/Args
-/ - case @caller
-/ - when :restaurant
-/   - header = "Shifts for #{@restaurant.name}"
-/   - span = 'span8 offset2'
-/   - entity = @restaurant
-/ - when :rider
-/   - header = "Assignments for #{@rider.contact.name}"
-/   - span = 'span8 offset2'
-/   - entity = @rider
-/ - when nil
-/   - header = "Shifts"
-/   - span = "span10 offset1"
-
 /Arguments
 - if @caller
   - header_suffix = "for #{@caller_obj.name}"
