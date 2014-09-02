@@ -116,11 +116,6 @@ class ShiftsController < ApplicationController
     end
   end
 
-  # def batch_update_assignments
-  #   parse_assignment_batch
-  #   batch_update Assignment, @assignments
-  # end
-
   private  
 
     #CRUD HELPERS
