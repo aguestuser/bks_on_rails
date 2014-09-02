@@ -58,14 +58,45 @@ class AssignmentsController < ApplicationController
 
   def batch_update
     parse_assignment_batch # loads @assignments
+    @old_assignments = @assignments.map { |a| Assignment.new(a.attributes) }
     @errors = Assignment.batch_update(@assignments, params[:assignments])
 
     if @errors.empty?
-      flash[:success] = "Assignments successfully batch edited"
+      email_alert = send_batch_emails == 0 ? "" : " -- #{send_batch_emails} emails sent"
+      flash[:success] = "Assignments successfully batch edited" << email_alert
       redirect_to @base_path
     else
       render "assignments/batch_edit"
     end
+  end
+
+  def send_batch_emails 
+    #input: @assignments, @old_assignments (implicit)
+    #does: 
+      # (1) constructs array of newly delegated shifts
+      # (2) parses list of shifts into sublists for each rider
+      # (3) parses list of shifts for restaurants
+      # (4) [ SIDE EFFECT ] sends batch shift delegation email to each rider using params built through (1), (2), and (3)
+    #output: Int (count of emails sent)
+
+    rider_shifts = RiderShifts.new(batch_delegations).array # (1), (2), (3)
+    rider_shifts.each do |rs| # (4)
+      RiderMailer.delegation_email( rs[:rider], rs[:shifts], rs[:restaurants], current_account )
+    end
+    rider_shifts.count
+  end
+
+
+
+  def batch_delegations
+    #input: @assignments, @old_assignments (implicit)
+    #does: builds array of assignments that the update action just delegated
+    #output: Arr of new delegations
+    delegations = []
+    @assignments.each_with_index do |a, i| 
+      delegations.push(a) if a.status == :delegated && @old_assignments[i] != :delegated
+    end
+    delegations
   end
 
   private 
@@ -140,7 +171,7 @@ class AssignmentsController < ApplicationController
 
     def send_email 
       if @assignment.status == :delegated && ( @old_assignment.status != :delegated || @old_assignment.rider != @assignment.rider )
-        RiderMailer.delegation_email(@assignment.rider, [ @assignment.shift ], current_account, Time.zone.now).deliver
+        RiderMailer.delegation_email(@assignment.rider, [ @assignment.shift ], [@assignment.restaurant] current_account, Time.zone.now).deliver
         true
       else 
         false
