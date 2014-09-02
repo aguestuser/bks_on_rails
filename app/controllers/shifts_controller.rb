@@ -139,6 +139,7 @@ class ShiftsController < ApplicationController
         @caller = nil
         load_restaurants
       end
+      # raise @caller.inspect
     end   
 
     def load_restaurant

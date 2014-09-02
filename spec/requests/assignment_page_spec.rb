@@ -1,8 +1,5 @@
 require 'spec_helper'
-include CustomMatchers
-include RequestSpecMacros
-include AssignmentRequestMacros
-include ShiftRequestMacros
+include CustomMatchers, RequestSpecMacros, AssignmentRequestMacros, ShiftRequestMacros
 
 describe "Assignment Requests" do
   let(:staffer) { FactoryGirl.create(:staffer) }
@@ -96,7 +93,7 @@ describe "Assignment Requests" do
           before { click_button 'Save changes' }
 
           its(:current_path){ should eq "/riders/#{shift.rider.id}/shifts/" }
-          it { should have_h1 "Assignments for #{shift.rider.name}" }          
+          it { should have_h1 "Shifts for #{shift.rider.name}" }          
         end
       end
     end    
@@ -499,7 +496,7 @@ describe "Assignment Requests" do
           subject { page }
 
           it { should have_success_message("Assignment updated (Rider: #{rider.name}, Status: Cancelled (Rider))") }
-          it { should have_h1("Assignments for #{rider.name}") }
+          it { should have_h1("Shifts for #{rider.name}") }
         end
       end
     end

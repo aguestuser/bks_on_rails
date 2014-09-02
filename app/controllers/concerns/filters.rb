@@ -97,6 +97,7 @@ module Filters
         #input: Symbol (:load or :request), Hash of filter params (optional)
         #does: retrieves correct filter query based on context and appends it to hash
         #output: Hash of filter key/value pairs to be appended to master filter hash
+        
         if @caller == :restaurant
           value = [ @restaurant.id ]
         else

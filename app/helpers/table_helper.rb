@@ -22,7 +22,7 @@ module TableHelper
   end
 
   def cell_checkbox checkbox_hash
-    check_box_tag( checkbox_hash[:name], checkbox_hash[:val] )
+    check_box_tag( checkbox_hash[:name], checkbox_hash[:val] ) if checkbox_hash
   end
 
   def grid_sortable(column, title)

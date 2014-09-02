@@ -12,13 +12,17 @@
         = label_tag :end, 'End'
         = select_date @filter[:end], prefix: 'filter[end]'
       /Restaurant
-      - unless @caller == :restaurant
+      - if @caller == :restaurant
+        = hidden_field_tag :restaurant_id, "#{@restaurant.id}"
+      - else
         .span2
           = label_tag :restaurants, 'Restaurants'
           / = select_tag "filter[restaurants]", options_from_collection_for_select(Restaurant.includes(:mini_contact).order('mini_contacts.name asc'), :id, :name, selected: @filter[:restaurants] ), multiple: true, class: 'multi_select'
           = select_tag "filter[restaurants]", options_for_select(Restaurant.includes(:mini_contact).order('mini_contacts.name asc').map{ |r| [ r.name, r.id ] }, @filter[:restaurants] ), multiple: true, class: 'multi_select'
       /Rider
-      - unless @caller == :rider
+      - if @caller == :rider
+        = hidden_field_tag :rider_id, "#{@rider.id}"
+      - else
         .span2
           = label_tag :riders, 'Riders'
           = select_tag "filter[riders]", options_for_select(Rider.includes(:contact).order('contacts.name asc').map{ |r| [ r.name, r.id ] } << [ '--', 0 ] , @filter[:riders] ), multiple: true, class: 'multi_select'

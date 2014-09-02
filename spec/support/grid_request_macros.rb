@@ -3,11 +3,8 @@ module GridRequestMacros
     let(:monday){ Time.zone.local(2014, 1, 6, 0) }
     let(:sunday){ monday + 6.days }
 
-    let(:mini_contact){ FactoryGirl.create(:mini_contact, name: 'A'*10) }
-    let(:other_mini_contact){ FactoryGirl.create(:mini_contact, name: 'z'*10) }
-
-    let(:restaurant){ FactoryGirl.create(:restaurant, mini_contact: mini_contact) }
-    let(:other_restaurant){ FactoryGirl.create(:restaurant, mini_contact: other_mini_contact) }
+    let!(:restaurant){ FactoryGirl.create(:restaurant) }
+    let!(:other_restaurant){ FactoryGirl.create(:restaurant) }
 
     let!(:shifts) do
       7.times.map do |n|
@@ -47,18 +44,19 @@ module GridRequestMacros
     end
 
     let(:shift_week){ Week.new( monday, sunday, Shift ) }
+
+    before do 
+      restaurant.mini_contact.update(name: 'A'*10)
+      other_restaurant.mini_contact.update(name: 'z'*10)
+    end
   end
 
-  def select_first_week_of_2014 grid_type
+  def select_first_week_of_2014
 
-    visit "/grid/"+grid_type+"?utf8=%E2%9C%93&filter%5Bstart%5D=January+06%2C+2014&end=%7B%3Avalue%3D%3ESun%2C+17+Aug+2014+23%3A59%3A00+EDT+-04%3A00%7D&commit=Filter"
+    # visit "/grid/"+grid_type+"?utf8=%E2%9C%93&filter%5Bstart%5D=January+06%2C+2014&end=%7B%3Avalue%3D%3ESun%2C+17+Aug+2014+23%3A59%3A00+EDT+-04%3A00%7D&commit=Filter"
     #set start filter
-    # select '2014', from: 'filter_start_year'
-    # select 'January', from: 'filter_start_month'
-    # select '6', from: 'filter_start_day'
-    
-  
-    # click_button 'Filter'
+    fill_in "filter[start]", with: "January 6, 2014"
+    click_button 'Filter'
   end
 
   def shift_grid_cell_text_for shift
@@ -68,8 +66,8 @@ module GridRequestMacros
   def load_avail_grid_vars
     load_shift_week_vars
 
-    let(:rider){ FactoryGirl.create(:rider) }
-    let(:other_rider){ FactoryGirl.create(:rider) }
+    let!(:rider){ FactoryGirl.create(:rider) }
+    let!(:other_rider){ FactoryGirl.create(:rider) }
 
     let!(:extra_shift) do
       FactoryGirl.create(:shift, 
@@ -89,6 +87,14 @@ module GridRequestMacros
         )
       end
     end
+
+    before do
+      shifts.each { |s| s.assign_to rider }
+      other_shifts.each { |s| s.unassign }
+      extra_shift.assign_to rider
+      rider.contact.update(name: 'A'*10)
+      other_rider.contact.update(name: 'z'*10)
+    end
   end
 
   def configure_avail_grid_vars
@@ -96,7 +102,7 @@ module GridRequestMacros
     extra_shift.assign_to rider
     rider.contact.update(name: 'A'*10)
     other_rider.contact.update(name: 'z'*10)
-    restaurant.mini_contact.update(name: 'A'*10)
+    # restaurant.mini_contact.update(name: 'A'*10)
   end
 
   def check_grid_filter_form_contents

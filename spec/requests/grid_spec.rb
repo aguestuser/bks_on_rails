@@ -17,7 +17,7 @@ describe "Grid Requests" do
     describe "page contents" do
       before do
         visit shift_grid_path
-        select_first_week_of_2014 'shifts'
+        select_first_week_of_2014
         # puts page.find("/table/tr[2]/td[2]").text
       end
 
@@ -84,9 +84,9 @@ describe "Grid Requests" do
     load_avail_grid_vars
 
     before do 
-      configure_avail_grid_vars
+      # configure_avail_grid_vars
       visit availability_grid_path
-      select_first_week_of_2014 'availability'
+      select_first_week_of_2014
     end
     
     let!(:last_row){ Rider.all.count }
@@ -150,7 +150,7 @@ describe "Grid Requests" do
         expect( page.find( "#row_#{last_row}_col_14" ).text ).to eq 'AVAIL'
         expect( page.find( "#row_#{last_row}_col_15" ).text ).to eq 'AVAIL'
       end
-    end
+    end # "page contents"
 
     describe "links" do
 
@@ -195,9 +195,7 @@ describe "Grid Requests" do
           it { should eq '/grid/availability' }
         end        
       end
-
-
-    end
+    end # "links"
 
     describe "SORTING" do
 
@@ -236,7 +234,7 @@ describe "Grid Requests" do
         describe "ascending" do
           before { click_link 'Mon PM' }
 
-          it "should sort other_rider to top and rider to bottom" do
+          it "should sort rider to top and other_rider to bottom" do
             expect( page.find( "#row_1_col_1" ).text ).to eq rider.name
             expect( page.find( "#row_#{last_row}_col_1" ).text ).to eq other_rider.name
           end
