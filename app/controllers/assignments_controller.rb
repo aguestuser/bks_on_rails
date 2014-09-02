@@ -172,7 +172,7 @@ class AssignmentsController < ApplicationController
 
     def send_email 
       if @assignment.status == :delegated && ( @old_assignment.status != :delegated || @old_assignment.rider != @assignment.rider )
-        RiderMailer.delegation_email(@assignment.rider, [ @assignment.shift ], [ @assignment.restaurant ], current_account).deliver
+        RiderMailer.delegation_email(@assignment.rider, [ @assignment.shift ], [ @assignment.shift.restaurant ], current_account).deliver
         true
       else 
         false
