@@ -2,7 +2,7 @@ class DelegationEmailHelper
   attr_accessor :subject, :offering, :confirmation_request
 
   def initialize( shifts, type, now  )
-    type = type ? type : type_from(now, shifts.first.start)
+    type = type ? type : type_from(now, shifts.last.start)
     plural = shifts.count > 1
     adj = type.to_s
     noun = noun_from type, plural
@@ -16,7 +16,7 @@ class DelegationEmailHelper
 
   private
 
-    def type_from now, first_start
+    def type_from now, last_start
       time_gap = first_start - now
       if time_gap > 0 and time_gap <= 36.hours
         :emergency
