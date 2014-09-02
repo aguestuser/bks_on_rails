@@ -53,7 +53,7 @@ class AssignmentsController < ApplicationController
   def batch_edit
     load_shift_batch # loads @shifts
     load_assignment_batch #loads @assignments
-    render 
+    render 'batch_edit'
   end
 
   def batch_update
@@ -62,7 +62,8 @@ class AssignmentsController < ApplicationController
     @errors = Assignment.batch_update(@assignments, params[:assignments])
 
     if @errors.empty?
-      email_alert = send_batch_emails == 0 ? "" : " -- #{send_batch_emails} emails sent"
+      email_count = send_batch_emails
+      email_alert = email_count == 0 ? "" : " -- #{email_count} emails sent"
       flash[:success] = "Assignments successfully batch edited" << email_alert
       redirect_to @base_path
     else
@@ -81,7 +82,7 @@ class AssignmentsController < ApplicationController
 
     rider_shifts = RiderShifts.new(batch_delegations).array # (1), (2), (3)
     rider_shifts.each do |rs| # (4)
-      RiderMailer.delegation_email( rs[:rider], rs[:shifts], rs[:restaurants], current_account )
+      RiderMailer.delegation_email( rs[:rider], rs[:shifts], rs[:restaurants], current_account ).deliver
     end
     rider_shifts.count
   end
@@ -94,7 +95,7 @@ class AssignmentsController < ApplicationController
     #output: Arr of new delegations
     delegations = []
     @assignments.each_with_index do |a, i| 
-      delegations.push(a) if a.status == :delegated && @old_assignments[i] != :delegated
+      delegations.push(a) if a.status == :delegated && @old_assignments[i].status != :delegated
     end
     delegations
   end
@@ -171,7 +172,7 @@ class AssignmentsController < ApplicationController
 
     def send_email 
       if @assignment.status == :delegated && ( @old_assignment.status != :delegated || @old_assignment.rider != @assignment.rider )
-        RiderMailer.delegation_email(@assignment.rider, [ @assignment.shift ], [@assignment.restaurant] current_account, Time.zone.now).deliver
+        RiderMailer.delegation_email(@assignment.rider, [ @assignment.shift ], [ @assignment.restaurant ], current_account).deliver
         true
       else 
         false

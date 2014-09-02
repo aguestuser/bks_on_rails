@@ -51,9 +51,9 @@ module RiderMailerMacros
     end
   end
 
-  def load_delegation_email_scenario
-    let(:mail){ RiderMailer.delegation_email rider, shift }
-  end
+  # def load_delegation_email_scenario
+  #   let(:mail){ RiderMailer.delegation_email rider, shift }
+  # end
 
   def delegate shift
     visit edit_shift_assignment_path(shift, shift.assignment)
@@ -81,23 +81,23 @@ module RiderMailerMacros
     page.within("#row_4"){ find("#ids_").set true } 
     click_button 'Batch Assign', match: :first
     #batch assign shifts (first two shifts to rider, second two to other_rider)
-    page.within("#shift_#{extra_shifts[0].id}") do
+    page.within("#shift_#{shifts[0].id}") do
       find("#assignments__rider_id").select rider.name
       find("#assignments__status").select 'Delegated'
     end
-    page.within("#shift_#{extra_shifts[1].id}") do
+    page.within("#shift_#{shifts[1].id}") do
       find("#assignments__rider_id").select rider.name
       find("#assignments__status").select 'Delegated'
     end
-    page.within("#shift_#{extra_shifts[2].id}") do
+    page.within("#shift_#{shifts[2].id}") do
       find("#assignments__rider_id").select other_rider.name
       find("#assignments__status").select 'Delegated'
     end
-    page.within("#shift_#{extra_shifts[3].id}") do
+    page.within("#shift_#{shifts[3].id}") do
       find("#assignments__rider_id").select other_rider.name
       find("#assignments__status").select 'Delegated'
     end
-    click_button 'Save changes'
+    puts 'saved changes'
   end
 
   def check_shift_delegation_email_contents staffer, type, shift
@@ -106,6 +106,8 @@ module RiderMailerMacros
     expect(mail.from).to eq [ "brooklynshift@gmail.com" ]
     expect(mail.body.encoded.to_s).to eq expected_delegation_email_body(staffer, type, shift)
   end
+
+  def check_batch_delegation_email_contents staffer, type, 
 
   def expected_delegation_email_body staffer, type, shift
     signature = signature_from staffer

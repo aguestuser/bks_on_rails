@@ -67,16 +67,16 @@ describe "Rider Mailer Requests" do
         before { batch_delegate extra_shifts }
         let(:mails){ ActionMailer::Base.deliveries.last(2) }
 
-        it "should redirect to shifts page" do
-          expect(page).to have_h1 'Shifts'
-        end
-
         it "should send 2 emails" do
           expect( ActionMailer::Base.deliveries.count ).to eq mail_count + 2
         end
 
         it "should format emails correctly" do
           check_batch_delegation_email_contents :tess, :extra, extra_shifts
+        end
+
+        it "should redirect to shifts page" do
+          expect(page).to have_h1 'Shifts'
         end
       end # "for extra shifts"
 
