@@ -67,9 +67,9 @@ BksOnRails::Application.routes.draw do
   
   get "grid/shifts"
   match '/shift_grid', to: 'grid#shifts', via: 'get'
-
   get "grid/availability"
   match '/availability_grid', to: 'grid#availability', via: 'get'
+  post "grid/send_emails" => 'grid#send_emails'
 
   get 'assignments/override_conflict'
   get 'assignments/override_double_booking'

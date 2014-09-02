@@ -155,7 +155,7 @@ def make_restaurants
 
   def make_shifts
     Restaurant.all.each do |restaurant|
-      21.times do |n|
+      35.times do |n|
         start_1 = times(n)[0][:start]
         end_1 = times(n)[0][:end]
         start_2 = times(n)[1][:start]
@@ -242,7 +242,7 @@ end
 
 def make_assignments
   Restaurant.all.each do |restaurant|
-    restaurant.shifts.last(14).each do |shift|
+    restaurant.shifts.last(28).each do |shift|
       rider_id = Rider.all.sample.id
       status = pick_assignment_status
       shift.assignment.update(

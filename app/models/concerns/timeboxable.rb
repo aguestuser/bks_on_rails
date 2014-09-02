@@ -27,6 +27,10 @@ module Timeboxable
       self.start.strftime("%-m/%-d/%y")
     end
 
+    def very_short_time
+      self.start.strftime("%-m/%-d")
+    end
+
     def weekday
       self.start.strftime("%A")
     end

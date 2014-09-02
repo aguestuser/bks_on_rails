@@ -22,6 +22,20 @@ class GridController < ApplicationController
     # @base_path = '/grid/availability'
   end
 
+  def send_emails
+    assignments = Shift
+      .where("id IN (:shift_ids)", { shift_ids: params[:shift_ids].split.map(&:to_i) })
+      .map(&:assignment)
+    
+    rider_shifts = RiderShifts.new(assignments).array
+    rider_shifts.each do |rs|
+      RiderMailer.delegation_email( rs[:rider], rs[:shifts], rs[:restaurants], current_account, :weekly ).deliver
+    end
+
+    flash[:success] = "#{rider_shifts.count} emails sent"
+    redirect_to '/grid/shifts'
+  end
+
   private
 
     def load_subject

@@ -6,9 +6,10 @@ class DelegationEmailHelper
     plural = shifts.count > 1
     adj = type.to_s
     noun = noun_from type, plural
+    
 
-    @subject = subject_from adj, noun, shifts
-    @offering = "We'd like to offer you the following #{adj} #{noun}:"
+    @subject = subject_from adj, noun, shifts, type
+    @offering = offering_from adj, noun, type
     @confirmation_request = conf_req_from noun, type
 
   end
@@ -28,26 +29,47 @@ class DelegationEmailHelper
 
     def noun_from type, plural
       str = type == :weekly ? "schedule" : "shift"
-      str << "s" if plural
+      str << "s" if plural && type != :weekly
       str
     end
 
-    def subject_from adj, noun, shifts
-      "[" << adj.upcase << " " << noun.upcase << "] " << shift_descr_from(shifts)
+    def subject_from adj, noun, shifts, type
+      "[" << adj.upcase << " " << noun.upcase << "] " << shift_descr_from(shifts, type)
     end
 
-    def shift_descr_from shifts
-      if shifts.count > 1
-        shifts.map(&:table_time).join(', ')
-      else
-        shift = shifts.first
-        "#{shift.table_time} @ #{shift.restaurant.name}"
+    def shift_descr_from shifts, type
+      if type == :weekly
+        "-- PLEASE CONFIRM BY SUNDAY"
+      else 
+        if shifts.count > 1
+          shifts.map(&:very_short_time).join(', ')
+        else
+          shift = shifts.first
+          "#{shift.very_short_time} @ #{shift.restaurant.name}"
+        end
+      end
+    end
+
+    def offering_from adj, noun, type
+      offer_prefix = offer_prefix_from type
+      "#{offer_prefix} #{adj} #{noun}:"
+    end
+
+    def offer_prefix_from type
+      if type == :emergency
+        "As per our conversation, you are confirmed for the following"
+      else 
+        "We'd like to offer you the following"
       end
     end
 
     def conf_req_from noun, type
-      conf_time = conf_time_from type
-      "Please confirm whether you can work the #{noun} by #{conf_time}"
+      if type == :emergency
+        "Have a great shift!"
+      else 
+        conf_time = conf_time_from type
+        "Please confirm whether you can work the #{noun} by #{conf_time}"
+      end
     end
 
     def conf_time_from type
