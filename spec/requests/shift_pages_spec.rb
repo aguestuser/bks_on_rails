@@ -626,61 +626,112 @@ describe "Shift Requests" do
           click_button 'Batch Assign', match: :first
         end
 
-        describe "batch edit assignment page" do 
-          it "should have correct URI" do 
-            check_batch_assign_uri
-          end
+        describe "with standard batch edit" do
+          before { click_button 'Batch Assign', match: :first }
           
-          it { should have_h1 'Batch Assign Shifts' }
-          it { should have_content(restaurant.name) }
-
-          it "should have correct assignment values" do
+          describe "batch edit assignment page" do 
+            it "should have correct URI" do 
+              check_batch_assign_uri
+            end
             
-            expect(page.all("#assignments__rider_id")[0].find('option[selected]').text).to eq rider.name
-            expect(page.all("#assignments__rider_id")[1].find('option[selected]').text).to eq rider.name
-            expect(page.all("#assignments__rider_id")[2].find('option[selected]').text).to eq rider.name
+            it { should have_h1 'Batch Assign Shifts' }
+            it { should have_content(restaurant.name) }
 
-            expect(page.all("#assignments__status")[0].find('option[selected]').text).to eq 'Confirmed'
-            expect(page.all("#assignments__status")[1].find('option[selected]').text).to eq 'Confirmed'
-            expect(page.all("#assignments__status")[2].find('option[selected]').text).to eq 'Confirmed'
-          end
-        end
+            it "should have correct assignment values" do
+              
+              expect(page.all("#assignments__rider_id")[0].find('option[selected]').text).to eq rider.name
+              expect(page.all("#assignments__rider_id")[1].find('option[selected]').text).to eq rider.name
+              expect(page.all("#assignments__rider_id")[2].find('option[selected]').text).to eq rider.name
 
-        describe "executing batch assignment edit" do
-          before do  
-            page.all("#assignments__rider_id")[0].select other_rider.name
-            page.all("#assignments__rider_id")[1].select other_rider.name
-            page.all("#assignments__rider_id")[2].select other_rider.name
-
-            page.all("#assignments__status")[0].select 'Proposed'
-            page.all("#assignments__status")[1].select 'Proposed'
-            page.all("#assignments__status")[2].select 'Proposed'
-
-            click_button 'Save changes'
+              expect(page.all("#assignments__status")[0].find('option[selected]').text).to eq 'Confirmed'
+              expect(page.all("#assignments__status")[1].find('option[selected]').text).to eq 'Confirmed'
+              expect(page.all("#assignments__status")[2].find('option[selected]').text).to eq 'Confirmed'
+            end
           end
 
-          describe "after editing" do
-            
-            it "should redirect to the correct page" do
-              expect(current_path).to eq "/shifts/"
+          describe "executing batch assignment edit" do
+            before do  
+              page.all("#assignments__rider_id")[0].select other_rider.name
+              page.all("#assignments__rider_id")[1].select other_rider.name
+              page.all("#assignments__rider_id")[2].select other_rider.name
+
+              page.all("#assignments__status")[0].select 'Proposed'
+              page.all("#assignments__status")[1].select 'Proposed'
+              page.all("#assignments__status")[2].select 'Proposed'
+
+              click_button 'Save changes'
             end
 
-            describe "index page" do
-              before { filter_shifts_by_time_inclusively }
-
-              it "should show new values of edited shifts" do
-                expect(page.find("#row_1_col_3").text).to eq other_rider.name
-                expect(page.find("#row_2_col_3").text).to eq other_rider.name
-                expect(page.find("#row_3_col_3").text).to eq other_rider.name
-
-                expect(page.find("#row_1_col_4").text).to eq 'Proposed'
-                expect(page.find("#row_2_col_4").text).to eq 'Proposed'
-                expect(page.find("#row_3_col_4").text).to eq 'Proposed'
-
+            describe "after editing" do
+              
+              it "should redirect to the correct page" do
+                expect(current_path).to eq "/shifts/"
               end
-            end              
+
+              describe "index page" do
+                before { filter_shifts_by_time_inclusively }
+
+                it "should show new values of edited shifts" do
+                  expect(page.find("#row_1_col_3").text).to eq other_rider.name
+                  expect(page.find("#row_2_col_3").text).to eq other_rider.name
+                  expect(page.find("#row_3_col_3").text).to eq other_rider.name
+
+                  expect(page.find("#row_1_col_4").text).to eq 'Proposed'
+                  expect(page.find("#row_2_col_4").text).to eq 'Proposed'
+                  expect(page.find("#row_3_col_4").text).to eq 'Proposed'
+
+                end
+              end              
+            end
+          end  
+        end
+
+        describe "with uniform batch edit" do
+          before { click_button 'Uniform Batch Assign', match: :first }
+
+          describe "batch edit page" do
+            it "should have correct URI" do
+              check_batch_assign_uri
+            end
+
+            it { should have_h1 'Uniform Batch Assign Shifts' }
+            it { should have_content restaurant.name }
+
+            it "should have correct form values" do
+              expect(page.within("#shift_wrapper"){ find("#assignments__rider_id").find("option[selected]") }).to eq nil
+              expect(page.within("#shift_wrapper"){ find("#assignments__status").find("option[selected]") }).to eq 'Proposed'
+            end
           end
-        end          
+
+          describe "executing batch edit" do
+            before do
+              page.within("#shift_wrapper"){ find("#assignments__rider_id").select other_rider.name }
+              page.within("#shift_wrapper"){ find("#assignments__status").select 'Confirmed' }
+              click_button 'Save changes'
+            end
+
+            describe "after editing" do
+              it "should redirect to the correct page" do
+                expect(current_path).to eq "/shifts/"
+              end
+
+              describe "index page" do
+                before { filter_shifts_by_time_inclusively }
+
+                it "should show new values for re-assigned shifts" do
+                  expect(page.find("#row_1_col_3").text).to eq other_rider.name
+                  expect(page.find("#row_2_col_3").text).to eq other_rider.name
+                  expect(page.find("#row_3_col_3").text).to eq other_rider.name
+
+                  expect(page.find("#row_1_col_4").text).to eq 'Confirmed'
+                  expect(page.find("#row_2_col_4").text).to eq 'Confirmed'
+                  expect(page.find("#row_3_col_4").text).to eq 'Confirmed'
+                end
+              end
+            end
+          end
+        end
+        
       end
 
       describe "from grid" do

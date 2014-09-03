@@ -101,6 +101,7 @@ class ShiftsController < ApplicationController
     when 'Batch Assign'
       load_assignment_batch # loads @assignments
       render 'assignments/batch_edit'
+      # redirect_to '/assignment/batch_edit'
     end
   end
 
@@ -200,27 +201,6 @@ class ShiftsController < ApplicationController
     def load_assignment_batch
       @assignments = @shifts.map(&:assignment)
     end
-
-    # def parse_assignment_batch
-    #   @assignments = Assignment.where("id IN (:ids)", { ids: params[:assignments].map{ |a| a[:id] } } )
-    #   # raise @assignments.inspect
-    # end  
-
-
-
-    # def batch_update klass, resources
-    #   name = klass.name.pluralize
-    #   key = name.downcase.to_sym
-
-    #   @errors = klass.batch_update(resources, params[key])
-
-    #   if @errors.empty?
-    #     flash[:success] = "#{name} successfully batch edited"
-    #     redirect_to @base_path
-    #   else
-    #     render "batch_edit_#{name.downcase}"
-    #   end
-    # end
 
     # VIEW INTERACTION HELPERS
 
