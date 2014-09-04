@@ -27,9 +27,35 @@ class AssignmentsController < ApplicationController
   end
 
   def update
-    @old_assignment = Assignment.new(@assignment.attributes)
+    # input: assignment
+    # does: (1) tests if are save obstacles
+      #if so: redirects to obstacle override page
+      #if not: (2) tests if save errors
+        #if so: redirects to edit page showing errors
+        #if not: redirects to base page with success message
+    #side effects: saves if can save
+    #output: redirect action
+    old_assignment = Assignment.new(@assignment.attributes)
     @assignment.attributes = assignment_params
-    attempt_save_from :update
+
+    case @assignment.save_obstacles
+    when :none
+      if assignment.save
+        email_sent = assignment.try_send_email old_assignment, current_user
+        email_alert = email_sent ? " -- Email sent to rider" : ""
+        flash[:success] = assignment.save_success_message + email_alert
+      else
+        render 'edit'
+      end
+    when :double_booking
+      @override_subject = :double_booking
+      @back_path = @base_path
+      render 'override_double_booking'
+    when :conflict
+      @override_subject = :conflict
+      @back_path = @base_path
+      render 'override_conflict'
+    end
   end
 
   def show
@@ -68,18 +94,6 @@ class AssignmentsController < ApplicationController
     parse_assignment_batch # loads @assignments
 
     do_batch_update params[:assignments]
-    # parse_assignment_batch # loads @assignments
-    # @old_assignments = @assignments.map { |a| Assignment.new(a.attributes) }
-    # @errors = Assignment.batch_update(@assignments, params[:assignments])
-
-    # if @errors.empty?
-    #   email_count = send_batch_emails
-    #   email_alert = email_count == 0 ? "" : " -- #{email_count} emails sent"
-    #   flash[:success] = "Assignments successfully batch edited" << email_alert
-    #   redirect_to @base_path
-    # else
-    #   render "assignments/batch_edit"
-    # end
   end
 
   def batch_update_uniform
@@ -91,48 +105,103 @@ class AssignmentsController < ApplicationController
 
 
   def do_batch_update assignment_attrs
-    @old_assignments = @assignments.map { |a| Assignment.new(a.attributes) }
-    @errors = Assignment.batch_update(@assignments, assignment_attrs)
+    # input: Arr of Assignments
+    # does: (1) tests if are save obstacles for any Assignments
+      #if so (for ANY assignment): redirects to obstacle override page for that assignment
+      #if not (for ALL assignments): (2) tests if save errors
+        #if so: redirects to edit page showing errors
+        #if not: redirects to base page with success message
+    #side effects: saves if can save
+    #output: redirect action
+    old_assignments = @assignments.map { |a| Assignment.new(a.attributes) }
+    if no_batch_save_obstacles? @assignments
+      if successful_batch_save
+        email_alert = try_send_batch_emails assignments, old_assignments, current_account
+        flash[:success] = "Assignments successfully batch edited" << email_alert
+        redirect_to @base_path
+      else
+        render "assignments/batch_edit"
+      end
+    end
+  end
 
-    if @errors.empty?
-      email_count = send_batch_emails
-      email_alert = email_count == 0 ? "" : " -- #{email_count} emails sent"
-      flash[:success] = "Assignments successfully batch edited" << email_alert
-      redirect_to @base_path
+  def no_batch_save_obstacles? assignments
+    if assignments.count == 0 # BASE CASE
+      false
     else
-      render "assignments/batch_edit"
+      assignments.each_with_index do |assignment, i| # RECURSION LOOP
+        case assignment.save_obstacles
+        when :none
+          find_obstacles assignments[ (i+1)..assignments.count ] # CALL RECURSION LOOP (SKIP AHEAD)
+        when :conflict
+          # handle_batch_conflict assignment
+          find_obstacles assignments[i..assignments.length] # CALL RECURSION LOOP (AT SAME INDEX)
+        when :double_booking
+          # handle_batch_double_booking assignment
+          find_obstacles assignments[i..assignments.length] # CALL RECURSION LOOP (AT SAME INDEX)
+        end
+      end
     end
   end
 
-
-  def send_batch_emails
-    #input: old_assignments <Arr of Assignments> @assignments <Arr of Assignments> (implicit)
-    #does: 
-      # (1) constructs array of newly delegated shifts
-      # (2) parses list of shifts into sublists for each rider
-      # (3) parses list of shifts for restaurants
-      # (4) [ SIDE EFFECT ] sends batch shift delegation email to each rider using params built through (1), (2), and (3)
-    #output: Int (count of emails sent)
-
-    rider_shifts = RiderShifts.new(batch_delegations).array # (1), (2), (3)
-    rider_shifts.each do |rs| # (4)
-      RiderMailer.delegation_email( rs[:rider], rs[:shifts], rs[:restaurants], current_account ).deliver
-    end
-    rider_shifts.count
+  def handle_batch_conflict assignment
+    @assignment = assignment
+    @override_subject = :conflict
+    query = { 
+      ids: ids_from_batch_conflict params,
+      base_path: params[:base_path]
+    }.to_query
+    @back_path = "/assignments/batch_edit?#{query}"
+    render 'override_conflict'
   end
 
-
-
-  def batch_delegations
-    #input: @assignments, @old_assignments (implicit)
-    #does: builds array of assignments that the update action just delegated
-    #output: Arr of new delegations
-    delegations = []
-    @assignments.each_with_index do |a, i| 
-      delegations.push(a) if a.status == :delegated && ( @old_assignments[i].status != :delegated || @old_assignments[i].rider != a.rider )
-    end
-    delegations
+  def ids_from_batch_conflict params
+    assignments = params[:assignments]
+    assignments.map { |a| a.shift.id }
   end
+
+  def successful_batch_save assignments, assignment_attrs
+    @errors = Assignment.batch_update(@assignments, assignment_attrs)
+    @errors.empty?
+  end
+
+  def try_send_batch_emails assignments, old_assignments, current_account
+    email_count = Assignment.send_emails assignments, old_assignments, current_account
+    if email_count == 0 
+      ""
+    else 
+      " -- #{email_count} emails sent"
+    end
+  end
+
+  # def send_batch_emails
+  #   #input: old_assignments <Arr of Assignments> @assignments <Arr of Assignments> (implicit)
+  #   #does: 
+  #     # (1) constructs array of newly delegated shifts
+  #     # (2) parses list of shifts into sublists for each rider
+  #     # (3) parses list of shifts for restaurants
+  #     # (4) [ SIDE EFFECT ] sends batch shift delegation email to each rider using params built through (1), (2), and (3)
+  #   #output: Int (count of emails sent)
+  #   delegations = delegations_from
+  #   rider_shifts = RiderShifts.new(batch_delegations).array # (1), (2), (3)
+  #   rider_shifts.each do |rs| # (4)
+  #     RiderMailer.delegation_email( rs[:rider], rs[:shifts], rs[:restaurants], current_account ).deliver
+  #   end
+  #   rider_shifts.count
+  # end
+
+
+
+  # def batch_delegations
+  #   #input: @assignments, @old_assignments (implicit)
+  #   #does: builds array of assignments that the update action just delegated
+  #   #output: Arr of new delegations
+  #   delegations = []
+  #   @assignments.each_with_index do |a, i| 
+  #     delegations.push(a) if a.status == :delegated && ( @old_assignments[i].status != :delegated || @old_assignments[i].rider != a.rider )
+  #   end
+  #   delegations
+  # end
 
   private 
 
@@ -172,17 +241,31 @@ class AssignmentsController < ApplicationController
       @rider = Rider.find(params[:rider_id])
     end
 
-    def attempt_save_from action
-      case action
-      when :create
-        message = lambda { |assignment| assignment.rider.nil? ? "Shift unassigned." : "Shift assigned to #{assignment.rider.contact.name}" }
-        do_over = 'new'
-      when :update
-        message = lambda { |assignment| assignment.rider.nil? ? "Assignment updated (currently unassigned)." : "Assignment updated (Rider: #{assignment.rider.contact.name}, Status: #{@assignment.status.text})" }
-        do_over = 'edit'
+    # def attempt_save_from action
+    #   case action
+    #   when :create
+    #     message = lambda { |assignment| assignment.rider.nil? ? "Shift unassigned." : "Shift assigned to #{assignment.rider.contact.name}" }
+    #     do_over = 'new'
+    #   when :update
+    #     message = lambda { |assignment| assignment.rider.nil? ? "Assignment updated (currently unassigned)." : "Assignment updated (Rider: #{assignment.rider.contact.name}, Status: #{@assignment.status.text})" }
+    #     do_over = 'edit'
+    #   end
+    #   save_loop message, do_over
+    # end  
+
+    def can_save? assignment
+      conflicts = assignment.get_conflicts
+      
+      if assignment.no_conflicts? conflicts
+        assignment.handle_no_conflicts conflicts
+        other_shifts = get_other_shifts
+
+        if no_double_bookings? other_shifts
+          true
+        else
+      else
       end
-      save_loop message, do_over
-    end  
+    end
 
     def save_loop message, do_over
       if no_conflicts?
@@ -204,38 +287,38 @@ class AssignmentsController < ApplicationController
       end      
     end
 
-    def send_email 
-      if @assignment.status == :delegated && ( @old_assignment.status != :delegated || @old_assignment.rider != @assignment.rider )
-        RiderMailer.delegation_email(@assignment.rider, [ @assignment.shift ], [ @assignment.shift.restaurant ], current_account).deliver
-        true
-      else 
-        false
-      end 
-    end
+    # def send_email 
+    #   if @assignment.status == :delegated && ( @old_assignment.status != :delegated || @old_assignment.rider != @assignment.rider )
+    #     RiderMailer.delegation_email(@assignment.rider, [ @assignment.shift ], [ @assignment.shift.restaurant ], current_account).deliver
+    #     true
+    #   else 
+    #     false
+    #   end 
+    # end
 
-    def no_conflicts?
-      return true if @assignment.rider.nil?
-      @conflicts = @assignment.rider.conflicts_on @assignment.shift.start
-      if @assignment.override_conflict
-        @conflicts.each(&:destroy)
-        @assignment.override_conflict = false # for future iterations of conflict-checking
-        true
-      else
-        !@assignment.shift.conflicts_with? @conflicts
-      end
-    end
+    # def no_conflicts?
+    #   return true if @assignment.rider.nil?
+    #   @conflicts = @assignment.rider.conflicts_on @assignment.shift.start
+    #   if @assignment.override_conflict
+    #     @conflicts.each(&:destroy)
+    #     @assignment.override_conflict = false # for future iterations of conflict-checking
+    #     true
+    #   else
+    #     !@assignment.shift.conflicts_with? @conflicts
+    #   end
+    # end
 
-    def no_double_bookings?
-      return true if @assignment.rider.nil?
-      shifts = @assignment.rider.shifts_on @assignment.shift.start
-      @other_shifts = shifts.reject { |shift| shift.id == @assignment.shift.id }
-      if @assignment.override_double_booking
-        @assignment.override_double_booking = false # for future iterations of double-booking-checking
-        true
-      else
-        !@assignment.shift.double_books_with? @other_shifts
-      end
-    end
+    # def no_double_bookings?
+    #   return true if @assignment.rider.nil?
+    #   shifts = @assignment.rider.shifts_on @assignment.shift.start
+    #   @other_shifts = shifts.reject { |shift| shift.id == @assignment.shift.id }
+    #   if @assignment.override_double_booking
+    #     @assignment.override_double_booking = false # for future iterations of double-booking-checking
+    #     true
+    #   else
+    #     !@assignment.shift.double_books_with? @other_shifts
+    #   end
+    # end
 
     # BATCH CRUD HELPERS
 
