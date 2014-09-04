@@ -616,7 +616,7 @@ describe "Shift Requests" do
         batch.each { |s| s.assignment.update(rider_id: rider.id, status: :confirmed) }
       end
 
-      describe "from shifts index" do
+      describe "from SHIFTS INDEX" do
         before do
           visit shifts_path
           filter_shifts_by_time_inclusively
@@ -732,7 +732,7 @@ describe "Shift Requests" do
         end
       end
 
-      describe "from grid" do
+      describe "from GRID" do
         before do 
           restaurant.mini_contact.update(name: 'A'*10)
           visit shift_grid_path 
@@ -760,7 +760,7 @@ describe "Shift Requests" do
           end
         end
 
-        describe "batch edit assignment page" do
+        describe "standard batch assignment" do
           before do
             page.within("#row_1_col_6"){ find("#ids_").set true }
             page.within("#row_1_col_8"){ find("#ids_").set true }
@@ -768,12 +768,14 @@ describe "Shift Requests" do
             click_button 'Batch Assign'
           end
 
-          it "should have correct URI" do
-            check_batch_assign_uri
-          end
+          describe "batch assign page" do
+            it "should have correct URI" do
+              check_batch_assign_uri
+            end
 
-          it "should have correct assignment values" do
-            check_batch_assign_select_values
+            it "should have correct assignment values" do
+              check_batch_assign_select_values
+            end            
           end
 
           describe "executing batch assignment" do
@@ -802,6 +804,55 @@ describe "Shift Requests" do
                   expect(page.find("#row_1_col_6").text).to eq other_rider.short_name + " [p]" 
                   expect(page.find("#row_1_col_8").text).to eq other_rider.short_name + " [p]"
                   expect(page.find("#row_1_col_10").text).to eq other_rider.short_name + " [p]" 
+                end
+              end
+            end
+          end
+        end
+
+        describe "uniform batch assignment" do
+          before do
+            page.within("#row_1_col_6"){ find("#ids_").set true }
+            page.within("#row_1_col_8"){ find("#ids_").set true }
+            page.within("#row_1_col_10"){ find("#ids_").set true }
+            click_button 'Uniform Assign'            
+          end
+
+          describe "uniform assign page" do
+            
+            it "should have correct uri" do
+              check_uniform_assign_uri
+            end
+
+            it { should have_h1 'Uniform Assign Shifts' }
+            it { should have_content restaurant.name }
+
+            it "should have correct form values" do
+              expect(page.within("#assignment_wrapper"){ find("#assignment_rider_id").has_css?("option[selected]") } ).to eq false
+              expect(page.within("#assignment_wrapper"){ find("#assignment_status").find("option[selected]").text }).to eq 'Proposed'
+            end
+          end
+
+          describe "executing batch edit" do
+            before do
+              page.within("#assignment_wrapper"){ find("#assignment_rider_id").select other_rider.name }
+              page.within("#assignment_wrapper"){ find("#assignment_status").select 'Cancelled (Rider)' }
+              click_button 'Save changes'
+            end
+
+            describe "after editing" do
+              it "should redirect to the correct page" do
+                expect(current_path).to eq "/grid/shifts"
+              end
+
+              describe "index page" do
+                before { filter_grid_for_jan_2014 }
+
+                it "should show new values for re-assigned shifts" do
+                  expect(page.find("#row_1_col_6").text).to eq other_rider.short_name + " [xf]" 
+                  expect(page.find("#row_1_col_8").text).to eq other_rider.short_name + " [xf]"
+                  expect(page.find("#row_1_col_10").text).to eq other_rider.short_name + " [xf]" 
+
                 end
               end
             end
