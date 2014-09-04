@@ -57,10 +57,42 @@ class AssignmentsController < ApplicationController
     render 'batch_edit'
   end
 
+  def batch_edit_uniform
+    @errors = []
+    load_shift_batch
+    load_assignment_batch
+    render 'batch_edit_uniform'
+  end
+
   def batch_update
     parse_assignment_batch # loads @assignments
+
+    do_batch_update params[:assignments]
+    # parse_assignment_batch # loads @assignments
+    # @old_assignments = @assignments.map { |a| Assignment.new(a.attributes) }
+    # @errors = Assignment.batch_update(@assignments, params[:assignments])
+
+    # if @errors.empty?
+    #   email_count = send_batch_emails
+    #   email_alert = email_count == 0 ? "" : " -- #{email_count} emails sent"
+    #   flash[:success] = "Assignments successfully batch edited" << email_alert
+    #   redirect_to @base_path
+    # else
+    #   render "assignments/batch_edit"
+    # end
+  end
+
+  def batch_update_uniform
+    parse_uniform_assignment_batch # loads @assignments
+    assignment_attrs = @assignments.count.times.map{ params[:assignment] }
+    
+    do_batch_update assignment_attrs
+  end
+
+
+  def do_batch_update assignment_attrs
     @old_assignments = @assignments.map { |a| Assignment.new(a.attributes) }
-    @errors = Assignment.batch_update(@assignments, params[:assignments])
+    @errors = Assignment.batch_update(@assignments, assignment_attrs)
 
     if @errors.empty?
       email_count = send_batch_emails
@@ -72,8 +104,9 @@ class AssignmentsController < ApplicationController
     end
   end
 
-  def send_batch_emails 
-    #input: @assignments, @old_assignments (implicit)
+
+  def send_batch_emails
+    #input: old_assignments <Arr of Assignments> @assignments <Arr of Assignments> (implicit)
     #does: 
       # (1) constructs array of newly delegated shifts
       # (2) parses list of shifts into sublists for each rider
@@ -96,7 +129,7 @@ class AssignmentsController < ApplicationController
     #output: Arr of new delegations
     delegations = []
     @assignments.each_with_index do |a, i| 
-      delegations.push(a) if a.status == :delegated && @old_assignments[i].status != :delegated
+      delegations.push(a) if a.status == :delegated && ( @old_assignments[i].status != :delegated || @old_assignments[i].rider != a.rider )
     end
     delegations
   end
@@ -215,9 +248,15 @@ class AssignmentsController < ApplicationController
     end
 
     def parse_assignment_batch
+      # input: Params (implicit)
+      # output: Arr of Assignments
       @assignments = Assignment.where("id IN (:ids)", { ids: params[:assignments].map{ |a| a[:id] } } )
       # raise @assignments.inspect
     end  
+
+    def parse_uniform_assignment_batch
+      @assignments = Assignment.where("id IN (:ids)", { ids: params[:ids] })
+    end
 
 
     # VIEW INTERACTION HELPERS

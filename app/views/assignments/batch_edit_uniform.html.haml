@@ -1,0 +1,33 @@
+- provide(:title, 'Uniform Assign Shifts')
+
+%h1 Uniform Assign Shifts
+.span8.offset2.profile
+  = form_tag '/assignment/batch_edit_uniform', method: :post do
+    #shifts_wrapper
+      /Shift Boxes
+      - @shifts.each_with_index do |shift, i|
+        - id_str = shift.id ? "shift_#{shift.id}_wrapper" : "shift_nil_#{i}_wrapper"  
+        %div{ id: id_str }
+          %h3 Shift #{i+1}
+        %p.shift_box
+          = render 'assignments/shift_include', shift: shift
+        %p.shift_box
+          = render 'assignment_include', assignment: shift.assignment        
+        = hidden_field_tag "ids[]", shift.id
+        = hidden_field_tag :base_path, @base_path
+      #assignment_wrapper
+        /Assignment Fields
+        %h3 Assign All Shifts To
+        .row
+          /Rider
+          .span4
+            .center
+              = label_tag :rider
+              = select_tag 'assignment[rider_id]', options_for_select(Rider.select_options, nil ), include_blank: true
+          /Status
+          .span4
+            .center
+              = label_tag :status
+            = select_tag 'assignment[status]', options_for_select(AssignmentStatus.select_options, :proposed)
+        %p.center
+          = submit_tag 'Save changes', class: 'btn btn-primary'

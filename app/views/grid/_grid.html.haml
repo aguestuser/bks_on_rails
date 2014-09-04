@@ -4,17 +4,18 @@
     = render 'grid/filter_form' 
   .row.batch_form.center
     /Send Emails Form
-    .span2.offset4
+    .span2.offset3
       = form_tag '/grid/send_emails', :class => 'emails', method: :post do
         = hidden_field_tag :shift_ids, @week.records.map(&:id)
         = hidden_field_tag :base_path, @base_path
         = submit_tag 'Email Schedules', :class => 'btn btn-primary'
-    .span2
+    %div{ class: "span4", style: "float: left;"}
       /Batch Edit Form Wrapper
       = form_tag '/shift/batch_edit', :class => 'batch', method: :get do 
         /Submit Buttons
         = hidden_field_tag :base_path, @base_path
         = submit_tag 'Batch Assign', class: 'btn btn-primary' 
+        = submit_tag 'Uniform Assign', class: 'btn btn-primary'
         /Grid
         %table
           /Header Row

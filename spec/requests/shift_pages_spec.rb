@@ -686,26 +686,26 @@ describe "Shift Requests" do
         end
 
         describe "with uniform batch edit" do
-          before { click_button 'Uniform Batch Assign', match: :first }
+          before { click_button 'Uniform Assign', match: :first }
 
-          describe "batch edit page" do
+          describe "uniform batch edit page" do
             it "should have correct URI" do
-              check_batch_assign_uri
+              check_uniform_assign_uri
             end
 
-            it { should have_h1 'Uniform Batch Assign Shifts' }
+            it { should have_h1 'Uniform Assign Shifts' }
             it { should have_content restaurant.name }
 
             it "should have correct form values" do
-              expect(page.within("#shift_wrapper"){ find("#assignments__rider_id").find("option[selected]") }).to eq nil
-              expect(page.within("#shift_wrapper"){ find("#assignments__status").find("option[selected]") }).to eq 'Proposed'
+              expect(page.within("#assignment_wrapper"){ find("#assignment_rider_id").has_css?("option[selected]") } ).to eq false
+              expect(page.within("#assignment_wrapper"){ find("#assignment_status").find("option[selected]").text }).to eq 'Proposed'
             end
           end
 
           describe "executing batch edit" do
             before do
-              page.within("#shift_wrapper"){ find("#assignments__rider_id").select other_rider.name }
-              page.within("#shift_wrapper"){ find("#assignments__status").select 'Cancelled (Rider)' }
+              page.within("#assignment_wrapper"){ find("#assignment_rider_id").select other_rider.name }
+              page.within("#assignment_wrapper"){ find("#assignment_status").select 'Cancelled (Rider)' }
               click_button 'Save changes'
             end
 
@@ -730,7 +730,6 @@ describe "Shift Requests" do
             end
           end
         end
-        
       end
 
       describe "from grid" do

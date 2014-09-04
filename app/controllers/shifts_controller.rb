@@ -94,14 +94,18 @@ class ShiftsController < ApplicationController
   end
 
   def route_batch_edit commit
+    
+    query = params.extract!(:ids, :base_path).to_query
+
     case commit
     when 'Batch Edit'
       @errors = []
       load_shift_batch
       render 'batch_edit' 
-    when 'Batch Assign'
-      query = params.extract!(:ids, :base_path).to_query
+    when 'Batch Assign' 
       redirect_to "/assignment/batch_edit?#{query}"
+    when 'Uniform Assign'
+      redirect_to "/assignment/batch_edit_uniform?#{query}"
     end
   end
 
