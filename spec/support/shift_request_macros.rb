@@ -137,8 +137,8 @@ module ShiftRequestMacros
   end
 
   def check_batch_assign_uri
-    expect(current_path).to eq "/shift/batch_edit"
-    expect(URI.parse(current_url).to_s).to include("&ids[]=#{batch[0].id}&ids[]=#{batch[1].id}&ids[]=#{batch[2].id}&commit=Batch+Assign")
+    expect(current_path).to eq "/assignment/batch_edit"
+    expect(URI.parse(current_url).to_s).to include("&ids[]=#{batch[0].id}&ids[]=#{batch[1].id}&ids[]=#{batch[2].id}")
   end
 
   def check_batch_assign_select_values

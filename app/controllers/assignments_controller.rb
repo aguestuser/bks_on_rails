@@ -51,6 +51,7 @@ class AssignmentsController < ApplicationController
   end
 
   def batch_edit
+    @errors = []
     load_shift_batch # loads @shifts
     load_assignment_batch #loads @assignments
     render 'batch_edit'

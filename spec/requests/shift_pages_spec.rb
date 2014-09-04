@@ -623,7 +623,6 @@ describe "Shift Requests" do
           page.within("#row_1"){ find("#ids_").set true }
           page.within("#row_2"){ find("#ids_").set true }
           page.within("#row_3"){ find("#ids_").set true }        
-          click_button 'Batch Assign', match: :first
         end
 
         describe "with standard batch edit" do
@@ -638,26 +637,26 @@ describe "Shift Requests" do
             it { should have_content(restaurant.name) }
 
             it "should have correct assignment values" do
-              
-              expect(page.all("#assignments__rider_id")[0].find('option[selected]').text).to eq rider.name
-              expect(page.all("#assignments__rider_id")[1].find('option[selected]').text).to eq rider.name
-              expect(page.all("#assignments__rider_id")[2].find('option[selected]').text).to eq rider.name
 
-              expect(page.all("#assignments__status")[0].find('option[selected]').text).to eq 'Confirmed'
-              expect(page.all("#assignments__status")[1].find('option[selected]').text).to eq 'Confirmed'
-              expect(page.all("#assignments__status")[2].find('option[selected]').text).to eq 'Confirmed'
+              expect(page.within("#shift_#{batch[0].id}_wrapper"){ find("#assignments__rider_id").find("option[selected]").text }).to eq rider.name
+              expect(page.within("#shift_#{batch[1].id}_wrapper"){ find("#assignments__rider_id").find("option[selected]").text }).to eq rider.name
+              expect(page.within("#shift_#{batch[2].id}_wrapper"){ find("#assignments__rider_id").find("option[selected]").text }).to eq rider.name
+
+              expect(page.within("#shift_#{batch[0].id}_wrapper"){ find("#assignments__status").find("option[selected]").text }).to eq 'Confirmed'
+              expect(page.within("#shift_#{batch[1].id}_wrapper"){ find("#assignments__status").find("option[selected]").text }).to eq 'Confirmed'
+              expect(page.within("#shift_#{batch[2].id}_wrapper"){ find("#assignments__status").find("option[selected]").text }).to eq 'Confirmed'
             end
           end
 
           describe "executing batch assignment edit" do
             before do  
-              page.all("#assignments__rider_id")[0].select other_rider.name
-              page.all("#assignments__rider_id")[1].select other_rider.name
-              page.all("#assignments__rider_id")[2].select other_rider.name
+              page.within("#shift_#{batch[0].id}_wrapper") { find("#assignments__rider_id").select other_rider.name }
+              page.within("#shift_#{batch[1].id}_wrapper") { find("#assignments__rider_id").select other_rider.name }
+              page.within("#shift_#{batch[2].id}_wrapper") { find("#assignments__rider_id").select other_rider.name }
 
-              page.all("#assignments__status")[0].select 'Proposed'
-              page.all("#assignments__status")[1].select 'Proposed'
-              page.all("#assignments__status")[2].select 'Proposed'
+              page.within("#shift_#{batch[0].id}_wrapper") { find("#assignments__status").select 'Proposed' }
+              page.within("#shift_#{batch[1].id}_wrapper") { find("#assignments__status").select 'Proposed' }
+              page.within("#shift_#{batch[2].id}_wrapper") { find("#assignments__status").select 'Proposed' }
 
               click_button 'Save changes'
             end
@@ -706,7 +705,7 @@ describe "Shift Requests" do
           describe "executing batch edit" do
             before do
               page.within("#shift_wrapper"){ find("#assignments__rider_id").select other_rider.name }
-              page.within("#shift_wrapper"){ find("#assignments__status").select 'Confirmed' }
+              page.within("#shift_wrapper"){ find("#assignments__status").select 'Cancelled (Rider)' }
               click_button 'Save changes'
             end
 
@@ -723,9 +722,9 @@ describe "Shift Requests" do
                   expect(page.find("#row_2_col_3").text).to eq other_rider.name
                   expect(page.find("#row_3_col_3").text).to eq other_rider.name
 
-                  expect(page.find("#row_1_col_4").text).to eq 'Confirmed'
-                  expect(page.find("#row_2_col_4").text).to eq 'Confirmed'
-                  expect(page.find("#row_3_col_4").text).to eq 'Confirmed'
+                  expect(page.find("#row_1_col_4").text).to eq 'Cancelled (Rider)'
+                  expect(page.find("#row_2_col_4").text).to eq 'Cancelled (Rider)'
+                  expect(page.find("#row_3_col_4").text).to eq 'Cancelled (Rider)'
                 end
               end
             end
