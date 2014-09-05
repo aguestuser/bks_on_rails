@@ -29,16 +29,23 @@ module BatchUpdatable
       errors
     end
 
-    def batch_update records, attr_arr
-      records.each_with_index.inject([]) do |errors, (record, i)|
-        attrs = parse_batch_attrs attr_arr[i]
-        errors.push(record.errors) unless record.update(attrs)
+    # def batch_update records, attr_arr
+    #   records.each_with_index.inject([]) do |errors, (record, i)|
+    #     attrs = parse_batch_attrs attr_arr[i]
+    #     errors.push(record.errors) unless record.update(attrs)
+    #     errors
+    #   end
+    # end
+
+    def batch_update old_records, new_records
+      old_records.each_with_index.inject([]) do |errors, (record, i)|
+        errors.push(record.errors) unless record.update(new_records[i])
         errors
       end
     end
 
-    def parse_batch_attrs attrs
-      attrs.reject! { |k,v| k == "id" }
+    def attributes_from param_hash
+      attrs = param_hash.reject! { |k,v| k == "id" }
       attrs["start"] = parse_date(attrs["start"]) if attrs["start"]
       attrs["end"] = parse_date(attrs["end"]) if attrs["end"]
       attrs.to_h

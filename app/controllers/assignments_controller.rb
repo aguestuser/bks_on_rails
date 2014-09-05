@@ -90,40 +90,166 @@ class AssignmentsController < ApplicationController
     render 'batch_edit_uniform'
   end
 
-  def batch_update
-    parse_assignment_batch # loads @assignments
 
-    do_batch_update params[:assignments]
+
+  def batch_update
+    old_assignments = old_assignments_from params
+    new_assignments = new_assignments_from params
+
+    do_batch_update old_assignments, new_assignments
   end
+
+
+      def old_assignments_from params
+        Assignment.where("id IN (:ids", { ids: params[:assignments].map{ |ass| ass[:id] } } )
+      end
+
+      def new_assignments_from params
+        attrs = params[:assignments].map{ |param_hash| Assignment.attributes_from param_hash }
+        params[:assignment].map{ |attrs| Assignment.new(attrs) }
+      end 
 
   def batch_update_uniform
-    parse_uniform_assignment_batch # loads @assignments
-    assignment_attrs = @assignments.count.times.map{ params[:assignment] }
+    old_assignments = old_uniform_assignments_from params
+    new_assignments = new_uniform_assignments_from params, old_assignments.count
     
-    do_batch_update assignment_attrs
+    do_batch_update old_assignments, new_assignments
   end
 
-
-  def do_batch_update assignment_attrs
-    # input: Arr of Assignments
-    # does: (1) tests if are save obstacles for any Assignments
-      #if so (for ANY assignment): redirects to obstacle override page for that assignment
-      #if not (for ALL assignments): (2) tests if save errors
-        #if so: redirects to edit page showing errors
-        #if not: redirects to base page with success message
-    #side effects: saves if can save
-    #output: redirect action
-    old_assignments = @assignments.map { |a| Assignment.new(a.attributes) }
-    if no_batch_save_obstacles? @assignments
-      if successful_batch_save
-        email_alert = try_send_batch_emails assignments, old_assignments, current_account
-        flash[:success] = "Assignments successfully batch edited" << email_alert
-        redirect_to @base_path
-      else
-        render "assignments/batch_edit"
+      def old_uniform_assignments_from params
+        Assignment.where("id IN (:ids)", { ids: params[:ids] })
       end
+
+      def new_uniform_assignments_from  params, num
+        attrs = Assignment.attributes_from param_hash
+        num.times.map{ Assignment.new(attrs) }
+      end
+
+
+  def do_batch_update old_assignments, new_assignments
+    savable_assignments = get_savable Assignments.new( { fresh: new_assignments } )
+    if batch_save? old_assignments, savable_assignments
+      email_alert = send_batch_emails savable_assignments, old_assignments, current_user
+      flash[:success] = "Assignments successfully batch edited" << email_alert
+      redirect_to @base_path
+    else
+      request_error_fixes savable_assignments
     end
   end
+
+      def get_savable assignments # RECURSION HOOK
+        #input: Assignments Obj
+        #output: Assignments Obj w/ empty .with_obstacles and .requiring_reassignment Arrays
+        if assignments.with_obstacles.any?
+          request_obstacle_decisions_for assignments
+        elsif assignments.requiring_reassignment.any?
+          request_reassignments_for assignments
+        else # BASE CASE (BREAKS RECURSION)
+          assignments
+          # try_saving assignments.without_obstacles
+        end
+      end
+
+      # RECURSION CASE 1
+
+      def request_obstacle_decisions_for assignments
+        @assignments = assignments
+        render 'resolve_obstacles' 
+        # view posts to '/assignment/resolve_obstacles' 
+        # all assignments are uneditable, user has choice to accept or override each obstacle
+      end
+
+      def resolve_obstacles
+        decisions = params[:decisions]
+        assignments = Assignments.new(params[:assignments])
+        resolution_queue = 
+        assignments = assignments.resolve_obstacles_with decisions
+
+        get_savable assignments # RECURSE
+      end
+
+      def parse_obstacle_decisions assignments, decisions
+        decisions.with_index do |decision, i| 
+          if decision == :accept
+            assignments.requiring_edit.push assignments.without_obstacles[i] 
+          else # if decision == :override
+            assignment = assignments_with_obstacles[i].resolve_obstacle_with decision
+            assignments.without_obstacles.push assignment
+          end
+        end
+        assignments.with_obstacles = []
+        assignments
+      end
+
+      # RECURSION CASE 2
+
+      def request_reassignments_for assignments
+        @assignments = assignments
+        render 'request_reassignments' 
+        # view posts to /assignment/reassign_batch' (or something)
+      end
+
+      def reassign_batch
+        assignments = Assignments.new(params[:assignments])
+        get_savable assignments # RECURSE
+      end
+
+      def batch_save? old_assignments, new_assignments
+        @errors = Assignment.batch_update(@assignments, assignment_attrs)
+        @errors.empty?
+      end
+
+      def request_error_fixes assignments
+        @assignments = assignments
+        query = { base_path: @base_path }.to_query 
+        render "assignments/batch_edit?#{query}"
+      end
+
+      def send_batch_emails assignments, old_assignments, current_account
+        email_count = Assignment.send_emails assignments, old_assignments, current_account
+        if email_count == 0 
+          ""
+        else 
+          " -- #{email_count} emails sent"
+        end
+      end
+
+    # def batch_update
+  #   old_assignments = parse_old_assignments
+  #   new_assignments = parse_new_assignments
+
+  #   parse_assignment_batch # loads @assignments
+
+  #   do_batch_update params[:assignments]
+  # end
+
+  # def batch_update_uniform
+  #   parse_uniform_assignment_batch # loads @assignments
+  #   assignment_attrs = @assignments.count.times.map{ params[:assignment] }
+    
+  #   do_batch_update assignment_attrs
+  # end
+
+  # def do_batch_update assignment_attrs
+  #   # input: Arr of Assignments
+  #   # does: (1) tests if are save obstacles for any Assignments
+  #     #if so (for ANY assignment): redirects to obstacle override page for that assignment
+  #     #if not (for ALL assignments): (2) tests if save errors
+  #       #if so: redirects to edit page showing errors
+  #       #if not: redirects to base page with success message
+  #   #side effects: saves if can save
+  #   #output: redirect action
+  #   old_assignments = @assignments.map { |a| Assignment.new(a.attributes) }
+  #   if no_batch_save_obstacles? @assignments
+  #     if successful_batch_save
+  #       email_alert = try_send_batch_emails assignments, old_assignments, current_account
+  #       flash[:success] = "Assignments successfully batch edited" << email_alert
+  #       redirect_to @base_path
+  #     else
+  #       render "assignments/batch_edit"
+  #     end
+  #   end
+  # end
 
   def no_batch_save_obstacles? assignments
     if assignments.count == 0 # BASE CASE
@@ -165,14 +291,7 @@ class AssignmentsController < ApplicationController
     @errors.empty?
   end
 
-  def try_send_batch_emails assignments, old_assignments, current_account
-    email_count = Assignment.send_emails assignments, old_assignments, current_account
-    if email_count == 0 
-      ""
-    else 
-      " -- #{email_count} emails sent"
-    end
-  end
+
 
   # def send_batch_emails
   #   #input: old_assignments <Arr of Assignments> @assignments <Arr of Assignments> (implicit)
@@ -240,6 +359,8 @@ class AssignmentsController < ApplicationController
     def load_rider
       @rider = Rider.find(params[:rider_id])
     end
+
+
 
     # def attempt_save_from action
     #   case action
@@ -330,12 +451,15 @@ class AssignmentsController < ApplicationController
       @assignments = @shifts.map(&:assignment)
     end
 
+
     def parse_assignment_batch
       # input: Params (implicit)
       # output: Arr of Assignments
       @assignments = Assignment.where("id IN (:ids)", { ids: params[:assignments].map{ |a| a[:id] } } )
       # raise @assignments.inspect
     end  
+
+
 
     def parse_uniform_assignment_batch
       @assignments = Assignment.where("id IN (:ids)", { ids: params[:ids] })
