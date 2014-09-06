@@ -67,6 +67,9 @@ BksOnRails::Application.routes.draw do
   get 'assignment/batch_edit_uniform' => 'assignments#batch_edit_uniform'
   post 'assignment/batch_edit_uniform' => 'assignments#batch_update_uniform'
 
+  post 'assignment/resolve_obstacles' => 'assignments#resolve_obstacles'
+  post 'assignment/batch_reassign' => 'assignments#batch_reassign'
+
   get "grid/shifts"
   match '/shift_grid', to: 'grid#shifts', via: 'get'
   get "grid/availability"

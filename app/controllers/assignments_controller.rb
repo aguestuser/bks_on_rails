@@ -133,7 +133,7 @@ class AssignmentsController < ApplicationController
       flash[:success] = "Assignments successfully batch edited" << email_alert
       redirect_to @base_path
     else
-      request_error_fixes savable_assignments
+      request_batch_error_fixes savable_assignments
     end
   end
 
@@ -154,7 +154,8 @@ class AssignmentsController < ApplicationController
 
       def request_obstacle_decisions_for assignments
         @assignments = assignments
-        render 'resolve_obstacles' 
+        query = parse_batch_query
+        render "resolve_obstacles?#{query}"
         # view posts to '/assignment/resolve_obstacles' 
         # all assignments are uneditable, user has choice to accept or override each obstacle
       end
@@ -185,11 +186,12 @@ class AssignmentsController < ApplicationController
 
       def request_reassignments_for assignments
         @assignments = assignments
-        render 'request_reassignments' 
-        # view posts to /assignment/reassign_batch' (or something)
+        query = parse_batch_query
+        render "batch_reassign?#{query}"
+        # view posts to '/assignment/reassign_batch'
       end
 
-      def reassign_batch
+      def batch_reassign
         assignments = Assignments.new(params[:assignments])
         get_savable assignments # RECURSE
       end
@@ -199,10 +201,10 @@ class AssignmentsController < ApplicationController
         @errors.empty?
       end
 
-      def request_error_fixes assignments
+      def request_batch_error_fixes assignments
         @assignments = assignments
-        query = { base_path: @base_path }.to_query 
-        render "assignments/batch_edit?#{query}"
+        query = parse_batch_query
+        render "batch_edit?#{query}"
       end
 
       def send_batch_emails assignments, old_assignments, current_account
@@ -212,6 +214,11 @@ class AssignmentsController < ApplicationController
         else 
           " -- #{email_count} emails sent"
         end
+      end
+
+      def parse_batch_query
+        params.extract!(:base_path).to_query
+        # { base_path: @base_path }.to_query
       end
 
     # def batch_update

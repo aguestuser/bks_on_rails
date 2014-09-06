@@ -1,11 +1,11 @@
 class Assignments
-  attr_acessor :new, :with_obstacles, :without_obstacles, :requiring_reassignment
+  attr_acessor :fresh, :with_conflicts, :with_double_bookings, :with_obstacles, :without_obstacles, :requiring_reassignment
 
   def initialize options
     fresh = options[:fresh] # Array of Assignments
-    with_conflicts =  options[:with_conflicts] || 
+    @with_conflicts =  options[:with_conflicts] || 
       fresh.select { |ass| ass.conflicts.any? } # Arr of Assignments
-    with_double_bookings =  options[:with_double_bookings] || 
+    @with_double_bookings =  options[:with_double_bookings] || 
       fresh.select { |ass| ass.double_bookings.any? } # Arr of Assignments
     
     @with_obstacles = options[:with_obstacles] || 

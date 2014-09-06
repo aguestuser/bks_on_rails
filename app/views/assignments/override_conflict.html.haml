@@ -2,19 +2,5 @@
 - rider = @assignment.rider
 
 %h1 Conflict Alert
-.row
-  .span8.offset2
-    %p
-      You tried to assign the following shift:
-    %p.shift_box
-      = render 'assignments/shift_include', shift: @assignment.shift
-    %p 
-      to #{link_to rider.name, rider},, who has the following conflict(s):
-    %p.shift_box
-      = render 'assignments/conflicts_include', conflicts: @conflicts
-    %br/
-    %p.center
-      %strong
-        Do you want to assign it to them anyway? 
-    = render 'assignments/override_form'
-
+= render 'conflict_alert'
+= render 'assignments/override_form'

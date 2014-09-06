@@ -1,5 +1,5 @@
-- #args: shift
-- name = lambda { |attr| "assignments[][#{attr}]" }
+- #args: ass_key, shift
+- name = lambda { |attr| "assignments[#{ass_key}][#{attr}]" }
 - a = shift.assignment
 
 %p.shift_box
@@ -22,4 +22,4 @@
       = label_tag :status
     = select_tag name.call('status'), options_for_select(AssignmentStatus.select_options, a.status)
   / Base Path
-  = hidden_field_tag :base_path, @base_path
+  / = hidden_field_tag :base_path, @base_path
