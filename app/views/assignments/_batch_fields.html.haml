@@ -1,5 +1,6 @@
-- #args: ass_key, shift
-- name = lambda { |attr| "assignments[#{ass_key}][#{attr}]" }
+- #args: assignment_key, shift
+- assignment_key ||= ''
+- name = lambda { |attr| "assignments[#{assignment_key}][#{attr}]" }
 - a = shift.assignment
 
 %p.shift_box
@@ -8,6 +9,8 @@
 .row
   /Id
   = hidden_field_tag name.call('id'), a.id
+  /Shift
+  = hidden_field_tag name.call('shift_id'), a.shift_id
   /Rider
   .span4
     .center

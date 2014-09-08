@@ -122,7 +122,7 @@ module GridRequestMacros
   end
 
   def filter_grid_for_jan_2014
-    fill_in 'filter[start]', with: 'December 30, 2013'
+    fill_in 'filter_start', with: 'December 30, 2013'
     click_button 'Filter'
   end
 

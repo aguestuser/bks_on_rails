@@ -101,17 +101,17 @@ class AssignmentsController < ApplicationController
 
 
       def old_assignments_from params
-        Assignment.where("id IN (:ids", { ids: params[:assignments].map{ |ass| ass[:id] } } )
+        Assignment.where("id IN (:ids)", { ids: params[:assignments].map{ |ass| ass[:id] } } ).to_a
       end
 
       def new_assignments_from params
-        attrs = params[:assignments].map{ |param_hash| Assignment.attributes_from param_hash }
-        params[:assignment].map{ |attrs| Assignment.new(attrs) }
+        attr_arr = params[:assignments].map{ |param_hash| Assignment.attributes_from param_hash }
+        attr_arr.map{ |attrs| Assignment.new(attrs) }
       end 
 
   def batch_update_uniform
     old_assignments = old_uniform_assignments_from params
-    new_assignments = new_uniform_assignments_from params, old_assignments.count
+    new_assignments = new_uniform_assignments_from params
     
     do_batch_update old_assignments, new_assignments
   end
@@ -120,16 +120,20 @@ class AssignmentsController < ApplicationController
         Assignment.where("id IN (:ids)", { ids: params[:ids] })
       end
 
-      def new_uniform_assignments_from  params, num
-        attrs = Assignment.attributes_from param_hash
-        num.times.map{ Assignment.new(attrs) }
+      def new_uniform_assignments_from params
+        ids = params[:ids].map(&:to_i)
+        attrs = Assignment.attributes_from(params[:assignment])
+        ids.map do |id| 
+          attrs['shift_id'] = id
+          Assignment.new(attrs) 
+        end
       end
 
 
   def do_batch_update old_assignments, new_assignments
     savable_assignments = get_savable Assignments.new( { fresh: new_assignments } )
     if batch_save? old_assignments, savable_assignments
-      email_alert = send_batch_emails savable_assignments, old_assignments, current_user
+      email_alert = send_batch_emails savable_assignments, old_assignments, current_account
       flash[:success] = "Assignments successfully batch edited" << email_alert
       redirect_to @base_path
     else
@@ -145,7 +149,7 @@ class AssignmentsController < ApplicationController
         elsif assignments.requiring_reassignment.any?
           request_reassignments_for assignments
         else # BASE CASE (BREAKS RECURSION)
-          assignments
+          assignments.without_obstacles
           # try_saving assignments.without_obstacles
         end
       end
@@ -197,7 +201,7 @@ class AssignmentsController < ApplicationController
       end
 
       def batch_save? old_assignments, new_assignments
-        @errors = Assignment.batch_update(@assignments, assignment_attrs)
+        @errors = Assignment.batch_update(old_assignments, new_assignments)
         @errors.empty?
       end
 
@@ -281,7 +285,7 @@ class AssignmentsController < ApplicationController
     @assignment = assignment
     @override_subject = :conflict
     query = { 
-      ids: ids_from_batch_conflict params,
+      ids: ids_from_batch_conflict(params),
       base_path: params[:base_path]
     }.to_query
     @back_path = "/assignments/batch_edit?#{query}"
@@ -381,19 +385,19 @@ class AssignmentsController < ApplicationController
     #   save_loop message, do_over
     # end  
 
-    def can_save? assignment
-      conflicts = assignment.get_conflicts
+    # def can_save? assignment
+    #   conflicts = assignment.get_conflicts
       
-      if assignment.no_conflicts? conflicts
-        assignment.handle_no_conflicts conflicts
-        other_shifts = get_other_shifts
+    #   if assignment.no_conflicts? conflicts
+    #     assignment.handle_no_conflicts conflicts
+    #     other_shifts = get_other_shifts
 
-        if no_double_bookings? other_shifts
-          true
-        else
-      else
-      end
-    end
+    #     if no_double_bookings? other_shifts
+    #       true
+    #     end
+    #   else
+    #   end
+    # end
 
     def save_loop message, do_over
       if no_conflicts?

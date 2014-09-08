@@ -52,20 +52,32 @@ class Shift < ActiveRecord::Base
     self.assignment.update(rider_id: nil, status: :unassigned) if self.assigned?
   end
 
-  def conflicts_with?(conflicts)
-    conflicts.each do |conflict|
-      return true if ( conflict.end >= self.end && conflict.start < self.end ) || ( conflict.start <= self.start && conflict.end > self.start ) 
-      # ie: if the conflict under examination overlaps with this shift
-    end
-    false
+  # def conflicts_with?(conflicts)
+  #   conflicts.each do |conflict|
+  #     return true if ( conflict.end >= self.end && conflict.start < self.end ) || ( conflict.start <= self.start && conflict.end > self.start ) 
+  #     # ie: if the conflict under examination overlaps with this shift
+  #   end
+  #   false
+  # end
+
+  # def double_books_with?(shifts)
+  #   shifts.each do |shift|
+  #     return true if ( shift.end >= self.end && shift.start <  self.end ) || ( shift.start <= self.start && shift.end > self.start )
+  #     # ie: if the shift under examination overlaps with this shift
+  #   end
+  #   false
+  # end
+
+  def conflicts_with? conflict
+    ( conflict.end >= self.end && conflict.start < self.end ) || 
+    ( conflict.start <= self.start && conflict.end > self.start )
+    # ie: if the conflict under examination overlaps with this conflict 
   end
 
-  def double_books_with?(shifts)
-    shifts.each do |shift|
-      return true if ( shift.end >= self.end && shift.start <  self.end ) || ( shift.start <= self.start && shift.end > self.start )
-      # ie: if the shift under examination overlaps with this shift
-    end
-    false
+  def double_books_with? shift
+    ( shift.end >= self.end && shift.start <  self.end ) || 
+    ( shift.start <= self.start && shift.end > self.start )
+    # ie: if the shift under examination overlaps with this shift
   end
 
 end

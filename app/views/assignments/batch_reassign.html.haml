@@ -5,10 +5,10 @@
   %h3 Shifts Requiring Reassignment
     - @assignments.requiring_reassignment.each_with_index do |ass, i|
       %h3= "Blocked Shift #{i+1}"
-      = render 'batch_fields', shift: ass.shift, ass_key: 'fresh'
+      = render 'batch_fields', shift: ass.shift, assignment_key: 'fresh'
   %h3 Shifts With No Obstacles
     - @assignments.without_obstacles.each_with_index do |ass, i|
       %h3= "Savable Shift #{i+1}"
-      = render 'batch_fields', shift: ass.shift, ass_key: 'fresh'
+      = render 'batch_fields', shift: ass.shift, assignment_key: 'fresh'
   = render 'shared/base_path_field'
   = submit_tag 'Save changes', class: 'btn btn-primary'

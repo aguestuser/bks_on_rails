@@ -34,6 +34,7 @@ class Assignment < ActiveRecord::Base
       rider_conflicts = get_rider_conflicts 
       rider_conflicts.select { |conflict| self.shift.conflicts_with? [ conflict ] }
       # need to change typing on shift.conflicts_with? to accept conflict not array of conflicts
+    end
   end
 
   def double_bookings 
@@ -47,11 +48,7 @@ class Assignment < ActiveRecord::Base
   end
 
   def resolve_obstacle
-    if self.conflicts.any?
-      self.conflicts.each(&:destroy)
-    else
-      # self.double_bookable = true
-    end
+    self.conflicts.each(&:destroy) if self.conflicts.any?
   end
 
   def save_success_message
@@ -78,63 +75,27 @@ class Assignment < ActiveRecord::Base
       # (3) parses list of shifts for restaurants
       # (4) [ SIDE EFFECT ] sends batch shift delegation email to each rider using params built through (1), (2), and (3)
     #output: Int (count of emails sent)
-    delegations = delegations_from assignments, old_assignments # (1)
+    delegations = Assignment.delegations_from assignments, old_assignments # (1)
     rider_shifts = RiderShifts.new(delegations).array #(2), (3)
     rider_shifts.each do |rs| # (4)
       RiderMailer.delegation_email( rs[:rider], rs[:shifts], rs[:restaurants], current_account ).deliver
     end
     rider_shifts.count
   end
+
+  def Assignment.delegations_from assignments, old_assignments
+    #input: Arr of Assignments, Arr of Assignments
+    #does: builds array of assignments that were newly delegated when being updated from second argument to first
+    #output: Arr of Assignments
+    assignments.select.with_index do |a, i|  
+      a.status == :delegated && ( old_assignments[i].status != :delegated || old_assignments[i].rider != a.rider )
+    end
+  end
   
 
   private
 
     #instance method helpers
-
-    def get_rider_conflicts
-      self.rider.conflicts_on assignment.shift.start
-    end
-
-    def get_rider_shifts
-      self.rider.shifts_on(self.shift.start).reject{ |s| s.id == self.shift.id }
-    end
-
-    def no_double_bookings? other_shifts
-      if self.rider.nil? || self.override_double_booking
-        true
-      else
-        !self.shift.double_books_with? other_shifts
-      end
-    end
-
-    def handle_no_double_bookings
-      self.override_double_booking = false
-    end
-
-
-    def send_email_from sender_account
-      RiderMailer.delegation_email(self.rider, [ self.shift ], [ self.shift.restaurant ], sender_account).deliver
-    end
-
-    def delegations_from assignments, old_assignments
-      #input: Arr of Assignments, Arr of Assignments
-      #does: builds array of assignments that were newly delegated when being updated from second argument to first
-      #output: Arr of Assignments
-      assignments.select_with_index do |a, i|  
-        a.status == :delegated && ( old_assignments[i].status != :delegated || old_assignments[i].rider != a.rider )
-      end
-    end
-
-    def handle_no_conflicts conflicts
-      conflicts.each(&:destroy) # so these just-overrridedn conflicts won't throw errors in future
-      self.override_conflict = false # so other not-yet created conflicts will throw errors
-    end
-
-    def handle_single_save_success assignment
-      email_sent = send_email assignment
-      email_alert = email_sent ? " -- Email sent to rider" : ""
-      flash[:success] = 
-    end
 
     def status_nil?
       self.status.nil?
@@ -144,7 +105,34 @@ class Assignment < ActiveRecord::Base
       self.status = :unassigned
     end
 
+    def get_rider_conflicts
+      self.rider.conflicts_on self.shift.start
+    end
 
+    def get_rider_shifts
+      self.rider.shifts_on(self.shift.start).reject{ |s| s.id == self.shift.id }
+    end
+
+    def send_email_from sender_account
+      RiderMailer.delegation_email(self.rider, [ self.shift ], [ self.shift.restaurant ], sender_account).deliver
+    end
+
+
+
+
+    # def handle_single_save_success assignment
+    #   email_sent = send_email assignment
+    #   email_alert = email_sent ? " -- Email sent to rider" : ""
+    #   flash[:success] = 
+    # end
+
+    # def no_double_bookings? other_shifts
+    #   if self.rider.nil? || self.override_double_booking
+    #     true
+    #   else
+    #     !self.shift.double_books_with? other_shifts
+    #   end
+    # end
 
     # def handle_save_success type
     #   #input: Sym (permitted values: [ :single, :batch ])

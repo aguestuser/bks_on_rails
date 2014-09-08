@@ -100,7 +100,8 @@ class ShiftsController < ApplicationController
     case commit
     when 'Batch Edit'
       @errors = []
-      load_shift_batch
+      # load_shift_batch # loads @shifts
+      # raise @shifts.inspect
       render 'batch_edit' 
     when 'Batch Assign' 
       redirect_to "/assignment/batch_edit?#{query}"
@@ -110,8 +111,9 @@ class ShiftsController < ApplicationController
   end
 
   def batch_update
-    parse_shift_batch # loads @shifts
-    @errors = Shift.batch_update(@shifts, params[:shifts])
+    old_shifts = old_shifts_from params # loads @shifts
+    new_shifts = new_shifts_from params
+    @errors = Shift.batch_update(old_shifts, new_shifts)
 
     if @errors.empty?
       flash[:success] = "Shifts successfully batch edited"
@@ -198,12 +200,13 @@ class ShiftsController < ApplicationController
       @shifts = Shift.where("id IN (:ids)", { ids: params[:ids] } ).order(:start)
     end
 
-    def parse_shift_batch
-      @shifts = Shift.where("id IN (:ids)", { ids: params[:shifts].map{ |s| s[:id] } } ).order(:start)
+    def old_shifts_from params
+      Shift.where("id IN (:ids)", { ids: params[:shifts].map{ |s| s[:id] } } ).order(:start)
     end
 
-    def load_assignment_batch
-      @assignments = @shifts.map(&:assignment)
+    def new_shifts_from params
+      attr_arr = params[:shifts].map { |param_hash| Assignment.attributes_from param_hash }
+      attr_arr.map{ |attrs| Shift.new(attrs) }
     end
 
     # VIEW INTERACTION HELPERS

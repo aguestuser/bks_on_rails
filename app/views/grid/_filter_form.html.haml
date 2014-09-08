@@ -1,11 +1,8 @@
 .row   
-  /Pass default start from controller to JS
-  
-
   .span10.offset2
     = form_tag '/grid/'<<params[:action], :class => 'filter', method: :get do
       /Start
-      = render '/shared/datepicker', name: 'filter[start]', start_i: @week.start.to_i, start_str: @week.start.strftime("%B %e, %Y")
+      = render '/shared/datepicker', id: "filter_start", name: 'filter[start]', start_i: @week.start.to_i, start_str: @week.start.strftime("%B %e, %Y")
 
       / %div{ id: "date", data: { start: @week.start.to_i } }
       / .span.datepicker
@@ -21,6 +18,8 @@
             End:
           = @filter[:end].strftime("%B %e, %Y")
           = hidden_field_tag :end, value: @filter[:end]
+      /Basepath
+      = render 'shared/base_path_field'
       /Submit
       .span
         = submit_tag 'Filter', class: 'btn btn-primary'
