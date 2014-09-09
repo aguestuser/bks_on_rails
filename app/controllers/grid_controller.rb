@@ -26,10 +26,13 @@ class GridController < ApplicationController
     assignments = Shift
       .where("id IN (:shift_ids)", { shift_ids: params[:shift_ids].split.map(&:to_i) })
       .map(&:assignment)
-    
-    rider_shifts = RiderShifts.new(assignments).array
-    rider_shifts.each do |rs|
-      RiderMailer.delegation_email( rs[:rider], rs[:shifts], rs[:restaurants], current_account, :weekly ).deliver
+    # assignments = parse_proposed assignments (to only send proposed shifts)
+    count = 0
+
+    rider_shifts = RiderShifts.new(assignments).hash
+    rider_shifts.values.each do |rider_hash| 
+      Assignment.send_email( rider_hash, :weekly, current_account) 
+      count += 1
     end
 
     flash[:success] = "#{rider_shifts.count} emails sent"

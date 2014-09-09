@@ -1,7 +1,7 @@
 class RiderMailer < ActionMailer::Base
   default from: "brooklynshift@gmail.com"
 
-  def delegation_email rider, shifts, restaurants, account, type=nil
+  def delegation_email rider, shifts, restaurants, account, type
     require 'delegation_email_helper'
 
     @rider = rider

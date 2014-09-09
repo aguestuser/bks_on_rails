@@ -1,8 +1,8 @@
 class RiderShifts
-  attr_reader :array
+  attr_reader :hash
 
   def initialize assignments
-    @array = array_from assignments
+    @hash = hash_from assignments
   end
 
   private
@@ -30,7 +30,7 @@ class RiderShifts
     #   arr
     # end
 
-    def array_from assignments
+    def hash_from assignments
       #input: Arr of assignments
             #output: Hash of Hashes of type:
         # { Num<rider_id>: 

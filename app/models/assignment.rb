@@ -83,11 +83,28 @@ class Assignment < ActiveRecord::Base
       # (4) [ SIDE EFFECT ] sends batch shift delegation email to each rider using params built through (1), (2), and (3)
     #output: Int (count of emails sent)
     delegations = Assignment.delegations_from new_assignments, old_assignments # (1)
-    rider_shifts = RiderShifts.new(delegations).array #(2), (3)
-    rider_shifts.each do |rs| # (4)
-      RiderMailer.delegation_email( rs[:rider], rs[:shifts], rs[:restaurants], current_account ).deliver
+    rider_shifts = RiderShifts.new(delegations).hash #(2), (3)
+    count = 0
+
+    rider_shifts.values.each do |rider_hash| # (4)
+      [:emergency, :extra, :weekly].each do |urgency|
+        if rider_hash[key].any?
+          Assignment.send_email rider_hash, type, sender_account
+          count += 1
+        end
+      end
     end
-    rider_shifts.count
+    count
+  end
+
+  def Assignment.send_email rider_hash, urgency, sender_account
+    RiderMailer.delegation_email( 
+      rider_hash[:rider], 
+      rider_hash[urgency][:shifts], 
+      rider_hash[urgency][:restaurants],
+      sender_account,
+      urgency
+    ).deliver
   end
 
   def Assignment.delegations_from new_assignments, old_assignments

@@ -320,45 +320,45 @@ class AssignmentsController < ApplicationController
   #   end
   # end
 
-  def no_batch_save_obstacles? assignments
-    if assignments.count == 0 # BASE CASE
-      false
-    else
-      assignments.each_with_index do |assignment, i| # RECURSION LOOP
-        case assignment.save_obstacles
-        when :none
-          find_obstacles assignments[ (i+1)..assignments.count ] # CALL RECURSION LOOP (SKIP AHEAD)
-        when :conflict
-          # handle_batch_conflict assignment
-          find_obstacles assignments[i..assignments.length] # CALL RECURSION LOOP (AT SAME INDEX)
-        when :double_booking
-          # handle_batch_double_booking assignment
-          find_obstacles assignments[i..assignments.length] # CALL RECURSION LOOP (AT SAME INDEX)
-        end
-      end
-    end
-  end
+  # def no_batch_save_obstacles? assignments
+  #   if assignments.count == 0 # BASE CASE
+  #     false
+  #   else
+  #     assignments.each_with_index do |assignment, i| # RECURSION LOOP
+  #       case assignment.save_obstacles
+  #       when :none
+  #         find_obstacles assignments[ (i+1)..assignments.count ] # CALL RECURSION LOOP (SKIP AHEAD)
+  #       when :conflict
+  #         # handle_batch_conflict assignment
+  #         find_obstacles assignments[i..assignments.length] # CALL RECURSION LOOP (AT SAME INDEX)
+  #       when :double_booking
+  #         # handle_batch_double_booking assignment
+  #         find_obstacles assignments[i..assignments.length] # CALL RECURSION LOOP (AT SAME INDEX)
+  #       end
+  #     end
+  #   end
+  # end
 
-  def handle_batch_conflict assignment
-    @assignment = assignment
-    @override_subject = :conflict
-    query = { 
-      ids: ids_from_batch_conflict(params),
-      base_path: params[:base_path]
-    }.to_query
-    @back_path = "/assignments/batch_edit?#{query}"
-    render 'override_conflict'
-  end
+  # def handle_batch_conflict assignment
+  #   @assignment = assignment
+  #   @override_subject = :conflict
+  #   query = { 
+  #     ids: ids_from_batch_conflict(params),
+  #     base_path: params[:base_path]
+  #   }.to_query
+  #   @back_path = "/assignments/batch_edit?#{query}"
+  #   render 'override_conflict'
+  # end
 
-  def ids_from_batch_conflict params
-    assignments = params[:assignments]
-    assignments.map { |a| a.shift.id }
-  end
+  # def ids_from_batch_conflict params
+  #   assignments = params[:assignments]
+  #   assignments.map { |a| a.shift.id }
+  # end
 
-  def successful_batch_save assignments, assignment_attrs
-    @errors = Assignment.batch_update(@assignments, assignment_attrs)
-    @errors.empty?
-  end
+  # def successful_batch_save assignments, assignment_attrs
+  #   @errors = Assignment.batch_update(@assignments, assignment_attrs)
+  #   @errors.empty?
+  # end
 
 
 
