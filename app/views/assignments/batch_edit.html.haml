@@ -9,6 +9,7 @@
         = render '/assignments/batch_fields', assignment: assignment
       %hr/
     = render 'shared/base_path_field'
+    = hidden_field_tag :old_assignments_json, @old_assignments if @old_assignments
     %p.center
       = submit_tag 'Save changes', class: 'btn btn-primary'
 

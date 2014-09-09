@@ -105,8 +105,8 @@ class RiderShifts
       assignments.each do |id, rider_hash|
         hash[id] = {
           rider: rider_hash[:rider],
-          emergency: urgency_hash(rider_hash[:emergency], parse_restaurants(rider_hash[:emergency]),
-          extra: urgency_hash(rider_hash[:extra], parse_restaurants(rider_hash[:extra]))
+          emergency: urgency_hash( rider_hash[:emergency], parse_restaurants( rider_hash[:emergency]) ),
+          extra: urgency_hash( rider_hash[:extra], parse_restaurants( rider_hash[:extra] ) )
         }
       hash
       end

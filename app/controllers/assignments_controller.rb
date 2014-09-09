@@ -86,11 +86,8 @@ class AssignmentsController < ApplicationController
 
 
   def batch_update
-    do_batch_update new_assignments_from(params)
-    # old_assignments = old_assignments_from params
-    # new_assignments = new_assignments_from params
-
-    # do_batch_update old_assignments, new_assignments
+    old_assignments = params[:old_assignments_json] ? load_old_assignments : nil
+    do_batch_update new_assignments_from(params), old_assignments
   end
 
 
@@ -105,10 +102,6 @@ class AssignmentsController < ApplicationController
 
   def batch_update_uniform
     do_batch_update new_uniform_assignments_from(params)
-    # old_assignments = old_uniform_assignments_from params
-    # new_assignments = new_uniform_assignments_from params
-    
-    # do_batch_update old_assignments, new_assignments
   end
 
   # def old_uniform_assignments_from params
@@ -127,13 +120,14 @@ class AssignmentsController < ApplicationController
     end
   end
 
-  def do_batch_update new_assignments
-    get_savable Assignments.new( { fresh: new_assignments } )
+  def do_batch_update assignments, old_assignments=nil
+    get_savable Assignments.new( { fresh: assignments } ), old_assignments
   end
 
-  def get_savable assignments # RECURSION HOOK
+  def get_savable assignments, old_assignments=nil # RECURSION HOOK
     #input: Assignments Obj
     #output: Assignments Obj w/ empty .with_obstacles and .requiring_reassignment Arrays
+
     if assignments.with_obstacles.any?
       request_obstacle_decisions_for assignments # will recurse
       nil
@@ -142,7 +136,9 @@ class AssignmentsController < ApplicationController
       nil
     else # BASE CASE (BREAKS RECURSION)
       new_assignments = assignments.without_obstacles
-      old_assignments = new_assignments.map{ |ass| Assignment.find(ass.id) }
+      old_assignments ||= old_assignments_from new_assignments
+      # raise ( "NEW ASSIGNMENTS: " + new_assignments.inspect + "OLD ASSIGNMENTS: " + old_assignments.inspect )
+    
       update_savable old_assignments, new_assignments
       # try_saving assignments.without_obstacles
     end
@@ -150,7 +146,7 @@ class AssignmentsController < ApplicationController
 
   def update_savable old_assignments, new_assignments
     if batch_save? old_assignments, new_assignments
-      new_assignments.each{ |a| a.shift.update_urgency }
+      new_assignments.each{ |a| a.shift.refresh_urgency }
       
       message = success_message_from old_assignments.count
       email_alert = send_batch_emails new_assignments, old_assignments, current_account
@@ -158,7 +154,7 @@ class AssignmentsController < ApplicationController
       flash[:success] = message << email_alert
       redirect_to @base_path
     else
-      request_batch_error_fixes new_assignments
+      request_batch_error_fixes old_assignments, new_assignments
     end
   end
 
@@ -191,6 +187,8 @@ class AssignmentsController < ApplicationController
   end
 
 
+
+
   # RECURSION CASE 2
 
   def request_reassignments_for assignments
@@ -212,8 +210,9 @@ class AssignmentsController < ApplicationController
     @errors.empty?
   end
 
-  def request_batch_error_fixes assignments
-    @assignments = assignments
+  def request_batch_error_fixes old_assignments, new_assignments
+    @assignments = new_assignments
+    @old_assignments = old_assignments.to_json
     render "batch_edit"
   end
 
@@ -224,6 +223,20 @@ class AssignmentsController < ApplicationController
     else 
       " -- #{email_count} emails sent"
     end
+  end
+
+  # HELPER
+
+  def old_assignments_from new_assignments
+    if params[:old_assignments_json]
+      load_old_assignments
+    else  
+      new_assignments.map{ |ass| Assignment.find(ass.id) }
+    end
+  end
+
+  def load_old_assignments
+    Assignments.from_params JSON.parse(params[:old_assignments_json])
   end
 
       # def parse_obstacle_decisions assignments, decisions

@@ -69,7 +69,7 @@ class Shift < ActiveRecord::Base
     #side-effects: updates shift's urgency attribute
     #output: self 
     now = Time.zone.now
-    start = self.shift.start
+    start = self.start
     send_urgency( parse_urgency( now, start ) ) if start > now 
     self
   end
@@ -93,7 +93,7 @@ class Shift < ActiveRecord::Base
 
     def send_urgency urgency
       #input: Symbol
-      self.shift.update(urgency: urgency)
+      self.update(urgency: urgency)
     end  
 
 end

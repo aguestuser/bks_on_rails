@@ -20,7 +20,6 @@ class Assignment < ActiveRecord::Base
   classy_enum_attr :status, allow_nil: true, enum: 'AssignmentStatus'
 
   before_validation :set_status, if: :status_nil?
-  after_validation :update_shift_urgency
 
   validates :status, presence: true
   validate :no_emergency_shift_delegation
@@ -82,8 +81,13 @@ class Assignment < ActiveRecord::Base
       # (3) parses list of shifts for restaurants
       # (4) [ SIDE EFFECT ] sends batch shift delegation email to each rider using params built through (1), (2), and (3)
     #output: Int (count of emails sent)
-    delegations = Assignment.delegations_from new_assignments, old_assignments # (1)
-    rider_shifts = RiderShifts.new(delegations).hash #(2), (3)
+    # delegations = Assignment.delegations_from new_assignments, old_assignments # (1)
+    # rider_shifts = RiderShifts.new(delegations).hash #(2), (3)
+    
+    emailable_shifts = Assignment.emailable new_assignments, old_assignments
+    raise emailable_shifts.inspect
+    rider_shifts = RiderShifts.new(emailable_shifts).hash #(2), (3)
+    raise rider_shifts.inspect
     count = 0
 
     rider_shifts.values.each do |rider_hash| # (4)
@@ -113,6 +117,26 @@ class Assignment < ActiveRecord::Base
     #output: Arr of Assignments
     new_assignments.select.with_index do |a, i|  
       a.status == :delegated && ( old_assignments[i].status != :delegated || old_assignments[i].rider != a.rider )
+    end
+  end
+
+  def Assignment.emailable new_assignments, old_assignments
+    #input: Arr of Assignments, Arr of Assignments
+    #does: builds array of assignments that were newly delegated when being updated from second argument to first
+    #output: Arr of Assignments
+    # raise ( "NEW ASSIGNMENTS: " + new_assignments.inspect + "OLD ASSIGNMENTS: " + old_assignments.inspect )
+    new_assignments.select.with_index do |a, i| 
+      if a.status == :delegated
+        old_assignments[i].status != :delegated || old_assignments[i].rider != a.rider
+      elsif a.status == :confirmed
+        # raise ( old_assignments[i].rider != a.rider ).inspect
+        val = ( a.shift.urgency == :emergency && ( old_assignments[i].status != :confirmed || old_assignments[i].rider != a.rider ) )
+        # raise val.inspect
+      else
+        false
+      end 
+      # a.status == :delegated && ( old_assignments[i].status != :delegated || old_assignments[i].rider != a.rider ) ||
+      # a.status == :confirmed && ( old_assignments[i].status != :confirmed || old_assignments[i].rider != a.rider )
     end
   end
   
