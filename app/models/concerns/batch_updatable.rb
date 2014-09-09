@@ -38,11 +38,6 @@ module BatchUpdatable
     # end
 
     def batch_update old_records, new_records
-      # puts "old_records"
-      # pp old_records
-      # puts"new_records"
-      # pp new_records
-
       errors = []
       old_records.each_with_index do |record, i|
         attributes = new_records[i].attributes.reject{ |k,v| k == 'id' }

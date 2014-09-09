@@ -1,0 +1,6 @@
+- #arg: assignments
+- assignments.instance_variables.each do |var|
+  - key = var.to_s.delete('@') 
+  - ass_arr = assignments.instance_variable_get var
+    - ass_arr.each do |assignment|
+    = hidden_field_tag "assignments_ids[#{key}][]", assignment.id

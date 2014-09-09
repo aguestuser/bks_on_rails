@@ -32,7 +32,7 @@ class Assignment < ActiveRecord::Base
       []
     else
       rider_conflicts = get_rider_conflicts 
-      rider_conflicts.select { |conflict| self.shift.conflicts_with? [ conflict ] }
+      rider_conflicts.select { |conflict| self.shift.conflicts_with? conflict }
       # need to change typing on shift.conflicts_with? to accept conflict not array of conflicts
     end
   end
@@ -49,6 +49,7 @@ class Assignment < ActiveRecord::Base
 
   def resolve_obstacle
     self.conflicts.each(&:destroy) if self.conflicts.any?
+    self
   end
 
   def save_success_message

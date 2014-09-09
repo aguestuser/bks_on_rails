@@ -1,7 +1,18 @@
 - provide(:title, 'Batch Assign Shifts')
 
-- header = 'Batch Assign Shifts'
-- action = '/assignment/batch_edit'
-- fields = '/assignments/batch_fields'
+%h1 Batch Assign Shifts
+.span8.offset2.profile
+  = form_tag '/assignment/batch_edit', method: :post do
+    = render 'shared/batch_error_messages', errors: @errors
+    - @assignments.each_with_index do |assignment, i|
+      %div{ id: "assignment_#{assignment.id}_wrapper" }
+        %h3 Shift #{i+1}
+        = render '/assignments/batch_fields', assignment: assignment
+    = render 'shared/base_path_field'
+    %p.center
+      = submit_tag 'Save changes', class: 'btn btn-primary'
 
-= render 'shifts/batch_edit_form', header: header, action: action, fields: fields
+/ - header = 'Batch Assign Shifts'
+/ - action = '/assignment/batch_edit'
+
+/ = render 'batch_edit_form', header: header, action: action

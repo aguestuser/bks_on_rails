@@ -1,19 +1,7 @@
 - provide(:title, 'Double Booking Alert')
-- rider = @assignment.rider
 
 %h1 Double Booking Alert
 .row
   .span8.offset2
-    %p
-      You tried to assign the following shift:
-    %p.shift_box
-      = render 'assignments/shift_include', shift: @assignment.shift
-    %p 
-      to #{link_to rider.name, rider}, which would double book them with the following shift(s):
-    %p.shift_box
-      = render 'assignments/double_bookings_include', conflicts: @conflicts
-    %br/
-    %p.center
-      %strong
-        Do you want to assign it to them anyway? 
+    = render 'double_booking_alert', assignment: @assignment
     = render 'assignments/override_form'

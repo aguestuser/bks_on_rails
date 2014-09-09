@@ -1,26 +1,38 @@
 - #args: Assignments (.with_obstacles, .without_obstacles)
 - provide(title: "Resolve Scheduling Obstacles")
 
-= form_tag '/assignment/resolve_obstacles', method: :post
-  /Conflicts
-  %h3 Shifts With Conflicts
-  - @assignments.with_conflicts.each_with_index do |assignment, i|
-    %h3= "Conflicting Shift#{i+1}"
-    = render 'conflict_alert', assignment: ass
-    = radio_button_tag 'decisions[]', 'Accept', true
-    = radio_button_tag 'decisions[]', 'Override', false
-    = "(Overriding will delete all rider conflicts during this period)"
-  /Double Bookings
-  %h3 Shifts with Double Bookings
-  - @assignments.with_double_bookings.each_with_index do |assignment, i|
-    %h3= "Double Booked Shift #{i+1}"
-    = render 'double_booking_alert', assignment: ass
-    = radio_button_tag 'decisions[]', 'Accept', true
-    = radio_button_tag 'decisions[]', 'Override', false
-    = "(Overriding will remove all double-booking flags for any future assignments to this rider during this period)"
-  %h3 Savable Assignments
-  - @assignments.without_conflicts.each_with_index do |assignment, i|
-    %h3= "Savable Shift #{i+1}"
-    =# Shift assignment includes
-  = hidden_field_tag :assignments @assignments
-  = submit_tag "Submit", class: 'btn btn-primary'
+%h1 Resolve Scheduling Obstacles
+.row
+  .span8.offset2.profile
+    = form_tag '/assignment/resolve_obstacles', method: :post do
+      /Conflicts
+      - if @assignments.with_conflicts.any?
+        %h3 Assignments With Conflicts
+        - @assignments.with_conflicts.each_with_index do |assignment, i|
+          / %h3= "Conflicting Assignment#{i+1}"
+          = render 'conflict_alert', assignment: assignment
+          = render 'decision_radios', i: i
+          %p.center
+            %i="(NOTE: Selecting 'Yes' will delete all rider conflicts during this period)"
+          %hr/
+      /Double Bookings
+      - if @assignments.with_double_bookings.any?
+        %h3 Assignments with Double Bookings
+        - @assignments.with_double_bookings.each_with_index do |assignment, i|
+          / %h3= "Double Booked Assignment #{i+1}"
+          = render 'double_booking_alert', assignment: assignment
+          = render 'decision_radios', i: i + @assignments.with_conflicts.count
+          %hr/
+      - if @assignments.without_obstacles.any?
+        %h3 Savable Assignments
+        - @assignments.without_obstacles.each_with_index do |assignment, i|
+          / %h3= "Savable Shift #{i+1}"
+          .shift_box
+            = render 'shift_include', shift: assignment.shift
+          .shift_box
+            = render 'assignment_include', assignment: assignment
+          %hr/
+      /Hidden Fields
+      = hidden_field_tag :assignments_json, @assignments.to_json
+      %p.center
+        = submit_tag "Submit", class: 'btn btn-primary'

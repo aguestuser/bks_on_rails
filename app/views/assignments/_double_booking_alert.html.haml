@@ -6,11 +6,9 @@
   = render 'assignments/assignment_include', assignment: a
 .center
   %strong
-    CONFLICTS WITH:
+    DOUBLE BOOKS WITH:
 %p.shift_box
-  = render 'assignments/conflicts_include', conflicts: a.conflicts
+  = render 'assignments/double_bookings_include', double_bookings: a.double_bookings
 %p.center
   %strong
-    Do you want to assign it anyway? 
-
-
+    Do you want to assign it anyway?

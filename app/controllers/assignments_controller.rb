@@ -93,16 +93,17 @@ class AssignmentsController < ApplicationController
 
 
   def batch_update
-    old_assignments = old_assignments_from params
-    new_assignments = new_assignments_from params
+    do_batch_update new_assignments_from(params)
+    # old_assignments = old_assignments_from params
+    # new_assignments = new_assignments_from params
 
-    do_batch_update old_assignments, new_assignments
+    # do_batch_update old_assignments, new_assignments
   end
 
 
-      def old_assignments_from params
-        Assignment.where("id IN (:ids)", { ids: params[:assignments].map{ |ass| ass[:id] } } ).to_a
-      end
+      # def old_assignments_from params
+      #   Assignment.where("id IN (:ids)", { ids: params[:assignments].map{ |ass| ass[:id] } } ).to_a
+      # end
 
       def new_assignments_from params
         attr_arr = params[:assignments].map{ |param_hash| Assignment.attributes_from param_hash }
@@ -110,15 +111,16 @@ class AssignmentsController < ApplicationController
       end 
 
   def batch_update_uniform
-    old_assignments = old_uniform_assignments_from params
-    new_assignments = new_uniform_assignments_from params
+    do_batch_update new_uniform_assignments_from(params)
+    # old_assignments = old_uniform_assignments_from params
+    # new_assignments = new_uniform_assignments_from params
     
-    do_batch_update old_assignments, new_assignments
+    # do_batch_update old_assignments, new_assignments
   end
 
-      def old_uniform_assignments_from params
-        Assignment.where("id IN (:ids)", { ids: params[:ids] })
-      end
+      # def old_uniform_assignments_from params
+      #   Assignment.where("id IN (:ids)", { ids: params[:ids] })
+      # end
 
       def new_uniform_assignments_from params
         ids = params[:ids].map(&:to_i)
@@ -130,75 +132,74 @@ class AssignmentsController < ApplicationController
       end
 
 
-  def do_batch_update old_assignments, new_assignments
-    savable_assignments = get_savable Assignments.new( { fresh: new_assignments } )
-    if batch_save? old_assignments, savable_assignments
-      email_alert = send_batch_emails savable_assignments, old_assignments, current_account
-      flash[:success] = "Assignments successfully batch edited" << email_alert
-      redirect_to @base_path
-    else
-      request_batch_error_fixes savable_assignments
-    end
+  def do_batch_update new_assignments
+    get_savable Assignments.new( { fresh: new_assignments } )
   end
 
       def get_savable assignments # RECURSION HOOK
         #input: Assignments Obj
         #output: Assignments Obj w/ empty .with_obstacles and .requiring_reassignment Arrays
+        # raise assignments.inspect
         if assignments.with_obstacles.any?
-          request_obstacle_decisions_for assignments
+          request_obstacle_decisions_for assignments # will recurse
+          nil
         elsif assignments.requiring_reassignment.any?
-          request_reassignments_for assignments
+          request_reassignments_for assignments # will recurse
+          nil
         else # BASE CASE (BREAKS RECURSION)
-          assignments.without_obstacles
+          new_assignments = assignments.without_obstacles
+          old_assignments = new_assignments.map{ |ass| Assignment.find(ass.id) }
+          update_savable old_assignments, new_assignments
           # try_saving assignments.without_obstacles
+        end
+      end
+
+      def update_savable old_assignments, new_assignments
+        if batch_save? old_assignments, new_assignments
+          email_alert = send_batch_emails new_assignments, old_assignments, current_account
+          flash[:success] = "Assignments successfully batch edited" << email_alert
+          redirect_to @base_path
+        else
+          request_batch_error_fixes savable_assignments
         end
       end
 
       # RECURSION CASE 1
 
+      # def request_obstacle_decisions_for assignments
+
       def request_obstacle_decisions_for assignments
         @assignments = assignments
-        query = parse_batch_query
-        render "resolve_obstacles?#{query}"
+        # params[:base_path] = @base_path
+        render "resolve_obstacles"
         # view posts to '/assignment/resolve_obstacles' 
         # all assignments are uneditable, user has choice to accept or override each obstacle
       end
 
       def resolve_obstacles
-        decisions = params[:decisions]
-        assignments = Assignments.new(params[:assignments])
-        resolution_queue = 
+        decisions = Assignments.decisions_from params[:decisions]
+        assignments = Assignments.from_params JSON.parse(params[:assignments_json])
         assignments = assignments.resolve_obstacles_with decisions
 
         get_savable assignments # RECURSE
       end
 
-      def parse_obstacle_decisions assignments, decisions
-        decisions.with_index do |decision, i| 
-          if decision == :accept
-            assignments.requiring_edit.push assignments.without_obstacles[i] 
-          else # if decision == :override
-            assignment = assignments_with_obstacles[i].resolve_obstacle_with decision
-            assignments.without_obstacles.push assignment
-          end
-        end
-        assignments.with_obstacles = []
-        assignments
-      end
 
       # RECURSION CASE 2
 
       def request_reassignments_for assignments
         @assignments = assignments
-        query = parse_batch_query
-        render "batch_reassign?#{query}"
+        render "batch_reassign"
         # view posts to '/assignment/reassign_batch'
       end
 
       def batch_reassign
-        assignments = Assignments.new(params[:assignments])
+        # assignments = assignments_from_assignments_params params[:assignments]
+        assignments = Assignments.from_params params[:assignments]
         get_savable assignments # RECURSE
       end
+
+      # SAVE ROUTINE
 
       def batch_save? old_assignments, new_assignments
         @errors = Assignment.batch_update(old_assignments, new_assignments)
@@ -220,10 +221,62 @@ class AssignmentsController < ApplicationController
         end
       end
 
-      def parse_batch_query
-        params.extract!(:base_path).to_query
-        # { base_path: @base_path }.to_query
-      end
+      # def parse_obstacle_decisions assignments, decisions
+      #   decisions.with_index do |decision, i| 
+      #     if decision == :accept
+      #       assignments.requiring_edit.push assignments.without_obstacles[i] 
+      #     else # if decision == :override
+      #       assignment = assignments_with_obstacles[i].resolve_obstacle_with decision
+      #       assignments.without_obstacles.push assignment
+      #     end
+      #   end
+      #   assignments.with_obstacles = []
+      #   assignments
+      # end
+
+        # def assignments_from_assignments_params assignments_params
+        #   raise assignments_params.inspect
+
+        #   assignments_params.each do |key, ass_param_arr|
+
+        #   end
+        #   options[:fresh] = assignments_params.map do |param_hash|
+        #       attrs = Assignment.attributes_from param_hash
+        #       Assignment.new(attrs)
+        #     end
+        #   Assignments.new(options)
+        # end
+
+      # def parse_batch_query
+      #   params.extract!(:base_path).to_query
+      #   # { base_path: @base_path }.to_query
+      # end
+
+        # def assignments_from_id_params id_hash
+        #   options = assignments_options_from id_hash
+        #   Assignments.new(options)
+        # end
+
+        # def assignments_options_from id_hash
+        #   # input: Hash of type
+        #     # { 
+        #     #   'fresh' => [Arr of Strs (ids)], 
+        #     #   'with_conflicts' => [Arr of Strs (ids)], 
+        #     #   'with_double_bookings' => [Arr of Strs (ids)], 
+        #     #   'with_obstacles' => [Arr of Strs (ids)], 
+        #     #   'without_obstacles' => [Arr of Strs (ids)],  
+        #     #   'requiring_reassignment' => [Arr of Strs (ids)],                        
+        #     # }
+        #   # does: parses 
+        #   # output: 
+        #   options = {}
+        #   id_hash.each do |key, ids|
+        #     options[key.to_sym] = ids.map do |id|
+        #       Assignment.find(id.to_i) 
+        #     end
+        #   end
+        #   options          
+        # end
 
     # def batch_update
   #   old_assignments = parse_old_assignments

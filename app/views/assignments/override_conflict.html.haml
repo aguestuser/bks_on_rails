@@ -1,6 +1,7 @@
 - provide(:title, 'Conflict Alert')
-- rider = @assignment.rider
 
 %h1 Conflict Alert
-= render 'conflict_alert'
-= render 'assignments/override_form'
+.row
+  .span8.offset2
+    = render 'conflict_alert', assignment: @assignment
+    = render 'assignments/override_form'
