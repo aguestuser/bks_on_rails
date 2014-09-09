@@ -1,0 +1,6 @@
+- #arg: object
+- obj_name = object.class.name.downcase
+- object.instance_variables.each do |var|
+  - key = var.to_s.delete('@') 
+  - value = object.instance_variable_get var
+  = hidden_field_tag "#{obj_name}[#{key}]", value

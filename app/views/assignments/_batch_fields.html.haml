@@ -2,6 +2,7 @@
 - assignments_key ||= nil
 - key = assignments_key.nil? ? "[]" : "[#{assignments_key}][]"
 - name = lambda { |attr| "assignments#{key}[#{attr}]" }
+- error_class = @errors.find{ |e| e[:record] == assignment } ? 'field_with_errors' : ''
 
 %p.shift_box
   = render 'assignments/shift_include', shift: assignment.shift
@@ -11,16 +12,17 @@
   = hidden_field_tag name.call('id'), assignment.id
   /Shift
   = hidden_field_tag name.call('shift_id'), assignment.shift_id
-  /Rider
-  .span4
-    .center
-      = label_tag :rider
-    - unless @caller == :rider
-      = select_tag name.call('rider_id'), options_for_select(Rider.select_options, assignment.rider.nil? ? nil : assignment.rider.id ), include_blank: true
-    - else 
-      = assignment.rider.name
-  /Status
-  .span4
-    .center
-      = label_tag :status
-    = select_tag name.call('status'), options_for_select(AssignmentStatus.select_options, assignment.status)
+  %div{ class: error_class }
+    /Rider
+    .span4
+      .center
+        = label_tag :rider
+      - unless @caller == :rider
+        = select_tag name.call('rider_id'), options_for_select(Rider.select_options, assignment.rider.nil? ? nil : assignment.rider.id ), include_blank: true
+      - else 
+        = assignment.rider.name
+    /Status
+    .span4
+      .center
+        = label_tag :status
+      = select_tag name.call('status'), options_for_select(AssignmentStatus.select_options, assignment.status)

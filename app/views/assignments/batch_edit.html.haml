@@ -6,8 +6,8 @@
     = render 'shared/batch_error_messages', errors: @errors
     - @assignments.each_with_index do |assignment, i|
       %div{ id: "assignment_#{assignment.id}_wrapper" }
-        %h3 Shift #{i+1}
         = render '/assignments/batch_fields', assignment: assignment
+      %hr/
     = render 'shared/base_path_field'
     %p.center
       = submit_tag 'Save changes', class: 'btn btn-primary'

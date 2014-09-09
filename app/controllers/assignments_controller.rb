@@ -11,51 +11,44 @@ class AssignmentsController < ApplicationController
   
   before_action :redirect_to_rider_shifts, only: [ :new, :create ]
 
-  def new
-    @assignment = Assignment.new
-    load_form_args
-    # @assignment.shift = @shift      
-  end
+  # def new
+  #   @assignment = Assignment.new
+  #   load_form_args
+  #   # @assignment.shift = @shift      
+  # end
 
-  def create
-    @assignment = Assignment.new(assignment_params)
-    load_form_args
-    attempt_save_from :create
-  end
+  # def create
+  #   @assignment = Assignment.new(assignment_params)
+  #   load_form_args
+  #   attempt_save_from :create
+  # end
 
   def edit
   end
 
   def update
-    # input: assignment
-    # does: (1) tests if are save obstacles
-      #if so: redirects to obstacle override page
-      #if not: (2) tests if save errors
-        #if so: redirects to edit page showing errors
-        #if not: redirects to base page with success message
-    #side effects: saves if can save
-    #output: redirect action
-    old_assignment = Assignment.new(@assignment.attributes)
-    @assignment.attributes = assignment_params
-
-    case @assignment.save_obstacles
-    when :none
-      if assignment.save
-        email_sent = assignment.try_send_email old_assignment, current_user
-        email_alert = email_sent ? " -- Email sent to rider" : ""
-        flash[:success] = assignment.save_success_message + email_alert
-      else
-        render 'edit'
-      end
-    when :double_booking
-      @override_subject = :double_booking
-      @back_path = @base_path
-      render 'override_double_booking'
-    when :conflict
-      @override_subject = :conflict
-      @back_path = @base_path
-      render 'override_conflict'
-    end
+    # old_assignment = Assignment.new(@assignment.attributes)
+    # @assignment.attributes = assignment_params
+    new_assignment = Assignment.new(assignment_params)
+    get_savable Assignments.new( { fresh: [ new_assignment ] } )
+    # case @assignment.save_obstacles
+    # when :none
+    #   if assignment.save
+    #     email_sent = assignment.try_send_email old_assignment, current_user
+    #     email_alert = email_sent ? " -- Email sent to rider" : ""
+    #     flash[:success] = assignment.save_success_message + email_alert
+    #   else
+    #     render 'edit'
+    #   end
+    # when :double_booking
+    #   @override_subject = :double_booking
+    #   @back_path = @base_path
+    #   render 'override_double_booking'
+    # when :conflict
+    #   @override_subject = :conflict
+    #   @back_path = @base_path
+    #   render 'override_conflict'
+    # end
   end
 
   def show
@@ -101,14 +94,14 @@ class AssignmentsController < ApplicationController
   end
 
 
-      # def old_assignments_from params
-      #   Assignment.where("id IN (:ids)", { ids: params[:assignments].map{ |ass| ass[:id] } } ).to_a
-      # end
+  # def old_assignments_from params
+  #   Assignment.where("id IN (:ids)", { ids: params[:assignments].map{ |ass| ass[:id] } } ).to_a
+  # end
 
-      def new_assignments_from params
-        attr_arr = params[:assignments].map{ |param_hash| Assignment.attributes_from param_hash }
-        attr_arr.map{ |attrs| Assignment.new(attrs) }
-      end 
+  def new_assignments_from params
+    attr_arr = params[:assignments].map{ |param_hash| Assignment.attributes_from param_hash }
+    attr_arr.map{ |attrs| Assignment.new(attrs) }
+  end 
 
   def batch_update_uniform
     do_batch_update new_uniform_assignments_from(params)
@@ -118,105 +111,120 @@ class AssignmentsController < ApplicationController
     # do_batch_update old_assignments, new_assignments
   end
 
-      # def old_uniform_assignments_from params
-      #   Assignment.where("id IN (:ids)", { ids: params[:ids] })
-      # end
+  # def old_uniform_assignments_from params
+  #   Assignment.where("id IN (:ids)", { ids: params[:ids] })
+  # end
 
-      def new_uniform_assignments_from params
-        ids = params[:ids].map(&:to_i)
-        attrs = Assignment.attributes_from(params[:assignment])
-        ids.map do |id| 
-          attrs['shift_id'] = id
-          Assignment.new(attrs) 
-        end
-      end
+  def new_uniform_assignments_from params
+    ids = params[:ids].map(&:to_i)
+    shift_ids = params[:shift_ids].map(&:to_i)
+    attrs = Assignment.attributes_from(params[:assignment])
 
+    ids.each_with_index.map do |id, i| 
+      attrs['id'] = id
+      attrs['shift_id'] = shift_ids[i]
+      Assignment.new(attrs) 
+    end
+  end
 
   def do_batch_update new_assignments
     get_savable Assignments.new( { fresh: new_assignments } )
   end
 
-      def get_savable assignments # RECURSION HOOK
-        #input: Assignments Obj
-        #output: Assignments Obj w/ empty .with_obstacles and .requiring_reassignment Arrays
-        if assignments.with_obstacles.any?
-          request_obstacle_decisions_for assignments # will recurse
-          nil
-        elsif assignments.requiring_reassignment.any?
-          request_reassignments_for assignments # will recurse
-          nil
-        else # BASE CASE (BREAKS RECURSION)
-          new_assignments = assignments.without_obstacles
-          old_assignments = new_assignments.map{ |ass| Assignment.find(ass.id) }
-          update_savable old_assignments, new_assignments
-          # try_saving assignments.without_obstacles
-        end
-      end
+  def get_savable assignments # RECURSION HOOK
+    #input: Assignments Obj
+    #output: Assignments Obj w/ empty .with_obstacles and .requiring_reassignment Arrays
+    if assignments.with_obstacles.any?
+      request_obstacle_decisions_for assignments # will recurse
+      nil
+    elsif assignments.requiring_reassignment.any?
+      request_reassignments_for assignments # will recurse
+      nil
+    else # BASE CASE (BREAKS RECURSION)
+      new_assignments = assignments.without_obstacles
+      old_assignments = new_assignments.map{ |ass| Assignment.find(ass.id) }
+      update_savable old_assignments, new_assignments
+      # try_saving assignments.without_obstacles
+    end
+  end
 
-      def update_savable old_assignments, new_assignments
-        if batch_save? old_assignments, new_assignments
-          email_alert = send_batch_emails new_assignments, old_assignments, current_account
-          flash[:success] = "Assignments successfully batch edited" << email_alert
-          redirect_to @base_path
-        else
-          request_batch_error_fixes savable_assignments
-        end
-      end
+  def update_savable old_assignments, new_assignments
+    if batch_save? old_assignments, new_assignments
+      new_assignments.each{ |a| a.shift.update_urgency }
+      
+      message = success_message_from old_assignments.count
+      email_alert = send_batch_emails new_assignments, old_assignments, current_account
+      
+      flash[:success] = message << email_alert
+      redirect_to @base_path
+    else
+      request_batch_error_fixes new_assignments
+    end
+  end
 
-      # RECURSION CASE 1
+  def success_message_from count
+    if count > 1
+      "Assignments successfully batch edited"
+    else
+      "Assignment successfully edited"
+    end
+  end
 
-      # def request_obstacle_decisions_for assignments
+  # RECURSION CASE 1
 
-      def request_obstacle_decisions_for assignments
-        @assignments = assignments
-        # params[:base_path] = @base_path
-        render "resolve_obstacles"
-        # view posts to '/assignment/resolve_obstacles' 
-        # all assignments are uneditable, user has choice to accept or override each obstacle
-      end
+  # def request_obstacle_decisions_for assignments
 
-      def resolve_obstacles
-        decisions = Assignments.decisions_from params[:decisions]
-        assignments = Assignments.from_params JSON.parse(params[:assignments_json])
-        assignments = assignments.resolve_obstacles_with decisions
+  def request_obstacle_decisions_for assignments
+    @assignments = assignments
+    # params[:base_path] = @base_path
+    render "resolve_obstacles"
+    # view posts to '/assignment/resolve_obstacles' 
+    # all assignments are uneditable, user has choice to accept or override each obstacle
+  end
 
-        get_savable assignments # RECURSE
-      end
+  def resolve_obstacles
+    decisions = Assignments.decisions_from params[:decisions]
+    assignments = Assignments.from_params JSON.parse(params[:assignments_json])
+    assignments = assignments.resolve_obstacles_with decisions
+
+    get_savable assignments # RECURSE
+  end
 
 
-      # RECURSION CASE 2
+  # RECURSION CASE 2
 
-      def request_reassignments_for assignments
-        @assignments = assignments
-        render "batch_reassign"
-        # view posts to '/assignment/reassign_batch'
-      end
+  def request_reassignments_for assignments
+    @assignments = assignments
+    render "batch_reassign"
+    # view posts to '/assignment/reassign_batch'
+  end
 
-      def batch_reassign
-        assignments = Assignments.from_params params[:assignments]
-        get_savable assignments # RECURSE
-      end
+  def batch_reassign
+    assignments = Assignments.from_params params[:assignments]
+    get_savable assignments # RECURSE
+  end
 
-      # SAVE ROUTINE
+  # SAVE ROUTINE
 
-      def batch_save? old_assignments, new_assignments
-        @errors = Assignment.batch_update(old_assignments, new_assignments)
-        @errors.empty?
-      end
+  def batch_save? old_assignments, new_assignments
+    @errors = Assignment.batch_update(old_assignments, new_assignments)
+    # raise @errors.inspect
+    @errors.empty?
+  end
 
-      def request_batch_error_fixes assignments
-        @assignments = assignments
-        render "batch_edit"
-      end
+  def request_batch_error_fixes assignments
+    @assignments = assignments
+    render "batch_edit"
+  end
 
-      def send_batch_emails assignments, old_assignments, current_account
-        email_count = Assignment.send_emails assignments, old_assignments, current_account
-        if email_count == 0 
-          ""
-        else 
-          " -- #{email_count} emails sent"
-        end
-      end
+  def send_batch_emails new_assignments, old_assignments, current_account
+    email_count = Assignment.send_emails new_assignments, old_assignments, current_account
+    if email_count == 0 
+      ""
+    else 
+      " -- #{email_count} emails sent"
+    end
+  end
 
       # def parse_obstacle_decisions assignments, decisions
       #   decisions.with_index do |decision, i| 
@@ -550,7 +558,7 @@ class AssignmentsController < ApplicationController
     def assignment_params
       params
         .require(:assignment)
-        .permit(:rider_id, :shift_id, :status, :override_conflict, :override_double_booking)
+        .permit(:id, :rider_id, :shift_id, :status, :override_conflict, :override_double_booking)
     end
 
 

@@ -41,7 +41,7 @@ module BatchUpdatable
       errors = []
       old_records.each_with_index do |record, i|
         attributes = new_records[i].attributes.reject{ |k,v| k == 'id' }
-        errors.push(record.errors) unless record.update(attributes)
+        errors.push({error: record.errors, record: record }) unless record.update(attributes)
       end
       errors
     end

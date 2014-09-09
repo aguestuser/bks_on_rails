@@ -35,6 +35,14 @@ describe Assignment do
     it "should be invalid when enum attrs don't corresond to enum values" do
       check_enums assignment, enums
     end
+
+    describe "emergency shift delegation" do
+      before do 
+        assignment.shift.update(urgency: :emergency)
+        assignment.update(status: :delegated)
+      end
+      it { should_not be_valid }
+    end
   end
 
   it "should respond to all associations" do

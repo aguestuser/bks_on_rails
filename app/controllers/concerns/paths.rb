@@ -105,6 +105,12 @@ module Paths
         when :assignments
           prefix = @teaser ? "shifts/" : ""
           prefix + "#{record.shift.id}/assignments/"
+        when :shifts
+          if @base_path == "/shifts/"
+            ""
+          else
+            "shifts/"
+          end
         when nil
           ""
         else 
