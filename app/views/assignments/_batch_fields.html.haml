@@ -1,6 +1,6 @@
-- #args: assignment_key, shift
-- assignment_key ||= nil
-- key = assignment_key.nil? ? "[]" : "[#{assignment_key}][]"
+- #args: assignments_key, assignment
+- assignments_key ||= nil
+- key = assignments_key.nil? ? "[]" : "[#{assignments_key}][]"
 - name = lambda { |attr| "assignments#{key}[#{attr}]" }
 
 %p.shift_box
@@ -24,5 +24,3 @@
     .center
       = label_tag :status
     = select_tag name.call('status'), options_for_select(AssignmentStatus.select_options, assignment.status)
-  / Base Path
-  / = hidden_field_tag :base_path, @base_path

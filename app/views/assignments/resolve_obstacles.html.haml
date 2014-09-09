@@ -26,7 +26,6 @@
       - if @assignments.without_obstacles.any?
         %h3 Savable Assignments
         - @assignments.without_obstacles.each_with_index do |assignment, i|
-          / %h3= "Savable Shift #{i+1}"
           .shift_box
             = render 'shift_include', shift: assignment.shift
           .shift_box

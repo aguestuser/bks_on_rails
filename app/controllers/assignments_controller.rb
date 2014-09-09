@@ -139,7 +139,6 @@ class AssignmentsController < ApplicationController
       def get_savable assignments # RECURSION HOOK
         #input: Assignments Obj
         #output: Assignments Obj w/ empty .with_obstacles and .requiring_reassignment Arrays
-        # raise assignments.inspect
         if assignments.with_obstacles.any?
           request_obstacle_decisions_for assignments # will recurse
           nil
@@ -194,7 +193,6 @@ class AssignmentsController < ApplicationController
       end
 
       def batch_reassign
-        # assignments = assignments_from_assignments_params params[:assignments]
         assignments = Assignments.from_params params[:assignments]
         get_savable assignments # RECURSE
       end
@@ -208,8 +206,7 @@ class AssignmentsController < ApplicationController
 
       def request_batch_error_fixes assignments
         @assignments = assignments
-        query = parse_batch_query
-        render "batch_edit?#{query}"
+        render "batch_edit"
       end
 
       def send_batch_emails assignments, old_assignments, current_account
