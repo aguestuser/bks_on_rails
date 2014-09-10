@@ -1,18 +1,23 @@
 class Assignments
   include Hashable
-  attr_accessor :fresh, :with_conflicts, :with_double_bookings, :with_obstacles, :without_obstacles, :requiring_reassignment
+  attr_accessor :fresh, :old, :with_conflicts, :with_double_bookings, :with_obstacles, :without_obstacles, :requiring_reassignment
 
   def initialize options
-    # raise options.inspect
-    fresh = options[:fresh] || []# Array of Assignments
+    # raise options[:fresh].inspect
+    @old = options[:old] || options[:fresh].clone # Array of Assignments 
+    # -> (set to same value of fresh on first iteration of recursion, retains value therafter) 
+    @fresh = options[:fresh].each { |ass| ass.id = nil } || []# Array of Assignments
+    # raise ( "OLD ASSIGNMENTS: " + @old.inspect + "NEW ASSIGNMENTS: " + @fresh.inspect )
+    
+
     @with_conflicts =  options[:with_conflicts] || 
-      fresh.select { |ass| ass.conflicts.any? } # Arr of Assignments
+      @fresh.select { |ass| ass.conflicts.any? } # Arr of Assignments
     @with_double_bookings =  options[:with_double_bookings] || 
-      fresh.select { |ass| ass.double_bookings.any? } # Arr of Assignments
+      @fresh.select { |ass| ass.double_bookings.any? } # Arr of Assignments
     @with_obstacles = options[:with_obstacles] || 
       (@with_conflicts + @with_double_bookings) #Arr of Assignments
     @without_obstacles = options[:without_obstacles] || 
-      fresh.reject{ |ass| @with_obstacles.include? ass } #Arr of Assignments
+      @fresh.reject{ |ass| @with_obstacles.include? ass } #Arr of Assignments
     @requiring_reassignment = options[:requiring_reassignment] || [] #Arr of Assignments
   end 
 
@@ -43,6 +48,7 @@ class Assignments
     #input Hash of type
     # { 'fresh': [ Arr of Hashes of type:
       # { 'id' =>, 'shift_id' = > num}, etc...
+    # raise params.inspect
     options = {}
     params.each do |key, ass_arr|
       options[key.to_sym] = ass_arr.map do |ass_attrs|

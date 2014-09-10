@@ -84,10 +84,12 @@ class Assignment < ActiveRecord::Base
     # delegations = Assignment.delegations_from new_assignments, old_assignments # (1)
     # rider_shifts = RiderShifts.new(delegations).hash #(2), (3)
     
+    # raise ( "NEW ASSIGNMENTS: " + new_assignments.inspect + "OLD ASSIGNMENTS: " + old_assignments.inspect )
+
     emailable_shifts = Assignment.emailable new_assignments, old_assignments
-    raise emailable_shifts.inspect
+    # raise emailable_shifts.inspect
     rider_shifts = RiderShifts.new(emailable_shifts).hash #(2), (3)
-    raise rider_shifts.inspect
+    # raise rider_shifts.inspect
     count = 0
 
     rider_shifts.values.each do |rider_hash| # (4)

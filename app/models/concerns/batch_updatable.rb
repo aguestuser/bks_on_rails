@@ -38,10 +38,14 @@ module BatchUpdatable
     # end
 
     def batch_update old_records, new_records
+      # raise ( "NEW RECORD: " + new_records.inspect + "OLD Records: " + old_records.inspect )
       errors = []
       old_records.each_with_index do |record, i|
         attributes = new_records[i].attributes.reject{ |k,v| k == 'id' }
-        errors.push({error: record.errors, record: record }) unless record.update(attributes)
+        # raise attributes.inspect
+        unless record.update(attributes)
+          errors.push({error: record.errors, record: record }) 
+        end
       end
       errors
     end

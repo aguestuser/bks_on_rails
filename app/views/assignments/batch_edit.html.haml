@@ -4,12 +4,15 @@
 .span8.offset2.profile
   = form_tag '/assignment/batch_edit', method: :post do
     = render 'shared/batch_error_messages', errors: @errors
-    - @assignments.each_with_index do |assignment, i|
+    /Fresh
+    - @assignments.fresh.each_with_index do |assignment, i|
       %div{ id: "assignment_#{assignment.id}_wrapper" }
-        = render '/assignments/batch_fields', assignment: assignment
+        = render '/assignments/batch_fields', assignment: assignment, assignments_key: 'fresh'
       %hr/
+    /Old
+    = render 'old_assignment_hidden_fields'
+    /Base Path
     = render 'shared/base_path_field'
-    = hidden_field_tag :old_assignments_json, @old_assignments if @old_assignments
     %p.center
       = submit_tag 'Save changes', class: 'btn btn-primary'
 
