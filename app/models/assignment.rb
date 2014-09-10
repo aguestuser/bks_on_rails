@@ -27,8 +27,10 @@ class Assignment < ActiveRecord::Base
   #instance methods
 
   def no_emergency_shift_delegation
-    if self.shift.urgency == :emergency
-      errors.add(:base, 'Emergency shifts cannot be delegated') unless self.status != :delegated
+    if self.shift
+      if self.shift.urgency == :emergency
+        errors.add(:base, 'Emergency shifts cannot be delegated') unless self.status != :delegated
+      end
     end
   end
 
