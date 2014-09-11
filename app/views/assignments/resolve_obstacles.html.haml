@@ -9,7 +9,8 @@
       - if @assignments.with_conflicts.any?
         %div{ id: "assignments_with_conflicts" }
           %h3 Assignments With Conflicts
-          - @assignments.with_conflicts.each_with_index do |assignment, i|
+          - assignments = @assignments.with_conflicts.map(&:assignment) #unwrap assignments
+          - assignments.each_with_index do |assignment, i|
             %div{ id: "assignments_with_conflicts_#{i}" }
               = render 'conflict_alert', assignment: assignment
               = render 'decision_radios', i: i
@@ -20,7 +21,8 @@
       - if @assignments.with_double_bookings.any?
         %div{ id: "assignments_with_double_bookings" }
           %h3 Assignments with Double Bookings
-          - @assignments.with_double_bookings.each_with_index do |assignment, i|
+          - assignments = @assignments.with_double_bookings.map(&:assignment) #unwrap assignments
+          - assignments.each_with_index do |assignment, i|
             %div{ id: "assignments_with_double_bookings_#{i}" }
               = render 'double_booking_alert', assignment: assignment
               = render 'decision_radios', i: i + @assignments.with_conflicts.count
@@ -28,7 +30,8 @@
       - if @assignments.without_obstacles.any?
         %div{ id: "assignments_without_obstacles" }
           %h3 Assignments Without Obstacles
-          - @assignments.without_obstacles.each_with_index do |assignment, i|
+          - assignments = @assignments.without_obstacles.map(&:assignment) #unwrap assignments
+          - assignments.each_with_index do |assignment, i|
             %div{ id: "assignments_without_obstacles_#{i}" }
               .shift_box
                 = render 'shift_include', shift: assignment.shift

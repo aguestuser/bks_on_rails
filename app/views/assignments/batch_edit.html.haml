@@ -5,9 +5,10 @@
   = form_tag '/assignment/batch_edit', method: :post do
     = render 'shared/batch_error_messages', errors: @errors
     /Fresh
-    - @assignments.fresh.each_with_index do |assignment, i|
+    - assignments = @assignments.fresh.map(&:assignment)
+    - assignments.each_with_index do |assignment, i|
       %div{ id: "assignments_fresh_#{i}" }
-        = render '/assignments/batch_fields', assignment: assignment, assignments_key: 'fresh'
+        = render 'batch_fields', assignment: assignment, assignments_key: 'fresh'
       %hr/
     /Old
     = render 'old_assignment_hidden_fields'

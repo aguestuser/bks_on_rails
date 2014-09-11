@@ -6,19 +6,19 @@
     = form_tag '/assignment/batch_reassign', method: :post do
       /Requiring Reassignment
       %h3 Assignments Requiring Reassignment
-      - @assignments.requiring_reassignment.each_with_index do |ass, i|
+      - assignments = @assignments.requiring_reassignment.map(&:assignment) #unwrap assignments
+      - assignments.each_with_index do |assignment, i|
         .field_with_errors
-          = render 'batch_fields', assignment: ass, assignments_key: 'fresh'
+          = render 'batch_fields', assignment: assignment, assignments_key: 'fresh'
         %hr/
       /No Obstacles
       %h3 Assignments With No Obstacles
-      - @assignments.without_obstacles.each_with_index do |ass, i|
-        / # = render 'batch_fields', assignment: ass, assignment_key: 'fresh'
+      - @assignments.without_obstacles.each_with_index do |assignment, i|
         .shift_box
-          = render 'shift_include', shift: ass.shift
+          = render 'shift_include', shift: assignment.shift
         .shift_box
-          = render 'assignment_include', assignment: ass
-        = render 'attribute_hidden_fields', assignment: ass, assignments_key: 'without_obstacles'
+          = render 'assignment_include', assignment: assignment
+        = render 'attribute_hidden_fields', assignment: assignment, assignments_key: 'without_obstacles'
         %hr/
       /Old
       = render 'old_assignment_hidden_fields'
