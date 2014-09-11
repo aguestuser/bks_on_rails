@@ -156,4 +156,57 @@ module ShiftRequestMacros
     expect(page.all("#assignments__status")[2].find('option[selected]').text).to eq batch[2].assignment.status.text
   end
 
+  def assign_batch_to rider, status
+    page.within("#assignments_fresh_0") { find("#assignments_fresh__rider_id").select rider.name }
+    page.within("#assignments_fresh_1") { find("#assignments_fresh__rider_id").select rider.name }
+    page.within("#assignments_fresh_2") { find("#assignments_fresh__rider_id").select rider.name }
+
+    page.within("#assignments_fresh_0") { find("#assignments_fresh__status").select status }
+    page.within("#assignments_fresh_1") { find("#assignments_fresh__status").select status }
+    page.within("#assignments_fresh_2") { find("#assignments_fresh__status").select status }
+
+    click_button 'Save changes'
+  end
+
+  def uniform_assign_batch_to rider, status
+    page.find("#assignment_rider_id").select rider.name
+    page.find("#assignment_status").select status
+    click_button 'Save changes'
+  end
+  
+  def check_resolve_obstacles_with_conflicts_list
+    expect(page.within("#assignments_with_conflicts"){ find("h3").text }).to eq "Assignments With Conflicts"
+    expect(page.all("#assignments_with_conflicts_0 .shift_box")[0].text).to eq "#{batch[0].table_time} @ #{batch[0].restaurant.name}"
+    expect(page.all("#assignments_with_conflicts_0 .shift_box")[1].text).to eq "Assigned to: #{other_rider.name} [Proposed]"
+    expect(page.all("#assignments_with_conflicts_0 .shift_box")[2].text).to eq conflicts[0].table_time
+    expect(page.find("#decisions_0_Accept")).to be_checked
+    expect(page.find("#decisions_0_Override")).to_not be_checked
+  end
+
+  def check_resolve_obstacles_without_obstacles_list
+    expect(page.within("#assignments_without_obstacles"){ find("h3").text }).to eq "Assignments Without Obstacles"
+    expect(page.all("#assignments_without_obstacles_0 .shift_box")[0].text).to eq "#{batch[1].table_time} @ #{restaurant.name}"
+    expect(page.all("#assignments_without_obstacles_0 .shift_box")[1].text).to eq "Assigned to: #{other_rider.name} [Proposed]"
+    expect(page.all("#assignments_without_obstacles_1 .shift_box")[0].text).to eq "#{batch[2].table_time} @ #{restaurant.name}"
+    expect(page.all("#assignments_without_obstacles_1 .shift_box")[1].text).to eq "Assigned to: #{other_rider.name} [Proposed]"
+  end
+
+
+  def check_reassigned_shift_values rider, status
+    expect(page.find("#row_1_col_3").text).to eq rider.name
+    expect(page.find("#row_2_col_3").text).to eq rider.name
+    expect(page.find("#row_3_col_3").text).to eq rider.name
+
+    expect(page.find("#row_1_col_4").text).to eq status
+    expect(page.find("#row_2_col_4").text).to eq status
+    expect(page.find("#row_3_col_4").text).to eq status
+  end
+
+  def load_conflicts
+    let(:conflicts) do 
+      3.times.map do |n| 
+        FactoryGirl.build(:conflict, :with_rider, rider: other_rider, start: batch[n].start, :end => batch[n].end)
+      end
+    end
+  end
 end

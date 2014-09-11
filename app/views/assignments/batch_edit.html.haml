@@ -6,7 +6,7 @@
     = render 'shared/batch_error_messages', errors: @errors
     /Fresh
     - @assignments.fresh.each_with_index do |assignment, i|
-      %div{ id: "assignment_#{assignment.id}_wrapper" }
+      %div{ id: "assignments_fresh_#{i}" }
         = render '/assignments/batch_fields', assignment: assignment, assignments_key: 'fresh'
       %hr/
     /Old

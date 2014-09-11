@@ -7,30 +7,34 @@
     = form_tag '/assignment/resolve_obstacles', method: :post do
       /Conflicts
       - if @assignments.with_conflicts.any?
-        %h3 Assignments With Conflicts
-        - @assignments.with_conflicts.each_with_index do |assignment, i|
-          / %h3= "Conflicting Assignment#{i+1}"
-          = render 'conflict_alert', assignment: assignment
-          = render 'decision_radios', i: i
-          %p.center
-            %i="(NOTE: Selecting 'Yes' will delete all rider conflicts during this period)"
-          %hr/
+        %div{ id: "assignments_with_conflicts" }
+          %h3 Assignments With Conflicts
+          - @assignments.with_conflicts.each_with_index do |assignment, i|
+            %div{ id: "assignments_with_conflicts_#{i}" }
+              = render 'conflict_alert', assignment: assignment
+              = render 'decision_radios', i: i
+              %p.center
+                %i="(NOTE: Selecting 'Yes' will delete all rider conflicts during this period)"
+              %hr/
       /Double Bookings
       - if @assignments.with_double_bookings.any?
-        %h3 Assignments with Double Bookings
-        - @assignments.with_double_bookings.each_with_index do |assignment, i|
-          / %h3= "Double Booked Assignment #{i+1}"
-          = render 'double_booking_alert', assignment: assignment
-          = render 'decision_radios', i: i + @assignments.with_conflicts.count
-          %hr/
+        %div{ id: "assignments_with_double_bookings" }
+          %h3 Assignments with Double Bookings
+          - @assignments.with_double_bookings.each_with_index do |assignment, i|
+            %div{ id: "assignments_with_double_bookings_#{i}" }
+              = render 'double_booking_alert', assignment: assignment
+              = render 'decision_radios', i: i + @assignments.with_conflicts.count
+              %hr/
       - if @assignments.without_obstacles.any?
-        %h3 Savable Assignments
-        - @assignments.without_obstacles.each_with_index do |assignment, i|
-          .shift_box
-            = render 'shift_include', shift: assignment.shift
-          .shift_box
-            = render 'assignment_include', assignment: assignment
-          %hr/
+        %div{ id: "assignments_without_obstacles" }
+          %h3 Assignments Without Obstacles
+          - @assignments.without_obstacles.each_with_index do |assignment, i|
+            %div{ id: "assignments_without_obstacles_#{i}" }
+              .shift_box
+                = render 'shift_include', shift: assignment.shift
+              .shift_box
+                = render 'assignment_include', assignment: assignment
+              %hr/
       /Hidden Fields
       = hidden_field_tag :assignments_json, @assignments.to_json
       %p.center

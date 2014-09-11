@@ -611,6 +611,7 @@ describe "Shift Requests" do
 
     describe "BATCH ASSIGN" do
       before do
+        # initialize rider & shifts, assign shifts to rider
         other_rider
         batch.each(&:save)
         batch.each { |s| s.assignment.update(rider_id: rider.id, status: :confirmed) }
@@ -618,6 +619,7 @@ describe "Shift Requests" do
 
       describe "from SHIFTS INDEX" do
         before do
+          # select shifts for batch assignment
           visit shifts_path
           filter_shifts_by_time_inclusively
           page.within("#row_1"){ find("#ids_").set true }
@@ -625,7 +627,7 @@ describe "Shift Requests" do
           page.within("#row_3"){ find("#ids_").set true }        
         end
 
-        describe "with standard batch edit" do
+        describe "with STANDARD batch edit" do
           before { click_button 'Batch Assign', match: :first }
           
           describe "batch edit assignment page" do 
@@ -648,87 +650,188 @@ describe "Shift Requests" do
             end
           end
 
-          describe "executing batch assignment edit" do
-            before do  
-              page.within("#shift_#{batch[0].id}_wrapper") { find("#assignments__rider_id").select other_rider.name }
-              page.within("#shift_#{batch[1].id}_wrapper") { find("#assignments__rider_id").select other_rider.name }
-              page.within("#shift_#{batch[2].id}_wrapper") { find("#assignments__rider_id").select other_rider.name }
+          describe "EXECUTING batch assignment" do
 
-              page.within("#shift_#{batch[0].id}_wrapper") { find("#assignments__status").select 'Proposed' }
-              page.within("#shift_#{batch[1].id}_wrapper") { find("#assignments__status").select 'Proposed' }
-              page.within("#shift_#{batch[2].id}_wrapper") { find("#assignments__status").select 'Proposed' }
+            describe "WITHOUT OBSTACLES" do
+              before { assign_batch_to other_rider, 'Proposed' }
 
-              click_button 'Save changes'
+              describe "after editing" do
+                
+                it "should redirect to the correct page" do
+                  expect(current_path).to eq "/shifts/"
+                end
+
+                describe "index page" do
+                  before { filter_shifts_by_time_inclusively }
+
+                  it "should show new values of edited shifts" do
+                    check_reassigned_shift_values other_rider, 'Proposed'
+                  end
+                end              
+              end # "after editing"              
             end
 
-            describe "after editing" do
-              
-              it "should redirect to the correct page" do
-                expect(current_path).to eq "/shifts/"
+            describe "WITH CONFLICTS" do
+              load_conflicts
+              before do
+                conflicts[0].save
+                assign_batch_to other_rider, 'Proposed'
               end
 
-              describe "index page" do
-                before { filter_shifts_by_time_inclusively }
-
-                it "should show new values of edited shifts" do
-                  expect(page.find("#row_1_col_3").text).to eq other_rider.name
-                  expect(page.find("#row_2_col_3").text).to eq other_rider.name
-                  expect(page.find("#row_3_col_3").text).to eq other_rider.name
-
-                  expect(page.find("#row_1_col_4").text).to eq 'Proposed'
-                  expect(page.find("#row_2_col_4").text).to eq 'Proposed'
-                  expect(page.find("#row_3_col_4").text).to eq 'Proposed'
-
+              describe "after editing" do
+                
+                it "should post to the Resolve Obstacles page" do
+                  expect(current_path).to eq "/assignment/batch_edit"
+                  expect(page).to have_h1 'Resolve Scheduling Obstacles'
                 end
-              end              
+
+                describe "Resolve Obstacles page" do
+                  
+                  it "should correctly list Assignments With Conflicts" do
+                    check_resolve_obstacles_with_conflicts_list
+                  end
+
+                  it "should not list Assignments With Double Bookings" do
+                    expect(page).not_to have_selector("#assignments_with_double_bookings")
+                  end
+
+                  it "should correctly list Assignments Without Obstacles" do
+                    check_resolve_obstacles_without_obstacles_list
+                  end
+
+                  describe "OVERRIDING" do
+                    before do
+                      choose "decisions_0_Override"
+                      click_button 'Submit'
+                    end
+
+                    describe "after submission" do
+                      
+                      it "should redirect to the correct page" do
+                        expect(current_path).to eq "/shifts/"
+                        expect(page).to have_h1 'Shifts'
+                      end
+
+                      describe "index page" do
+                        before { filter_shifts_by_time_inclusively }
+
+                        it "shoud show new values for reassigned shifts" do
+                          check_reassigned_shift_values other_rider, 'Proposed'
+                        end
+                      end
+                    end
+                  end # "overriding obstacles"
+                end # "Resove Obstacles Page"
+              end
             end
           end  
         end
 
-        describe "with uniform batch edit" do
+        describe "with UNIFORM batch edit" do
           before { click_button 'Uniform Assign', match: :first }
 
-          describe "uniform batch edit page" do
-            it "should have correct URI" do
+          describe "Uniform Assign Shifts page" do
+            
+            it "should have correct URI and Header" do
               check_uniform_assign_uri
+              expect(page).to have_h1 "Uniform Assign Shifts"
             end
 
-            it { should have_h1 'Uniform Assign Shifts' }
-            it { should have_content restaurant.name }
+            it "should list Shifts correctly" do
+              expect(page.within("#shifts"){ find("h3").text }).to eq "Shifts"
+
+              expect(page.all("#shifts_0 .shift_box")[0].text).to eq "#{batch[0].table_time} @ #{restaurant.name}"
+              expect(page.all("#shifts_0 .shift_box")[1].text).to eq "Assigned to: #{rider.name} [Confirmed]"
+
+              expect(page.all("#shifts_1 .shift_box")[0].text).to eq "#{batch[1].table_time} @ #{restaurant.name}"
+              expect(page.all("#shifts_1 .shift_box")[1].text).to eq "Assigned to: #{rider.name} [Confirmed]"
+
+              expect(page.all("#shifts_2 .shift_box")[0].text).to eq "#{batch[2].table_time} @ #{restaurant.name}"
+              expect(page.all("#shifts_2 .shift_box")[1].text).to eq "Assigned to: #{rider.name} [Confirmed]"
+            end
 
             it "should have correct form values" do
-              expect(page.within("#assignment_wrapper"){ find("#assignment_rider_id").has_css?("option[selected]") } ).to eq false
-              expect(page.within("#assignment_wrapper"){ find("#assignment_status").find("option[selected]").text }).to eq 'Proposed'
+              expect(page.within("#assignment_form"){ find("#assignment_rider_id").has_css?("option[selected]") } ).to eq false
+              expect(page.within("#assignment_form"){ find("#assignment_status").find("option[selected]").text }).to eq 'Proposed'
             end
           end
 
-          describe "executing batch edit" do
-            before do
-              page.within("#assignment_wrapper"){ find("#assignment_rider_id").select other_rider.name }
-              page.within("#assignment_wrapper"){ find("#assignment_status").select 'Cancelled (Rider)' }
-              click_button 'Save changes'
-            end
+          describe "EXECUTING batch assignment" do
 
-            describe "after editing" do
-              it "should redirect to the correct page" do
-                expect(current_path).to eq "/shifts/"
-              end
+            describe "WITHOUT OBSTACLES" do
+              before { uniform_assign_batch_to other_rider, 'Cancelled (Rider)' }
 
-              describe "index page" do
-                before { filter_shifts_by_time_inclusively }
+              describe "after editing" do
 
-                it "should show new values for re-assigned shifts" do
-                  expect(page.find("#row_1_col_3").text).to eq other_rider.name
-                  expect(page.find("#row_2_col_3").text).to eq other_rider.name
-                  expect(page.find("#row_3_col_3").text).to eq other_rider.name
-
-                  expect(page.find("#row_1_col_4").text).to eq 'Cancelled (Rider)'
-                  expect(page.find("#row_2_col_4").text).to eq 'Cancelled (Rider)'
-                  expect(page.find("#row_3_col_4").text).to eq 'Cancelled (Rider)'
+                it "should redirect to the correct page" do
+                  expect(current_path).to eq "/shifts/"
+                  expect(page).to have_h1 'Shifts'
                 end
+
+                describe "index page" do
+                  before { filter_shifts_by_time_inclusively }
+
+                  it "should show new values for re-assigned shifts" do
+                    check_reassigned_shift_values other_rider, 'Cancelled (Rider)'
+                  end
+                end # "index page"
+              end # "after editing"               
+            end # "WITHOUT OBSTACLES"
+
+            describe "WITH CONFLICTS" do
+              load_conflicts
+              before do
+                conflicts[0].save
+                uniform_assign_batch_to other_rider, 'Proposed'
               end
-            end
-          end
+
+              describe "after editing" do
+
+                it "should post to the Resolve Obstacles page" do
+                  expect(current_path).to eq "/assignment/batch_edit"
+                  expect(page).to have_h1 'Resolve Scheduling Obstacles'
+                end
+
+                describe "Resolve Obstacles Page" do
+                  
+                  it "should correctly list Assignments With Conflicts" do
+                    check_resolve_obstacles_with_conflicts_list
+                  end
+
+                  it "should not list Assignments With Double Bookings" do
+                    expect(page).not_to have_selector("#assignments_with_double_bookings")
+                  end
+
+                  it "should correctly list Assignments Without Obstacles" do
+                    check_resolve_obstacles_without_obstacles_list
+                  end
+
+                  describe "OVERRIDING" do
+                    before do 
+                      choose "decisions_0_Override"
+                      click_button 'Submit'
+                    end
+
+                    describe "after submission" do
+                      
+                      it "should redirect to the correct page" do
+                        expect(current_path).to eq "/shifts/"
+                        expect(page).to have_h1 'Shifts'
+                      end
+
+                      describe "index page" do
+                        before { filter_shifts_by_time_inclusively}
+                        
+                        it "shoud show new values for reassigned shifts" do
+                          check_reassigned_shift_values other_rider, 'Proposed'
+                        end
+                      end
+                    end # "after submission"
+                  end # "OVERRIDING"
+                end # "Resolve Obstacles Page"
+              end # "after editing"
+            end # "WITH CONFLICTS"
+          end # "EXECUTING batch assignment"
         end
       end
 
