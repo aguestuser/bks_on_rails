@@ -3,35 +3,63 @@ class Assignments
   attr_accessor :fresh, :old, :with_conflicts, :with_double_bookings, :with_obstacles, :without_obstacles, :requiring_reassignment
 
   def initialize options
-    # raise options[:fresh].inspect
     @old = options[:old] || options[:fresh].clone # Array of Assignments 
-    # -> (set to same value of fresh on first iteration of recursion, retains value therafter) 
-    @fresh = options[:fresh].each { |ass| ass.id = nil } || []# Array of Assignments
+    # NOTE: above will clone fresh options on first iteration, retain initial value of @old on subsequent (recursive) iterations
+    @fresh = options[:fresh].each { |assignment| assignment.id = nil } || []# Array of Assignments
+    # raise options[:fresh].inspect
     # raise ( "OLD ASSIGNMENTS: " + @old.inspect + "NEW ASSIGNMENTS: " + @fresh.inspect )
-    
 
-    @with_conflicts =  options[:with_conflicts] || 
-      @fresh.select { |ass| ass.conflicts.any? } # Arr of Assignments
-    @with_double_bookings =  options[:with_double_bookings] || 
-      @fresh.select { |ass| ass.double_bookings.any? } # Arr of Assignments
-    @with_obstacles = options[:with_obstacles] || 
-      (@with_conflicts + @with_double_bookings) #Arr of Assignments
-    @without_obstacles = options[:without_obstacles] || 
-      @fresh.reject{ |ass| @with_obstacles.include? ass } #Arr of Assignments
+    @with_conflicts =  options[:with_conflicts] || [] # Arr of Assignments
+    @with_double_bookings =  options[:with_double_bookings] || [] # Arr of Assignments
+    @without_obstacles = options[:without_obstacles] || [] # Arr of Assignments
     @requiring_reassignment = options[:requiring_reassignment] || [] #Arr of Assignments
   end 
 
-  def resolve_obstacles_with decisions
+  def with_obstacles
+    @with_conflicts + @with_double_bookings 
+  end
 
-    decisions.each_with_index do |decision, i| 
-      case decision
-      when 'Accept' # move to @requiring_reassignment
-        self.requiring_reassignment.push self.with_obstacles[i] 
-      when 'Override' # resolve obstacle and move to @without_obstacles
-        self.without_obstacles.push self.with_obstacles[i].resolve_obstacle
+  def find_obstacles
+    #input: @fresh (implicit - must be loaded) Arr of Assignments
+    #does: 
+      # sorts assignments from fresh into 3 Arrays: 
+        # (1) @with_conflicts: Arr of Assignments with conflicts
+        # (2) @with_double_bookings: Arr of Assignmens with double bookings
+        # (3) @without_obstacles: Arr of Assignments with neither conflicts nor double bookings 
+      # clears @fresh
+    # output: Assignments Obj
+  
+    @fresh.each do |assignment|
+      if assignment.conflicts.any?
+        @with_conflicts.push assignment
+      elsif assignment.double_bookings.any?
+        @with_double_bookings.push assignment
+      else
+        @without_obstacles.push assignment
       end
     end
-    self.with_obstacles = []
+    @fresh = []
+    self
+  end
+
+  def resolve_obstacles_with decisions
+    #input: @with_conflicts (implicit) Array of Assignments, @with_double_bookings (implicit) Array of Assignments
+    #does: 
+      # builds array of assignments with obstacles
+      # based on user decisions, sorts them into either 
+        # (1) assignments @requiring_reassignment
+        # (2) assignments @without_obstacles (after clearing obstacles from assignment object)
+      # clears @with_conflicts, @with_double_bookings, returns new state of Assignments Object
+    with_obstacles = self.with_obstacles
+
+    with_obstacles.each_with_index do |assignment, i|
+      case decisions[i]
+      when 'Accept' # move to @requiring_reassignment
+        self.requiring_reassignment.push assignment 
+      when 'Override' # resolve obstacle and move to @without_obstacles
+        self.without_obstacles.push assignment.resolve_obstacle
+      end      
+    end 
     self.with_conflicts = []
     self.with_double_bookings = []
     self

@@ -130,7 +130,12 @@ class AssignmentsController < ApplicationController
   def get_savable assignments # RECURSION HOOK
     #input: Assignments Obj
     #output: Assignments Obj w/ empty .with_obstacles and .requiring_reassignment Arrays
-      puts ">>>>>> FROM GET SAVABLE:"
+      puts ">>>>>> FROM GET SAVABLE (BEFORE FINDING OBSTACLES):"
+      pp assignments
+    
+    assignments = assignments.find_obstacles if assignments.fresh.any?
+
+      puts ">>>>>> FROM GET SAVABLE (AFTER FINDING OBSTACLES):"
       pp assignments
 
     if assignments.with_obstacles.any?
