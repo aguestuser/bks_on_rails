@@ -1,2 +1,2 @@
-- @assignments.old.each_with_index do |ass, i|
-  = render 'attribute_hidden_fields', assignment: ass, assignments_key: 'old'
+- @assignments.old.each do |wrapped_assignment|
+  = render 'batch_attribute_hidden_fields', assignment: wrapped_assignment.assignment, index: wrapped_assignment.index, assignments_key: 'old'

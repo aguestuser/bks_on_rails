@@ -5,10 +5,9 @@
   = form_tag '/assignment/batch_edit', method: :post do
     = render 'shared/batch_error_messages', errors: @errors
     /Fresh
-    - assignments = @assignments.fresh.map(&:assignment)
-    - assignments.each_with_index do |assignment, i|
+    - @assignments.fresh.each_with_index do |wrapped_assignment, i|
       %div{ id: "assignments_fresh_#{i}" }
-        = render 'batch_fields', assignment: assignment, assignments_key: 'fresh'
+        = render 'batch_fields', assignment: wrapped_assignment.assignment, index: wrapped_assignment.index
       %hr/
     /Old
     = render 'old_assignment_hidden_fields'
@@ -16,8 +15,3 @@
     = render 'shared/base_path_field'
     %p.center
       = submit_tag 'Save changes', class: 'btn btn-primary'
-
-/ - header = 'Batch Assign Shifts'
-/ - action = '/assignment/batch_edit'
-
-/ = render 'batch_edit_form', header: header, action: action

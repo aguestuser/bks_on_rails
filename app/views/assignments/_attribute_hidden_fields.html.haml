@@ -1,7 +1,0 @@
-- #arg: assignment, assignments_key
-- assignments_key ||= nil
-- key = assignments_key.nil? ? "[]" : "[#{assignments_key}][]"
-- name = lambda { |attr| "assignments#{key}[#{attr}]" }
-
-- assignment.attributes.keys.each do |attr|
-  = hidden_field_tag name.call(attr), assignment.send(attr)

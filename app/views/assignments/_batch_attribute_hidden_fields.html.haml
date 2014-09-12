@@ -1,0 +1,8 @@
+- #arg: assignments_key, assignment, index
+- name = lambda { |attr| "wrapped_assignments[#{assignments_key}][][assignment][#{attr}]" }
+
+/Index
+= hidden_field_tag "wrapped_assignments[#{assignments_key}][][index]", index
+/Assignment
+- assignment.attributes.keys.each do |attr|
+  = hidden_field_tag name.call(attr), assignment.send(attr)

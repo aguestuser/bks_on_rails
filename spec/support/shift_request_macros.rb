@@ -157,13 +157,13 @@ module ShiftRequestMacros
   end
 
   def assign_batch_to rider, status
-    page.within("#assignments_fresh_0") { find("#assignments_fresh__rider_id").select rider.name }
-    page.within("#assignments_fresh_1") { find("#assignments_fresh__rider_id").select rider.name }
-    page.within("#assignments_fresh_2") { find("#assignments_fresh__rider_id").select rider.name }
+    page.within("#assignments_fresh_0") { find("#wrapped_assignments_fresh__assignment_rider_id").select rider.name }
+    page.within("#assignments_fresh_1") { find("#wrapped_assignments_fresh__assignment_rider_id").select rider.name }
+    page.within("#assignments_fresh_2") { find("#wrapped_assignments_fresh__assignment_rider_id").select rider.name }
 
-    page.within("#assignments_fresh_0") { find("#assignments_fresh__status").select status }
-    page.within("#assignments_fresh_1") { find("#assignments_fresh__status").select status }
-    page.within("#assignments_fresh_2") { find("#assignments_fresh__status").select status }
+    page.within("#assignments_fresh_0") { find("#wrapped_assignments_fresh__assignment_status").select status }
+    page.within("#assignments_fresh_1") { find("#wrapped_assignments_fresh__assignment_status").select status }
+    page.within("#assignments_fresh_2") { find("#wrapped_assignments_fresh__assignment_status").select status }
 
     click_button 'Save changes'
   end

@@ -5,40 +5,42 @@
 .row
   .span8.offset2.profile
     = form_tag '/assignment/resolve_obstacles', method: :post do
-      /Conflicts
+      /Assignments
+      = hidden_field_tag :assignments_json, @assignments.to_json
+      /Decisions...
+      /... about Conflicts
       - if @assignments.with_conflicts.any?
         %div{ id: "assignments_with_conflicts" }
           %h3 Assignments With Conflicts
-          - assignments = @assignments.with_conflicts.map(&:assignment) #unwrap assignments
-          - assignments.each_with_index do |assignment, i|
+          - @assignments.with_conflicts.each_with_index do |wrapped_assignment, i|
             %div{ id: "assignments_with_conflicts_#{i}" }
-              = render 'conflict_alert', assignment: assignment
+              = render 'conflict_alert', assignment: wrapped_assignment.assignment
               = render 'decision_radios', i: i
               %p.center
                 %i="(NOTE: Selecting 'Yes' will delete all rider conflicts during this period)"
               %hr/
-      /Double Bookings
+      /... about Double Bookings
       - if @assignments.with_double_bookings.any?
         %div{ id: "assignments_with_double_bookings" }
           %h3 Assignments with Double Bookings
-          - assignments = @assignments.with_double_bookings.map(&:assignment) #unwrap assignments
-          - assignments.each_with_index do |assignment, i|
+          - offset = @assignments.with_conflicts.count
+          - @assignments.with_double_bookings.each_with_index do |wrapped_assignment, i|
             %div{ id: "assignments_with_double_bookings_#{i}" }
-              = render 'double_booking_alert', assignment: assignment
-              = render 'decision_radios', i: i + @assignments.with_conflicts.count
+              = render 'double_booking_alert', assignment: wrapped_assignment.assignment
+              = render 'decision_radios', i: i + offset
               %hr/
+      /Assignemnts Without Obstacles (display only)
       - if @assignments.without_obstacles.any?
         %div{ id: "assignments_without_obstacles" }
           %h3 Assignments Without Obstacles
-          - assignments = @assignments.without_obstacles.map(&:assignment) #unwrap assignments
-          - assignments.each_with_index do |assignment, i|
+          - @assignments.without_obstacles.each_with_index do |wrapped_assignment, i|
+            - assignment = wrapped_assignment.assignment
             %div{ id: "assignments_without_obstacles_#{i}" }
               .shift_box
                 = render 'shift_include', shift: assignment.shift
               .shift_box
                 = render 'assignment_include', assignment: assignment
               %hr/
-      /Hidden Fields
-      = hidden_field_tag :assignments_json, @assignments.to_json
+      /Submit
       %p.center
         = submit_tag "Submit", class: 'btn btn-primary'

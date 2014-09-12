@@ -95,7 +95,7 @@ class Assignments
     assignments.each_with_index.map { |assignment, i| WrappedAssignment.new(assignment, indexes[i]) } 
   end
 
-  def Assignments.from_params params
+  def Assignments.from_params param_hash
     #input Hash of type
       # { 'fresh': [
       #     {
@@ -121,8 +121,11 @@ class Assignments
     #does: parses params hash into WrappedAssignments that can be passed as options to initialize an Assignments object
     #output: Assignments Obj
 
+      puts ">>>>> PARAM HASH (from Assignments.from_params)"
+      pp param_hash
+
     options = {}
-    params.each do |key, wrapped_attr_arr|
+    param_hash.each do |key, wrapped_attr_arr|
       index_arr = wrapped_attr_arr.map{ |wrapped_attrs| wrapped_attrs['index'] }
       attr_arr = wrapped_attr_arr.map{ |wrapped_attrs| wrapped_attrs['assignment'] }
       assignments = attr_arr.map{ |attrs| Assignment.new(attrs) }

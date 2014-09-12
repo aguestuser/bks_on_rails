@@ -788,7 +788,7 @@ describe "Shift Requests" do
               describe "after editing" do
 
                 it "should post to the Resolve Obstacles page" do
-                  expect(current_path).to eq "/assignment/batch_edit"
+                  expect(current_path).to eq "/assignment/batch_edit_uniform"
                   expect(page).to have_h1 'Resolve Scheduling Obstacles'
                 end
 
