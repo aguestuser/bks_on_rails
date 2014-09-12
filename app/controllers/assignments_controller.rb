@@ -55,15 +55,15 @@ class AssignmentsController < ApplicationController
     @errors = []
     load_shift_batch # loads @shifts (Arr of Shifts)
     load_assignment_batch #loads @assignments (Assignments Obj)
-      puts ">>>>>> FROM BATCH EDIT:"
-      pp @assignments
+      # puts ">>>>>> FROM BATCH EDIT:"
+      # pp @assignments
     render 'batch_edit'
   end
 
   def batch_update
     assignments = Assignments.from_params params[:wrapped_assignments] # 
-      puts ">>>>>> FROM BATCH UPDATE:"
-      pp assignments
+      # puts ">>>>>> FROM BATCH UPDATE:"
+      # pp assignments
     do_batch_update assignments
   end
 
@@ -101,8 +101,8 @@ class AssignmentsController < ApplicationController
 
       def new_uniform_assignments_from params
         attrs = Assignment.attributes_from(params[:assignment]) # Hash
-          puts ">>>ATTRIBUTES"
-          pp attrs
+          # puts ">>>ATTRIBUTES"
+          # pp attrs
         shift_ids = params[:shift_ids].map(&:to_i) # Array
 
         # attr_arr = shift_ids.inject([]){ |arr, id| arr.push( attrs.merge( { shift_id: id ) ) }
@@ -124,21 +124,21 @@ class AssignmentsController < ApplicationController
 
 
   def do_batch_update assignments
-      puts ">>>>>> FROM DO BATCH UPDATE:"
-      pp assignments
+      # puts ">>>>>> FROM DO BATCH UPDATE:"
+      # pp assignments
     get_savable assignments
   end
 
   def get_savable assignments # RECURSION HOOK
     #input: Assignments Obj
     #output: Assignments Obj w/ empty .with_obstacles and .requiring_reassignment Arrays
-      puts ">>>>>> FROM GET SAVABLE (BEFORE FINDING OBSTACLES):"
-      pp assignments
+      # puts ">>>>>> FROM GET SAVABLE (BEFORE FINDING OBSTACLES):"
+      # pp assignments
     
     assignments = assignments.find_obstacles if assignments.fresh.any?
 
-      puts ">>>>>> FROM GET SAVABLE (AFTER FINDING OBSTACLES):"
-      pp assignments
+      # puts ">>>>>> FROM GET SAVABLE (AFTER FINDING OBSTACLES):"
+      # pp assignments
 
     if assignments.with_obstacles.any?
       request_obstacle_decisions_for assignments # WILL RECURSE
@@ -160,8 +160,8 @@ class AssignmentsController < ApplicationController
   # def request_obstacle_decisions_for assignments
 
   def request_obstacle_decisions_for assignments
-      puts ">>>>>> FROM REQUEST OBSTACLE DECISIONS:"
-      pp assignments
+      # puts ">>>>>> FROM REQUEST OBSTACLE DECISIONS:"
+      # pp assignments
     @assignments = assignments
     render "resolve_obstacles" # view posts to '/assignment/resolve_obstacles' 
   end
@@ -169,11 +169,11 @@ class AssignmentsController < ApplicationController
   def resolve_obstacles
     decisions = Assignments.decisions_from params[:decisions]
     assignments = Assignments.from_params( JSON.parse(params[:assignments_json] ) )
-      puts ">>>>>> FROM RESOLVE OBSTACLES (BEFORE RESOLVE):"
-      pp assignments
+      # puts ">>>>>> FROM RESOLVE OBSTACLES (BEFORE RESOLVE):"
+      # pp assignments
     assignments = assignments.resolve_obstacles_with decisions
-      puts ">>>>>> FROM RESOLVE OBSTACLES (AFTER RESOLVE):"
-      pp assignments
+      # puts ">>>>>> FROM RESOLVE OBSTACLES (AFTER RESOLVE):"
+      # pp assignments
     get_savable assignments # RECURSE
   end
 
@@ -181,27 +181,27 @@ class AssignmentsController < ApplicationController
   # RECURSION CASE 2
 
   def request_reassignments_for assignments
-      puts ">>>>>> FROM REQUEST REASSIGNMENTS:"
-      pp assignments
+      # puts ">>>>>> FROM REQUEST REASSIGNMENTS:"
+      # pp assignments
     @assignments = assignments
     render "batch_reassign" # view posts to '/assignment/batch_reassign'
   end
 
   def batch_reassign
     assignments = Assignments.from_params params[:assignments]
-      puts ">>>>>> FROM BATCH REASSIGN:"
-      pp assignments
+      # puts ">>>>>> FROM BATCH REASSIGN:"
+      # pp assignments
     get_savable assignments # RECURSE
   end
 
   # SAVE ROUTINE
 
   def update_savable old_assignments, new_assignments
-      puts ">>>>>> FROM UPDATE SAVABLE"
-      puts "OLD ASSIGNMENTS:"
-      pp old_assignments
-      puts "NEW ASSIGNMENTS"
-      pp new_assignments
+      # puts ">>>>>> FROM UPDATE SAVABLE"
+      # puts "OLD ASSIGNMENTS:"
+      # pp old_assignments
+      # puts "NEW ASSIGNMENTS"
+      # pp new_assignments
 
     if batch_save? old_assignments, new_assignments
       new_assignments.each{ |a| a.shift.refresh_urgency }

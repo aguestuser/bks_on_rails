@@ -146,15 +146,28 @@ module ShiftRequestMacros
     expect(URI.parse(current_url).to_s).to include("&ids[]=#{batch[0].id}&ids[]=#{batch[1].id}&ids[]=#{batch[2].id}")
   end
 
-  def check_batch_assign_select_values
-    expect(page.all("#assignments__rider_id")[0].find('option[selected]').text).to eq batch[0].rider.name
-    expect(page.all("#assignments__rider_id")[1].find('option[selected]').text).to eq batch[1].rider.name
-    expect(page.all("#assignments__rider_id")[2].find('option[selected]').text).to eq batch[2].rider.name
+  def check_batch_assign_select_values rider, status
+    rider_id_selector = "#wrapped_assignments_fresh__assignment_rider_id"
+    status_selector = "#wrapped_assignments_fresh__assignment_status"
 
-    expect(page.all("#assignments__status")[0].find('option[selected]').text).to eq batch[0].assignment.status.text
-    expect(page.all("#assignments__status")[1].find('option[selected]').text).to eq batch[1].assignment.status.text
-    expect(page.all("#assignments__status")[2].find('option[selected]').text).to eq batch[2].assignment.status.text
+    expect(page.within("#assignments_fresh_0"){ find(rider_id_selector).find("option[selected]").text }).to eq rider.name
+    expect(page.within("#assignments_fresh_1"){ find(rider_id_selector).find("option[selected]").text }).to eq rider.name
+    expect(page.within("#assignments_fresh_2"){ find(rider_id_selector).find("option[selected]").text }).to eq rider.name
+    
+    expect(page.within("#assignments_fresh_0"){ find(status_selector).find("option[selected]").text }).to eq status
+    expect(page.within("#assignments_fresh_1"){ find(status_selector).find("option[selected]").text }).to eq status
+    expect(page.within("#assignments_fresh_2"){ find(status_selector).find("option[selected]").text }).to eq status    
   end
+
+  # def check_batch_assign_select_values
+  #   expect(page.all("#assignments__rider_id")[0].find('option[selected]').text).to eq batch[0].rider.name
+  #   expect(page.all("#assignments__rider_id")[1].find('option[selected]').text).to eq batch[1].rider.name
+  #   expect(page.all("#assignments__rider_id")[2].find('option[selected]').text).to eq batch[2].rider.name
+
+  #   expect(page.all("#assignments__status")[0].find('option[selected]').text).to eq batch[0].assignment.status.text
+  #   expect(page.all("#assignments__status")[1].find('option[selected]').text).to eq batch[1].assignment.status.text
+  #   expect(page.all("#assignments__status")[2].find('option[selected]').text).to eq batch[2].assignment.status.text
+  # end
 
   def assign_batch_to rider, status
     page.within("#assignments_fresh_0") { find("#wrapped_assignments_fresh__assignment_rider_id").select rider.name }
@@ -166,6 +179,24 @@ module ShiftRequestMacros
     page.within("#assignments_fresh_2") { find("#wrapped_assignments_fresh__assignment_status").select status }
 
     click_button 'Save changes'
+  end
+
+  def check_uniform_assign_shift_list rider, status
+    expect(page.within("#shifts"){ find("h3").text }).to eq "Shifts"
+
+    expect(page.all("#shifts_0 .shift_box")[0].text).to eq "#{batch[0].table_time} @ #{restaurant.name}"
+    expect(page.all("#shifts_0 .shift_box")[1].text).to eq "Assigned to: #{rider.name} [#{status}]"
+
+    expect(page.all("#shifts_1 .shift_box")[0].text).to eq "#{batch[1].table_time} @ #{restaurant.name}"
+    expect(page.all("#shifts_1 .shift_box")[1].text).to eq "Assigned to: #{rider.name} [#{status}]"
+
+    expect(page.all("#shifts_2 .shift_box")[0].text).to eq "#{batch[2].table_time} @ #{restaurant.name}"
+    expect(page.all("#shifts_2 .shift_box")[1].text).to eq "Assigned to: #{rider.name} [#{status}]"
+  end
+
+  def check_uniform_assign_select_values
+    expect(page.within("#assignment_form"){ find("#assignment_rider_id").has_css?("option[selected]") } ).to eq false
+    expect(page.within("#assignment_form"){ find("#assignment_status").find("option[selected]").text }).to eq 'Proposed'
   end
 
   def uniform_assign_batch_to rider, status

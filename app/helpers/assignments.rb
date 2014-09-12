@@ -121,8 +121,8 @@ class Assignments
     #does: parses params hash into WrappedAssignments that can be passed as options to initialize an Assignments object
     #output: Assignments Obj
 
-      puts ">>>>> PARAM HASH (from Assignments.from_params)"
-      pp param_hash
+      # puts ">>>>> PARAM HASH (from Assignments.from_params)"
+      # pp param_hash
 
     options = {}
     param_hash.each do |key, wrapped_attr_arr|

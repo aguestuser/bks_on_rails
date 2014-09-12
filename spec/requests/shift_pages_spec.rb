@@ -638,15 +638,8 @@ describe "Shift Requests" do
             it { should have_h1 'Batch Assign Shifts' }
             it { should have_content(restaurant.name) }
 
-            it "should have correct assignment values" do
-
-              expect(page.within("#shift_#{batch[0].id}_wrapper"){ find("#assignments__rider_id").find("option[selected]").text }).to eq rider.name
-              expect(page.within("#shift_#{batch[1].id}_wrapper"){ find("#assignments__rider_id").find("option[selected]").text }).to eq rider.name
-              expect(page.within("#shift_#{batch[2].id}_wrapper"){ find("#assignments__rider_id").find("option[selected]").text }).to eq rider.name
-
-              expect(page.within("#shift_#{batch[0].id}_wrapper"){ find("#assignments__status").find("option[selected]").text }).to eq 'Confirmed'
-              expect(page.within("#shift_#{batch[1].id}_wrapper"){ find("#assignments__status").find("option[selected]").text }).to eq 'Confirmed'
-              expect(page.within("#shift_#{batch[2].id}_wrapper"){ find("#assignments__status").find("option[selected]").text }).to eq 'Confirmed'
+            it "should have correct select values" do
+              check_batch_assign_select_values rider, 'Confirmed'
             end
           end
 
@@ -738,21 +731,11 @@ describe "Shift Requests" do
             end
 
             it "should list Shifts correctly" do
-              expect(page.within("#shifts"){ find("h3").text }).to eq "Shifts"
-
-              expect(page.all("#shifts_0 .shift_box")[0].text).to eq "#{batch[0].table_time} @ #{restaurant.name}"
-              expect(page.all("#shifts_0 .shift_box")[1].text).to eq "Assigned to: #{rider.name} [Confirmed]"
-
-              expect(page.all("#shifts_1 .shift_box")[0].text).to eq "#{batch[1].table_time} @ #{restaurant.name}"
-              expect(page.all("#shifts_1 .shift_box")[1].text).to eq "Assigned to: #{rider.name} [Confirmed]"
-
-              expect(page.all("#shifts_2 .shift_box")[0].text).to eq "#{batch[2].table_time} @ #{restaurant.name}"
-              expect(page.all("#shifts_2 .shift_box")[1].text).to eq "Assigned to: #{rider.name} [Confirmed]"
+              check_uniform_assign_shift_list rider, 'Confirmed'
             end
 
             it "should have correct form values" do
-              expect(page.within("#assignment_form"){ find("#assignment_rider_id").has_css?("option[selected]") } ).to eq false
-              expect(page.within("#assignment_form"){ find("#assignment_status").find("option[selected]").text }).to eq 'Proposed'
+              check_uniform_assign_select_values
             end
           end
 
@@ -863,7 +846,7 @@ describe "Shift Requests" do
           end
         end
 
-        describe "standard batch assignment" do
+        describe "STANDARD batch assignment" do
           before do
             page.within("#row_1_col_6"){ find("#ids_").set true }
             page.within("#row_1_col_8"){ find("#ids_").set true }
@@ -877,22 +860,23 @@ describe "Shift Requests" do
             end
 
             it "should have correct assignment values" do
-              check_batch_assign_select_values
+              check_batch_assign_select_values rider, 'Confirmed'
             end            
           end
 
           describe "executing batch assignment" do
-            before do 
-              page.all("#assignments__rider_id")[0].select other_rider.name
-              page.all("#assignments__rider_id")[1].select other_rider.name
-              page.all("#assignments__rider_id")[2].select other_rider.name
+            before { assign_batch_to rider, 'Proposed' }
+            # before do 
+            #   page.all("#assignments__rider_id")[0].select other_rider.name
+            #   page.all("#assignments__rider_id")[1].select other_rider.name
+            #   page.all("#assignments__rider_id")[2].select other_rider.name
 
-              page.all("#assignments__status")[0].select 'Proposed'
-              page.all("#assignments__status")[1].select 'Proposed'
-              page.all("#assignments__status")[2].select 'Proposed'
+            #   page.all("#assignments__status")[0].select 'Proposed'
+            #   page.all("#assignments__status")[1].select 'Proposed'
+            #   page.all("#assignments__status")[2].select 'Proposed'
 
-              click_button 'Save changes'
-            end
+            #   click_button 'Save changes'
+            # end
 
             describe "after editing" do
 
@@ -913,7 +897,7 @@ describe "Shift Requests" do
           end
         end
 
-        describe "uniform batch assignment" do
+        describe "UNIFORM batch assignment" do
           before do
             page.within("#row_1_col_6"){ find("#ids_").set true }
             page.within("#row_1_col_8"){ find("#ids_").set true }
@@ -931,17 +915,12 @@ describe "Shift Requests" do
             it { should have_content restaurant.name }
 
             it "should have correct form values" do
-              expect(page.within("#assignment_wrapper"){ find("#assignment_rider_id").has_css?("option[selected]") } ).to eq false
-              expect(page.within("#assignment_wrapper"){ find("#assignment_status").find("option[selected]").text }).to eq 'Proposed'
+              check_uniform_assign_select_values
             end
           end
 
           describe "executing batch edit" do
-            before do
-              page.within("#assignment_wrapper"){ find("#assignment_rider_id").select other_rider.name }
-              page.within("#assignment_wrapper"){ find("#assignment_status").select 'Cancelled (Rider)' }
-              click_button 'Save changes'
-            end
+            before { uniform_assign_batch_to other_rider, 'Cancelled (Rider)' }
 
             describe "after editing" do
               it "should redirect to the correct page" do
@@ -955,7 +934,6 @@ describe "Shift Requests" do
                   expect(page.find("#row_1_col_6").text).to eq other_rider.short_name + " [xf]" 
                   expect(page.find("#row_1_col_8").text).to eq other_rider.short_name + " [xf]"
                   expect(page.find("#row_1_col_10").text).to eq other_rider.short_name + " [xf]" 
-
                 end
               end
             end
