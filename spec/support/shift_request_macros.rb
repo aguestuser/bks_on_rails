@@ -233,6 +233,18 @@ module ShiftRequestMacros
     expect(page.find("#row_3_col_4").text).to eq status
   end
 
+  def select_batch_assign_shifts_from_grid
+    page.within("#row_1_col_6"){ find("#ids_").set true }
+    page.within("#row_1_col_8"){ find("#ids_").set true }
+    page.within("#row_1_col_10"){ find("#ids_").set true }   
+  end
+
+  def check_reassigned_shift_values_in_grid rider, status_code
+    expect(page.find("#row_1_col_6").text).to eq "#{rider.short_name} #{status_code}"
+    expect(page.find("#row_1_col_8").text).to eq "#{rider.short_name} #{status_code}"
+    expect(page.find("#row_1_col_10").text).to eq "#{rider.short_name} #{status_code}"     
+  end
+
   def load_conflicts
     let(:conflicts) do 
       3.times.map do |n| 

@@ -811,6 +811,15 @@ describe "Shift Requests" do
                       end
                     end # "after submission"
                   end # "OVERRIDING"
+
+                  # describe "ACCEPTING" do
+                  #   before do
+                  #     choose 'decisions_0_Accept'
+                  #     click_button 'Submit'
+                  #   end
+
+
+                  # end
                 end # "Resolve Obstacles Page"
               end # "after editing"
             end # "WITH CONFLICTS"
@@ -848,9 +857,7 @@ describe "Shift Requests" do
 
         describe "STANDARD batch assignment" do
           before do
-            page.within("#row_1_col_6"){ find("#ids_").set true }
-            page.within("#row_1_col_8"){ find("#ids_").set true }
-            page.within("#row_1_col_10"){ find("#ids_").set true }
+            select_batch_assign_shifts_from_grid
             click_button 'Batch Assign'
           end
 
@@ -866,17 +873,6 @@ describe "Shift Requests" do
 
           describe "executing batch assignment" do
             before { assign_batch_to rider, 'Proposed' }
-            # before do 
-            #   page.all("#assignments__rider_id")[0].select other_rider.name
-            #   page.all("#assignments__rider_id")[1].select other_rider.name
-            #   page.all("#assignments__rider_id")[2].select other_rider.name
-
-            #   page.all("#assignments__status")[0].select 'Proposed'
-            #   page.all("#assignments__status")[1].select 'Proposed'
-            #   page.all("#assignments__status")[2].select 'Proposed'
-
-            #   click_button 'Save changes'
-            # end
 
             describe "after editing" do
 
@@ -888,9 +884,7 @@ describe "Shift Requests" do
                 before { filter_grid_for_jan_2014 }
 
                 it "should have new assignment values" do
-                  expect(page.find("#row_1_col_6").text).to eq other_rider.short_name + " [p]" 
-                  expect(page.find("#row_1_col_8").text).to eq other_rider.short_name + " [p]"
-                  expect(page.find("#row_1_col_10").text).to eq other_rider.short_name + " [p]" 
+                  check_reassigned_shift_values_in_grid other_rider, '[p]'
                 end
               end
             end
@@ -898,11 +892,9 @@ describe "Shift Requests" do
         end
 
         describe "UNIFORM batch assignment" do
-          before do
-            page.within("#row_1_col_6"){ find("#ids_").set true }
-            page.within("#row_1_col_8"){ find("#ids_").set true }
-            page.within("#row_1_col_10"){ find("#ids_").set true }
-            click_button 'Uniform Assign'            
+          before do 
+            select_batch_assign_shifts_from_grid
+            click_button 'Uniform Assign'
           end
 
           describe "uniform assign page" do
@@ -931,9 +923,7 @@ describe "Shift Requests" do
                 before { filter_grid_for_jan_2014 }
 
                 it "should show new values for re-assigned shifts" do
-                  expect(page.find("#row_1_col_6").text).to eq other_rider.short_name + " [xf]" 
-                  expect(page.find("#row_1_col_8").text).to eq other_rider.short_name + " [xf]"
-                  expect(page.find("#row_1_col_10").text).to eq other_rider.short_name + " [xf]" 
+                  check_reassigned_shift_values_in_grid other_rider, '[xf]'
                 end
               end
             end
