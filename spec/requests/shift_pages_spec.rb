@@ -660,9 +660,9 @@ describe "Shift Requests" do
                   it "should show new values of edited shifts" do
                     check_reassigned_shift_values other_rider, 'Proposed'
                   end
-                end              
+                end            
               end # "after editing"              
-            end
+            end # "WITHOUT OBSTACLES"  
 
             describe "WITH CONFLICTS" do
               load_conflicts
@@ -689,7 +689,7 @@ describe "Shift Requests" do
                   end
 
                   it "should correctly list Assignments Without Obstacles" do
-                    check_resolve_obstacles_without_obstacles_list
+                    check_without_obstacles_list
                   end
 
                   describe "OVERRIDING" do
@@ -713,12 +713,63 @@ describe "Shift Requests" do
                         end
                       end
                     end
-                  end # "overriding obstacles"
+                  end # "OVERRIDING"
+
+                  describe "ACCEPTING" do
+                    load_third_rider
+                    before do
+                      choose 'decisions_0_Accept'
+                      click_button 'Submit'
+                    end
+
+                    describe "after submission" do
+
+                      describe "batch reassign page" do
+
+                        it "should redirect to the correct page" do
+                          expect(current_path).to eq '/assignment/resolve_obstacles'
+                          expect(page).to have_h1 'Batch Reassign Shifts'                         
+                        end
+
+                        it "should correctly list Assignements Requiring Reassignment" do
+                          check_reassign_single_shift_list other_rider, 'Proposed'
+                        end
+
+                        it "should not list Assignments With Double Bookings" do
+                          expect(page).not_to have_selector("#assignments_with_double_bookings")
+                        end
+
+                        it "should correctly list Assignemnts Without Obstacles" do
+                          check_without_obstacles_list
+                        end                        
+                      end
+
+                      describe "executing REASSIGNMENT" do
+                        before { reassign_single_shift_to third_rider, 'Proposed' }
+
+                        describe "after submission" do
+                          
+                          it "should redirect to the correct page" do
+                            expect(current_path).to eq "/shifts/"
+                            expect(page).to have_h1 'Shifts'
+                          end
+
+                          describe "index page" do
+                            before { filter_shifts_by_time_inclusively }
+
+                            it "shoud show new values for reassigned shifts" do
+                              check_reassigned_shift_values_after_accepting_obstacle other_rider, third_rider, 'Proposed'
+                            end
+                          end #"index page"
+                        end # "after submission"
+                      end # "executing REASSIGNMENT"
+                    end # "after submission"
+                  end # "ACCEPTING"
                 end # "Resove Obstacles Page"
-              end
-            end
-          end  
-        end
+              end # "after editing"
+            end # "WITH CONFLICTS"
+          end # "EXECUTING batch assignment"
+        end # "with STANDARD batch edit"
 
         describe "with UNIFORM batch edit" do
           before { click_button 'Uniform Assign', match: :first }
@@ -786,7 +837,7 @@ describe "Shift Requests" do
                   end
 
                   it "should correctly list Assignments Without Obstacles" do
-                    check_resolve_obstacles_without_obstacles_list
+                    check_without_obstacles_list
                   end
 
                   describe "OVERRIDING" do
@@ -812,20 +863,62 @@ describe "Shift Requests" do
                     end # "after submission"
                   end # "OVERRIDING"
 
-                  # describe "ACCEPTING" do
-                  #   before do
-                  #     choose 'decisions_0_Accept'
-                  #     click_button 'Submit'
-                  #   end
+                  describe "ACCEPTING" do
+                    load_third_rider
+                    before do
+                      choose 'decisions_0_Accept'
+                      click_button 'Submit'
+                    end
 
+                    describe "after submission" do
 
-                  # end
+                      describe "batch reassign page" do
+
+                        it "should redirect to the correct page" do
+                          expect(current_path).to eq '/assignment/resolve_obstacles'
+                          expect(page).to have_h1 'Batch Reassign Shifts'                         
+                        end
+
+                        it "should correctly list Assignements Requiring Reassignment" do
+                          check_reassign_single_shift_list other_rider, 'Proposed'
+                        end
+
+                        it "should not list Assignments With Double Bookings" do
+                          expect(page).not_to have_selector("#assignments_with_double_bookings")
+                        end
+
+                        it "should correctly list Assignemnts Without Obstacles" do
+                          check_without_obstacles_list
+                        end                        
+                      end
+
+                      describe "executing REASSIGNMENT" do
+                        before { reassign_single_shift_to third_rider, 'Proposed' }
+
+                        describe "after submission" do
+                          
+                          it "should redirect to the correct page" do
+                            expect(current_path).to eq "/shifts/"
+                            expect(page).to have_h1 'Shifts'
+                          end
+
+                          describe "index page" do
+                            before { filter_shifts_by_time_inclusively }
+
+                            it "shoud show new values for reassigned shifts" do
+                              check_reassigned_shift_values_after_accepting_obstacle other_rider, third_rider, 'Proposed'
+                            end
+                          end #"index page"
+                        end # "after submission"
+                      end # "executing REASSIGNMENT"
+                    end # "after submission"
+                  end # "ACCEPTING"
                 end # "Resolve Obstacles Page"
               end # "after editing"
             end # "WITH CONFLICTS"
           end # "EXECUTING batch assignment"
-        end
-      end
+        end # "Uniform Assign Shifts page"
+      end # "with UNIFORM batch edit"
 
       describe "from GRID" do
         before do 

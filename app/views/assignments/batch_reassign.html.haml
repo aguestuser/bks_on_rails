@@ -1,28 +1,33 @@
 - # arg: @assignments (Assignments Obj)
 - provide(title: "Batch Reassign Shifts")
 
+%h1 Batch Reassign Shifts
+
 .row
   .span8.offset2.profile
     = form_tag '/assignment/batch_reassign', method: :post do
       /Requiring Reassignment
-      %h3 Assignments Requiring Reassignment
-      - @assignments.requiring_reassignment.each_with_index do |wrapped_assignment, i|
-        %div{ id: "assignments_requiring_reassignment_#{i}" }
-          .field_with_errors
-            = render 'batch_fields', assignment: wrapped_assignment.assignment, index: wrapped_assignment.index
-        %hr/
+      %div{ id: "assignments_requiring_reassignment" }
+        %h3 Assignments Requiring Reassignment
+        - @assignments.requiring_reassignment.each_with_index do |wrapped_assignment, i|
+          %div{ id: "assignments_requiring_reassignment_#{i}" }
+            .field_with_errors
+              = render 'batch_fields', assignment: wrapped_assignment.assignment, index: wrapped_assignment.index
+          %hr/
       /No Obstacles
-      %h3 Assignments With No Obstacles
-      - @assignments.without_obstacles.each_with_index do |wrapped_assignment, i|
-        assignment = wrapped_assignment.assignment
-        index = wrapped_assignment.index
-        %div{ id: "assignments_without_obstacles_#{i}" }
-          .shift_box
-            = render 'shift_include', shift: assignment.shift
-          .shift_box
-            = render 'assignment_include', assignment: assignment
-          = render 'batch_attribute_hidden_fields', assignment: assignment, assignments_key: 'without_obstacles', index: index
-        %hr/
+      - if @assignments.without_obstacles.any?
+        %div{ id: "assignments_without_obstacles" }
+          %h3 Assignments Without Obstacles
+          - @assignments.without_obstacles.each_with_index do |wrapped_assignment, i|
+            - assignment = wrapped_assignment.assignment
+            - index = wrapped_assignment.index
+            %div{ id: "assignments_without_obstacles_#{i}" }
+              .shift_box
+                = render 'shift_include', shift: assignment.shift
+              .shift_box
+                = render 'assignment_include', assignment: assignment
+              = render 'batch_attribute_hidden_fields', assignment: assignment, assignments_key: 'without_obstacles', index: index
+            %hr/
       /Old
       = render 'old_assignment_hidden_fields'
       /Base Path

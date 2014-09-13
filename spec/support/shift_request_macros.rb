@@ -214,7 +214,7 @@ module ShiftRequestMacros
     expect(page.find("#decisions_0_Override")).to_not be_checked
   end
 
-  def check_resolve_obstacles_without_obstacles_list
+  def check_without_obstacles_list
     expect(page.within("#assignments_without_obstacles"){ find("h3").text }).to eq "Assignments Without Obstacles"
     expect(page.all("#assignments_without_obstacles_0 .shift_box")[0].text).to eq "#{batch[1].table_time} @ #{restaurant.name}"
     expect(page.all("#assignments_without_obstacles_0 .shift_box")[1].text).to eq "Assigned to: #{other_rider.name} [Proposed]"
@@ -222,11 +222,37 @@ module ShiftRequestMacros
     expect(page.all("#assignments_without_obstacles_1 .shift_box")[1].text).to eq "Assigned to: #{other_rider.name} [Proposed]"
   end
 
+  def check_reassign_single_shift_list rider, status
+    expect(page.within("#assignments_requiring_reassignment"){ find("h3").text }).to eq "Assignments Requiring Reassignment"
+    expect(page.find("#assignments_requiring_reassignment_0 .shift_box").text).to eq "#{batch[0].table_time} @ #{batch[0].restaurant.name}"
+    expect(page.within("#assignments_requiring_reassignment_0"){ 
+        find("#wrapped_assignments_fresh__assignment_rider_id").find("option[selected]").text 
+      }).to eq rider.name
+    expect(page.within("#assignments_requiring_reassignment_0"){ 
+        find("#wrapped_assignments_fresh__assignment_status").find("option[selected]").text 
+      }).to eq status
+  end
+
+  def reassign_single_shift_to rider, status
+    page.within("#assignments_requiring_reassignment_0") { find("#wrapped_assignments_fresh__assignment_rider_id").select rider.name }
+    page.within("#assignments_requiring_reassignment_0") { find("#wrapped_assignments_fresh__assignment_status").select status }
+    click_button 'Save changes'
+  end
 
   def check_reassigned_shift_values rider, status
     expect(page.find("#row_1_col_3").text).to eq rider.name
     expect(page.find("#row_2_col_3").text).to eq rider.name
     expect(page.find("#row_3_col_3").text).to eq rider.name
+
+    expect(page.find("#row_1_col_4").text).to eq status
+    expect(page.find("#row_2_col_4").text).to eq status
+    expect(page.find("#row_3_col_4").text).to eq status
+  end
+
+  def check_reassigned_shift_values_after_accepting_obstacle rider_1, rider_2, status
+    expect(page.find("#row_1_col_3").text).to eq rider_2.name
+    expect(page.find("#row_2_col_3").text).to eq rider_1.name
+    expect(page.find("#row_3_col_3").text).to eq rider_1.name
 
     expect(page.find("#row_1_col_4").text).to eq status
     expect(page.find("#row_2_col_4").text).to eq status
@@ -251,5 +277,9 @@ module ShiftRequestMacros
         FactoryGirl.build(:conflict, :with_rider, rider: other_rider, start: batch[n].start, :end => batch[n].end)
       end
     end
+  end
+
+  def load_third_rider
+    let!(:third_rider){ FactoryGirl.create(:rider) }
   end
 end

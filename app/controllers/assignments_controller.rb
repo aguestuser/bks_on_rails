@@ -183,12 +183,15 @@ class AssignmentsController < ApplicationController
   def request_reassignments_for assignments
       # puts ">>>>>> FROM REQUEST REASSIGNMENTS:"
       # pp assignments
+    @errors = []
     @assignments = assignments
     render "batch_reassign" # view posts to '/assignment/batch_reassign'
   end
 
   def batch_reassign
-    assignments = Assignments.from_params params[:assignments]
+      # puts ">>>>>>> PARAMS (from batch_reassign"
+      # pp params
+    assignments = Assignments.from_params params[:wrapped_assignments]
       # puts ">>>>>> FROM BATCH REASSIGN:"
       # pp assignments
     get_savable assignments # RECURSE
