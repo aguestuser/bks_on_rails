@@ -223,7 +223,7 @@ module ShiftRequestMacros
       batch_index = batch_indices[j]
       expect(page.all("#assignments_with_double_bookings_#{i} .shift_box")[0].text).to eq "#{batch[batch_index].table_time} @ #{batch[batch_index].restaurant.name}"
       expect(page.all("#assignments_with_double_bookings_#{i} .shift_box")[1].text).to eq "Assigned to: #{other_rider.name} [Proposed]"
-      expect(page.all("#assignments_with_double_bookings_#{i} .shift_box")[2].text).to eq "#{double_bookings[batch_index].table_time} @ #{restaurant.name}"
+      expect(page.all("#assignments_with_double_bookings_#{i} .shift_box")[2].text).to eq "#{double_bookings[batch_index].table_time} @ #{double_bookings[batch_index].restaurant.name}"
       expect(page.find("#decisions_0_Accept")).to be_checked
       expect(page.find("#decisions_0_Override")).to_not be_checked      
     end
@@ -242,7 +242,7 @@ module ShiftRequestMacros
 
   def check_reassign_single_shift_list rider, status, batch_index
     expect(page.within("#assignments_requiring_reassignment"){ find("h3").text }).to eq "Assignments Requiring Reassignment"
-    expect(page.find("#assignments_requiring_reassignment_0 .shift_box").text).to eq "#{batch[batch_index].table_time} @ #{batch[0].restaurant.name}"
+    expect(page.find("#assignments_requiring_reassignment_0 .shift_box").text).to eq "#{batch[batch_index].table_time} @ #{batch[batch_index].restaurant.name}"
     expect(page.within("#assignments_requiring_reassignment_0"){ 
         find("#wrapped_assignments_fresh__assignment_rider_id").find("option[selected]").text 
       }).to eq rider.name

@@ -162,7 +162,11 @@ class Assignment < ActiveRecord::Base
     end
 
     def get_rider_shifts
-      self.rider.shifts_on(self.shift.start).reject{ |s| s.id == self.shift.id }
+      if self.rider
+        self.rider.shifts_on(self.shift.start).reject{ |s| s.id == self.shift.id }
+      else
+        []
+      end
     end
 
     def send_email_from sender_account

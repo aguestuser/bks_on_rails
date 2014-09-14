@@ -6,8 +6,8 @@ describe "Assignment Requests" do
   let(:rider) { FactoryGirl.create(:rider) }
   let(:other_rider) { FactoryGirl.create(:rider) }
 
-  let(:restaurant) { FactoryGirl.create(:restaurant) }
-  let(:other_restaurant) { FactoryGirl.create(:restaurant) }
+  let!(:restaurant) { FactoryGirl.create(:restaurant) }
+  let!(:other_restaurant) { FactoryGirl.create(:restaurant) }
 
   let(:start){ Time.zone.local(2014,1,1,11) }
   let(:_end){ Time.zone.local(2014,1,1,17) }
@@ -97,8 +97,7 @@ describe "Assignment Requests" do
         end
       end
     end    
-    
-  end
+  end # "Assignments#show"
 
   describe "Assignments in Shifts#index" do
 
@@ -160,184 +159,21 @@ describe "Assignment Requests" do
       it { should_not have_content('--') }
       it { should_not have_link('Create new shift') }      
       it { should have_link('All shifts') }
-    end
-  end
+    end # "from rider path"
+  end # "Assignments in Shifts#index"
 
-
-  # describe "Assignments#new" do
-    
-  #   before do
-  #     rider
-  #     restaurant
-  #   end 
-
-  #   let(:submit) { 'Assign shift' }
-  #   let!(:old_counts) { count_models [ Assignment ] }
-
-  #   describe "from shifts path" do
-  #     before { visit new_shift_assignment_path(shift) }
-
-  #     describe "page contents" do
-  #       check_assignment_form_contents :new
-  #     end
-
-  #     describe "form submission" do
-
-  #       # describe "with invalid input" do
-  #       #   before { click_button submit }
-
-  #       #   it { should have_an_error_message }
-  #       # end
-
-  #       describe "with valid input" do
-  #         before { make_valid_assignment_submission }
-
-  #         let(:new_counts) { count_models [ Assignment ] }
-        
-  #         it "should create a new Assignment" do
-  #           check_model_counts_incremented old_counts, new_counts
-  #         end
-  #         it { should have_success_message("Shift assigned to #{rider.name}") }
-  #         it { should have_h1('Shifts') }
-  #       end
-
-  #       describe "making new assignment to rider with conflict" do
-  #         before do
-  #           conflict
-  #           visit new_shift_assignment_path(next_day_shift)
-  #           make_valid_assignment_submission
-  #         end
-
-
-  #         describe "override page contents" do
-  #           it { should have_h1('Conflict Alert') }
-  #           it { should have_content("You tried to assign the following shift:") }
-  #           it { should have_content( next_day_shift.start.strftime( "%m/%d | %I:%M%p" ) ) }  
-  #           it { should have_content("to #{rider.contact.name}, who has the following conflict(s):") }
-  #           it { should have_content(conflict.start.strftime("%m/%d | %I:%M%p")) }
-  #           it { should have_content("Do you want to assign it to them anyway?") }
-  #           it { should have_button('Assign Shift') }  
-  #           it { should have_link('Cancel') }
-  #         end
-
-  #         describe "clicking 'Cancel'" do
-  #           before { click_link 'Cancel' }
-  #           it "should not assign the shift to the rider" do
-  #             expect( rider.reload.shifts.include? next_day_shift ).to eq false
-  #             expect( next_day_shift.reload.assignment.rider ).to eq nil
-  #           end
-  #         end
-
-  #         describe "clicking 'Assign Shift'" do
-  #           before { click_button 'Assign Shift' }
-
-  #           it "should assign the shift to the rider" do
-  #             expect( rider.reload.shifts.include? next_day_shift ).to eq true
-  #             expect( next_day_shift.assignment ).not_to eq nil
-  #             expect( next_day_shift.assignment.rider ).to eq rider
-  #           end
-  #           it { should have_success_message("Shift assigned to #{rider.name}") }
-  #           it { should have_h1('Shifts') }
-  #         end
-  #       end
-
-  #       describe "making new assignment to rider with double-booking" do
-  #         before do
-  #           same_time_shift.assign_to rider
-  #           visit new_shift_assignment_path(shift)
-  #           make_valid_assignment_submission
-  #         end
-
-  #         describe "override page contents" do
-  #           it { should have_h1('Double Booking Alert') }
-  #           it { should have_content("You tried to assign the following shift:") }
-  #           it { should have_content( same_time_shift.start.strftime( "%m/%d | %I:%M%p" ) ) }  
-  #           it { should have_content("to #{rider.contact.name}, which would double book them with the following shift(s):") }
-  #           it { should have_content(same_time_shift.start.strftime("%m/%d | %I:%M%p")) }
-  #           it { should have_content("Do you want to assign it to them anyway?") }
-  #           it { should have_button('Assign Shift') }  
-  #           it { should have_link('Cancel') }
-  #         end
-
-  #         describe "clicking 'Cancel'" do
-  #           before { click_link 'Cancel' }
-  #           it "should not assign the shift to the rider" do
-  #             expect( rider.reload.shifts.include? shift ).to eq false
-  #             expect( shift.assignment ).to eq nil
-  #           end
-  #         end
-
-  #         describe "clicking 'Assign Shift'" do
-  #           before { click_button 'Assign Shift' }
-
-  #           it "should assign the shift to the rider" do
-  #             expect( rider.reload.shifts.include? shift ).to eq true
-  #             expect( shift.assignment ).not_to eq nil
-  #             expect( shift.assignment.rider ).to eq rider
-  #           end
-  #           it { should have_success_message("Shift assigned to #{rider.name}") }
-  #         end
-  #       end
-  #     end
-  #   end
-
-  #   describe "from restaurant path" do
-  #     before { visit new_restaurant_shift_assignment_path(restaurant, shift) }
-
-  #     describe "page contents" do
-  #       check_assignment_form_contents :new, :restaurant
-  #     end
-
-  #     describe "form submission" do
-        
-  #       describe "with invalid input" do
-  #         before { click_button submit }
-
-  #         it { should have_an_error_message }
-  #         it { should have_h1("Assign Shift") }
-  #       end
-
-  #       describe "with valid input" do
-  #         before { make_valid_assignment_submission :restaurant }
-
-  #         let(:new_counts) { count_models [ Assignment ] }
-
-  #         it "should create a new Assignment" do
-  #           check_model_counts_incremented old_counts, new_counts
-  #         end
-  #         it { should have_success_message("Shift assigned to #{rider.name}") }
-  #         it { should have_h1("Shifts for #{restaurant.mini_contact.name}") }         
-  #       end
-  #     end
-  #   end
-
-  #   describe "from rider path" do
-  #     before { visit new_rider_shift_assignment_path(rider, shift) }
-      
-  #     it { should have_an_error_message }
-  #     it { should have_h1("Assignments for #{rider.name}") }
-  #   end
-  # end
-
-  describe "Assignments#edit" do
+  describe "Assignments#EDIT" do
     before { shift.assign_to rider }
     let(:submit) { 'Save changes' }
 
-    describe "from shifts path" do
+    describe "from SHIFTS PATH" do
       before { visit edit_shift_assignment_path(shift, shift.assignment) }
 
       describe "page contents" do
         check_assignment_form_contents :edit
       end
 
-      # describe "with invalid input" do
-      #   before  { make_invalid_assignment_submission }
-
-      #   it { should have_an_error_message }
-      #   it { should have_h1('Edit Shift Assignment') }
-      # end
-
-      describe "with valid input" do
+      describe "assigning to rider WITHOUT OBSTACLES" do
         before { make_valid_assignment_edit }
 
         describe "updating assignment attributes" do
@@ -350,12 +186,12 @@ describe "Assignment Requests" do
         describe "success redirect" do
           subject { page }
           
-          it { should have_success_message("Assignment updated (Rider: #{Rider.first.name}, Status: Cancelled (Rider))") }
+          it { should have_success_message("Assignment successfully edited") }
           it { should have_h1("Shifts") } 
-        end
-      end
+        end # 
+      end # "assigning to rider WITHOUT OBSTACLES"
 
-      describe "reassigning shift to rider with conflict" do
+      describe "assigning to rider with CONFLICT" do
         before do
           conflict # on next day, belongs to rider
           next_day_shift.assign_to other_rider
@@ -364,31 +200,39 @@ describe "Assignment Requests" do
           click_button submit
         end
 
-        describe "override page contents" do
-          it { should have_h1('Conflict Alert') }
-          it { should have_content("You tried to assign the following shift:") }
-          it { should have_content( next_day_shift.table_time ) } 
-          it { should have_link( rider.contact.name ) } 
-          it { should have_content("who has the following conflict(s):") }
-          it { should have_content( conflict.table_time ) }
-          it { should have_content("Do you want to assign it to them anyway?") }
-          it { should have_button('Assign Shift') }  
-          it { should have_link('Cancel') }
-        end
+        describe "Resolve Obstacles page" do
 
-        describe "clicking 'Cancel'" do
-          before{ click_link 'Cancel' }
+          describe "CONTENTS" do
+            
+            it "should be the Resolve Obstacles page" do
+              expect(current_path).to eq "/shifts/#{next_day_shift.id}/assignments/#{next_day_shift.assignment.id}"
+              expect(page).to have_h1 'Resolve Scheduling Obstacles'
+            end
 
-          it "should not change the assignment" do
-            expect( other_rider.reload.shifts.include? next_day_shift ).to eq true
-            expect( rider.reload.shifts.include? next_day_shift ).to eq false
-            expect( next_day_shift.assignment.reload.rider ).to eq other_rider
-            expect( next_day_shift.assignment.reload.rider ).not_to eq rider                            
+            it "should correctly list Assignments With Conflicts" do
+              expect(page.within("#assignments_with_conflicts"){ find("h3").text }).to eq "Assignments With Conflicts"
+              expect(page.all("#assignments_with_conflicts_0 .shift_box")[0].text).to eq "#{next_day_shift.table_time} @ #{restaurant.name}"
+              expect(page.all("#assignments_with_conflicts_0 .shift_box")[1].text).to eq "Assigned to: #{rider.name} [Proposed]"
+              expect(page.all("#assignments_with_conflicts_0 .shift_box")[2].text).to eq conflict.table_time
+              expect(page.find("#decisions_0_Accept")).to be_checked
+              expect(page.find("#decisions_0_Override")).to_not be_checked   
+            end
+
+            it "should not list Assignments With Double Bookings" do
+              expect(page).not_to have_selector("#assignments_with_double_bookings")
+            end
+
+            it "should note list Assignments Without Obstacles" do
+              expect(page).not_to have_selector("#assignments_without_obstacles")
+            end
+          end # "CONTENTS"
+        end # "Resolve Obstacles page"
+
+        describe "OVERRIDING" do
+          before do   
+            choose 'decisions_0_Override'
+            click_button 'Submit'
           end
-        end
-
-        describe "clicking 'Assign Shift'" do
-          before { click_button 'Assign Shift' }
 
           it "should assign the shift to the rider" do
             expect( other_rider.reload.shifts.include? next_day_shift ).to eq false
@@ -396,42 +240,74 @@ describe "Assignment Requests" do
             expect( next_day_shift.assignment.reload.rider ).not_to eq other_rider
             expect( next_day_shift.assignment.reload.rider ).to eq rider  
           end
-        end
+        end # "OVERRIDING"
 
-      end
-
-      describe "reassigning shift to rider with double-booking" do
-          before do
-            same_time_shift.assign_to other_rider
-            visit edit_shift_assignment_path(shift, shift.assignment)
-            select other_rider.contact.name, from: 'assignment_rider_id'
-            click_button submit
+        describe "ACCEPTING" do
+          before do   
+            choose 'decisions_0_Accept'
+            click_button 'Submit'
           end
 
-          describe "override page contents" do
-            it { should have_h1('Double Booking Alert') }
-            it { should have_content("You tried to assign the following shift:") }
-            it { should have_content( shift.table_time ) }  
-            it { should have_content("to #{other_rider.contact.name}, which would double book them with the following shift(s):") }
-            it { should have_content(same_time_shift.table_time) }
-            it { should have_content("Do you want to assign it to them anyway?") }
-            it { should have_button('Assign Shift') }  
-            it { should have_link('Cancel') }
-          end
+          describe "Batch Reassign Page" do
+            let(:batch){ [ next_day_shift ] }
+            
+            it "should be the batch reassign page" do
+              expect(current_path).to eq '/assignment/resolve_obstacles'
+              expect(page).to have_h1 'Batch Reassign Shifts'                         
+            end
 
-          describe "clicking 'Cancel'" do
-            before{ click_link 'Cancel' }
+            it "should correctly list Assignements Requiring Reassignment" do
+              check_reassign_single_shift_list rider, 'Proposed', 0
+            end
 
             it "should not change the assignment" do
-              expect( other_rider.reload.shifts.include? shift ).to eq false
-              expect( rider.reload.shifts.include? shift ).to eq true
-              expect( shift.assignment.reload.rider ).not_to eq other_rider
-              expect( shift.assignment.reload.rider ).to eq rider                            
+              expect( other_rider.reload.shifts.include? next_day_shift ).to eq true
+              expect( rider.reload.shifts.include? next_day_shift ).to eq false
+              expect( next_day_shift.assignment.reload.rider ).to eq other_rider
+              expect( next_day_shift.assignment.reload.rider ).not_to eq rider                            
             end
-          end
+          end # "Batch Reassign Page"
+        end # "ACCEPTING"
+      end # "assigning shift to rider with CONFLICT"
 
-          describe "clicking 'Assign Shift'" do
-            before { click_button 'Assign Shift' }
+      describe "assigning to rider with DOUBLE BOOKING" do
+        let(:batch){ [shift] }
+        let(:double_bookings){ [same_time_shift] }
+        before do
+          same_time_shift.assign_to other_rider
+          same_time_shift.assignment.update(status: :proposed)
+          visit edit_shift_assignment_path(shift, shift.assignment)
+          select other_rider.contact.name, from: 'assignment_rider_id'
+          click_button submit
+        end
+
+        describe "Resolve Obstacles page" do
+          
+          describe "CONTENTS" do
+            
+            it "should be the Resolve Obstacles page" do
+              expect(current_path).to eq "/shifts/#{shift.id}/assignments/#{shift.assignment.id}"
+              expect(page).to have_h1 'Resolve Scheduling Obstacles'
+            end
+
+            it "should not list Assignments With Conflicts" do
+              expect(page).not_to have_selector("#assignments_with_conflicts") 
+            end
+
+            it "should correctly list Assignments With Double Bookings" do
+              check_assignments_with_double_booking_list [0], [0]
+            end
+
+            it "should note list Assignments Without Obstacles" do
+              expect(page).not_to have_selector("#assignments_without_obstacles")
+            end
+          end # "CONTENTS"
+
+          describe "OVERRIDING" do
+            before do   
+              choose 'decisions_0_Override'
+              click_button 'Submit'
+            end
 
             it "should assign the shift to the rider" do
               expect( other_rider.reload.shifts.include? shift ).to eq true
@@ -439,9 +315,36 @@ describe "Assignment Requests" do
               expect( shift.assignment.reload.rider ).to eq other_rider
               expect( shift.assignment.reload.rider ).not_to eq rider
             end
-          end
-        end
-    end
+          end # "OVERRIDING"
+
+          describe "ACCEPTING" do
+            before do
+              choose 'decisions_0_Accept'
+              click_button 'Submit'
+            end
+
+            describe "Batch Reassign Page" do
+              
+              it "should be the batch reassign page" do
+                expect(current_path).to eq '/assignment/resolve_obstacles'
+                expect(page).to have_h1 'Batch Reassign Shifts'                         
+              end
+
+              it "should correctly list Assignements Requiring Reassignment" do
+                check_reassign_single_shift_list other_rider, 'Proposed', 0
+              end
+
+              it "should not change the assignment" do
+                expect( other_rider.reload.shifts.include? shift ).to eq false
+                expect( rider.reload.shifts.include? shift ).to eq true
+                expect( shift.assignment.reload.rider ).not_to eq other_rider
+                expect( shift.assignment.reload.rider ).to eq rider                            
+              end
+            end # "Batch Reassign Page"
+          end # "ACCEPTING"
+        end # "Resolve Obstacles page"
+      end # "assigning to rider with DOUBLE BOOKING"
+    end # "from SHIFTS path"
 
     describe "from restaurant path" do
       before { visit edit_restaurant_shift_assignment_path(restaurant, shift, shift.assignment) }
@@ -449,13 +352,6 @@ describe "Assignment Requests" do
       describe "page contents" do
         check_assignment_form_contents :edit, :restaurant
       end
-
-      # describe "with invalid input" do
-      #   before { make_invalid_assignment_submission :restaurant }
-
-      #   it { should have_an_error_message }
-      #   it { should have_h1('Edit Shift Assignment') }
-      # end
 
       describe "with valid input" do
         before { make_valid_assignment_edit }
@@ -470,11 +366,11 @@ describe "Assignment Requests" do
         describe "success redirect" do
           subject { page }
 
-          it { should have_success_message("Assignment updated (Rider: #{Rider.first.name}, Status: Cancelled (Rider))") }
+          it { should have_success_message("Assignment successfully edited") }
           it { should have_h1("Shifts for #{restaurant.name}") } 
         end
       end
-    end
+    end # "from restaurant path"
 
     describe "from riders path" do
       before { visit edit_rider_shift_assignment_path(rider, shift, shift.assignment) }      
@@ -495,10 +391,10 @@ describe "Assignment Requests" do
         describe "success redirect" do
           subject { page }
 
-          it { should have_success_message("Assignment updated (Rider: #{rider.name}, Status: Cancelled (Rider))") }
+          it { should have_success_message("Assignment successfully edited") }
           it { should have_h1("Shifts for #{rider.name}") }
         end
       end
-    end
-  end
+    end # "from riders path"
+  end # "Assignments#EDIT"
 end

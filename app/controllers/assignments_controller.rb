@@ -30,7 +30,10 @@ class AssignmentsController < ApplicationController
     # old_assignment = Assignment.new(@assignment.attributes)
     # @assignment.attributes = assignment_params
     new_assignment = Assignment.new(assignment_params)
-    get_savable Assignments.new( { fresh: [ new_assignment ] } )
+    assignments = Assignments.new( { fresh: Assignments.wrap([new_assignment]) } )
+      # puts ">>>>>>> FROM UPDATE"
+      # pp assignments
+    get_savable assignments
   end
 
   def show
@@ -64,7 +67,7 @@ class AssignmentsController < ApplicationController
     assignments = Assignments.from_params params[:wrapped_assignments] # 
       # puts ">>>>>> FROM BATCH UPDATE:"
       # pp assignments
-    do_batch_update assignments
+    get_savable assignments
   end
 
         def load_shift_batch
@@ -96,7 +99,7 @@ class AssignmentsController < ApplicationController
     )
       # puts ">>>>>> FROM BATCH UPDATE UNIFORM:"
       # pp assignments
-    do_batch_update assignments
+    get_savable assignments
   end
 
       def new_uniform_assignments_from params
@@ -123,11 +126,11 @@ class AssignmentsController < ApplicationController
       end
 
 
-  def do_batch_update assignments
-      # puts ">>>>>> FROM DO BATCH UPDATE:"
-      # pp assignments
-    get_savable assignments
-  end
+  # def do_batch_update assignments
+  #     # puts ">>>>>> FROM DO BATCH UPDATE:"
+  #     # pp assignments
+  #   get_savable assignments
+  # end
 
   def get_savable assignments # RECURSION HOOK
     #input: Assignments Obj
@@ -149,7 +152,6 @@ class AssignmentsController < ApplicationController
     else # BASE CASE (BREAKS RECURSION)
       old_assignments = assignments.unwrap_old
       new_assignments = assignments.savable
-      # raise ( "NEW ASSIGNMENTS: " + new_assignments.inspect + "OLD ASSIGNMENTS: " + old_assignments.inspect )
     
       update_savable old_assignments, new_assignments
     end
