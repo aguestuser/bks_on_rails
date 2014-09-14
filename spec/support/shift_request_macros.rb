@@ -205,26 +205,44 @@ module ShiftRequestMacros
     click_button 'Save changes'
   end
   
-  def check_resolve_obstacles_with_conflicts_list
+  def check_assignments_with_conflicts_list conflict_list_indices, batch_indices
     expect(page.within("#assignments_with_conflicts"){ find("h3").text }).to eq "Assignments With Conflicts"
-    expect(page.all("#assignments_with_conflicts_0 .shift_box")[0].text).to eq "#{batch[0].table_time} @ #{batch[0].restaurant.name}"
-    expect(page.all("#assignments_with_conflicts_0 .shift_box")[1].text).to eq "Assigned to: #{other_rider.name} [Proposed]"
-    expect(page.all("#assignments_with_conflicts_0 .shift_box")[2].text).to eq conflicts[0].table_time
-    expect(page.find("#decisions_0_Accept")).to be_checked
-    expect(page.find("#decisions_0_Override")).to_not be_checked
+    conflict_list_indices.each_with_index do |i,j|
+      batch_index = batch_indices[j]
+      expect(page.all("#assignments_with_conflicts_#{i} .shift_box")[0].text).to eq "#{batch[batch_index].table_time} @ #{batch[batch_index].restaurant.name}"
+      expect(page.all("#assignments_with_conflicts_#{i} .shift_box")[1].text).to eq "Assigned to: #{other_rider.name} [Proposed]"
+      expect(page.all("#assignments_with_conflicts_#{i} .shift_box")[2].text).to eq conflicts[batch_index].table_time
+      expect(page.find("#decisions_#{i}_Accept")).to be_checked
+      expect(page.find("#decisions_#{i}_Override")).to_not be_checked      
+    end
   end
 
-  def check_without_obstacles_list
+  def check_assignments_with_double_booking_list double_booking_list_indices, batch_indices
+    expect(page.within("#assignments_with_double_bookings"){ find("h3").text }).to eq "Assignments With Double Bookings"
+    double_booking_list_indices.each_with_index do |i,j|
+      batch_index = batch_indices[j]
+      expect(page.all("#assignments_with_double_bookings_#{i} .shift_box")[0].text).to eq "#{batch[batch_index].table_time} @ #{batch[batch_index].restaurant.name}"
+      expect(page.all("#assignments_with_double_bookings_#{i} .shift_box")[1].text).to eq "Assigned to: #{other_rider.name} [Proposed]"
+      expect(page.all("#assignments_with_double_bookings_#{i} .shift_box")[2].text).to eq "#{double_bookings[batch_index].table_time} @ #{restaurant.name}"
+      expect(page.find("#decisions_0_Accept")).to be_checked
+      expect(page.find("#decisions_0_Override")).to_not be_checked      
+    end
+  end
+
+
+  def check_without_obstacles_list list_indices, batch_indices
+    #input: Array of Nums (indices of assignments_without_obstacles Arr to check for), Array of Nums (indices of batch Shifts Arr to retrieve values from)
     expect(page.within("#assignments_without_obstacles"){ find("h3").text }).to eq "Assignments Without Obstacles"
-    expect(page.all("#assignments_without_obstacles_0 .shift_box")[0].text).to eq "#{batch[1].table_time} @ #{restaurant.name}"
-    expect(page.all("#assignments_without_obstacles_0 .shift_box")[1].text).to eq "Assigned to: #{other_rider.name} [Proposed]"
-    expect(page.all("#assignments_without_obstacles_1 .shift_box")[0].text).to eq "#{batch[2].table_time} @ #{restaurant.name}"
-    expect(page.all("#assignments_without_obstacles_1 .shift_box")[1].text).to eq "Assigned to: #{other_rider.name} [Proposed]"
+    list_indices.each_with_index do |i,j|
+      batch_index = batch_indices[j]
+      expect(page.all("#assignments_without_obstacles_#{i} .shift_box")[0].text).to eq "#{batch[batch_index].table_time} @ #{restaurant.name}"
+      expect(page.all("#assignments_without_obstacles_#{i} .shift_box")[1].text).to eq "Assigned to: #{other_rider.name} [Proposed]"      
+    end
   end
 
-  def check_reassign_single_shift_list rider, status
+  def check_reassign_single_shift_list rider, status, batch_index
     expect(page.within("#assignments_requiring_reassignment"){ find("h3").text }).to eq "Assignments Requiring Reassignment"
-    expect(page.find("#assignments_requiring_reassignment_0 .shift_box").text).to eq "#{batch[0].table_time} @ #{batch[0].restaurant.name}"
+    expect(page.find("#assignments_requiring_reassignment_0 .shift_box").text).to eq "#{batch[batch_index].table_time} @ #{batch[0].restaurant.name}"
     expect(page.within("#assignments_requiring_reassignment_0"){ 
         find("#wrapped_assignments_fresh__assignment_rider_id").find("option[selected]").text 
       }).to eq rider.name
@@ -271,6 +289,16 @@ module ShiftRequestMacros
     expect(page.find("#row_1_col_10").text).to eq "#{rider.short_name} #{status_code}"     
   end
 
+  def load_batch
+    let(:start_t){ Time.zone.local(2014,1,1,12) }
+    let(:end_t){ Time.zone.local(2014,1,1,18) }
+    let!(:batch)do
+      3.times.map do |n|
+        FactoryGirl.build(:shift, :with_restaurant, restaurant: restaurant, start: start_t + n.days, :end => end_t + n.days)
+      end
+    end
+  end
+
   def load_conflicts
     let(:conflicts) do 
       3.times.map do |n| 
@@ -279,7 +307,15 @@ module ShiftRequestMacros
     end
   end
 
-  def load_third_rider
-    let!(:third_rider){ FactoryGirl.create(:rider) }
+  def load_double_bookings
+    let(:double_bookings) do 
+      3.times.map do |n|
+        FactoryGirl.build(:shift, :with_restaurant, restaurant: restaurant, start: batch[n].start, :end => batch[n].end)
+      end
+    end
+  end
+
+  def load_free_rider
+    let!(:free_rider){ FactoryGirl.create(:rider) }
   end
 end

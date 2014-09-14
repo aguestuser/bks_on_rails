@@ -22,7 +22,7 @@
       /... about Double Bookings
       - if @assignments.with_double_bookings.any?
         %div{ id: "assignments_with_double_bookings" }
-          %h3 Assignments with Double Bookings
+          %h3 Assignments With Double Bookings
           - offset = @assignments.with_conflicts.count
           - @assignments.with_double_bookings.each_with_index do |wrapped_assignment, i|
             %div{ id: "assignments_with_double_bookings_#{i}" }
