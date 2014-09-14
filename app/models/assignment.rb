@@ -96,8 +96,8 @@ class Assignment < ActiveRecord::Base
 
     rider_shifts.values.each do |rider_hash| # (4)
       [:emergency, :extra, :weekly].each do |urgency|
-        if rider_hash[key].any?
-          Assignment.send_email rider_hash, type, sender_account
+        if rider_hash[urgency][:shifts].any?
+          Assignment.send_email rider_hash, urgency, sender_account
           count += 1
         end
       end

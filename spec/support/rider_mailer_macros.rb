@@ -81,23 +81,20 @@ module RiderMailerMacros
     page.within("#row_4"){ find("#ids_").set true } 
     click_button 'Batch Assign', match: :first
     #batch assign shifts (first two shifts to rider, second two to other_rider)
-    page.within("#shift_#{shifts[0].id}") do
-      find("#assignments__rider_id").select rider.name
-      find("#assignments__status").select 'Delegated'
+    2.times do |n|
+      page.within("#assignments_fresh_#{n}") do
+        find("#wrapped_assignments_fresh__assignment_rider_id").select rider.name
+        find("#wrapped_assignments_fresh__assignment_status").select 'Delegated'
+      end
     end
-    page.within("#shift_#{shifts[1].id}") do
-      find("#assignments__rider_id").select rider.name
-      find("#assignments__status").select 'Delegated'
+    2.times do |n|
+      m = n+2
+      page.within("#assignments_fresh_#{m}") do
+        find("#wrapped_assignments_fresh__assignment_rider_id").select other_rider.name
+        find("#wrapped_assignments_fresh__assignment_status").select 'Delegated'
+      end
     end
-    page.within("#shift_#{shifts[2].id}") do
-      find("#assignments__rider_id").select other_rider.name
-      find("#assignments__status").select 'Delegated'
-    end
-    page.within("#shift_#{shifts[3].id}") do
-      find("#assignments__rider_id").select other_rider.name
-      find("#assignments__status").select 'Delegated'
-    end
-    puts 'saved changes'
+    click_button 'Save changes'
   end
 
   def check_shift_delegation_email_contents staffer, type, shift

@@ -170,14 +170,12 @@ module ShiftRequestMacros
   # end
 
   def assign_batch_to rider, status
-    page.within("#assignments_fresh_0") { find("#wrapped_assignments_fresh__assignment_rider_id").select rider.name }
-    page.within("#assignments_fresh_1") { find("#wrapped_assignments_fresh__assignment_rider_id").select rider.name }
-    page.within("#assignments_fresh_2") { find("#wrapped_assignments_fresh__assignment_rider_id").select rider.name }
-
-    page.within("#assignments_fresh_0") { find("#wrapped_assignments_fresh__assignment_status").select status }
-    page.within("#assignments_fresh_1") { find("#wrapped_assignments_fresh__assignment_status").select status }
-    page.within("#assignments_fresh_2") { find("#wrapped_assignments_fresh__assignment_status").select status }
-
+    3.times do |n|
+      page.within("#assignments_fresh_#{n}") do 
+        find("#wrapped_assignments_fresh__assignment_rider_id").select rider.name
+        find("#wrapped_assignments_fresh__assignment_status").select status
+      end
+    end
     click_button 'Save changes'
   end
 

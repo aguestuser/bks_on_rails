@@ -1,8 +1,11 @@
 class RiderShifts
   attr_reader :hash
+  URGENCIES = [ :emergency, :extra, :weekly ]
 
   def initialize assignments
     @hash = hash_from assignments
+    # puts "@hash"
+    # pp @hash
   end
 
   private
@@ -45,8 +48,8 @@ class RiderShifts
             # } 
         # }
       grouped_by_rider = group_by_rider assignments
-      with_parsed_rider_and_shift = parse_rider_and_shifts assignments
-      grouped_by_urgency = group_by_urgency grouped_by_rider
+      with_parsed_rider_and_shift = parse_rider_and_shifts grouped_by_rider
+      grouped_by_urgency = group_by_urgency with_parsed_rider_and_shift
       with_restaurants = insert_restaurants grouped_by_urgency
     end
 
@@ -74,12 +77,9 @@ class RiderShifts
         # }
       hash = {}
       assignments.each do |id, rider_hash|
-        sorted_hash = rider_hash[:shifts].group_by{ |s| s.urgency }
-        hash[id] = { 
-          rider: rider_hash[:rider], 
-          emergency: sorted_hash[:emergency], 
-          extra: sorted_hash[:extra] 
-        }
+        sorted_hash = rider_hash[:shifts].group_by{ |s| s.urgency.text.downcase.to_sym }
+        hash[id] = { rider: rider_hash[:rider] }
+        URGENCIES.each { |urgency| hash[id][urgency] = sorted_hash[urgency] }
       end
       hash
     end
@@ -103,26 +103,25 @@ class RiderShifts
         # }
       hash = {}
       assignments.each do |id, rider_hash|
-        hash[id] = {
-          rider: rider_hash[:rider],
-          emergency: urgency_hash( rider_hash[:emergency], parse_restaurants( rider_hash[:emergency]) ),
-          extra: urgency_hash( rider_hash[:extra], parse_restaurants( rider_hash[:extra] ) )
-        }
-      hash
+        hash[id] = { rider: rider_hash[:rider] }
+        URGENCIES.each do |urgency|
+          shifts = rider_hash[urgency] || []
+          restaurants = parse_restaurants shifts
+          hash[id][urgency] = urgency_hash_from shifts, restaurants
+        end
       end
+      hash
+    end
+
+    def urgency_hash_from shifts, restaurants
+      { shifts: shifts , restaurants: restaurants }
     end
 
     def parse_restaurants shifts
       shifts.map{ |shift| shift.restaurant }.uniq
     end
 
-    def urgency_hash shifts, restaurants
-      { shifts: shifts, restaurants: restaurants }
-    end
 
-    def group_by_urgency assignments
-      assignments
-    end
 
     # def rider_hash_from a, arr
     #   arr.find { |arr_el| arr_el[:rider] == a.rider }
