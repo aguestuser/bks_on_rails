@@ -8,20 +8,6 @@ class AssignmentsController < ApplicationController
   before_action :load_caller # will call load_restaurant or load_rider if applicable, load_paths always
   before_action :load_base_path
   before_action :load_form_args, only: [ :edit, :update, :override_conflict, :override_double_booking ]
-  
-  before_action :redirect_to_rider_shifts, only: [ :new, :create ]
-
-  # def new
-  #   @assignment = Assignment.new
-  #   load_form_args
-  #   # @assignment.shift = @shift      
-  # end
-
-  # def create
-  #   @assignment = Assignment.new(assignment_params)
-  #   load_form_args
-  #   attempt_save_from :create
-  # end
 
   def edit
   end
@@ -30,17 +16,19 @@ class AssignmentsController < ApplicationController
     # old_assignment = Assignment.new(@assignment.attributes)
     # @assignment.attributes = assignment_params
     new_assignment = Assignment.new(assignment_params)
-    assignments = Assignments.new( { fresh: Assignments.wrap([new_assignment]) } )
-      # puts ">>>>>>> FROM UPDATE"
-      # pp assignments
+    old_assignment = Assignment.find(new_assignment.id)
+    assignments = Assignments.new( { 
+      fresh: Assignments.wrap( [ new_assignment ] ),
+      old: Assignments.wrap( [ old_assignment ] ) 
+    } )
     get_savable assignments
   end
 
   def show
   end
 
-  def index
-  end
+  # def index
+  # end
 
   def destroy
     @assignment.destroy
@@ -48,11 +36,11 @@ class AssignmentsController < ApplicationController
     redirect_to @base_path
   end
 
-  def override_double_booking
-  end
+  # def override_double_booking
+  # end
 
-  def override_conflict
-  end
+  # def override_conflict
+  # end
 
   def batch_edit
     @errors = []
@@ -581,13 +569,6 @@ class AssignmentsController < ApplicationController
         @form_args = [ @shift, @assignment ]
       end
     end 
-
-    def redirect_to_rider_shifts
-      if @caller == :rider
-        flash[:error] = "You can't create an assignment from a list of rider shifts. Try again from the shifts index or a list of restaurant shifts."
-        redirect_to index_path
-      end
-    end
 
     def assignment_params
       params

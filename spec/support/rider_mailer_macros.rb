@@ -71,12 +71,13 @@ module RiderMailerMacros
   #   let(:mail){ RiderMailer.delegation_email rider, shift }
   # end
 
-  def delegate shift
+  def assign shift, status
     visit edit_shift_assignment_path(shift, shift.assignment)
-    select rider.name, from: "assignment_rider_id"
-    select 'Delegated', from: "assignment_status"
+    page.find("#assignment_rider_id").select rider.name
+    page.find("#assignment_status").select status
     click_button 'Save changes'
   end
+
 
   def batch_delegate shifts, type
     visit shifts_path
@@ -158,10 +159,10 @@ module RiderMailerMacros
     end  
   end
 
-  def check_delegation_email_body mail, staffer, type, shift
+  def check_delegation_email_body mail, staffer, type
     actual_body = parse_body_from mail
-    expected_body = File.read("/spec/mailers/sample_emails/single_#{staffer}_#{type}.html")
-    
+    expected_body = File.read("spec/mailers/sample_emails/single_#{staffer}_#{type}.html")
+
     expect(actual_body).to eq expected_body
   end
 
