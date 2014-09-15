@@ -28,6 +28,8 @@ class RiderShifts
       with_parsed_rider_and_shift = parse_rider_and_shifts grouped_by_rider
       grouped_by_urgency = group_by_urgency with_parsed_rider_and_shift
       with_restaurants = insert_restaurants grouped_by_urgency
+      # sorted_by_date = sort_by_date grouped_by_urgency
+      # with_restaurants = insert_restaurants sorted_by_date
     end
 
     def group_by_rider assignments
@@ -50,13 +52,23 @@ class RiderShifts
       #input: Hash of Hashes of type: { Num<rider_id>: { rider: Rider, shifts: Arr of Shifts } }
       #output: Hash of Hashes of type: 
         # { Num<rider_id>: 
-          # { rider: Rider, emergency: Arr of Shifts, extra: Arr of Shifts } 
+          # { rider: Rider, emergency: Arr of Shifts, extra: Arr of Shifts, weekly: Arr of Shifts } 
         # }
       hash = {}
       assignments.each do |id, rider_hash|
         sorted_hash = rider_hash[:shifts].group_by{ |s| s.urgency.text.downcase.to_sym }
         hash[id] = { rider: rider_hash[:rider] }
         URGENCIES.each { |urgency| hash[id][urgency] = sorted_hash[urgency] }
+      end
+      hash
+    end
+
+    def sort_by_date assignments
+      hash = {}
+      assignments.each do |id, rider_hash|
+        URGENCIES.each do |urgency|
+          rider_hash[urgency].sort_by!{ |shift| shift.start } if rider_hash[urgency]
+        end
       end
       hash
     end

@@ -44,6 +44,18 @@ describe "Rider Mailer Requests" do
           check_delegation_email_body mail, :tess, :emergency
         end
       end
+
+      describe "trying to delegate an emergency shift" do
+        before { assign emergency_shift, 'Delegated' }
+
+        it "should redirect to error-handling page" do
+          expect(page).to have_h1 'Batch Assign Shifts'  
+        end
+
+        it "should list shifts with errors correctly" do
+          expect(page.within("#assignments_fresh_0"){ find(".field_with_errors").text }).to include(rider.name)
+        end
+      end # "trying to delegate an emergency shift"
     end # "as Tess"
 
     describe "as Justin" do
@@ -128,6 +140,21 @@ describe "Rider Mailer Requests" do
           check_batch_delegation_email_body mails, :tess, :mixed
         end
       end # "for "for MIXED BATCH of shifts"
+
+      describe "trying to DELEGATE EMERGENCY shifts" do
+        before { batch_delegate emergency_shifts, :emergency_delegation }
+
+        it "should redirect to error-handling page" do
+          expect(page).to have_h1 'Batch Assign Shifts'  
+        end
+
+        it "should list shifts with errors correctly" do
+          expect(page.within("#assignments_fresh_0"){ find(".field_with_errors").text }).to include(rider.name)
+          expect(page.within("#assignments_fresh_1"){ find(".field_with_errors").text }).to include(rider.name)
+          expect(page.within("#assignments_fresh_2"){ find(".field_with_errors").text }).to include(rider.name)
+          expect(page.within("#assignments_fresh_3"){ find(".field_with_errors").text }).to include(rider.name)
+        end
+      end # "trying to DELEGATE EMERGENCY shifts"
     end # "as Tess"
   end # "BATCH ASSIGNMENT EMAILS"
 end

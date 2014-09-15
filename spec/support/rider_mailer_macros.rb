@@ -101,6 +101,7 @@ module RiderMailerMacros
     #assign shifts
     assign_extra if type == :extra
     assign_emergency if type == :emergency
+    delegate_emergency if type == :emergency_delegation
     assign_mixed if type == :mixed 
     click_button 'Save changes'
   end
@@ -125,6 +126,18 @@ module RiderMailerMacros
       page.within("#assignments_fresh_#{n}") do
         find("#wrapped_assignments_fresh__assignment_rider_id").select the_rider.name
         find("#wrapped_assignments_fresh__assignment_status").select 'Confirmed'
+      end
+    end
+  end
+
+  def delegate_emergency
+    # batch confirm shifts: 0 & 1 to rider, 2 & 3 to other_rider
+    4.times do |n|
+      the_rider = n < 2 ? rider : other_rider
+
+      page.within("#assignments_fresh_#{n}") do
+        find("#wrapped_assignments_fresh__assignment_rider_id").select the_rider.name
+        find("#wrapped_assignments_fresh__assignment_status").select 'Delegated'
       end
     end
   end
