@@ -6,8 +6,12 @@ module RiderMailerMacros
     let!(:rider){ FactoryGirl.create(:rider) }
     let!(:restaurant){ FactoryGirl.create(:restaurant) }
     
-    let(:start_t){ Time.zone.now.beginning_of_day + 12.hours }
-    let(:end_t){ Time.zone.now.beginning_of_day + 18.hours }
+    let(:now){ Time.zone.local(2014,1,6,11) }
+    let(:start_t){ now + 1.hour }
+    let(:end_t){ now + 7.hours }    
+
+    # let(:start_t){ Time.zone.now.beginning_of_day + 12.hours }
+    # let(:end_t){ Time.zone.now.beginning_of_day + 18.hours }
 
     let(:extra_shift){ FactoryGirl.create(:shift, :with_restaurant, restaurant: restaurant, start: start_t + 3.days, :end => end_t + 3.days) }
     let(:emergency_shift){ FactoryGirl.create(:shift, :with_restaurant, restaurant: restaurant, start: start_t + 1.day, :end => end_t + 1.day) }
@@ -24,19 +28,27 @@ module RiderMailerMacros
     
     let(:extra_shifts) do 
       4.times.map do |n| 
-        this_restaurant = (n+2)%2 == 0 ? restaurant : other_restaurant #even shifts belong to restaurant, odd to other_restaurant
+        this_restaurant = is_even?(n) ? restaurant : other_restaurant #even shifts belong to restaurant, odd to other_restaurant
         FactoryGirl.create(:shift, :with_restaurant, restaurant: this_restaurant, start: start_t + (n+3).days, :end => end_t + (n+3).days)
       end
     end
 
     let(:emergency_shifts) do 
       4.times.map do |n| 
-        this_restaurant = (n+2)%2 == 0 ? restaurant : other_restaurant
-        FactoryGirl.create(:shift, :with_restaurant, restaurant: this_restaurant, start: start_t + ((n+2)/2).days + (n/2*6).hours, :end => end_t + ((n+2)/2).days + (n/2*6).hours)
+        m = n < 2 ? n*6 : (6*n+12)
+
+        this_restaurant = is_even?(n) ? restaurant : other_restaurant #even shifts belong to restaurant, odd to other_restaurant
+        FactoryGirl.create(:shift, :with_restaurant, restaurant: this_restaurant, start: start_t + m.hours, :end => end_t + m.hours ) 
+        # FactoryGirl.create(:shift, :with_restaurant, restaurant: this_restaurant, start: start_t + ((n+2)/2).days + (n/2*6).hours, :end => end_t + ((n+2)/2).days + (n/2*6).hours)
       end
     end
 
-    let(:mixed_shifts){ [ emergency_shift, extra_shift ] }
+    let(:mixed_batch) do
+      4.times.map{ |n| n < 2 ? extra_shifts[n] : emergency_shifts[n]  }
+    end
+
+    # let(:mixed_shifts){ [ emergency_shift, extra_shift ] }
+    # change to include 4 shifts so can be passed to batch delegate
 
     before do
       other_rider.contact.update(name: 'A'*9+'a')
@@ -44,10 +56,14 @@ module RiderMailerMacros
     end
   end
 
+  def is_even? n
+    (n+2)%2 == 0 
+  end
+
   def load_schedule_email_scenario
     let(:restaurants){ 7.times.map{ |n| FactoryGirl.create(:restaurant) } }
     let(:schedule) do
-      7.times.map { |n| FactoryGirl.create(:shift, :with_restaurant, restaurant: restaurants[n], start: start_t.beginning_of_week + 12.hours + (7+n).days, :end => start_t.beginning_of_week + 18.hours + (7+n).days) }
+      7.times.map { |n| FactoryGirl.create(:shift, :with_restaurant, restaurant: restaurants[n], start: start_t + 12.hours + (7+n).days, :end => start_t + 18.hours + (7+n).days) }
     end
   end
 
@@ -62,82 +78,149 @@ module RiderMailerMacros
     click_button 'Save changes'
   end
 
-  def batch_delegate shifts
+  def batch_delegate shifts, type
     visit shifts_path
     #set time filters inclusively
-    select Time.zone.now.year - 1, from: 'filter_start_year'
-    select Time.zone.now.year + 1, from: 'filter_end_year'
+    select Time.zone.local(2013).year, from: 'filter_start_year'
+    select Time.zone.local(2015).year, from: 'filter_end_year'
     #filter out all restaurants but test restaurants
     Restaurant.all.each { |r| unselect r.name, from: 'filter_restaurants' }
     select restaurant.name, from: "filter_restaurants"
     select other_restaurant.name, from: "filter_restaurants"
     click_button 'Filter' 
-    #sort by restaurant
+    # sort by restaurant
     click_link 'Restaurant'
     #select and submit test restaurants' shifts for batch assignment
     page.within("#row_1"){ find("#ids_").set true }
     page.within("#row_2"){ find("#ids_").set true }
     page.within("#row_3"){ find("#ids_").set true } 
     page.within("#row_4"){ find("#ids_").set true } 
+      
     click_button 'Batch Assign', match: :first
-    #batch assign shifts (first two shifts to rider, second two to other_rider)
-    2.times do |n|
-      page.within("#assignments_fresh_#{n}") do
-        find("#wrapped_assignments_fresh__assignment_rider_id").select rider.name
-        find("#wrapped_assignments_fresh__assignment_status").select 'Delegated'
-      end
-    end
-    2.times do |n|
-      m = n+2
-      page.within("#assignments_fresh_#{m}") do
-        find("#wrapped_assignments_fresh__assignment_rider_id").select other_rider.name
-        find("#wrapped_assignments_fresh__assignment_status").select 'Delegated'
-      end
-    end
+    #assign shifts
+    assign_extra if type == :extra
+    assign_emergency if type == :emergency
+    assign_mixed if type == :mixed 
     click_button 'Save changes'
   end
 
-  def check_shift_delegation_email_contents staffer, type, shift
-    expect(mail.to).to eq [ rider.email ]
-    expect(mail.subject).to eq "[#{type.to_s.upcase} SHIFT] #{shift.table_time} @ #{shift.restaurant.name}"
-    expect(mail.from).to eq [ "brooklynshift@gmail.com" ]
-    expect(mail.body.encoded.to_s).to eq expected_delegation_email_body(staffer, type, shift)
-  end
+  def assign_extra
+    #batch delegate shifts: first two shifts to rider, second two to other_rider
+    4.times do |n|
+      the_rider = n < 2 ? rider : other_rider
 
-  def expected_delegation_email_body staffer, type, shift
-    signature = signature_from staffer
-    "<!DOCTYPE html>\r\n<html>\r\n<head>\r\n<meta content='text/html; charset=UTF-8' http-equiv='Content-Type'>\r\n<style>\r\n  table { \r\n    border-collapse:collapse;\r\n    margin-left: 2em;\r\n  }\r\n  th {\r\n    background-color: lightgray;\r\n  }\r\n  th, td {\r\n    border: 1px solid black;\r\n    margin: 0px;\r\n    padding: .5em;\r\n  }\r\n  .underline {\r\n    text-decoration: underline;\r\n  }\r\n</style>\r\n</head>\r\n<body>\r\n<p>\r\nDear AAAAAAAAAA:\r\n</p>\r\n<p>\r\n#{offering_for type}\r\n</p>\r\n<table>\r\n<tr>\r\n<th>\r\nTime\r\n</th>\r\n<th>\r\nRestaurant\r\n</th>\r\n</tr>\r\n<tr>\r\n<td>\r\n#{shift.table_time}\r\n</td>\r\n<td>\r\nAAAAAAAAAA\r\n</td>\r\n</tr>\r\n</table>\r\n<p>\r\n#{confirmation_request_for type}\r\n</p>\r\n<p></p>\r\n<p>\r\nBest,\r\n</p>\r\n#{signature}\r\n\r\n<strong class='underline'>\r\nRestaurant Briefs:\r\n</strong>\r\n<p>\r\n<strong>\r\nAAAAAAAAAA:\r\n</strong>\r\nis a newly signed up account. They say it gets busy. Let us know how it goes!\r\n<br>\r\n<strong>\r\nLocation:\r\n</strong>\r\n446 Dean St., Brooklyn [Park Slope]\r\n</p>\r\n\r\n<strong class='underline'>\r\nReminders:\r\n</strong>\r\n<ul>\r\n<li>\r\nDon’t forget to text 347-460-6484 2 hrs before your shift\r\n</li>\r\n<li>\r\nPlease arrive 15 minutes before your scheduled shift\r\n</li>\r\n<li>\r\nPlease note that the DOT requires the use of helmets, front white light, back red light and a bell and/or whistle.\r\n</li>\r\n</ul>\r\n\r\n\r\n</body>\r\n</html>\r\n"
-  end
-
-  def offering_for type
-    case type
-    when :extra
-      "We'd like to offer you the following extra shift:"
-    when :emergency
-      "We'd like to offer you the following emergency shift:"
-    when :weekly
-      "We'd like to offer you the following weekly schedule:"
-    end
-  end
-
-  def confirmation_request_for type
-    case type
-    when :extra
-      "Please confirm whether you can work the shift by 2pm tomorrow"
-    when :emergency
-      "Please confirm whether you can work the shift by 2pm tomorrow"
-    when :weekly
-      "Please confirm whether you can work the shift by 12pm this Sunday"
-    end
-  end
-
-  def signature_from staffer
-    case staffer 
-    when :tess
-      "<p>\r\nTess Cohen\r\n<br>\r\nAccounts Executive\r\n<br>\r\nBK Shift, LLC\r\n<br>\r\n347-460-6484\r\n<br>\r\ntess@bkshift.test\r\n</p>"
-    when :justin
-      "<p>\r\nJustin Lewis\r\n<br>\r\nAccounts Manager\r\n<br>\r\nBK Shift, LLC\r\n<br>\r\n347-460-6484\r\n<br>\r\njustin@bkshift.test\r\n</p>"
+      page.within("#assignments_fresh_#{n}") do
+        find("#wrapped_assignments_fresh__assignment_rider_id").select the_rider.name
+        find("#wrapped_assignments_fresh__assignment_status").select 'Delegated'
+      end
     end   
+  end
+
+  def assign_emergency
+    # batch confirm shifts: 0 & 1 to rider, 2 & 3 to other_rider
+    4.times do |n|
+      the_rider = n < 2 ? rider : other_rider
+
+      page.within("#assignments_fresh_#{n}") do
+        find("#wrapped_assignments_fresh__assignment_rider_id").select the_rider.name
+        find("#wrapped_assignments_fresh__assignment_status").select 'Confirmed'
+      end
+    end
+  end
+
+  def assign_mixed
+    # batch assign: 0 (confirmed), 1 (delegated) to rider ; 2 (confirmed), 3 (delegated) to other_rider
+    4.times do |n|
+      the_rider = is_even?(n) ? rider : other_rider
+      status = n < 2 ? 'Confirmed' : 'Delegated'
+
+      page.within("#assignments_fresh_#{n}") do
+        find("#wrapped_assignments_fresh__assignment_rider_id").select the_rider.name
+        find("#wrapped_assignments_fresh__assignment_status").select status
+      end
+    end
+  end
+
+  # SINGLE EMAIL MACROS
+
+  def check_delegation_email_metadata mail, staffer, type
+    expect(mail.to).to eq [ rider.email ]
+    expect(mail.subject).to eq subject_from type
+    expect(mail.from).to eq [ "brooklynshift@gmail.com" ]
+  end
+
+  def subject_from type
+    case type
+    when :extra
+      '[EXTRA SHIFT] -- CONFIRMATION REQUIRED'
+    when :emergency
+      "[EMERGENCY SHIFT] -- SHIFT DETAILS ENCLOSED"
+    end  
+  end
+
+  def check_delegation_email_body mail, staffer, type, shift
+    actual_body = parse_body_from mail
+    expected_body = File.read("/spec/mailers/sample_emails/single_#{staffer}_#{type}.html")
+    
+    expect(actual_body).to eq expected_body
+  end
+
+  # BATCH EMAIL MACROS
+
+  def check_batch_delegation_email_metadata mails, type
+    from = [ "brooklynshift@gmail.com" ]
+    emails = [ rider.email, other_rider.email ]
+    subject = batch_subject_from type
+
+    mails.each_with_index do |mail, i|
+      expect(mail.from).to eq from
+      expect(mail.to).to eq [ emails[i] ]
+      expect(mail.subject).to eq subject      
+    end    
+  end
+
+  def check_mixed_batch_delegation_email_metadata mails
+    from = [ "brooklynshift@gmail.com" ]
+    emails = [ rider.email, rider.email, other_rider.email, other_rider.email ]
+    subjects = [ subject_from(:emergency), subject_from(:extra), subject_from(:emergency), subject_from(:extra) ]
+    
+    mails.each_with_index do |mail, i|
+      expect(mail.from).to eq from
+      expect(mail.to).to eq [ emails[i] ]
+      expect(mail.subject).to eq subjects[i]
+      # puts ">>>> MAIL #{i} SUBJECT"
+      # puts mail.subject
+      # puts ">>>> MAIL #{i} TO"
+      # puts mail.to
+    end
+  end
+
+  def batch_subject_from type
+    case type
+    when :weekly
+      "[WEEKLY SCHEDULE] -- PLEASE CONFIRM BY SUNDAY"
+    when :extra
+      '[EXTRA SHIFTS] -- CONFIRMATION REQUIRED'
+    when :emergency
+      "[EMERGENCY SHIFTS] -- SHIFT DETAILS ENCLOSED"
+    end
+  end
+
+  def check_batch_delegation_email_body mails, staffer, type
+    mails.each_with_index do |mail, i|
+        # puts ">>>>>> MAIL #{i}"
+        # print mail.body
+      actual_body = parse_body_from mail
+      expected_body = File.read( "spec/mailers/sample_emails/batch_#{staffer}_#{type}_#{i}.html" )
+
+      expect(actual_body).to eq expected_body
+    end
+  end
+
+  # HELPERS
+
+  def parse_body_from mail
+    mail.body.encoded.gsub("\r\n", "\n")
   end
   
 end

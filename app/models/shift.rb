@@ -67,11 +67,11 @@ class Shift < ActiveRecord::Base
     # ie: if the shift under examination overlaps with this shift
   end
 
-  def refresh_urgency
-    #input self (implicit)
+  def refresh_urgency now
+    #input self (implicit), DateTime Obj
     #side-effects: updates shift's urgency attribute
     #output: self 
-    now = Time.zone.now
+      
     start = self.start
     send_urgency( parse_urgency( now, start ) ) if start > now 
     self

@@ -1,12 +1,11 @@
 class DelegationEmailHelper
   attr_accessor :subject, :offering, :confirmation_request
 
-  def initialize( shifts, type, now  )
-    # type = type ? type : type_from(now, shifts.first.start)
+  def initialize shifts, type 
+
     plural = shifts.count > 1
     adj = type.to_s
     noun = noun_from type, plural
-    
 
     @subject = subject_from adj, noun, shifts, type
     @offering = offering_from adj, noun, type

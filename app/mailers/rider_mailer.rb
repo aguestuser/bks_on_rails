@@ -9,7 +9,7 @@ class RiderMailer < ActionMailer::Base
     @restaurants = restaurants
     @staffer = staffer_from account
 
-    helper = DelegationEmailHelper.new(shifts, type, Time.zone.now)
+    helper = DelegationEmailHelper.new shifts, type
 
     @salutation = "Dear #{rider.first_name}:"
     @offering = helper.offering
