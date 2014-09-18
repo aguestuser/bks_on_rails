@@ -11,6 +11,10 @@ module ApplicationHelper
     end
   end
 
+  def current_path
+    response.request.env["PATH_INFO"]
+  end
+
   def gravatar_for(user, options = { size: 50 }) #input: User, output: String (html img tag for user's gravatar) [http://gravatar.com/]
     gravatar_id = Digest::MD5::hexdigest(user.email.downcase)
     size = options[:size]

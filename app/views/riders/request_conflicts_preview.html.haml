@@ -35,4 +35,4 @@
     /Submit
     %p
     %p.center
-      = link_to 'Send Emails', '/rider/request_conflicts', :class => 'btn btn-primary'
+      = link_to 'Send Emails', "/rider/request_conflicts?base_path=#{@base_path}", :class => 'btn btn-primary'

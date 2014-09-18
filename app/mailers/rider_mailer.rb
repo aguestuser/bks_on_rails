@@ -7,7 +7,7 @@ class RiderMailer < ActionMailer::Base
     @rider = rider
     @shifts = shifts
     @restaurants = restaurants
-    @staffer = staffer_from account
+    @staffer = account.user #, staffer_from account
 
     helper = DelegationEmailHelper.new shifts, type
 
@@ -18,13 +18,15 @@ class RiderMailer < ActionMailer::Base
     mail(to: rider.email, subject: helper.subject)
   end
 
-  def conflict_request rider, conflicts
+  def conflicts_request rider, conflicts, account
+    # puts ">>>> rider: #{rider.inspect}"
     @rider = rider
     @conflicts = conflicts
+    @staffer = account.user
 
     now = now_unless_test
     next_monday = ( now.end_of_week + 1.day ).strftime("%-m/%-d")
-    next_sunday = ( next_monday + 6.days ).strftime("%-m/%-d")
+    next_sunday = ( now.end_of_week + 7.days ).strftime("%-m/%-d")
     subject = "[SCHEDULING CONFLICT REQUEST] #{next_monday} - #{next_sunday}"
     
     mail(to: rider.email, subject: subject )

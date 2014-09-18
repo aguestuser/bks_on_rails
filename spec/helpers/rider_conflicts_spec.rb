@@ -7,7 +7,6 @@ describe "RiderConflicts" do
   let(:start_t){ week_start + 12.hours }
   let(:end_t){ week_start + 18.hours }
   let(:week_end){ Time.zone.local(2014,1,12) }
-  before{ riders }
 
   describe "formatting array" do
     # 1 conflict in range

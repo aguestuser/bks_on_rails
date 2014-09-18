@@ -78,12 +78,16 @@ class RidersController < ApplicationController
   def request_conflicts
     riders = Rider.active
     now = now_unless_test
-    rider_conflicts = RiderConflicts.new( Rider.active, now.beginning_of_week, now.end_of_week )
-    email_alert = Conflict.send_emails rider_conflicts
+    
+    rider_conflicts = RiderConflicts.new( riders, now.beginning_of_week, now.end_of_week )
+    email_alert = Conflict.send_emails rider_conflicts, current_account
+
     if email_alert == ''
       flash[:error] = 'There was a mistake sending the conflict request emails. Please try again.'
     else
       flash[:success] = email_alert
+    end
+
     redirect_to @base_path 
   end
 

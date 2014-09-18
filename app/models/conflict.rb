@@ -18,14 +18,18 @@ class Conflict < ActiveRecord::Base
 
   validates :rider_id, presence: true
 
-  def Conflict.send_emails rider_conflicts
+  def list_time
+    "#{self.start.strftime("%A")} self.period.text.upcase"
+  end
+
+  def Conflict.send_emails rider_conflicts, account
     #input: RiderConflicts
     #output: Str (empty if no emails sent, email alert if emails sent)
     alert = ""
     
     count = 0
-    RiderConflicts.arr.each do |hash| 
-      RiderMailer.conflict_request(hash[:riders], hash[:conflicts]).deliver
+    rider_conflicts.arr.each do |hash| 
+      RiderMailer.conflicts_request(hash[:rider], hash[:conflicts], account).deliver
       count += 1
     end
     

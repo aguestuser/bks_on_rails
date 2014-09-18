@@ -24,14 +24,12 @@ class Rider < ActiveRecord::Base
   has_many :shifts, through: :assignments
   has_many :conflicts 
 
-  validates :active, 
-    presence: true,
-    inclusion: { in: [ true, false ] }
+  validates :active, inclusion: { in: [ true, false ] }
 
   scope :testy, -> { joins(:contact).where("contacts.email = ?", "bkshifttester@gmail.com").first }
   scope :active, -> { joins(:contact).where(active: true).order("contacts.name asc") }
   scope :inactive, -> { joins(:contact).where(active: false).order("contacts.name asc") }
-
+  
 #public methods
   def name
     self.contact.name

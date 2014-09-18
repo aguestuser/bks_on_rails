@@ -1,0 +1,15 @@
+%p
+  Please submit your scheduling conflicts for next week 
+  %strong
+    by Thursday at 12pm.
+%p 
+  Last week you had the following conflicts:
+= render 'conflicts/review_list', conflicts: @conflicts
+%p
+  %strong
+    Click below if your conflicts next week will be:
+  = link_to 'Same', "https://obscure-anchorage-7682.herokuapp.com/rider/#{@rider.id}/batch_clone"
+  = link_to 'Different', "https://obscure-anchorage-7682.herokuapp.com/rider/#{@rider.id}/batch_clone"
+
+= render 'mailer/signature'
+

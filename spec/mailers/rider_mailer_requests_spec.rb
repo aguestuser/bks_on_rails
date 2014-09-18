@@ -2,9 +2,10 @@ require 'spec_helper'
 include RequestSpecMacros, RiderMailerMacros
 
 describe "Rider Mailer Requests" do
-  load_rider_mailer_scenario
+  load_staffers
 
-  describe "ASSIGNMENT EMAIL" do
+  describe "DELEGATION EMAIL" do
+    load_delegation_scenario
 
     describe "as Tess" do
       before { mock_sign_in tess }
@@ -81,7 +82,8 @@ describe "Rider Mailer Requests" do
     end #"as Justin"
   end # "ASSIGNMENT EMAIL"
 
-  describe "BATCH ASSIGNMENT EMAILS" do
+  describe "BATCH DELEGATION EMAILS" do
+    load_delegation_scenario
     load_batch_delegation_scenario
 
     describe "as Tess" do
@@ -157,4 +159,39 @@ describe "Rider Mailer Requests" do
       end # "trying to DELEGATE EMERGENCY shifts"
     end # "as Tess"
   end # "BATCH ASSIGNMENT EMAILS"
+
+  describe "CONFLICT REQUEST" do
+    load_conflict_request_scenario
+
+    before(:all) do # deactive all riders
+      @active = Rider.find(Rider.active.map(&:id))
+      @active.each{ |rider| rider.update(active: false) }
+    end
+
+    after(:all) do # reactivate all riders who were active before tests
+      @active.each{ |record| record.update(active: true) }
+    end
+    
+    before(:each) do 
+      riders.each{ |rider| rider.update(active: true) }
+      mock_sign_in tess
+      click_link 'Request Conflicts'
+      click_link 'Send Emails', match: :first
+    end
+
+    it "should send emails to all active riders" do
+      expect(ActionMailer::Base.deliveries.count).to eq 3
+    end
+
+    let(:mails){ ActionMailer::Base.deliveries.last(3) }
+
+    it "should render correct email metadata" do
+      check_conflict_request_metadata mails, :tess
+    end
+
+    it "should render correct email bodies" do
+      check_conflict_request_email_bodies mails, :tess
+    end
+
+  end
 end

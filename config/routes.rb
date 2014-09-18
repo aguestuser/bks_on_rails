@@ -82,10 +82,10 @@ BksOnRails::Application.routes.draw do
   # get 'assignments/override_double_booking'
 
   get 'rider/request_conflicts_preview' => 'riders#request_conflicts_preview'
-  post 'rider/request_conflicts' => 'riders#request_conflicts'
+  get 'rider/request_conflicts' => 'riders#request_conflicts'
   post 'riders/:id/conflicts/batch_clone' => 'conflicts#batch_clone'
-  get 'riders/:id/conflicts/batch_new' => 'conflicts#batch_new'
-  post 'riders/:id/conflicts/batch_new' => 'conflicts#batch_create'
+  get 'riders/:rider_id/conflicts/batch_new' => 'conflicts#batch_new'
+  post 'riders/:rider_id/conflicts/batch_new' => 'conflicts#batch_create'
 
   
   resources :conflicts

@@ -1,7 +1,11 @@
 module RiderMailerMacros
-  def load_rider_mailer_scenario
+  
+  def load_staffers
     let(:tess){ FactoryGirl.create(:staffer, :tess) }
-    let(:justin){ FactoryGirl.create(:staffer, :justin) }
+    let(:justin){ FactoryGirl.create(:staffer, :justin) }    
+  end
+
+  def load_delegation_scenario
 
     let!(:rider){ FactoryGirl.create(:rider) }
     let!(:restaurant){ FactoryGirl.create(:restaurant) }
@@ -20,6 +24,10 @@ module RiderMailerMacros
       rider.contact.update(name: 'A'*10)
       restaurant.mini_contact.update(name: 'A'*10)
     end    
+  end
+
+  def load_delegation_scenario
+
   end
 
   def load_batch_delegation_scenario
@@ -55,6 +63,33 @@ module RiderMailerMacros
       other_restaurant.mini_contact.update(name: 'A'*9+'a')
     end
   end
+
+  def load_conflict_request_scenario
+    let!(:riders){ 3.times.map{ FactoryGirl.create(:rider) } }
+    let(:week_start){ Time.zone.local(2014,1,6) }
+    let(:week_end){ Time.zone.local(2014,1,12) }
+    let(:start_t){ week_start + 12.hours }
+    let(:end_t){ week_start + 18.hours }
+    # let!(:conflicts) do
+    #   arr_1 = 7.times.map do |n|
+    #     if n!= 5
+    #       start_ = start_t + n.days
+    #       end_ = start_ + 6.hours
+    #       FactoryGirl.create(:conflict, :with_rider, rider: riders[0], start: start_, :end => end_ )
+    #     end
+    #   end
+    #   arr_2 = 7.times.map do |n|
+    #     if n != 6
+    #       start_ = end_t + n.days
+    #       end_ = start_ + 6.hours
+    #       FactoryGirl.create(:conflict, :with_rider, rider: riders[0], start: start_, :end => end_ )
+    #     end
+    #   end
+    #   arr_1 + arr_2
+    # end
+    let!(:mail_count){ ActionMailer::Base.deliveries.count }
+
+  end # load_conflict_request_scenario
 
   def is_even? n
     (n+2)%2 == 0 
