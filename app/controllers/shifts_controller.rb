@@ -59,6 +59,10 @@ class ShiftsController < ApplicationController
     redirect_to @base_path
   end
 
+  def hanging
+    
+  end
+
   # BATCH CRUD ACTIONS
 
   def clone_new

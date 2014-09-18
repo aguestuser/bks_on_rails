@@ -54,6 +54,7 @@ BksOnRails::Application.routes.draw do
     resources :assignments
   end
 
+  get 'shift/hanging' => 'shifts#hanging'
   get 'shift/clone_new' => 'shifts#clone_new' 
   get 'shift/batch_new' => 'shifts#batch_new'
   post 'shift/batch_create' => 'shifts#batch_create'
