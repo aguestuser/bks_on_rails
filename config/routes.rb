@@ -78,9 +78,16 @@ BksOnRails::Application.routes.draw do
   match '/availability_grid', to: 'grid#availability', via: 'get'
   post "grid/send_emails" => 'grid#send_emails'
 
-  get 'assignments/override_conflict'
-  get 'assignments/override_double_booking'
+  # get 'assignments/override_conflict'
+  # get 'assignments/override_double_booking'
 
+  get 'rider/request_conflicts_preview' => 'riders#request_conflicts_preview'
+  post 'rider/request_conflicts' => 'riders#request_conflicts'
+  post 'riders/:id/conflicts/batch_clone' => 'conflicts#batch_clone'
+  get 'riders/:id/conflicts/batch_new' => 'conflicts#batch_new'
+  post 'riders/:id/conflicts/batch_new' => 'conflicts#batch_create'
+
+  
   resources :conflicts
 
 

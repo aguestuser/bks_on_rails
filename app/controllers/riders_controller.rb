@@ -69,6 +69,16 @@ class RidersController < ApplicationController
     end
   end
 
+  def request_conflicts_preview
+    @active_riders = Rider.active
+    @inactive_riders = Rider.inactive
+    render 'request_conflicts_preview'
+  end
+
+
+
+
+
   private
 
     def load_rider

@@ -1,0 +1,38 @@
+- provide(:title, 'Request Conflicts Preview')
+
+.row.profile
+  .span8.offset2
+    %h1 Request Conflicts Preview
+    
+    /Warning
+    %strong
+      WARNING: You are about to send a mass conflict request email. It will be send to *ALL* of the Active Riders below and *NONE* of the Inactive Riders. Now is your chance to edit riders' statuses if you see any mistakes below!
+    %p
+    
+    /Submit
+    %p.center
+      = link_to 'Send Emails', '/rider/request_conflicts', :class => 'btn btn-primary'
+    
+    /Active Riders
+    #active_riders.center
+      %h3 Active Riders
+      - if @active_riders.empty?
+        [ NONE ]
+      - else 
+        %ul
+        - @active_riders.each do |rider|
+          %li= link_to rider.name, rider
+      
+    /Inactive Riders
+    #inactive_riders.center
+      %h3 Inactive Riders
+      - if @inactive_riders.empty?
+        [ NONE ]
+      - else 
+        %ul 
+          - @inactive_riders.each do |rider|
+            %li= link_to rider.name, rider
+    /Submit
+    %p
+    %p.center
+      = link_to 'Send Emails', '/rider/request_conflicts', :class => 'btn btn-primary'

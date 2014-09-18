@@ -29,8 +29,10 @@ class Rider < ActiveRecord::Base
     inclusion: { in: [ true, false ] }
 
   scope :testy, -> { joins(:contact).where("contacts.email = ?", "bkshifttester@gmail.com").first }
+  scope :active, -> { joins(:contact).where(active: true).order("contacts.name asc") }
+  scope :inactive, -> { joins(:contact).where(active: false).order("contacts.name asc") }
 
-  #public methods
+#public methods
   def name
     self.contact.name
   end
