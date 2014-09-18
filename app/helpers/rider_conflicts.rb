@@ -25,8 +25,5 @@ class RiderConflicts
           { start: start_t, :end => end_t }
         )
         .order("start asc")
-      # puts ">>> conflicts for #{rider.name}"
-      # pp conflicts
-
     end
 end

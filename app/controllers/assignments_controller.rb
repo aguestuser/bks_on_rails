@@ -195,7 +195,7 @@ class AssignmentsController < ApplicationController
       # pp old_assignments
       # puts "NEW ASSIGNMENTS"
       # pp new_assignments
-    now = Rails.env.test? ? Time.zone.local(2014,1,6,11) : Time.zone.now
+    now = now_unless_test
     new_assignments.each{ |a| a.shift.refresh_urgency now } # will update weekly shifts to emergency and extra as appropriate
 
     if batch_save? old_assignments, new_assignments

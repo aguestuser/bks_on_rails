@@ -18,6 +18,18 @@ class RiderMailer < ActionMailer::Base
     mail(to: rider.email, subject: helper.subject)
   end
 
+  def conflict_request rider, conflicts
+    @rider = rider
+    @conflicts = conflicts
+
+    now = now_unless_test
+    next_monday = ( now.end_of_week + 1.day ).strftime("%-m/%-d")
+    next_sunday = ( next_monday + 6.days ).strftime("%-m/%-d")
+    subject = "[SCHEDULING CONFLICT REQUEST] #{next_monday} - #{next_sunday}"
+    
+    mail(to: rider.email, subject: subject )
+  end
+
   private
 
     def staffer_from account
