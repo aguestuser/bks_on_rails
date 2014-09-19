@@ -1304,8 +1304,6 @@ describe "Shift Requests" do
           end
         end
       end 
-      
-      end # "trying to DELEGATE EMERGENCY"s
     end  
   end
 end

@@ -70,23 +70,23 @@ module RiderMailerMacros
     let(:week_end){ Time.zone.local(2014,1,12) }
     let(:start_t){ week_start + 12.hours }
     let(:end_t){ week_start + 18.hours }
-    # let!(:conflicts) do
-    #   arr_1 = 7.times.map do |n|
-    #     if n!= 5
-    #       start_ = start_t + n.days
-    #       end_ = start_ + 6.hours
-    #       FactoryGirl.create(:conflict, :with_rider, rider: riders[0], start: start_, :end => end_ )
-    #     end
-    #   end
-    #   arr_2 = 7.times.map do |n|
-    #     if n != 6
-    #       start_ = end_t + n.days
-    #       end_ = start_ + 6.hours
-    #       FactoryGirl.create(:conflict, :with_rider, rider: riders[0], start: start_, :end => end_ )
-    #     end
-    #   end
-    #   arr_1 + arr_2
-    # end
+    let!(:conflicts) do
+      arr_1 = 7.times.map do |n|
+        if n!= 5
+          start_ = start_t + n.days
+          end_ = start_ + 6.hours
+          FactoryGirl.create(:conflict, :with_rider, rider: riders[0], start: start_, :end => end_ )
+        end
+      end
+      arr_2 = 7.times.map do |n|
+        if n != 6
+          start_ = end_t + n.days
+          end_ = start_ + 6.hours
+          FactoryGirl.create(:conflict, :with_rider, rider: riders[0], start: start_, :end => end_ )
+        end
+      end
+      arr_1 + arr_2
+    end
     let!(:mail_count){ ActionMailer::Base.deliveries.count }
 
   end # load_conflict_request_scenario
@@ -266,10 +266,39 @@ module RiderMailerMacros
     end
   end
 
+  def check_conflict_request_email_bodies mails, riders
+    mails.each_with_index do |mail, i|
+        puts ">>>>>> MAIL #{i}"
+        print mail.body
+      actual_body = parse_body_from mail
+      expected_body = expected_conflict_request_body_for riders[i], i
+
+      expect(actual_body).to eq expected_body
+    end
+  end
+
+
+
+  def check_conflict_request_metadata mails, riders
+    from = [ "brooklynshift@gmail.com" ]
+    subject = "[SCHEDULING CONFLICT REQUEST] 1/13 - 1/19"
+
+    mails.each_with_index do |mail, i|
+      expect(mail.from).to eq from
+      expect(mail.to).to eq [ riders[i].email ]
+      expect(mail.subject).to eq subject
+    end
+  end
+
   # HELPERS
 
   def parse_body_from mail
     mail.body.encoded.gsub("\r\n", "\n")
+  end
+
+  def expected_conflict_request_body_for rider, i
+    str = File.read( "spec/mailers/sample_emails/conflicts_request_#{i}.html" )
+    str.gsub('<RIDER_ID>', "#{rider.id}")
   end
   
 end

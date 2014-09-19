@@ -186,11 +186,11 @@ describe "Rider Mailer Requests" do
     let(:mails){ ActionMailer::Base.deliveries.last(3) }
 
     it "should render correct email metadata" do
-      check_conflict_request_metadata mails, :tess
+      check_conflict_request_metadata mails, riders
     end
 
     it "should render correct email bodies" do
-      check_conflict_request_email_bodies mails, :tess
+      check_conflict_request_email_bodies mails, riders
     end
 
   end

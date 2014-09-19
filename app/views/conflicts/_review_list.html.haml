@@ -1,2 +1,5 @@
-- conflicts.each do |conflict|
-  = conflict.list_time
+- if conflicts.empty?
+  [ NONE ]
+- else
+  - conflicts.each do |conflict|
+    = conflict.list_time

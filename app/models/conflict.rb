@@ -19,7 +19,7 @@ class Conflict < ActiveRecord::Base
   validates :rider_id, presence: true
 
   def list_time
-    "#{self.start.strftime("%A")} self.period.text.upcase"
+    "#{self.start.strftime("%A")} #{self.period.text.upcase}"
   end
 
   def Conflict.send_emails rider_conflicts, account
