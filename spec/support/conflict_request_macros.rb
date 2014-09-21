@@ -63,7 +63,7 @@ module ConflictRequestMacros
     click_button submit
   end
 
-  def check_new_conflict_batch new_conflicts, old_conflicts
+  def check_cloned_conflict_batch new_conflicts, old_conflicts
     new_conflicts.each_with_index do |nc, i|
       expect(nc.rider).to eq old_conflicts[i].rider
       expect(nc.start).to eq old_conflicts[i].start + 1.week
@@ -71,6 +71,28 @@ module ConflictRequestMacros
       expect(nc.id).not_to eq old_conflicts[i].id
       expect(nc.created_at).not_to eq old_conflicts[i].created_at 
     end
+  end
+
+  def submit_new_conflicts indices
+    indices.each do |i|
+      page.within("#conflict_#{i}"){ find("conflict_ids[]") }.check
+    end
+    click_button 'Submit'
+  end
+
+  def check_new_conflicts conflicts, indices
+    indices.with_index do |i,j|
+      n = 6 + i
+      start_h = is_even?(i) ? 12 : 18
+      end_h = is_even?(i) ? 18 : 24
+      
+      expect(conflicts[j].start).to eq Time.zone.local(2014,1,n,start_h)
+      expect(conflicts[j].end).to eq Time.zone.local(2014,1,n,end_h)
+      expect(conflicts[j].rider).to eq rider
+    end
+    
+  def is_even? n
+    (n+2)%2 == 0
   end
 
 

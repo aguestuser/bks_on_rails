@@ -291,9 +291,32 @@ describe "Conflict Requests" do
       end
 
       it "should format new conflicts correctly" do
-        check_new_conflict_batch new_conflicts, conflicts
+        check_cloned_conflict_batch new_conflicts, conflicts
       end
     end # "CLONING"
 
+    describe "making NEW" do
+      before { click_link 'Different' }
+
+      describe "#BATCH_NEW page" do
+        
+        it "should be the #batch_new page" do
+          expect(current_path).to eq '/conflict/batch_new'
+          expect(page).to have_h1 'New Scheduling Conflicts'
+        end
+
+        describe "clicking SUBMIT" do
+          before { submit_new_conflicts [ 0,1,4,5 ] }  
+
+          it "should create 4 new conflicts" do
+            expect(Conflict.count).to eq old_count + 4
+          end
+
+          it "should format conflicts correctly" do
+            
+          end              
+        end # "clicking SUBMIT"       
+      end # "#BATCH_NEW page"
+    end # "making NEW"
   end # "BATCH CREATE"
 end
