@@ -1,4 +1,4 @@
-- #args: it, its, , same_path, diff_path, @start_t
+- #args: it, its, same_path, diff_path, @start_t
 - m_d = lambda{ |time| time.strftime( "%-m/%-d" ) }
 - this_week = m_d.call(@this_week_start) + ' - ' + m_d.call(@this_week_start + 6.days)
 - next_week = m_d.call(@next_week_start) + ' - ' + m_d.call(@next_week_start + 6.days)

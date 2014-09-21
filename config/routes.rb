@@ -86,8 +86,10 @@ BksOnRails::Application.routes.draw do
   
   get 'conflict/build_batch_preview' => 'conflicts#build_batch_preview'
   post 'conflict/preview_batch' => 'conflicts#preview_batch'
+  post 'conflict/batch_clone' => 'conflicts#batch_clone'
   get 'conflict/batch_new' => 'conflicts#batch_new'
-  post 'conflict/batch_create' => 'conflicts#batch_create'
+  post 'conflict/batch_new' => 'conflicts#batch_create'
+  
 
 
   # post 'riders/:id/batch_clone_conflicts' => 'riders#batch_clone_conflicts'

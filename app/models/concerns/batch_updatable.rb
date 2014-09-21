@@ -76,7 +76,7 @@ module BatchUpdatable
       elsif d["year"]
         Time.zone.local( d["year"], d["month"], d["day"], d["hour"], d["minute"] )
       else
-        d.to_datetime
+        Time.zone.parse d
       end
     end
 

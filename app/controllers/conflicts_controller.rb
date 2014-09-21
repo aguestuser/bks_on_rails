@@ -59,7 +59,7 @@ class ConflictsController < ApplicationController
   def preview_batch
     @rider = Rider.find(params[:rider_id])
     
-    @this_week_start = params[:week_start].to_datetime
+    @this_week_start = Time.zone.parse params[:week_start]
     @next_week_start = @this_week_start + 1.week
     this_week_end = @this_week_start + 1.week
 
@@ -72,18 +72,45 @@ class ConflictsController < ApplicationController
     # is the same as email view
   end
 
-  def batch_new
-    @rider = Rider.find(params[:rider_id])
-    @start_t = params[:start_t] || now_unless_test.beginning_of_week
+  def batch_clone
+    conflicts = Conflict.batch_from_params(params[:conflicts])
+    do_batch_create conflicts
   end
 
-  def do_batch_new
-    conflicts = parse_batch_new params[:conflicts]
-    batch_create conflicts
+  def batch_new
+    @rider = Rider.find(params[:rider_id])
+    @week_start = Time.zone.parse params[:week_start]
+    render 'batch_new'
+    # view posts to do_batch_new with params { rider_id: , week_start: , period_indices }
   end
 
   def batch_create
-    conflicts = Conflict.batch_from_params(params[:conflicts])
+    rider = Rider.find(params[:rider_id].to_i)
+    week_start = Time.zone.parse params[:week_start]
+      puts ">>>> week_start"
+      puts week_start
+    period_indices = params[:period_indices].map(&:to_i)
+    conflicts = parse_new_batch rider, week_start, period_indices
+
+    do_batch_create conflicts
+  end
+
+    def parse_new_batch rider, week_start, period_indices
+      #input: Datetime, Arr of Ints
+      #output: Arr of Conflicts
+      period_indices.map do |i|
+        day_offset = i/2 # day offset increments by one every time i increases by 2
+        hour_offset = (i+2) % 2 == 0 ? 12 : 18 # even indices start at 12:00, odd indices start at 18:00
+        start_t = week_start + day_offset.days + hour_offset.hours
+        end_t = start_t +6.hours
+
+        Conflict.new( rider_id: rider.id, start: start_t, :end => end_t )
+      end
+    end
+
+
+  def do_batch_create conflicts
+    # conflicts = Conflict.batch_from_params(params[:conflicts])
     @errors = Conflict.batch_create_ conflicts
     if @errors.empty? || conflicts.empty?
       flash[:success] = "#{conflicts.length} conflicts successfully created"
@@ -98,6 +125,8 @@ class ConflictsController < ApplicationController
       redirect_to "/conflicts/preview_batch?#{query}"
     end
   end
+
+
 
   private
 

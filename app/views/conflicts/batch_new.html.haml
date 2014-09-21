@@ -1,0 +1,33 @@
+- provide(:title, 'New Scheduling Conflicts')
+- next_week = @week_start.strftime("%-m/%-d") + ' - ' + (@week_start + 6.days).strftime("%-m/%-d")
+
+%h1
+  = "New Conflicts for #{@rider.name}"
+
+.row
+  .span6.offset3
+    %p.center
+      %strong
+        = "When are you *not* available to work next week (#{next_week})? " 
+    %p.center
+      (AM indicates roughly 8am-5pm, PM indicates roughly 5pm-12am)
+    = form_tag '/conflict/batch_new', method: :post do
+      /Rider
+      = hidden_field_tag 'rider_id', @rider.id
+      /Week Start
+      = hidden_field_tag 'week_start', @week_start
+      /Periods
+      .row
+        .span2.offset2
+          - 14.times do |i|
+            %div{ id: "period_#{i}", :class => "checkbox" }
+              - day_index = i/2 # increments by 1 for every increment of 2 in i
+              - period_index =  (i+2) % 2 == 0 ? 0 : 1 # 0 for even i, 1 for odd
+              = check_box_tag 'period_indices[]', i
+              = label_tag :period, "#{Week::DAYS[day_index]} #{Week::PERIODS[period_index]}"
+      /Submit
+      .row.center
+        %p
+        %p
+          = submit_tag 'Submit', :class => 'btn btn-primary'
+        

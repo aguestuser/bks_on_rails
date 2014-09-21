@@ -75,21 +75,22 @@ module ConflictRequestMacros
 
   def submit_new_conflicts indices
     indices.each do |i|
-      page.within("#conflict_#{i}"){ find("conflict_ids[]") }.check
+      page.within("#period_#{i}"){ check "period_indices_" }
     end
     click_button 'Submit'
   end
 
   def check_new_conflicts conflicts, indices
-    indices.with_index do |i,j|
-      n = 6 + i
+    indices.each_with_index do |i,j|
+      day = 13 + i/2
       start_h = is_even?(i) ? 12 : 18
       end_h = is_even?(i) ? 18 : 24
-      
-      expect(conflicts[j].start).to eq Time.zone.local(2014,1,n,start_h)
-      expect(conflicts[j].end).to eq Time.zone.local(2014,1,n,end_h)
+
+      expect(conflicts[j].start).to eq Time.zone.local(2014,1,day,start_h)
+      expect(conflicts[j].end).to eq Time.zone.local(2014,1,day,end_h)
       expect(conflicts[j].rider).to eq rider
     end
+  end
     
   def is_even? n
     (n+2)%2 == 0

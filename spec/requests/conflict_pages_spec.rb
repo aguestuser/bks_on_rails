@@ -281,10 +281,11 @@ describe "Conflict Requests" do
       click_button 'Submit'
     end
     let!(:old_count){ Conflict.count }
-    let(:new_conflicts){ Conflict.last(2) }
+    
 
     describe "CLONING" do
       before { click_button 'Same' }
+      let(:new_conflicts){ Conflict.last(2) }
 
       it "should create 2 new conflicts" do
         expect(Conflict.count).to eq old_count + 2
@@ -303,17 +304,19 @@ describe "Conflict Requests" do
         it "should be the #batch_new page" do
           expect(current_path).to eq '/conflict/batch_new'
           expect(page).to have_h1 'New Scheduling Conflicts'
+          Week::DAYS.each { |day| expect(page).to have_content(day) }
         end
 
         describe "clicking SUBMIT" do
           before { submit_new_conflicts [ 0,1,4,5 ] }  
+          let(:new_conflicts){ Conflict.last(4) }
 
           it "should create 4 new conflicts" do
             expect(Conflict.count).to eq old_count + 4
           end
 
           it "should format conflicts correctly" do
-            
+            check_new_conflicts new_conflicts, [ 0,1,4,5 ]
           end              
         end # "clicking SUBMIT"       
       end # "#BATCH_NEW page"
