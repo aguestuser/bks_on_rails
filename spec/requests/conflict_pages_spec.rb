@@ -4,21 +4,8 @@ include RequestSpecMacros
 include ConflictRequestMacros
 
 describe "Conflict Requests" do
-  let(:rider){ FactoryGirl.create(:rider) }
-  let(:other_rider) { FactoryGirl.create(:rider) }
-  let(:start){ Time.local(2014,1,1,12) }
-  let(:end_){ Time.local(2014,1,1,18) }
-  let(:conflicts) do
-    2.times.map do |n|
-      FactoryGirl.build(:conflict, :with_rider, rider: rider, start: start + n.days, :end => end_ + n.days)
-    end 
-  end
-  let(:conflict) { conflicts[0] }
-  let(:other_conflict) { FactoryGirl.build(:conflict, :with_rider, rider: other_rider, start: start, :end => end_) }
-
-  let(:staffer) { FactoryGirl.create(:staffer) }
+  load_conflict_scenario
   before { mock_sign_in staffer }
-
   subject { page }
 
   describe "Conflicts#show" do
@@ -284,4 +271,29 @@ describe "Conflict Requests" do
       it { should have_h1("Conflicts for #{rider.contact.name}") }
     end
   end
+
+  describe "BATCH CREATE" do
+    before do
+      conflicts.each(&:save)
+      visit '/conflict/build_batch_preview'
+      select rider.name, from: 'rider_id'
+      fill_in 'week_start', with: 'January 6, 2014'
+      click_button 'Submit'
+    end
+    let!(:old_count){ Conflict.count }
+    let(:new_conflicts){ Conflict.last(2) }
+
+    describe "CLONING" do
+      before { click_button 'Same' }
+
+      it "should create 2 new conflicts" do
+        expect(Conflict.count).to eq old_count + 2
+      end
+
+      it "should format new conflicts correctly" do
+        check_new_conflict_batch new_conflicts, conflicts
+      end
+    end # "CLONING"
+
+  end # "BATCH CREATE"
 end
