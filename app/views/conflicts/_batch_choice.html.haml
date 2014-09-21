@@ -1,0 +1,31 @@
+- #args: it, its, , same_path, diff_path, @start_t
+- m_d = lambda{ |time| time.strftime( "%-m/%-d" ) }
+- this_week = m_d.call(@this_week_start) + ' - ' + m_d.call(@this_week_start + 6.days)
+- next_week = m_d.call(@next_week_start) + ' - ' + m_d.call(@next_week_start + 6.days)
+
+/Batch Review
+%p 
+  = "This week (#{this_week}) #{it} had the following conflicts:"
+%ul
+  - if @conflicts.empty?
+    %li 
+      [ NONE ]
+  - else
+    - @conflicts.each do |conflict|
+      %li= conflict.list_time
+
+/ Choice
+%p
+  %strong
+    = "Click below to indicate if #{its} conflicts next week (#{next_week}) will be:"
+  /Same
+  = form_tag same_path, method: :post do
+    - @conflicts.each do |conflict|
+      - conflict.attributes.each do |k,v|
+        = hidden_field_tag "conflicts[][#{k}]", v 
+    = hidden_field_tag :base_path, @base_path    
+    %p.center
+      = submit_tag 'Same', :class => 'btn btn-primary'
+      /Different
+      = link_to 'Different', diff_path, :class => 'btn btn-primary'
+

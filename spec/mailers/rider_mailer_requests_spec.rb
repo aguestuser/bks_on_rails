@@ -173,6 +173,7 @@ describe "Rider Mailer Requests" do
     end
     
     before(:each) do 
+      conflicts
       riders.each{ |rider| rider.update(active: true) }
       mock_sign_in tess
       click_link 'Request Conflicts'
@@ -186,6 +187,7 @@ describe "Rider Mailer Requests" do
     let(:mails){ ActionMailer::Base.deliveries.last(3) }
 
     it "should render correct email metadata" do
+      pp riders
       check_conflict_request_metadata mails, riders
     end
 

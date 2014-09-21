@@ -43,6 +43,15 @@ class Rider < ActiveRecord::Base
     self.conflicts.where( start: (date.beginning_of_day..date.end_of_day) )
   end
 
+  def conflicts_between start_t, end_t
+    #input: Rider(self/implicit), Datetiem, Datetime
+    #does: builds an array of conflicts belonging to rider within date range btw/ start_t and end_t
+    #output: Arr
+    conflicts = self.conflicts
+      .where( "start > :start AND start < :end", { start: start_t, :end => end_t } )
+      .order("start asc")
+  end
+
   #class methods
   def Rider.select_options
     Rider.all.joins(:contact).order("contacts.name asc").map{ |r| [ r.name, r.id ] }

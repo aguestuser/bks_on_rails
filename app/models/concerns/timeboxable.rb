@@ -35,6 +35,11 @@ module Timeboxable
       self.start.strftime("%A")
     end
 
+    def increment_by increment
+      self.start += increment
+      self.end += increment
+    end
+
     private
 
       def set_period

@@ -8,4 +8,5 @@
     - if can? :manage, Conflict
       %li.divider
       %li= link_to "Create Conflict", new_conflict_path
+      %li= link_to "Batch Create Conflicts", "/conflict/build_batch_preview"
       %li= link_to "Request Conflicts", "/rider/request_conflicts_preview?base_path=#{current_path}"

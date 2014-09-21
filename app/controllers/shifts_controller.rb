@@ -183,7 +183,7 @@ class ShiftsController < ApplicationController
     def load_clone_shifts
       # raise params[:shifts].inspect
       attrs = Shift.parse_batch_attrs( params[:shifts].first )
-      @shifts = num_shifts.times.map { |n| increment_by( n.days, Shift.new( attrs ) ) }
+      @shifts = num_shifts.times.map { |n| Shift.new( attrs ).increment_by( n.days ) ) }
     end
 
     def parse_clone_shifts
@@ -192,12 +192,6 @@ class ShiftsController < ApplicationController
 
     def num_shifts
       params[:num_shifts] ? params[:num_shifts].to_i : params[:shifts].count
-    end
-
-    def increment_by increment, shift
-      shift.start += increment
-      shift.end += increment 
-      shift
     end
 
     def load_shift_batch

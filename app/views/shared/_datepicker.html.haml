@@ -1,8 +1,8 @@
-- #args: id, name, start_str, label_tag
+- #args: id, name, label, start_i, start_str, label_tag
 
 %div{ id: "date", data: { start: start_i } }
   .span.datepicker
-    = label_tag :start, 'Start:'
+    = label_tag label
     .input-append.date.form_datetime
       %input{ size: "18", type: "text", id: id, name: name, value: start_str }
       %span{ class: "add-on" }

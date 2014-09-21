@@ -21,7 +21,7 @@ describe "RiderConflicts" do
     end
     
     it "should format the array correctly" do
-      expect( RiderConflicts.new( riders, week_start, week_end ).arr ).to eq expected_arr
+      expect( RiderConflicts.new( riders, week_start ).arr ).to eq expected_arr
     end
   end
 
@@ -42,7 +42,7 @@ describe "RiderConflicts" do
     end
 
     it "should exclude out-of-range conflicts" do
-      expect( RiderConflicts.new( riders, week_start, week_end ).arr ).to eq expected_arr
+      expect( RiderConflicts.new( riders, week_start ).arr ).to eq expected_arr
     end
   end
 
@@ -61,7 +61,7 @@ describe "RiderConflicts" do
     end
 
     it "should sort conflicts by date" do
-      expect( RiderConflicts.new( riders, week_start, week_end ).arr ).to eq expected_arr
+      expect( RiderConflicts.new( riders, week_start ).arr ).to eq expected_arr
     end
   end
 
@@ -81,7 +81,7 @@ describe "RiderConflicts" do
     end
 
     it "should sort conflicts by rider" do
-      expect( RiderConflicts.new( riders, week_start, week_end ).arr ).to eq expected_arr
+      expect( RiderConflicts.new( riders, week_start ).arr ).to eq expected_arr
     end
   end
 end

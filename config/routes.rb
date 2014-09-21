@@ -83,9 +83,16 @@ BksOnRails::Application.routes.draw do
 
   get 'rider/request_conflicts_preview' => 'riders#request_conflicts_preview'
   get 'rider/request_conflicts' => 'riders#request_conflicts'
-  post 'riders/:id/conflicts/batch_clone' => 'conflicts#batch_clone'
-  get 'riders/:rider_id/conflicts/batch_new' => 'conflicts#batch_new'
-  post 'riders/:rider_id/conflicts/batch_new' => 'conflicts#batch_create'
+  
+  get 'conflict/build_batch_preview' => 'conflicts#build_batch_preview'
+  post 'conflict/preview_batch' => 'conflicts#preview_batch'
+  get 'conflict/batch_new' => 'conflicts#batch_new'
+  post 'conflict/batch_create' => 'conflicts#batch_create'
+
+
+  # post 'riders/:id/batch_clone_conflicts' => 'riders#batch_clone_conflicts'
+  # get 'riders/:id/batch_new_conflicts' => 'riders#batch_clone_conflicts'
+  # post 'riders/:id/batch_new_conflicts' => 'riders#batch_clone_conflicts'
 
   
   resources :conflicts

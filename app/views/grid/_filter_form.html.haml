@@ -2,16 +2,7 @@
   .span10.offset2
     = form_tag '/grid/'<<params[:action], :class => 'filter', method: :get do
       /Start
-      = render '/shared/datepicker', id: "filter_start", name: 'filter[start]', start_i: @week.start.to_i, start_str: @week.start.strftime("%B %e, %Y")
-
-      / %div{ id: "date", data: { start: @week.start.to_i } }
-      / .span.datepicker
-      /   = label_tag :start, 'Start:'
-      /   .input-append.date.form_datetime
-      /     %input{ size: "18", type: "text", name: 'filter[start]', value: @week.start.strftime("%B %e, %Y"), readonly: true }
-      /     %span{ class: "add-on" }
-      /       %i.icon-th        
-      / = select_date @filter[:start], prefix: 'filter[start]', date_step: 7
+      = render '/shared/datepicker', label: 'Start:', id: "filter_start", name: 'filter[start]', start_i: @week.start.to_i, start_str: @week.start.strftime("%B %e, %Y")
       .span
         %div{ style: "margin-top: .3em;" }
           %strong

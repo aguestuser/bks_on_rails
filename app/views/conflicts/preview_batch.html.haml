@@ -1,0 +1,13 @@
+- provide(:title, 'Preview Conflict Batch')
+
+- it = @rider.name
+- its = "#{it}'s"
+- same_path = '/conflict/batch_create'
+- diff_path = "/conflict/batch_new?#{@new_batch_query}"
+
+%h1 Preview Conflict Batch
+
+.row.profile
+  .span6.offset3
+    = render 'conflicts/batch_choice', it: it, its: its, same_path: same_path, diff_path: diff_path
+

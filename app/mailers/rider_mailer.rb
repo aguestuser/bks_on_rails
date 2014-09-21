@@ -18,15 +18,20 @@ class RiderMailer < ActionMailer::Base
     mail(to: rider.email, subject: helper.subject)
   end
 
-  def conflicts_request rider, conflicts, account
+  def conflicts_request rider, conflicts account
     # puts ">>>> rider: #{rider.inspect}"
     @rider = rider
     @conflicts = conflicts
     @staffer = account.user
+    
+    @next_week_start = conflicts.first.beginning_of_week
+    @this_week_start = @next_week_start - 1.week
+    @clone_query = { conflicts: conflicts }.to_query
+    @new_batch_query = { rider_id: rider.id, week_start: @next_week_start }.to_query
 
-    now = now_unless_test
-    next_monday = ( now.end_of_week + 1.day ).strftime("%-m/%-d")
-    next_sunday = ( now.end_of_week + 7.days ).strftime("%-m/%-d")
+    next_monday = ( @next_week_start ).strftime("%-m/%-d")
+    next_sunday = ( @next_week_start + 6.days ).strftime("%-m/%-d")
+
     subject = "[SCHEDULING CONFLICT REQUEST] #{next_monday} - #{next_sunday}"
     
     mail(to: rider.email, subject: subject )

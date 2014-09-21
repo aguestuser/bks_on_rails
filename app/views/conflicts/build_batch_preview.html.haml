@@ -1,0 +1,19 @@
+- provide(:title, 'Build Conflict Batch')
+
+%h1 Build Conflict Batch
+.row.profile
+  .span8.offset2
+    = form_tag '/conflict/preview_batch', method: :post do 
+      .row
+        /Rider
+        .span4
+          = label_tag :rider
+          = select_tag 'rider_id', options_for_select(Rider.select_options, nil ), include_blank: true
+        /Week Start
+        .span4
+          - default_week_start = Time.zone.now.beginning_of_week
+          = render '/shared/datepicker', label: 'Monday of Week to Clone:', id: "week_start", name: 'week_start', start_i: default_week_start.to_i, start_str: default_week_start.strftime("%B %e, %Y")
+      /Submit
+      .row
+        %p.center
+          = submit_tag 'Submit', :class => 'btn btn-primary'

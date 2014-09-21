@@ -12,7 +12,7 @@
 #
 
 class Conflict < ActiveRecord::Base
-  include Timeboxable
+  include Timeboxable, BatchUpdatable
 
   belongs_to :rider
 
