@@ -87,7 +87,7 @@ class ConflictsController < ApplicationController
   def batch_create
     rider = Rider.find(params[:rider_id].to_i)
     week_start = Time.zone.parse params[:week_start]
-    period_indices = params[:period_indices].map(&:to_i)
+    period_indices = ( params[:period_indices] || [] ).map(&:to_i)
     conflicts = parse_new_batch rider, week_start, period_indices
 
     do_batch_create conflicts

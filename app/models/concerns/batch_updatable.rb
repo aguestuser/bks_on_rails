@@ -24,8 +24,12 @@ module BatchUpdatable
     # end
 
     def batch_from_params param_arr
-      attr_arr = param_arr.map{ |param_hash| self.attributes_from param_hash }
-      records = attr_arr.map { |attrs| self.new( attrs ) }
+      if param_arr.nil?
+        []
+      else
+        attr_arr = param_arr.map{ |param_hash| self.attributes_from param_hash }
+        records = attr_arr.map { |attrs| self.new( attrs ) }
+      end
     end
 
     def batch_create_ records

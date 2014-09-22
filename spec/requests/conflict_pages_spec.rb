@@ -273,59 +273,88 @@ describe "Conflict Requests" do
   end
 
   describe "BATCH CREATE" do
-    before do
-      conflicts.each(&:save)
-      visit '/conflict/build_batch_preview'
-      select rider.name, from: 'rider_id'
-      fill_in 'week_start', with: 'January 6, 2014'
-      click_button 'Submit'
-    end
-    let!(:old_count){ Conflict.count }
-    
 
-    describe "CLONING" do
-      before { click_button 'Same' }
-      let(:new_conflicts){ Conflict.last(2) }
+    describe "for rider WITH CONFLICTS" do  
+      before { batch_preview_conflicts_for rider }
+      let!(:old_count){ Conflict.count }
 
-      it "should create 2 new conflicts" do
-        expect(Conflict.count).to eq old_count + 2
-      end
+      describe "CLONING" do
+        before { click_button 'Same' }
+        let(:new_conflicts){ Conflict.last(2) }
 
-      it "should format new conflicts correctly" do
-        check_cloned_conflict_batch new_conflicts, conflicts
-      end
-    end # "CLONING"
-
-    describe "making NEW" do
-      before { click_link 'Different' }
-
-      describe "#BATCH_NEW page" do
-        
-        it "should be the #batch_new page" do
-          expect(current_path).to eq '/conflict/batch_new'
-          expect(page).to have_h1 "New Conflicts for #{rider.name}"
+        it "should create 2 new conflicts" do
+          expect(Conflict.count).to eq old_count + 2
         end
 
-        it "should have the correct contents" do
-          Week::DAYS.each do |day| 
-          expect(page).to have_content("#{day} AM")
-          expect(page).to have_content("#{day} PM")
+        it "should format new conflicts correctly" do
+          check_cloned_conflict_batch new_conflicts, conflicts
+        end
+      end # "CLONING"
+
+      describe "making NEW" do
+        before { click_link 'Different' }
+
+        describe "#BATCH_NEW page" do
+          
+          it "should be the #batch_new page" do
+            expect(current_path).to eq '/conflict/batch_new'
+            expect(page).to have_h1 "New Conflicts for #{rider.name}"
           end
+
+          it "should have the correct contents" do
+            Week::DAYS.each do |day| 
+            expect(page).to have_content("#{day} AM")
+            expect(page).to have_content("#{day} PM")
+            end
+          end
+
+          describe "clicking SUBMIT" do
+
+            describe "with 4 NEW CONFLICTS" do
+              before { submit_new_conflicts [ 0,1,4,5 ] }  
+              let(:new_conflicts){ Conflict.last(4) }
+
+              it "should create 4 new conflicts" do
+                expect(Conflict.count).to eq old_count + 4
+              end
+
+              it "should format conflicts correctly" do
+                check_new_conflicts new_conflicts, [ 0,1,4,5 ]
+              end               
+            end # "with 4 NEW CONFLICTS"
+            
+            describe "with NO NEW CONFLICTS" do
+              before{ submit_new_conflicts [] }
+              let(:new_conflicts){ [] }
+
+              it "shouldn't create any Conflicts" do
+                expect(Conflict.count).to eq old_count
+              end
+
+              it "should redirect to rider conflicts page" do
+                expect(current_path).to eq rider_conflicts_path(rider)+'/'
+              end   
+            end 
+          end # "clicking SUBMIT"       
+        end # "#BATCH_NEW page"
+      end # "making NEW"      
+    end # "for rider WITH CONFLICTS"
+
+    describe "for rider WITHOUT CONFLICTS" do
+      before { batch_preview_conflicts_for other_rider }
+      let!(:old_count){ Conflict.count }
+
+      describe "CLONING" do
+        before { click_button 'Same' }
+
+        it "shouldn't create any conflicts" do
+          expect(Conflict.count).to eq old_count
         end
 
-        describe "clicking SUBMIT" do
-          before { submit_new_conflicts [ 0,1,4,5 ] }  
-          let(:new_conflicts){ Conflict.last(4) }
-
-          it "should create 4 new conflicts" do
-            expect(Conflict.count).to eq old_count + 4
-          end
-
-          it "should format conflicts correctly" do
-            check_new_conflicts new_conflicts, [ 0,1,4,5 ]
-          end              
-        end # "clicking SUBMIT"       
-      end # "#BATCH_NEW page"
-    end # "making NEW"
+        it "should redirect to ?" do
+          expect(current_path).to eq rider_conflicts_path(other_rider)+'/'
+        end
+      end # "CLONING"
+    end # "for rider WITHOUT CONFLICTS"
   end # "BATCH CREATE"
 end

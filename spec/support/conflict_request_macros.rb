@@ -63,6 +63,14 @@ module ConflictRequestMacros
     click_button submit
   end
 
+  def batch_preview_conflicts_for rider
+    conflicts.each(&:save)
+    visit '/conflict/build_batch_preview'
+    select rider.name, from: 'rider_id'
+    fill_in 'week_start', with: 'January 6, 2014'
+    click_button 'Submit'
+  end
+
   def check_cloned_conflict_batch new_conflicts, old_conflicts
     new_conflicts.each_with_index do |nc, i|
       expect(nc.rider).to eq old_conflicts[i].rider

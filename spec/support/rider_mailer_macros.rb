@@ -277,8 +277,6 @@ module RiderMailerMacros
     end
   end
 
-
-
   def check_conflict_request_metadata mails, riders
     from = [ "brooklynshift@gmail.com" ]
     subject = "[SCHEDULING CONFLICT REQUEST] 1/13 - 1/19"
