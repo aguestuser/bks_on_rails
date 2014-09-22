@@ -28,6 +28,7 @@ class RiderMailer < ActionMailer::Base
     
     @next_week_start = week_start
     @this_week_start = @next_week_start - 1.week
+
     @new_batch_query = { rider_id: rider.id, week_start: @next_week_start }.to_query
 
     next_monday = ( @next_week_start ).strftime("%-m/%-d")

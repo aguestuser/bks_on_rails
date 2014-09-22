@@ -1,5 +1,7 @@
-- if conflicts.empty?
-  [ NONE ]
-- else
-  - conflicts.each do |conflict|
-    = conflict.list_time
+%ul
+  - if @conflicts.empty?
+    %li 
+      [ NONE ]
+  - else
+    - @conflicts.each do |conflict|
+      %li= conflict.list_time

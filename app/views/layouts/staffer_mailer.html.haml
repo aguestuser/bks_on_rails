@@ -1,0 +1,22 @@
+!!!
+%html
+  %head
+    %meta{:content => "text/html; charset=UTF-8", "http-equiv" => "Content-Type"}/
+    :css
+      table { 
+        border-collapse:collapse;
+        margin-left: 2em;
+      }
+      th {
+        background-color: lightgray;
+      }
+      th, td {
+        border: 1px solid black;
+        margin: 0px;
+        padding: .5em;
+      }
+      .underline {
+        text-decoration: underline;
+      }
+  %body
+    = yield

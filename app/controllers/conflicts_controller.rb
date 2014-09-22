@@ -74,7 +74,10 @@ class ConflictsController < ApplicationController
 
   def batch_clone
     conflicts = Conflict.batch_from_params(params[:conflicts])
-    do_batch_create conflicts
+    week_start = Time.zone.parse params[:week_start]
+    rider = Rider.find(params[:rider_id])
+
+    do_batch_create conflicts, week_start, rider
   end
 
   def batch_new
@@ -89,8 +92,9 @@ class ConflictsController < ApplicationController
     week_start = Time.zone.parse params[:week_start]
     period_indices = ( params[:period_indices] || [] ).map(&:to_i)
     conflicts = parse_new_batch rider, week_start, period_indices
+    notes = params[:notes]
 
-    do_batch_create conflicts
+    do_batch_create conflicts, week_start, rider, notes
   end
 
     def parse_new_batch rider, week_start, period_indices
@@ -107,10 +111,13 @@ class ConflictsController < ApplicationController
     end
 
 
-  def do_batch_create conflicts
+  def do_batch_create conflicts, week_start, rider, notes=nil
     # conflicts = Conflict.batch_from_params(params[:conflicts])
     @errors = Conflict.batch_create_ conflicts
     if @errors.empty? || conflicts.empty?
+
+      StafferMailer.conflict_notification( rider, conflicts, week_start, notes ).deliver
+
       flash[:success] = "#{conflicts.length} conflicts successfully created"
       redirect_to @base_path
     else

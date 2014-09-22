@@ -25,6 +25,10 @@
               - period_index =  (i+2) % 2 == 0 ? 0 : 1 # 0 for even i, 1 for odd
               = check_box_tag 'period_indices[]', i
               = label_tag :period, "#{Week::DAYS[day_index]} #{Week::PERIODS[period_index]}"
+      /Notes
+      .row
+        = label_tag :notes
+        = text_area_tag 'notes', "Please enter any notes about your availability (irregular times, etc.) here"
       /Submit
       .row.center
         %p
