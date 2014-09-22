@@ -21,7 +21,8 @@
   /Same
   = form_tag same_path, method: :post do
     - @conflicts.each do |conflict|
-      - conflict.attributes.each do |k,v|
+      - attrs = conflict.attributes.slice('rider_id', 'start', 'end')
+      - attrs.each do |k,v|
         = hidden_field_tag "conflicts[][#{k}]", v 
     = hidden_field_tag :base_path, @base_path    
     %p.center

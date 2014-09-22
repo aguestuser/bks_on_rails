@@ -57,4 +57,16 @@ class Rider < ActiveRecord::Base
     Rider.all.joins(:contact).order("contacts.name asc").map{ |r| [ r.name, r.id ] }
   end
 
+  def Rider.email_conflict_requests rider_conflicts, week_start, account
+    #input: RiderConflicts, Datetime, Account
+    #output: Str (empty if no emails sent, email alert if emails sent)
+    count = 0
+    rider_conflicts.arr.each do |hash| 
+      RiderMailer.request_conflicts(hash[:rider], hash[:conflicts], week_start, account).deliver
+      count += 1
+    end
+    
+    alert = count > 0 ? "#{count} conflict requests successfully sent" : ""
+  end
+
 end

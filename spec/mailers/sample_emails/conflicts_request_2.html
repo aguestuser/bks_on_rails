@@ -30,18 +30,32 @@ Please submit your scheduling conflicts for next week
 by Thursday at 12pm.
 </strong>
 </p>
+<!-- Batch Review -->
 <p>
-Last week you had the following conflicts:
+This week (1/6 - 1/12) you had the following conflicts:
 </p>
+<ul>
+<li>
 [ NONE ]
-
+</li>
+</ul>
+<!-- Choice -->
 <p>
 <strong>
-Click below if your conflicts next week will be:
+Click below to indicate if your conflicts next week (1/13 - 1/19) will be:
 </strong>
-<a href="https://obscure-anchorage-7682.herokuapp.com/rider/<RIDER_ID>/batch_clone_conflicts">Same</a>
-<a href="https://obscure-anchorage-7682.herokuapp.com/rider/<RIDER_ID>/batch_new_conflicts">Different</a>
+<!-- Same -->
+<form accept-charset="UTF-8" action="https://obscure-anchorage-7682.herokuapp.com/conflict/batch_clone" method="post"><div style="margin:0;padding:0;display:inline"><input name="utf8" type="hidden" value="&#x2713;" /></div>
+<input id="base_path" name="base_path" type="hidden" />
+<p class='center'>
+<input class="btn btn-primary" name="commit" type="submit" value="Same" />
+<!-- Different -->
+<a class="btn btn-primary" href="https://obscure-anchorage-7682.herokuapp.com/conflict/batch_new?rider_id=<RIDER_ID>&amp;week_start=2014-01-13+00%3A00%3A00+-0500">Different</a>
 </p>
+</form>
+
+</p>
+
 <p></p>
 <p>
 Best,

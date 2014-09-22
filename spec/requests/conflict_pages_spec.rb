@@ -303,8 +303,14 @@ describe "Conflict Requests" do
         
         it "should be the #batch_new page" do
           expect(current_path).to eq '/conflict/batch_new'
-          expect(page).to have_h1 'New Scheduling Conflicts'
-          Week::DAYS.each { |day| expect(page).to have_content(day) }
+          expect(page).to have_h1 "New Conflicts for #{rider.name}"
+        end
+
+        it "should have the correct contents" do
+          Week::DAYS.each do |day| 
+          expect(page).to have_content("#{day} AM")
+          expect(page).to have_content("#{day} PM")
+          end
         end
 
         describe "clicking SUBMIT" do

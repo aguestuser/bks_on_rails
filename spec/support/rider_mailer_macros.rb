@@ -268,8 +268,8 @@ module RiderMailerMacros
 
   def check_conflict_request_email_bodies mails, riders
     mails.each_with_index do |mail, i|
-        puts ">>>>>> MAIL #{i}"
-        print mail.body
+        # puts ">>>>>> MAIL #{i}"
+        # print mail.body
       actual_body = parse_body_from mail
       expected_body = expected_conflict_request_body_for riders[i], i
 

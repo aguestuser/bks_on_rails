@@ -4,7 +4,7 @@ class RiderConflicts
   def initialize riders, start_t
     @start = start_t
     end_t = start_t + 1.week 
-    @arr = arr_from riders, start_t, start_t + end_t # Arr of Hashes
+    @arr = arr_from riders, start_t, end_t # Arr of Hashes
   end
 
   def increment_week
@@ -12,7 +12,7 @@ class RiderConflicts
     #does: increments the start and end time of every conflict by 1 week
     #output: self 
     self.arr.map do |rider_hash|
-      { rider: rider_hash[:rider], conflicts: increment_week_for(rider_hash[:conflicts] }
+      { rider: rider_hash[:rider], conflicts: increment_week_for(rider_hash[:conflicts]) }
     end
     self
   end

@@ -30,29 +30,77 @@ Please submit your scheduling conflicts for next week
 by Thursday at 12pm.
 </strong>
 </p>
+<!-- Batch Review -->
 <p>
-Last week you had the following conflicts:
+This week (1/6 - 1/12) you had the following conflicts:
 </p>
-Monday AM
-Monday PM
-Tuesday AM
-Tuesday PM
-Wednesday AM
-Wednesday PM
-Thursday AM
-Thursday PM
-Friday AM
-Friday PM
-Saturday PM
-Sunday AM
-
+<ul>
+<li>Monday AM</li>
+<li>Monday PM</li>
+<li>Tuesday AM</li>
+<li>Tuesday PM</li>
+<li>Wednesday AM</li>
+<li>Wednesday PM</li>
+<li>Thursday AM</li>
+<li>Thursday PM</li>
+<li>Friday AM</li>
+<li>Friday PM</li>
+<li>Saturday PM</li>
+<li>Sunday AM</li>
+</ul>
+<!-- Choice -->
 <p>
 <strong>
-Click below if your conflicts next week will be:
+Click below to indicate if your conflicts next week (1/13 - 1/19) will be:
 </strong>
-<a href="https://obscure-anchorage-7682.herokuapp.com/rider/<RIDER_ID>/batch_clone_conflicts">Same</a>
-<a href="https://obscure-anchorage-7682.herokuapp.com/rider/<RIDER_ID>/batch_new_conflicts">Different</a>
+<!-- Same -->
+<form accept-charset="UTF-8" action="https://obscure-anchorage-7682.herokuapp.com/conflict/batch_clone" method="post"><div style="margin:0;padding:0;display:inline"><input name="utf8" type="hidden" value="&#x2713;" /></div>
+<input id="conflicts__rider_id" name="conflicts[][rider_id]" type="hidden" value="<RIDER_ID>" />
+<input id="conflicts__start" name="conflicts[][start]" type="hidden" value="2014-01-13 12:00:00 -0500" />
+<input id="conflicts__end" name="conflicts[][end]" type="hidden" value="2014-01-13 18:00:00 -0500" />
+<input id="conflicts__rider_id" name="conflicts[][rider_id]" type="hidden" value="<RIDER_ID>" />
+<input id="conflicts__start" name="conflicts[][start]" type="hidden" value="2014-01-13 18:00:00 -0500" />
+<input id="conflicts__end" name="conflicts[][end]" type="hidden" value="2014-01-14 00:00:00 -0500" />
+<input id="conflicts__rider_id" name="conflicts[][rider_id]" type="hidden" value="<RIDER_ID>" />
+<input id="conflicts__start" name="conflicts[][start]" type="hidden" value="2014-01-14 12:00:00 -0500" />
+<input id="conflicts__end" name="conflicts[][end]" type="hidden" value="2014-01-14 18:00:00 -0500" />
+<input id="conflicts__rider_id" name="conflicts[][rider_id]" type="hidden" value="<RIDER_ID>" />
+<input id="conflicts__start" name="conflicts[][start]" type="hidden" value="2014-01-14 18:00:00 -0500" />
+<input id="conflicts__end" name="conflicts[][end]" type="hidden" value="2014-01-15 00:00:00 -0500" />
+<input id="conflicts__rider_id" name="conflicts[][rider_id]" type="hidden" value="<RIDER_ID>" />
+<input id="conflicts__start" name="conflicts[][start]" type="hidden" value="2014-01-15 12:00:00 -0500" />
+<input id="conflicts__end" name="conflicts[][end]" type="hidden" value="2014-01-15 18:00:00 -0500" />
+<input id="conflicts__rider_id" name="conflicts[][rider_id]" type="hidden" value="<RIDER_ID>" />
+<input id="conflicts__start" name="conflicts[][start]" type="hidden" value="2014-01-15 18:00:00 -0500" />
+<input id="conflicts__end" name="conflicts[][end]" type="hidden" value="2014-01-16 00:00:00 -0500" />
+<input id="conflicts__rider_id" name="conflicts[][rider_id]" type="hidden" value="<RIDER_ID>" />
+<input id="conflicts__start" name="conflicts[][start]" type="hidden" value="2014-01-16 12:00:00 -0500" />
+<input id="conflicts__end" name="conflicts[][end]" type="hidden" value="2014-01-16 18:00:00 -0500" />
+<input id="conflicts__rider_id" name="conflicts[][rider_id]" type="hidden" value="<RIDER_ID>" />
+<input id="conflicts__start" name="conflicts[][start]" type="hidden" value="2014-01-16 18:00:00 -0500" />
+<input id="conflicts__end" name="conflicts[][end]" type="hidden" value="2014-01-17 00:00:00 -0500" />
+<input id="conflicts__rider_id" name="conflicts[][rider_id]" type="hidden" value="<RIDER_ID>" />
+<input id="conflicts__start" name="conflicts[][start]" type="hidden" value="2014-01-17 12:00:00 -0500" />
+<input id="conflicts__end" name="conflicts[][end]" type="hidden" value="2014-01-17 18:00:00 -0500" />
+<input id="conflicts__rider_id" name="conflicts[][rider_id]" type="hidden" value="<RIDER_ID>" />
+<input id="conflicts__start" name="conflicts[][start]" type="hidden" value="2014-01-17 18:00:00 -0500" />
+<input id="conflicts__end" name="conflicts[][end]" type="hidden" value="2014-01-18 00:00:00 -0500" />
+<input id="conflicts__rider_id" name="conflicts[][rider_id]" type="hidden" value="<RIDER_ID>" />
+<input id="conflicts__start" name="conflicts[][start]" type="hidden" value="2014-01-18 18:00:00 -0500" />
+<input id="conflicts__end" name="conflicts[][end]" type="hidden" value="2014-01-19 00:00:00 -0500" />
+<input id="conflicts__rider_id" name="conflicts[][rider_id]" type="hidden" value="<RIDER_ID>" />
+<input id="conflicts__start" name="conflicts[][start]" type="hidden" value="2014-01-19 12:00:00 -0500" />
+<input id="conflicts__end" name="conflicts[][end]" type="hidden" value="2014-01-19 18:00:00 -0500" />
+<input id="base_path" name="base_path" type="hidden" />
+<p class='center'>
+<input class="btn btn-primary" name="commit" type="submit" value="Same" />
+<!-- Different -->
+<a class="btn btn-primary" href="https://obscure-anchorage-7682.herokuapp.com/conflict/batch_new?rider_id=<RIDER_ID>&amp;week_start=2014-01-13+00%3A00%3A00+-0500">Different</a>
 </p>
+</form>
+
+</p>
+
 <p></p>
 <p>
 Best,

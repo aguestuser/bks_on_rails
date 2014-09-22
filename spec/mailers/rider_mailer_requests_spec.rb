@@ -174,20 +174,20 @@ describe "Rider Mailer Requests" do
     
     before(:each) do 
       conflicts
+      riders
       riders.each{ |rider| rider.update(active: true) }
       mock_sign_in tess
       click_link 'Request Conflicts'
       click_link 'Send Emails', match: :first
     end
 
+    let(:mails){ ActionMailer::Base.deliveries.last(3) }
+
     it "should send emails to all active riders" do
       expect(ActionMailer::Base.deliveries.count).to eq 3
     end
 
-    let(:mails){ ActionMailer::Base.deliveries.last(3) }
-
     it "should render correct email metadata" do
-      pp riders
       check_conflict_request_metadata mails, riders
     end
 
