@@ -6,7 +6,11 @@ class ApplicationController < ActionController::Base
   # before_action :check_sign_in
   authorize_resource
 
+  def now_unless_test
+    Rails.env.test? ? Time.zone.local(2014,1,6,11) : Time.zone.now
+  end
 
+  
   # CanCan config
   def current_ability
     @current_ability ||= Ability.new(current_account)

@@ -132,4 +132,8 @@ class RidersController < ApplicationController
     def rating_params
       { rider_rating_attributes: [ :rider_id, :id, :reliability, :likeability, :speed, :initial_points ] }
     end
+
+    def now_unless_test
+      Rails.env.test? ? Time.zone.local(2014,1,6,11) : Time.zone.now
+    end
 end
