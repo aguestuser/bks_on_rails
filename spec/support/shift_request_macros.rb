@@ -159,16 +159,6 @@ module ShiftRequestMacros
     expect(page.within("#assignments_fresh_2"){ find(status_selector).find("option[selected]").text }).to eq status    
   end
 
-  # def check_batch_assign_select_values
-  #   expect(page.all("#assignments__rider_id")[0].find('option[selected]').text).to eq batch[0].rider.name
-  #   expect(page.all("#assignments__rider_id")[1].find('option[selected]').text).to eq batch[1].rider.name
-  #   expect(page.all("#assignments__rider_id")[2].find('option[selected]').text).to eq batch[2].rider.name
-
-  #   expect(page.all("#assignments__status")[0].find('option[selected]').text).to eq batch[0].assignment.status.text
-  #   expect(page.all("#assignments__status")[1].find('option[selected]').text).to eq batch[1].assignment.status.text
-  #   expect(page.all("#assignments__status")[2].find('option[selected]').text).to eq batch[2].assignment.status.text
-  # end
-
   def assign_batch_to rider, status
     3.times do |n|
       page.within("#assignments_fresh_#{n}") do 

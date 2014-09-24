@@ -81,7 +81,7 @@ module ConflictRequestMacros
     end
   end
 
-  def submit_new_conflicts indices, with_notes
+  def submit_new_conflicts indices, with_notes=false
     indices.each do |i|
       page.within("#period_#{i}"){ check "period_indices_" }
     end
@@ -105,36 +105,7 @@ module ConflictRequestMacros
     (n+2)%2 == 0
   end
 
-  #MAILER MACROS
 
-  def check_conflict_notification_email_metadata mail, rider
-    from = [ "brooklynshift@gmail.com" ]
-    subject = "[CONFLICT SUBMMISSION] #{rider.name}"
-
-    mails.each_with_index do |mail, i|
-      expect(mail.from).to eq from
-      expect(mail.to).to eq [ "brooklynshift@gmail.com" ] # [ "brooklynshift@gmail.com", "tess@bkshift.com", "justin@bkshift.com" ]
-      expect(mail.subject).to eq subject
-    end
-  end
-
-  def check_conflict_notification_email_body mail, rider, type
-      puts ">>>>>> MAIL"
-      print mail.body
-    actual_body = parse_body_from mail
-    expected_body = expected_conflict_notification_body_for rider, type
-
-    expect(actual_body).to eq expected_body
-  end
-
-  def parse_body_from mail
-    mail.body.encoded.gsub("\r\n", "\n")
-  end
-
-  def expected_conflict_request_body_for rider, type
-    str = File.read( "spec/mailers/sample_emails/conflict_notification_#{type}.html" )
-    str.gsub('<RIDER_NAME>', "#{rider.name}")
-  end
 
 
 

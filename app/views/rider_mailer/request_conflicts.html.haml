@@ -1,13 +1,14 @@
-- it = 'you'
-- its = 'your'
-- same_path = "https://obscure-anchorage-7682.herokuapp.com/conflict/batch_clone"
-- diff_path = "https://obscure-anchorage-7682.herokuapp.com/conflict/batch_new?#{@new_batch_query}"
+%p
+  %strong
+    Please submit your scheduling conflicts for next week by Thursday at 12pm
+  to be included in next week's schedule.
 
 %p
-  Please submit your scheduling conflicts for next week 
-  %strong
-    by Thursday at 12pm.
+  Last week you had the following scheduling conflicts:
+= render 'conflicts/review_list'
 
-= render 'conflicts/batch_choice', it: it, its: its, same_path: same_path, diff_path: diff_path
+%p
+  = link_to 'Click this link', @link
+  to submit your conflicts for next week.
 
 = render 'mailer/signature'

@@ -19,7 +19,7 @@ include ValidationMacros
 
 describe Shift do
   let(:shift) { FactoryGirl.build(:shift, :without_restaurant) }
-  let(:attrs) { [:start, :end, :period, :urgency, :billing_rate, :notes] }
+  let(:attrs) { [ :start, :end, :period, :urgency, :billing_rate, :notes ] }
   let(:associations) { [ :restaurant, :assignment ] }
 
   subject { shift }
@@ -72,7 +72,7 @@ describe "methods" do
     #   Assignment.new(rider_id: rider.id, shift_id: shift.id )
     # end
 
-    # let(:test_shifts){ [ same_time_shift, early_overlap_shift, late_overlap_shift, just_before_shift, just_after_shift, day_before_shift, day_after_shift ] }
+    # let(:test_shifts){ same_time_shift, early_overlap_shift, late_overlap_shift, just_before_shift, just_after_shift, day_before_shift, day_after_shift ] }
 
     describe "conflicts_with?(conflicts)" do
 
@@ -100,13 +100,13 @@ describe "methods" do
 
       it "should correctly identify conflicts" do
         
-        expect( shift.conflicts_with?( [ same_time_conflict ] ) ).to eq true 
-        expect( shift.conflicts_with?( [ early_overlap_conflict ] ) ).to eq true  
-        expect( shift.conflicts_with?( [ late_overlap_conflict ] ) ).to eq true                
-        expect( shift.conflicts_with?( [ just_before_conflict ] ) ).to eq false
-        expect( shift.conflicts_with?( [ just_after_conflict ] ) ).to eq false 
-        expect( shift.conflicts_with?( [ day_before_conflict ] ) ).to eq false 
-        expect( shift.conflicts_with?( [ day_after_conflict ] ) ).to eq false 
+        expect( shift.conflicts_with?( same_time_conflict ) ).to eq true 
+        expect( shift.conflicts_with?( early_overlap_conflict ) ).to eq true  
+        expect( shift.conflicts_with?( late_overlap_conflict ) ).to eq true                
+        expect( shift.conflicts_with?( just_before_conflict ) ).to eq false
+        expect( shift.conflicts_with?( just_after_conflict ) ).to eq false 
+        expect( shift.conflicts_with?( day_before_conflict ) ).to eq false 
+        expect( shift.conflicts_with?( day_after_conflict ) ).to eq false 
       end
     end
 
@@ -135,13 +135,13 @@ describe "methods" do
       end      
 
       it "should correctly identify double bookings" do
-        expect( shift.double_books_with?( [ same_time_shift ] ) ).to eq true
-        expect( shift.double_books_with?( [ early_overlap_shift ] ) ).to eq true
-        expect( shift.double_books_with?( [ late_overlap_shift ] ) ).to eq true
-        expect( shift.double_books_with?( [ just_before_shift ] ) ).to eq false
-        expect( shift.double_books_with?( [ just_after_shift ] ) ).to eq false
-        expect( shift.double_books_with?( [ day_before_shift ] ) ).to eq false
-        expect( shift.double_books_with?( [ day_after_shift ] ) ).to eq false        
+        expect( shift.double_books_with?( same_time_shift ) ).to eq true
+        expect( shift.double_books_with?( early_overlap_shift ) ).to eq true
+        expect( shift.double_books_with?( late_overlap_shift ) ).to eq true
+        expect( shift.double_books_with?( just_before_shift ) ).to eq false
+        expect( shift.double_books_with?( just_after_shift ) ).to eq false
+        expect( shift.double_books_with?( day_before_shift ) ).to eq false
+        expect( shift.double_books_with?( day_after_shift ) ).to eq false        
       end
     end
   end

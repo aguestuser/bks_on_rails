@@ -1,8 +1,3 @@
-- #args: assignments_key, assignment
-/ - assignments_key ||= nil
-/ - key = assignments_key.nil? ? "[]" : "[#{assignments_key}][]"
-/ - name = lambda { |attr| "assignments#{key}[#{attr}]" }
-
 - #args: assignment, index
 - name = lambda { |attr| "wrapped_assignments[fresh][][assignment][#{attr}]" }
 - error_class = @errors.find{ |e| e[:record].shift_id == assignment.shift_id } ? 'field_with_errors' : ''
@@ -16,8 +11,6 @@
 
 /Assignment
 .row
-  /Id
-  / = hidden_field_tag name.call('id'), assignment.id
   /Shift
   = hidden_field_tag name.call('shift_id'), assignment.shift_id
   %div{ class: error_class }

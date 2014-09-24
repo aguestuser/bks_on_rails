@@ -150,7 +150,8 @@ module Filters
         #output: correct filter query based on context
         case p.class.name
         when 'String' # from server load
-          p.to_datetime
+          Time.zone.parse p
+          # p.to_datetime
         when 'ActionController::Parameters' # from user request
           Time.zone.local( p[:year].to_i, p[:month].to_i, p[:day].to_i, 0 )
         end

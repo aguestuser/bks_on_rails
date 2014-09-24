@@ -21,7 +21,6 @@ class Shift < ActiveRecord::Base
   has_one :assignment, dependent: :destroy #inverse_of: :shift
     accepts_nested_attributes_for :assignment
 
-  
   classy_enum_attr :billing_rate
   classy_enum_attr :urgency
 

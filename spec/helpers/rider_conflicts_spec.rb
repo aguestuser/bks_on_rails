@@ -28,8 +28,8 @@ describe "RiderConflicts" do
   describe "excluding out-of range conflicts" do
     # 1 conflict in range, 1 before, 1 after
     let!(:conflicts) do
-      starts = [ week_start - 12.hours, start_t, week_end + 12.hours ]
-      ends = [ week_start - 4.hours, end_t, week_end + 18.hours ]
+      starts = [ week_start - 12.hours, start_t, week_end.end_of_day + 12.hours ]
+      ends = [ week_start - 4.hours, end_t, week_end.end_of_day + 18.hours ]
       3.times.map do |n|
         FactoryGirl.create( :conflict, :with_rider, rider: riders[0], start: starts[n], :end => ends[n] )
       end

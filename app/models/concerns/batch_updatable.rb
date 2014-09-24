@@ -39,19 +39,6 @@ module BatchUpdatable
       errors
     end
 
-    def batch_create attr_arr
-      #input: Arr of attribute hashes
-      #does: Saves shifts specified by attributes, returns errors if any
-      #output: Arr of errors
-      errors = []
-      attr_arr.each do |attrs|
-        record = self.new(parse_batch_attrs attrs)
-        record.build_associations
-        errors.push(record.errors) unless record.save
-      end
-      errors
-    end
-
     def batch_update old_records, new_records
       #input: Arr of saved records (of class self), Arr of unsaved records (of class self)
       #does: updates saved records with attributes from unsaved records, attempts save, returns array of errors

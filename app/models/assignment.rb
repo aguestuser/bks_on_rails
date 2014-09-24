@@ -169,13 +169,4 @@ class Assignment < ActiveRecord::Base
       RiderMailer.delegation_email(self.rider, [ self.shift ], [ self.shift.restaurant ], sender_account).deliver
     end
 
-
-  #   def set_assigned_by_id
-  #     self.assigned_by_id = current_account.id
-  #   end
-
-  #   def set_last_modified_by_id
-  #     self.last_modified_by = current_account.contact.name
-  #   end
-
 end

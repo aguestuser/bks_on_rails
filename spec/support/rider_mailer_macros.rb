@@ -26,10 +26,6 @@ module RiderMailerMacros
     end    
   end
 
-  def load_delegation_scenario
-
-  end
-
   def load_batch_delegation_scenario
     let!(:other_rider){ FactoryGirl.create(:rider) }
     let!(:other_restaurant){ FactoryGirl.create(:restaurant) }

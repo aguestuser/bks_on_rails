@@ -1,4 +1,5 @@
 class RiderMailer < ActionMailer::Base
+  include RemoteRoot
   default from: "brooklynshift@gmail.com"
   helper_method :protect_against_forgery?
   
@@ -20,20 +21,19 @@ class RiderMailer < ActionMailer::Base
   end
 
   def request_conflicts rider, conflicts, week_start, account
-    # puts ">>>> rider: #{rider.inspect}"
 
     @rider = rider
     @conflicts = conflicts
     @staffer = account.user
-    
+
     @next_week_start = week_start
     @this_week_start = @next_week_start - 1.week
 
-    @new_batch_query = { rider_id: rider.id, week_start: @next_week_start }.to_query
+    query = { rider_id: @rider.id, week_start: @this_week_start }.to_query
+    @link = "#{REMOTE_ROOT}conflict/preview_batch?#{query}"
 
     next_monday = ( @next_week_start ).strftime("%-m/%-d")
     next_sunday = ( @next_week_start + 6.days ).strftime("%-m/%-d")
-
     subject = "[SCHEDULING CONFLICT REQUEST] #{next_monday} - #{next_sunday}"
     
     mail(to: rider.email, subject: subject )

@@ -27,6 +27,10 @@ module SessionsHelper
     account == current_account
   end
 
+  def staffer_signed_in?
+    current_account && current_account.user_type == 'Staffer'
+  end
+
   def signed_in_account
     unless signed_in?
       store_location

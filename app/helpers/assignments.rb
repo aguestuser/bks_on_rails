@@ -6,8 +6,6 @@ class Assignments
     @old = options[:old] || options[:fresh].clone # Array of WrappedAssignments 
     # NOTE: above will clone fresh options on first iteration, retain initial value of @old on subsequent (recursive) iterations
     @fresh = options[:fresh] || [] # Array of WrapedAssignments
-    # raise options[:fresh].inspect
-    # raise ( "OLD ASSIGNMENTS: " + @old.inspect + "NEW ASSIGNMENTS: " + @fresh.inspect )
 
     @with_conflicts =  options[:with_conflicts] || [] # Arr of WrapedAssignments
     @with_double_bookings =  options[:with_double_bookings] || [] # Arr of WrapedAssignments
@@ -120,9 +118,6 @@ class Assignments
       # }
     #does: parses params hash into WrappedAssignments that can be passed as options to initialize an Assignments object
     #output: Assignments Obj
-
-      # puts ">>>>> PARAM HASH (from Assignments.from_params)"
-      # pp param_hash
 
     options = {}
     param_hash.each do |key, wrapped_attr_arr|

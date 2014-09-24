@@ -58,7 +58,9 @@ class ConflictsController < ApplicationController
 
   def preview_batch
     @rider = Rider.find(params[:rider_id])
-    
+    @it = staffer_signed_in? ? @rider.name : 'you'
+    @its = staffer_signed_in? ? "#{@it}'s" : 'your'
+
     @this_week_start = Time.zone.parse params[:week_start]
     @next_week_start = @this_week_start + 1.week
     this_week_end = @this_week_start + 1.week
@@ -66,7 +68,9 @@ class ConflictsController < ApplicationController
     old_conflicts = @rider.conflicts_between(@this_week_start, this_week_end)
     @conflicts = Conflict.clone(old_conflicts).each { |c| c.increment_by(1.week) }
 
-    @new_batch_query = { rider_id: @rider.id, week_start: @next_week_start }.to_query
+    @base_path = staffer_signed_in? ? @base_path : '/conflict/confirm_submission'
+    @new_batch_query = { rider_id: @rider.id, week_start: @next_week_start, base_path: @base_path }.to_query
+    
     render 'preview_batch'
     # view posts to #batch_create (w/ conflicts params) or gets #batch_new (w/ rider & start_t params)
     # is the same as email view
@@ -83,6 +87,7 @@ class ConflictsController < ApplicationController
   def batch_new
     @rider = Rider.find(params[:rider_id])
     @week_start = Time.zone.parse params[:week_start]
+
     render 'batch_new'
     # view posts to do_batch_new with params { rider_id: , week_start: , period_indices }
   end
@@ -115,10 +120,9 @@ class ConflictsController < ApplicationController
     # conflicts = Conflict.batch_from_params(params[:conflicts])
     @errors = Conflict.batch_create conflicts
     if @errors.empty? || conflicts.empty?
-
       StafferMailer.conflict_notification( rider, conflicts, week_start, notes ).deliver
-
       flash[:success] = "#{conflicts.length} conflicts successfully created"
+
       redirect_to @base_path
     else
       flash[:error] = "Error creating conflicts."
@@ -129,6 +133,10 @@ class ConflictsController < ApplicationController
       
       redirect_to "/conflicts/preview_batch?#{query}"
     end
+  end
+
+  def confirm_submission
+    render 'shared/confirm_submission'
   end
 
 

@@ -1,13 +1,34 @@
-- provide(:title, 'Preview Conflict Batch')
+- provide(:title, "Conflicts for #{@rider.name}" )
 
-- it = @rider.name
-- its = "#{it}'s"
-- same_path = "/conflict/batch_clone"
-- diff_path = "/conflict/batch_new?#{@new_batch_query}"
+- #args: @it, @its, @this_week_start, @next_week_start
+- m_d = lambda{ |time| time.strftime( "%-m/%-d" ) }
+- this_week = m_d.call(@this_week_start) + ' - ' + m_d.call(@this_week_start + 6.days)
+- next_week = m_d.call(@next_week_start) + ' - ' + m_d.call(@next_week_start + 6.days)
 
-%h1 Preview Conflict Batch
-
+/Header
+%h1
+  = "Conflicts for #{@rider.name}"
+/Body
 .row.profile
   .span6.offset3
-    = render 'conflicts/batch_choice', it: it, its: its, same_path: same_path, diff_path: diff_path
-
+    /Batch Review
+    %p 
+      = "This week (#{this_week}) #{@it} had the following conflicts:"
+    = render 'conflicts/review_list'
+    / Choice
+    %p
+      %strong
+        = "Click below to indicate if #{@its} conflicts next week (#{next_week}) will be:"
+      /Same
+      = form_tag "/conflict/batch_clone", method: :post do
+        - @conflicts.each do |conflict|
+          - attrs = conflict.attributes.slice('rider_id', 'start', 'end')
+          - attrs.each do |k,v|
+            = hidden_field_tag "conflicts[][#{k}]", v 
+        = hidden_field_tag :week_start, @next_week_start
+        = hidden_field_tag :rider_id, @rider.id
+        = hidden_field_tag :base_path, @base_path    
+        %p.center
+          = submit_tag 'Same', :class => 'btn btn-primary'
+          /Different
+          = link_to 'Different', "/conflict/batch_new?#{@new_batch_query}", :class => 'btn btn-primary'

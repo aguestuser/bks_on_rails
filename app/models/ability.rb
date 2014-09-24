@@ -32,7 +32,7 @@ class Ability
       can [ :read, :update ], Contact, contactable_id: account.user.contact.id
       can [ :read, :update ], Account, user_id: account.user.id
       # Restaurants, Managers, Shifts blocked
-    else can [:create, :preview_batch, :batch_clone, :batch_new, :batch_create], Conflict
+    else can [:create, :preview_batch, :batch_clone, :batch_new, :batch_create, :do_batch_create, :confirm_submission], Conflict
     end
     # Define abilities for the passed in user here. For example:
     #

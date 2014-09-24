@@ -290,29 +290,6 @@ describe "Conflict Requests" do
         it "should format new conflicts correctly" do
           check_cloned_conflict_batch new_conflicts, conflicts
         end
-
-        it "should send an email" do
-          pp ActionMailer::Base.deliveries
-          expect(ActionMailer::Base.deliveries.count).to eq (n_mail_count + 1)
-        end
-
-        describe "notification EMAIL" do
-          let(:mail){ ActionMailer::Base.deliveries.last }
-
-          
-          it "should send an email" do
-            expect(ActionMailer::Base.deliveries.count).to eq (n_mail_count + 1)
-          end
-
-          it "should render correct metadata" do
-            check_conflict_notification_email_metadata mail, rider
-          end
-
-          it "should render correct body" do
-            check_conflict_notification_email_body mail, rider, :clone
-          end
-
-        end # "notification EMAIL"
       end # "CLONING"
 
       describe "making NEW" do
@@ -344,11 +321,7 @@ describe "Conflict Requests" do
 
               it "should format conflicts correctly" do
                 check_new_conflicts new_conflicts, [ 0,1,4,5 ]
-              end
-
-              describe "notification EMAIL" do
-                              
-              end               
+              end           
             end # "with 4 NEW CONFLICTS"
             
             describe "with NO NEW CONFLICTS" do
