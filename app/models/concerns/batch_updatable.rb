@@ -15,15 +15,10 @@ module BatchUpdatable
       new_records
     end
 
-    # def clone_batch_from_params param_hash
-    #   attr_arr = self.attributes_from param_hash
-    #   records = attr_arr.map do |attrs|
-    #     attrs = attrs.reject{ |k,v| k == 'id' }
-    #     self.new(attrs)
-    #   end
-    # end
-
     def batch_from_params param_arr
+      #input: Arr of Param Hashes (params[:<record_type>]) of type:
+        # [ { 'id': Str, 'restaurant_id': Str, ... }, { 'id': Str, 'restaurant_id': Str, ... }, ... ]
+      #output: Arr of records of whatever class calls this method
       if param_arr.nil?
         []
       else
@@ -32,7 +27,10 @@ module BatchUpdatable
       end
     end
 
-    def batch_create_ records
+    def batch_create records
+      #input Arr of unsaved records
+      #does: builds associated records & attempts save for each record, returns array of errors
+      #output: Arr of Errors
       errors = []
       records.each do |record|
         record.build_associations if record.respond_to?(:build_associations)
@@ -55,7 +53,9 @@ module BatchUpdatable
     end
 
     def batch_update old_records, new_records
-      # raise ( "NEW RECORD: " + new_records.inspect + "OLD Records: " + old_records.inspect )
+      #input: Arr of saved records (of class self), Arr of unsaved records (of class self)
+      #does: updates saved records with attributes from unsaved records, attempts save, returns array of errors
+      #output: Arr of Errors
       errors = []
       old_records.each_with_index do |old_record, i|
         attributes = new_records[i].attributes.reject{ |k,v| k == 'id' }
@@ -67,6 +67,9 @@ module BatchUpdatable
     end
 
     def attributes_from param_hash
+      #input: Hash of type { 'id': Str, 'start': Str ... }
+      #does: parses hash to well-formed (savable) attribute hash
+      #output: Hash of type { id: Int, start: Datetime, ... }
       attrs = param_hash.to_h
       attrs.reject { |k,v| k == "id" }
       attrs["start"] = parse_date(attrs["start"]) if attrs["start"]
@@ -75,6 +78,9 @@ module BatchUpdatable
     end
 
     def parse_date d
+      #input: DateTime OR Hash of Strings OR Str
+      #does: parses param version of datetime of unknown type into well-formed Datetime obj
+      #output: DateTime
       if d.class.name.include?('Time')
         d
       elsif d["year"]

@@ -6,6 +6,8 @@ class ApplicationController < ActionController::Base
   # before_action :check_sign_in
   authorize_resource
 
+  REMOTE_ROOT = "https://obscure-anchorage-7682.herokuapp.com/"
+
   def now_unless_test
     Rails.env.test? ? Time.zone.local(2014,1,6,11) : Time.zone.now
   end

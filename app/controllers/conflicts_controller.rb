@@ -113,7 +113,7 @@ class ConflictsController < ApplicationController
 
   def do_batch_create conflicts, week_start, rider, notes=nil
     # conflicts = Conflict.batch_from_params(params[:conflicts])
-    @errors = Conflict.batch_create_ conflicts
+    @errors = Conflict.batch_create conflicts
     if @errors.empty? || conflicts.empty?
 
       StafferMailer.conflict_notification( rider, conflicts, week_start, notes ).deliver

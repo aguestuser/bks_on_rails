@@ -69,13 +69,16 @@ class ShiftsController < ApplicationController
   end
 
   def batch_new
-    load_clone_shifts
+    # load_clone_shifts # loads @shifts
+    cloned_params = num_shifts.times.map{ params[:shifts].first }
+    @shifts = Shift.batch_from_params(cloned_params).each_with_index.map{ |s, i| s.increment_by(i.days) }
+
     render 'batch_new'
   end
 
   def batch_create
-    parse_clone_shifts
-    @errors = Shift.batch_create(params[:shifts])
+    shifts = Shift.batch_from_params params[:shifts]
+    @errors = Shift.batch_create shifts
 
     if @errors.empty?
       flash[:success] = "#{params[:shifts].count} shifts successfully created"
@@ -180,15 +183,14 @@ class ShiftsController < ApplicationController
       @errors = []
     end
 
-    def load_clone_shifts
-      # raise params[:shifts].inspect
-      attrs = Shift.parse_batch_attrs( params[:shifts].first )
-      @shifts = num_shifts.times.map { |n| Shift.new( attrs ).increment_by( n.days ) ) }
-    end
+    # def load_clone_shifts
+    #   cloned_params = num_shifts.times.map{ params[:shifts].first }
+    #   @shifts = Shift.batch_from_params cloned_params
+    # end
 
-    def parse_clone_shifts
-      @shifts = num_shifts.times.map{ |i| Shift.new( Shift.parse_batch_attrs(params[:shifts][i]) ) }
-    end 
+    # def parse_clone_shifts
+    #   @shifts = Shift.batch_from_params params[:shifts] 
+    # end 
 
     def num_shifts
       params[:num_shifts] ? params[:num_shifts].to_i : params[:shifts].count

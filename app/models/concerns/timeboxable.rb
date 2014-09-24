@@ -38,6 +38,7 @@ module Timeboxable
     def increment_by increment
       self.start += increment
       self.end += increment
+      self
     end
 
     private
