@@ -1,0 +1,21 @@
+- provide(:title, 'Build Clone Week Preview')
+
+%h1 Build Clone Week Preview
+.row.profile
+  .span8.offset2
+    = form_tag '/shift/preview_clone_week', method: :get do 
+      .row
+        /Restaurant
+        .span4
+          = label_tag :restaurant
+          = select_tag 'restaurant_ids', options_for_select(Restaurant.select_options, @restaurants_with_shifts.map(&:id) ), multiple: true, class: 'multi_select'
+        /Week Start
+        .span4
+          - default_week_start = Time.zone.now.beginning_of_week
+          = render '/shared/datepicker', label: 'Monday of Week to Clone:', id: "week_start", name: 'week_start', start_i: default_week_start.to_i, start_str: default_week_start.strftime("%B %e, %Y")
+        /Base Path
+        = hidden_field_tag :base_path, '/shifts/'
+      /Submit
+      .row
+        %p.center
+          = submit_tag 'Submit', :class => 'btn btn-primary'

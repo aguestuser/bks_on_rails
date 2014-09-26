@@ -54,42 +54,43 @@ BksOnRails::Application.routes.draw do
     resources :assignments
   end
 
-  get 'shift/hanging' => 'shifts#hanging'
-  get 'shift/clone_new' => 'shifts#clone_new' 
-  get 'shift/batch_new' => 'shifts#batch_new'
-  post 'shift/batch_create' => 'shifts#batch_create'
-
-  get 'shift/batch_edit' => 'shifts#batch_edit'
-  post 'shift/batch_edit' => 'shifts#batch_update'
-
-  get 'assignment/batch_edit' => 'assignments#batch_edit'
-  post 'assignment/batch_edit' => 'assignments#batch_update'
-  
-  get 'assignment/batch_edit_uniform' => 'assignments#batch_edit_uniform'
-  post 'assignment/batch_edit_uniform' => 'assignments#batch_update_uniform'
-
-  get 'assignment/resolve_obstacles' => 'assignments#request_obstacle_decisions'
-  post 'assignment/resolve_obstacles' => 'assignments#resolve_obstacles'
-  post 'assignment/batch_reassign' => 'assignments#batch_reassign'
-
+  # grid routes
   get "grid/shifts"
   match '/shift_grid', to: 'grid#shifts', via: 'get'
   get "grid/availability"
   match '/availability_grid', to: 'grid#availability', via: 'get'
   post "grid/send_emails" => 'grid#send_emails'
 
-  # get 'assignments/override_conflict'
-  # get 'assignments/override_double_booking'
-
-  get 'rider/request_conflicts_preview' => 'riders#request_conflicts_preview'
-  get 'rider/request_conflicts' => 'riders#request_conflicts'
+  # non-resourceful shift routes
+  get 'shift/hanging' => 'shifts#hanging'
+  get 'shift/clone_new' => 'shifts#clone_new' 
+  get 'shift/batch_new' => 'shifts#batch_new'
+  post 'shift/batch_create' => 'shifts#batch_create'
+  get 'shift/batch_edit' => 'shifts#batch_edit'
+  post 'shift/batch_edit' => 'shifts#batch_update'
+  get 'shift/build_clone_week_preview' => 'shifts#build_clone_week_preview'
+  get 'shift/preview_clone_week' => 'shifts#preview_clone_week'
   
+  #non-resources assignment routes
+  get 'assignment/batch_edit' => 'assignments#batch_edit'
+  post 'assignment/batch_edit' => 'assignments#batch_update'
+  get 'assignment/batch_edit_uniform' => 'assignments#batch_edit_uniform'
+  post 'assignment/batch_edit_uniform' => 'assignments#batch_update_uniform'
+  get 'assignment/resolve_obstacles' => 'assignments#request_obstacle_decisions'
+  post 'assignment/resolve_obstacles' => 'assignments#resolve_obstacles'
+  post 'assignment/batch_reassign' => 'assignments#batch_reassign'
+
+  # non-resourceful conflict routes 
   get 'conflict/build_batch_preview' => 'conflicts#build_batch_preview'
   get 'conflict/preview_batch' => 'conflicts#preview_batch'
   post 'conflict/batch_clone' => 'conflicts#batch_clone'
   get 'conflict/batch_new' => 'conflicts#batch_new'
   post 'conflict/batch_new' => 'conflicts#batch_create'
   get 'conflict/confirm_submission' => 'conflicts#confirm_submission'
+
+  # non-resourcesful rider routes
+  get 'rider/request_conflicts_preview' => 'riders#request_conflicts_preview'
+  get 'rider/request_conflicts' => 'riders#request_conflicts'
   
 
 
