@@ -63,6 +63,19 @@ class ShiftsController < ApplicationController
     
   end
 
+  def build_clone_week_preview
+    @restaurants = Rider.with_shifts_this_week
+    render 'build_week_preview'
+    # view has dropdown for restaurant & start_t submits GET to #preview_week
+  end
+
+  def preview_clone_week
+    @restaurant = Restaurant.find(params[:restaurant_id])
+    @next_week_start = @this_week_start + 1.week
+    this_week_end = @this_week_start + 1.week
+    
+  end
+
   # BATCH CRUD ACTIONS
 
   def clone_new

@@ -1305,6 +1305,30 @@ describe "Shift Requests" do
         end
       end 
     end  
+
+    describe "CLONE LAST WEEK" do
+      load_this_week_shifts
+
+      describe "building week preview WITH ALL RESTAURANTS" do
+        before do  
+          visit '/shift/build_clone_week_preview'
+          click_button 'submit'
+        end
+
+        it "should forward to the Clone Week Preview page" do
+          expect(current_path).to eq '/shift/preview_clone_week'
+          expect(page).to have_h1 'Clone Week Preview'
+        end
+
+        describe "Clone Week Preview page" do
+          
+          it "should have correct fields" do
+            check_clone_week_fields [restaurants[0], restaurants[1]], [ 7, 7 ]
+            expect(page).not_to have_h3 "#{restaurants[2].name}"
+          end
+        end
+      end # "building week preview"
+    end # "CLONE LAST WEEK"
   end
 end
 

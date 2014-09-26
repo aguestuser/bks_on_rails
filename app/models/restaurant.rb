@@ -20,7 +20,6 @@ class Restaurant < ActiveRecord::Base
     accepts_nested_attributes_for :rider_payment_info
   has_one :agency_payment_info, dependent: :destroy
     accepts_nested_attributes_for :agency_payment_info
-  
   has_many :managers, dependent: :destroy
     accepts_nested_attributes_for :managers, allow_destroy: true
   has_many :shifts
@@ -30,6 +29,20 @@ class Restaurant < ActiveRecord::Base
 
   validates :status, :brief, presence: true
   validates :active, inclusion: { in: [ true, false ] }
+
+
+  scope :with_shifts_this_week, -> { 
+    joins(:shifts)
+    .where(
+      "start > :start_t AND start < :end_t", 
+      { 
+        start_t: (Rails.env.test? ? Time.zone.local(2014,1,6,11) : Time.zone.now).beginning_of_week,
+        end_t: (Rails.env.test? ? Time.zone.local(2014,1,6,11) : Time.zone.now).beginning_of_week + 1.week
+      }
+    )
+    .joins(:mini_contact)
+    .order("mini_contacts.name asc") 
+  }
 
   #public methods
 
@@ -52,4 +65,9 @@ class Restaurant < ActiveRecord::Base
   def Restaurant.select_options
     Restaurant.all.joins(:mini_contact).order("mini_contacts.name asc").map{ |r| [ r.name, r.id ] }
   end
+
+
+  private
+
+
 end

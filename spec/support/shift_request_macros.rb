@@ -277,6 +277,13 @@ module ShiftRequestMacros
     expect(page.find("#row_1_col_10").text).to eq "#{rider.short_name} #{status_code}"     
   end
 
+  def check_clone_week_fields restaurants, ranges
+    restaurants.each_with_index do |restaurant, i|
+      expect(page).to have_h3("#{restaurant.name}")
+      expect(page)
+    end
+  end
+
   def load_batch
     let(:start_t){ Time.zone.local(2014,1,1,12) }
     let(:end_t){ Time.zone.local(2014,1,1,18) }
@@ -305,5 +312,19 @@ module ShiftRequestMacros
 
   def load_free_rider
     let!(:free_rider){ FactoryGirl.create(:rider) }
+  end
+
+  def load_this_week_shifts
+    let!(:restaurants){ 3.times.map{ FactoryGirl.create(:restaurant) } }
+    let!(:this_week_shifts) do
+      r1_shifts = 7.times.map do |n|
+        FactoryGirl.create( :shift, :with_restaurant, restaurant: restaurants[0], start: start_t + n.days, :end => end_t + n.days )
+      end
+      r2_shifts = 7.times.map do |n|
+        FactoryGirl.create( :shift, :with_restaurant, restaurant: restaurants[1], start: start_t + n.days, :end => end_t + n.days )
+      end
+
+      r1_shifts + r2_shifts
+    end
   end
 end
