@@ -109,7 +109,7 @@ module GridRequestMacros
     it { should have_label('Start:') }
     it { should have_field('filter[start]')}
     it { should have_content('End:') }
-    it { should have_content(shifts[6].formal_time) }
+    it { should have_content(shifts[6].formal_date) }
   end
 
   def avail_grid_cell_text_for record
@@ -122,7 +122,7 @@ module GridRequestMacros
   end
 
   def filter_grid_for_jan_2014
-    fill_in 'filter_start', with: 'December 30, 2013'
+    fill_in 'filter_start', with: 'January 6, 2014'
     click_button 'Filter'
   end
 

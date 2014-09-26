@@ -1222,9 +1222,9 @@ describe "Shift Requests" do
 
             it "should have correct cells in first row" do
               expect(page.find("#row_1_col_1").text).to eq 'A'*10
+              expect(page.find("#row_1_col_2").text).to eq rider.short_name + " [c]"
+              expect(page.find("#row_1_col_4").text).to eq rider.short_name + " [c]"
               expect(page.find("#row_1_col_6").text).to eq rider.short_name + " [c]"
-              expect(page.find("#row_1_col_8").text).to eq rider.short_name + " [c]"
-              expect(page.find("#row_1_col_10").text).to eq rider.short_name + " [c]"
             end              
           end
         end
@@ -1312,7 +1312,8 @@ describe "Shift Requests" do
       describe "building week preview WITH ALL RESTAURANTS" do
         before do  
           visit '/shift/build_clone_week_preview'
-          click_button 'submit'
+          fill_in 'week_start', with: 'January 6, 2014'
+          click_button 'Submit'
         end
 
         it "should forward to the Clone Week Preview page" do
@@ -1323,7 +1324,7 @@ describe "Shift Requests" do
         describe "Clone Week Preview page" do
           
           it "should have correct fields" do
-            check_clone_week_fields [restaurants[0], restaurants[1]], [ 7, 7 ]
+            check_clone_week_fields [restaurants[0], restaurants[1]], [ 6, 6 ], this_week_shifts
             expect(page).not_to have_h3 "#{restaurants[2].name}"
           end
         end

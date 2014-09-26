@@ -1,41 +1,21 @@
-- #args: shift, i
-- prefix = "restaurant_shifts[#{shift.restaurant.id}][shifts][]"
-- id_prefix = "restaurant_shifts_#{shift.restaurant.id}_shifts__"
-
-/ID
-= hidden_field_tag "#{prefix}[id]", shift.id
-/Restaurant ID
-= hidden_field_tag "#{prefix}[restaurant_id]", shift.restaurant.id
-
-.row
-  /Start
-  .span3
-    = render '/shared/datepicker', label: 'Start:', id: "#{id_prefix}start", name: '"#{prefix}[start]"', start_i: shift.start.to_i, start_str: shift.start.strftime("%B %e, %Y")
-  
-  /End
-  .span3
-    = render '/shared/datepicker', label: 'End:', id: "#{id_prefix}end", name: '"#{prefix}[end]"', start_i: shift.end.to_i, start_str: shift.end.strftime("%B %e, %Y")
-
-  /Remove
-  .span1
-    %a{ id: "remove_shift_#{i}", :class => "remove_shift btn btn-primary"}
-      Remove
-/ .row
-/   /Urgency
-/   .span2
-/     = label_tag :urgency
-/     = select_tag "#{prefix}[urgency]", options_for_select(Urgency.select_options, shift.urgency)
-
-/   /Billing Rate
-/   .span2
-/     = label_tag :billing_rate
-/     = select_tag "#{prefix}[billing_rate]", options_for_select(BillingRate.select_options, shift.billing_rate)
+- #args: shift, i, j
+- prefix = "restaurant_shifts[][shifts][]"
+- id_prefix = "restaurant_shifts__shifts__"
 
 
+%div{ id: "shifts_#{j}" }
+  .row
+    /Start
+    .span3
+      = render '/shared/datetimepicker', label: 'Start:', id: "#{id_prefix}start", name: "#{prefix}[start]", start_i: shift.start.to_i, start_str: shift.formal_start_datetime
+    /End
+    .span3
+      = render '/shared/datetimepicker', label: 'End:', id: "#{id_prefix}end", name: "#{prefix}[end]", start_i: shift.end.to_i, start_str: shift.formal_end_datetime
+    /Remove
+    .span1
+      %a{ id: "remove_shift_#{j}", :class => "remove_shift btn btn-primary"}
+        Remove
+    /Restaurant ID
+    = hidden_field_tag "#{prefix}[restaurant_id]", shift.restaurant.id
 
-/ /Notes
-/ = label_tag :notes
-/ = text_area_tag "#{prefix}[notes]", shift.notes
-
-/Basepath
-= hidden_field_tag :base_path, @base_path
+    

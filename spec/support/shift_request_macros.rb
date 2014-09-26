@@ -266,27 +266,35 @@ module ShiftRequestMacros
   end
 
   def select_batch_assign_shifts_from_grid
-    page.within("#row_1_col_6"){ find("#ids_").set true }
-    page.within("#row_1_col_8"){ find("#ids_").set true }
-    page.within("#row_1_col_10"){ find("#ids_").set true }   
+    page.within("#row_1_col_2"){ find("#ids_").set true }
+    page.within("#row_1_col_4"){ find("#ids_").set true }
+    page.within("#row_1_col_6"){ find("#ids_").set true }   
   end
 
   def check_reassigned_shift_values_in_grid rider, status_code
-    expect(page.find("#row_1_col_6").text).to eq "#{rider.short_name} #{status_code}"
-    expect(page.find("#row_1_col_8").text).to eq "#{rider.short_name} #{status_code}"
-    expect(page.find("#row_1_col_10").text).to eq "#{rider.short_name} #{status_code}"     
+    expect(page.find("#row_1_col_2").text).to eq "#{rider.short_name} #{status_code}"
+    expect(page.find("#row_1_col_4").text).to eq "#{rider.short_name} #{status_code}"
+    expect(page.find("#row_1_col_6").text).to eq "#{rider.short_name} #{status_code}"     
   end
 
-  def check_clone_week_fields restaurants, ranges
+  def check_clone_week_fields restaurants, lengths, shifts
+    #input: Arr of Restaurants, Arr of Ints, Arr of Shifts
     restaurants.each_with_index do |restaurant, i|
       expect(page).to have_h3("#{restaurant.name}")
-      expect(page)
+      lengths[i].times do |j|
+        expect( 
+          page.find("#restaurants_#{i} #shifts_#{j} #restaurant_shifts__shifts__start").value
+        ).to eq shifts[j].formal_start_datetime
+        expect( 
+          page.find("#restaurants_#{i} #shifts_#{j} #restaurant_shifts__shifts__end").value
+        ).to eq shifts[j].formal_end_datetime
+      end
     end
   end
 
   def load_batch
-    let(:start_t){ Time.zone.local(2014,1,1,12) }
-    let(:end_t){ Time.zone.local(2014,1,1,18) }
+    let(:start_t){ Time.zone.local(2014,1,6,12) }
+    let(:end_t){ Time.zone.local(2014,1,6,18) }
     let!(:batch)do
       3.times.map do |n|
         FactoryGirl.build(:shift, :with_restaurant, restaurant: restaurant, start: start_t + n.days, :end => end_t + n.days)

@@ -19,16 +19,24 @@ module Timeboxable
       self.start.strftime("%l").strip << start_min << "-" << self.end.strftime("%l").strip << end_min
     end
 
-    def formal_time
+    def formal_date
       self.start.strftime("%B %e, %Y")
     end
 
-    def short_time
+    def short_date
       self.start.strftime("%-m/%-d/%y")
     end
 
-    def very_short_time
+    def very_short_date
       self.start.strftime("%-m/%-d")
+    end
+
+    def formal_start_datetime
+      self.start.strftime("%b %e, %Y - %-l:%M %p")
+    end
+
+    def formal_end_datetime
+      self.end.strftime("%b %e, %Y - %-l:%M %p")
     end
 
     def weekday

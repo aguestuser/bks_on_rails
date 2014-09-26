@@ -48,11 +48,11 @@ describe "Grid Requests" do
         expect( page.find( "#row_1_col_3" ).text ).to eq ''
         expect( page.find( "#row_1_col_4" ).text ).to eq shift_grid_cell_text_for shifts[1]
         expect( page.find( "#row_1_col_5" ).text ).to eq ''
-        expect( page.find( "#row_1_col_6" ).text ).to eq shift_grid_cell_text_for shifts[2]
+        expect( page.find( "#row_1_col_2" ).text ).to eq shift_grid_cell_text_for shifts[2]
         expect( page.find( "#row_1_col_7" ).text ).to eq ''
-        expect( page.find( "#row_1_col_8" ).text ).to eq shift_grid_cell_text_for shifts[3]
+        expect( page.find( "#row_1_col_4" ).text ).to eq shift_grid_cell_text_for shifts[3]
         expect( page.find( "#row_1_col_9" ).text ).to eq ''
-        expect( page.find( "#row_1_col_10" ).text ).to eq shift_grid_cell_text_for shifts[4]
+        expect( page.find( "#row_1_col_6" ).text ).to eq shift_grid_cell_text_for shifts[4]
         expect( page.find( "#row_1_col_11" ).text ).to eq ''
         expect( page.find( "#row_1_col_12" ).text ).to eq shift_grid_cell_text_for shifts[5]
         expect( page.find( "#row_1_col_13" ).text ).to eq ''
@@ -121,11 +121,11 @@ describe "Grid Requests" do
         expect( page.find( "#row_1_col_3" ).text ).to eq avail_grid_cell_text_for extra_shift
         expect( page.find( "#row_1_col_4" ).text ).to eq avail_grid_cell_text_for shifts[1]
         expect( page.find( "#row_1_col_5" ).text ).to eq 'AVAIL'
-        expect( page.find( "#row_1_col_6" ).text ).to eq avail_grid_cell_text_for shifts[2]
+        expect( page.find( "#row_1_col_2" ).text ).to eq avail_grid_cell_text_for shifts[2]
         expect( page.find( "#row_1_col_7" ).text ).to eq 'AVAIL'
-        expect( page.find( "#row_1_col_8" ).text ).to eq avail_grid_cell_text_for shifts[3]
+        expect( page.find( "#row_1_col_4" ).text ).to eq avail_grid_cell_text_for shifts[3]
         expect( page.find( "#row_1_col_9" ).text ).to eq 'AVAIL'
-        expect( page.find( "#row_1_col_10" ).text ).to eq avail_grid_cell_text_for shifts[4]
+        expect( page.find( "#row_1_col_6" ).text ).to eq avail_grid_cell_text_for shifts[4]
         expect( page.find( "#row_1_col_11" ).text ).to eq 'AVAIL'
         expect( page.find( "#row_1_col_12" ).text ).to eq avail_grid_cell_text_for shifts[5]
         expect( page.find( "#row_1_col_13" ).text ).to eq 'AVAIL'

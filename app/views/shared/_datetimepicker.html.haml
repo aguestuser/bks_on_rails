@@ -1,0 +1,29 @@
+- #args: id, name, label, start_i, start_str, label_tag
+
+- params = { id: id, name: name, label: label, start_i: start_i, start_str: start_str, label_tag: label_tag }
+/ - raise params.inspect
+
+%div{ id: "date", data: { start: start_i } }
+  .span.datepicker
+    = label_tag label
+    .input-append.date.form_datetime
+      %input{ size: "18", type: "text", id: id, name: name, value: start_str }
+      %span{ class: "add-on" }
+        %i.icon-th
+        
+:javascript
+  var start = $("#date").data("start")
+  $(".form_datetime").datetimepicker({
+    format: "M dd, yyyy - H:ii P",
+    autoclose: true,
+    todayBtn: true,
+    pickerPosition: "bottom-left",
+    weekStart: 1,
+    autoclose: true,
+    minView: 0,
+    todayButton: true,
+    todayHighlight: true,
+    minuteStep: 30,
+    showMeridian: true,
+    initialDate: new Date(start * 1000)
+  });
