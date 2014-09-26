@@ -34,6 +34,7 @@ describe "RiderConflicts" do
         FactoryGirl.create( :conflict, :with_rider, rider: riders[0], start: starts[n], :end => ends[n] )
       end
     end
+    
     let(:expected_arr) do
       [
         { rider: riders[0], conflicts: [ conflicts[1] ] },

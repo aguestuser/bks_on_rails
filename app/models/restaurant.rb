@@ -41,6 +41,12 @@ class Restaurant < ActiveRecord::Base
     self.mini_contact.phone
   end
 
+  def shifts_between start_t, end_t
+    shifts = self.shifts
+      .where( "start > :start AND start < :end", { start: start_t, :end => end_t } )
+      .order("start asc")
+  end
+
   #class methods
 
   def Restaurant.select_options
