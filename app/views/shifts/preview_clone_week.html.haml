@@ -1,3 +1,17 @@
 - provide(:title, "Preview Clone Week")
 
 %h1 Preview Clone Week
+
+.row.profile
+  .span8.offset2
+    = form_tag '/shift/clone_week', method: :get do
+      - @restaurant_shifts.arr.each_with_index do |hash, i|
+        - restaurant = hash[:restaurant]
+        - shifts = hash[:shifts]
+        %div{ id: "restaurant_#{i}" }
+          %h3 
+            = "#{restaurant.name}"
+          - shifts.each_with_index do |shift, i|
+            = render 'week_batch_fields', shift: shift, i: i
+      = submit_tag 'Submit', class: 'btn btn-primary'
+
