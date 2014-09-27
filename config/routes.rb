@@ -70,6 +70,7 @@ BksOnRails::Application.routes.draw do
   post 'shift/batch_edit' => 'shifts#batch_update'
   get 'shift/build_clone_week_preview' => 'shifts#build_clone_week_preview'
   get 'shift/preview_clone_week' => 'shifts#preview_clone_week'
+  post 'shift/save_clone_week' => 'shifts#save_clone_week'
   
   #non-resources assignment routes
   get 'assignment/batch_edit' => 'assignments#batch_edit'

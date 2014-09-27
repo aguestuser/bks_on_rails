@@ -3,7 +3,7 @@
 %h1 Preview Clone Week
 .row.profile
   .span8.offset2
-    = form_tag '/shift/clone_week', method: :get do
+    = form_tag '/shift/save_clone_week', method: :post do
       - @restaurant_shifts.arr.each_with_index do |hash, i|
         - restaurant = hash[:restaurant]
         - shifts = hash[:shifts]
@@ -11,9 +11,12 @@
         %div{ id: "restaurants_#{i}" }
           %h3 
             = "#{restaurant.name}"
+            = hidden_field_tag 'restaurant_shifts[][restaurant_id]', restaurant.id
           /Shifts
           - shifts.each_with_index do |shift, j|
             = render 'week_batch_fields', shift: shift, i: i, j: j
+      /Week Start
+      = hidden_field_tag :week_start, @next_week_start
       /Basepath
       = hidden_field_tag :base_path, @base_path
       /Submit

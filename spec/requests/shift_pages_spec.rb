@@ -1308,6 +1308,7 @@ describe "Shift Requests" do
 
     describe "CLONE LAST WEEK" do
       load_this_week_shifts
+      let!(:count){ Shift.count }
 
       describe "building week preview WITH ALL RESTAURANTS" do
         before do  
@@ -1327,7 +1328,18 @@ describe "Shift Requests" do
             check_clone_week_fields [restaurants[0], restaurants[1]], [ 6, 6 ], this_week_shifts
             expect(page).not_to have_h3 "#{restaurants[2].name}"
           end
-        end
+
+          describe "CLONING shifts" do
+            
+            describe "WITHOUT EDITS" do
+              before { click_button 'Submit' }
+
+              it "should create 14 new shifts" do
+                expect(Shift.count).to eq count + 14
+              end
+            end # "WITHOUT EDITS"
+          end # "CLONING shifts"
+        end # "Clone Week Preview page"
       end # "building week preview"
     end # "CLONE LAST WEEK"
   end

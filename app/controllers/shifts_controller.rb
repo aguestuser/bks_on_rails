@@ -143,6 +143,17 @@ class ShiftsController < ApplicationController
     @restaurant_shifts = RestaurantShifts.new(@restaurants, @this_week_start).increment_week
   end
 
+  def save_clone_week
+    @restaurant_shifts = RestaurantShifts.from_params params
+    @errors = @restaurant_shifts.save
+    if @errors.empty?
+      flash[:succes] = "Schedules cloned for #{@restaurant_shifts.arr.count} restaurants"
+      redirect_to @base_path
+    else
+      render 'preview_clone_week'
+    end
+  end
+
   private  
 
     #CRUD HELPERS

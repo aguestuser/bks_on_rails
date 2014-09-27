@@ -17,6 +17,9 @@
 class Shift < ActiveRecord::Base
   include Timeboxable, BatchUpdatable
 
+  before_validation :set_urgency_if_nil
+  before_validation :set_billing_rate_if_nil
+
   belongs_to :restaurant
   has_one :assignment, dependent: :destroy #inverse_of: :shift
     accepts_nested_attributes_for :assignment
@@ -77,6 +80,14 @@ class Shift < ActiveRecord::Base
   end
 
   private
+
+    def set_billing_rate_if_nil
+      self.billing_rate = :normal if self.billing_rate.nil?
+    end
+
+    def set_urgency_if_nil
+      self.urgency = :weekly if self.urgency.nil?
+    end
 
     def parse_urgency now, start
       #input: Datetime, Datetime

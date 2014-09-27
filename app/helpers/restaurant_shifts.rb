@@ -14,6 +14,34 @@ class RestaurantShifts
     self
   end
 
+  def save
+    errors = []
+    self.arr.each do |hash|
+      subarray = []
+      restaurant = hash[:restaurant]
+      shifts = hash[:shifts]
+
+      shifts.each do |shift|
+        unless shift.save
+          subarray.push({ error: shift.errors, record: shift })
+        end
+      end
+      errors.push subarray if subarray.any?
+    end
+    errors
+  end
+
+  def self.from_params params
+    rs = RestaurantShifts.new( [], Time.zone.parse( params[:week_start] ) )
+    rs.arr = params[:restaurant_shifts].map do |rs_params|
+      {
+        restaurant: Restaurant.find( rs_params[:restaurant_id].to_i ),
+        shifts: Shift.batch_from_params( rs_params[:shifts] )
+      }
+    end
+    rs
+  end
+
   private
 
     def arr_from restaurants, start_t, end_t
