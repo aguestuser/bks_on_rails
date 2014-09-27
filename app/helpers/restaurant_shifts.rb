@@ -1,5 +1,5 @@
 class RestaurantShifts
-  attr_reader :arr, :start
+  attr_accessor :arr, :start
 
   def initialize restaurants, start_t
     @start = start_t
@@ -8,7 +8,10 @@ class RestaurantShifts
   end
 
   def increment_week
-    
+    self.arr.each do |hash|
+      hash[:shifts] = hash[:shifts].map { |s| s.increment_by(1.week) } 
+    end
+    self
   end
 
   private

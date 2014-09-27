@@ -63,23 +63,6 @@ class ShiftsController < ApplicationController
     
   end
 
-  def build_clone_week_preview
-    @restaurants_with_shifts = Restaurant.with_shifts_this_week
-    render 'build_clone_week_preview'
-    # view has dropdown for restaurant & start_t submits GET to #preview_week
-  end
-
-  def preview_clone_week
-    @restaurants = Restaurant.find(params[:restaurant_ids].map(&:to_i))
-
-    @this_week_start = Time.zone.parse params[:week_start]
-    @next_week_start = @this_week_start + 1.week
-    this_week_end = @this_week_start + 1.week
-    
-    @restaurant_shifts = RestaurantShifts.new(@restaurants, @this_week_start)
-
-  end
-
   # BATCH CRUD ACTIONS
 
   def clone_new
@@ -142,6 +125,22 @@ class ShiftsController < ApplicationController
     else
       render "batch_edit"
     end
+  end
+
+  def build_clone_week_preview
+    @restaurants_with_shifts = Restaurant.with_shifts_this_week
+    render 'build_clone_week_preview'
+    # view has dropdown for restaurant & start_t submits GET to #preview_week
+  end
+
+  def preview_clone_week
+    @restaurants = Restaurant.find(params[:restaurant_ids].map(&:to_i))
+
+    @this_week_start = Time.zone.parse params[:week_start]
+    @next_week_start = @this_week_start + 1.week
+    this_week_end = @this_week_start + 1.week
+    
+    @restaurant_shifts = RestaurantShifts.new(@restaurants, @this_week_start).increment_week
   end
 
   private  

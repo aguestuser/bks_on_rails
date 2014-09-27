@@ -280,14 +280,19 @@ module ShiftRequestMacros
   def check_clone_week_fields restaurants, lengths, shifts
     #input: Arr of Restaurants, Arr of Ints, Arr of Shifts
     restaurants.each_with_index do |restaurant, i|
+      
       expect(page).to have_h3("#{restaurant.name}")
+      
       lengths[i].times do |j|
+        shift = shifts[j].increment_by 1.week
+
         expect( 
           page.find("#restaurants_#{i} #shifts_#{j} #restaurant_shifts__shifts__start").value
-        ).to eq shifts[j].formal_start_datetime
+        ).to eq shift.formal_start_datetime
+        
         expect( 
           page.find("#restaurants_#{i} #shifts_#{j} #restaurant_shifts__shifts__end").value
-        ).to eq shifts[j].formal_end_datetime
+        ).to eq shift.formal_end_datetime
       end
     end
   end

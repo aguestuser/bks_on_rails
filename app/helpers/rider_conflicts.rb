@@ -1,5 +1,5 @@
 class RiderConflicts
-  attr_reader :arr, :start
+  attr_accessor :arr, :start
 
   def initialize riders, start_t
     @start = start_t

@@ -44,9 +44,10 @@ module Timeboxable
     end
 
     def increment_by increment
-      self.start += increment
-      self.end += increment
-      self
+      attrs = self.attributes.reject{ |k,v| k == 'id' }
+      attrs[:start] = self.start + increment
+      attrs[:end] = self.end + increment
+      self.class.new(attrs)
     end
 
     private
