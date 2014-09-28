@@ -8,75 +8,106 @@
         restIndex: #{ rest_index }, // Int
         addStr: "#{ escape_javascript( render 'clone_week_fields', rest_index: rest_index, shift_index:-1, shift: shift ) }" // Str
       })
-    listenTo(world)
+      , mutator = new Mutator(world)
+      , listener = new Listener(mutator)
+    
+    listener.listen()
   })
 
-  //LISTENERS
+  //LISTENER
 
-  function listenTo(world){ //RECURSION HOOK
-    // input: World
-    // does: mutates World, recurses
-    listenForAdd(world, addShift)
-    listenForModify(world, world.removeSelectors, removeShift)
-    listenForModify(world, world.editSelectors, editShift)
-  }
-
-  function listenForAdd(world, callback){
-    // input: World, Function(World, Function(World))
-    $(world.addSelector).click(function(){
-      callback(world, listenTo)
-    })    
-  }
-
-  function listenForModify(world, selectors, callback){
-    // input: World, Arr of Strs, Function(World, Int, Function(World))
-    _.each(selectors, function(selector, i){
-      $(selector).click(function(){
-        callback(world, i, listenTo)
-      })
-    })     
-  }
-
-  // MUTATORS
-
-  function addShift(world, callback){
-    // input: World, function(World)
-    $( world.restSelector ).append( world.addStr )
+  function Listener(mutator){
+    //context
+    var self = this
     
-    world
-      .swapIds(-1, world.count )
-      .expandSelectors()
-      .changeCountBy(1)
-      .clearEventHandlers()
+    //attributes
+    this.mutator = mutator
+    this.world = this.mutator.world
 
-    callback(world) // RECURSE
+    //public methods
+    this.listen = function (){ //RECURSION HOOK
+ 
+      listenForAdd('addShift')
+      listenForModify(this.world.removeSelectors, 'removeShift')
+      listenForModify(this.world.editSelectors, 'editShift')
+
+      function listenForAdd (message){
+        // input: Str (message for: Mutator.Function())
+        console.log(self.mutator)
+        $(self.world.addSelector).click(function(){
+          self.world = self.mutator[message]()
+          self.listen()  // RECURSE
+        })    
+      }
+
+      function listenForModify (selectors, message){
+        // input: Arr of Strs, Str (message for: Mutator.Function(Int)
+        _.each(selectors, function(selector, i){
+          $(selector).click(function(){
+            self.world = self.mutator[message](i)
+            self.listen() // RECURSE
+          })
+        })     
+      } 
+    }
   }
 
-  function editShift(world, callback){
+  // MUTATOR
 
+  function Mutator(world){
+    //context
+    var self = this
+
+    //attributes
+    this.world = world
+
+    //public methods
+    this.addShift = function(){
+      // input: prior World (implicit)
+      // output: World
+     var world = this.world
+
+     $( world.restSelector ).append( world.addStr )
+    
+      world
+        .swapIds(-1, world.count )
+        .expandSelectors()
+        .changeCountBy(1)
+        .clearEventHandlers()
+
+      return world // RECURSE
+    }
+
+    this.removeShift = function(removeIndex){
+      //input: Int, prior World (implicit)
+      //output: World
+      var world = this.world
+
+      $(world.shiftSelectors[removeIndex]).remove() // delete shift entry
+
+      var remainder = _.last(world.shiftSelectors, world.count - 1 - removeIndex )
+      _.each(remainder, function( shiftSelector, remainderIndex ){ // loop through all shift entries with indexes greater than shiftIndex
+        var offset = world.count - remainder.length
+          , oldShiftIndex = remainderIndex + offset
+        world.swapIds(oldShiftIndex, oldShiftIndex -1 )
+      })
+
+      world
+        .shrinkSelectors()
+        .changeCountBy(-1)
+        .clearEventHandlers()
+
+      return world
+    }
+
+    this.editShift = function(editIndex){
+      var world = this.world
+    }
   }
 
-  function removeShift(world, removeIndex, callback){
-    //input: World, Int, function(World)
-
-    $(world.shiftSelectors[removeIndex]).remove() // delete shift entry
-
-    var remainder = _.last(world.shiftSelectors, world.count - 1 - removeIndex )
-    _.each(remainder, function( shiftSelector, remainderIndex ){ // loop through all shift entries with indexes greater than shiftIndex
-      var offset = world.count - remainder.length
-        , oldShiftIndex = remainderIndex + offset
-      world.swapIds(oldShiftIndex, oldShiftIndex -1 )
-    })
-
-    world
-      .shrinkSelectors()
-      .changeCountBy(-1)
-      .clearEventHandlers()
-
-    callback(world) // RECURSE
-  }
-
+  //WORLD
   function World(wp){
+    //CONTEXT
     var self = this
 
     //ATTRIBUTES
