@@ -498,8 +498,39 @@ label {
   }
 }
 
-.remove_shift{
-  position: relative;
-  top: 1.75em;
-  left: 1em;
+.clone_week_entry{
+  padding-top: 0.5em;
+  border-bottom: 1px solid $grayLighter;
+  .values{
+    label{
+      float: left;
+      margin-right: 0.5em;
+    }    
+  }
+  .fields{
+    label { 
+      float: left;
+      margin-right: 1em;
+      margin-top: .3em;
+    }
+    .datepicker{
+      padding-right: 1em;
+    }
+    a{
+      padding-left: 1.5em;
+      position: relative;
+      top: 0.5em;
+    }
+  }
+  // .edit_shift, .remove_shift{
+  //   position: relative;
+  //   top: 1.75em;
+  //   left: 1em;
+  // }
 }
+
+.add_shift{
+  margin-top: 2em;
+  margin-bottom: 2em;
+}  
+

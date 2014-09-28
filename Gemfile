@@ -27,6 +27,8 @@ gem 'classy_enum', '~> 3.5.0'
 gem 'cancancan', '~> 1.8'
 gem 'figaro'
 
+gem 'underscore-rails'
+
 
 group :development, :test do
   gem 'rspec-rails', '2.13.1'

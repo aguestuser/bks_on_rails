@@ -1,0 +1,168 @@
+- # args: rest_index, shift, init_count
+
+:javascript
+  $(document).ready(function(){
+
+    var world = new World({
+      count: #{ init_count }, // Int
+      restIndex: #{ rest_index }, // Int
+      addStr: "#{ escape_javascript( render 'clone_week_fields', rest_index: rest_index, shift_index:-1, shift: shift ) }" // Str
+    })
+
+    listenTo(world)
+  })
+
+  function listenTo(world){ //RECURSION HOOK
+    // input: World
+    // output: callback(World)
+    
+    $(world.addSelector).click(function(){
+      addShiftTo(world)
+    })
+
+    _.each(world.removeSelectors, function(removeSelector, removeIndex){
+      $(removeSelector).click(function(){
+        removeShiftFrom( world, removeIndex )
+      })
+    })
+  }
+
+  function addShiftTo(world){
+    $( world.restSelector ).append( world.addStr )
+    
+    world
+      .swapIds(-1, world.count )
+      .expandSelectors()
+      .changeCountBy(1)
+
+    listenTo(world) // RECURSE
+  }
+
+  function removeShiftFrom(world, removeIndex){
+    console.log('called removeShiftFrom')
+    $(world.shiftSelectors[removeIndex]).remove() // delete shift entry
+
+    var remainder = _.last(world.shiftSelectors, world.count - 1 - removeIndex )
+    _.each(remainder, function( shiftSelector, remainderIndex ){ // loop through all shift entries with indexes greater than shiftIndex
+      var offset = world.count - remainder.length
+        , oldShiftIndex = remainderIndex + offset
+      world.swapIds(oldShiftIndex, oldShiftIndex -1 )
+    })
+
+    world
+      .shrinkSelectors()
+      .changeCountBy(-1)
+
+    listenTo(world) // RECURSE
+  }
+
+  function World(wp){
+    var self = this
+
+    //ATTRIBUTES
+    this.count = wp.count // Int
+
+    this.restIndex = wp.restIndex // Int
+    this.restIndexStr = wp.restIndex.toString() // Str
+    this.addStr = wp.addStr // Str
+
+    this.restSelector = "#restaurant_"+this.restIndexStr // Str
+    this.addSelector = "#add_shift_restaurant_"+this.restIndexStr // Str 
+    this.shiftSelectors = getShiftSelectors()
+    this.editSelectors = getEditSelectors()
+    this.removeSelectors = getRemoveSelectors()
+
+
+
+    //PUBLIC METHODS
+    this.listen = function(){ // RECURSION HOOK
+      $(this.addSelector).click(function(){
+        this.addShift() // triggers recursion
+      })
+
+      _.each(this.removeSelectors, function(removeSelector, removeIndex){
+        $(removeSelector).click(function(){
+          this.removeShiftAt( removeIndex ) // triggers recursion
+        })
+      })
+    }
+
+    function addShift(){
+      $( this.restSelector ).append( this.addStr )
+      
+      this
+        .swapIds(-1, this.count )
+        .expandSelectors()
+        .changeCountBy(1)
+        .listen() // RECURSE
+    }
+
+    this.removeShiftAt = function( removeIndex ){
+      $( this.shiftSelectors[ removeIndex ] ).remove() // delete shift entry
+
+      var remainder = _.last( this.shiftSelectors, this.count - 1 - removeIndex )
+      _.each( remainder, function( shiftSelector, remainderIndex ) { // loop through all shift entries with indexes greater than shiftIndex
+        var offset = this.count - remainder.length
+          , oldShiftIndex = remainderIndex + offset
+        this.swapIds( oldShiftIndex, oldShiftIndex -1 )
+      })
+
+      this
+        .shrinkSelectors()
+        .changeCountBy(-1)
+        .listen() // RECURSE
+    }
+
+    this.swapIds = function(oldShiftIndex, newShiftIndex){
+      // input: Int, Int
+      // does: converts Ints to Strings, swaps old ids for new ids
+      // output: new World
+      var osi = oldShiftIndex.toString(), nsi = newShiftIndex.toString(), ri = this.restIndex.toString()
+      $(this.restSelector).find("#shift_"+osi).attr( "id", "shift_" + nsi )
+      $("#remove_restaurant_"+ri+"_shift_"+osi).attr( "id", "remove_restaurant_"+ri+"_shift_"+nsi )
+      return this  
+    }
+
+    this.expandSelectors = function(){
+      this.shiftSelectors.push("#shift_"+this.count)
+      this.removeSelectors.push("#add_shift_restaurant_"+this.count)
+      this.editSelectors.push("#edit_shift_restaurant_"+this.restIndexStr+"_shift_"+this.count)
+      return this
+    }
+
+    this.shrinkSelectors = function(){
+      this.shiftSelectors.pop()
+      this.removeSelectors.pop()
+      this.editSelectors.pop()
+      return this
+    }
+
+    this.changeCountBy = function(int){
+      this.count += int
+      return this
+    }
+
+    // PRIVATE METHODS
+
+    function getShiftSelectors(){
+      var base = "#shift_"
+      return selectorsFrom(base)
+    }
+
+    function getEditSelectors(){
+      var base = "#edit_restaurant_"+self.restIndexStr+"_shift_"
+      return selectorsFrom(base)
+    }
+
+    function getRemoveSelectors(){
+      var base = "#remove_restaurant_"+self.restIndexStr+"_shift_"
+      return selectorsFrom(base)
+    }
+
+    function selectorsFrom(base){
+      return _(self.count).times( function(n) { return base + n.toString() } )
+    }
+  }
+
+
+ 

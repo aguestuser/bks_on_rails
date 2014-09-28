@@ -8,16 +8,28 @@
         - restaurant = hash[:restaurant]
         - shifts = hash[:shifts]
         /Restaurant
-        %div{ id: "restaurants_#{i}" }
+        %div{ id: "restaurant_#{i}" }
           %h3 
             = "#{restaurant.name}"
             = hidden_field_tag 'restaurant_shifts[][restaurant_id]', restaurant.id
           /Shifts
           - shifts.each_with_index do |shift, j|
-            = render 'week_batch_fields', shift: shift, i: i, j: j
+            = render 'clone_week_values', shift: shift, rest_index: i, shift_index: j
+        /Add Shift
+        .center.add_shift
+          %a{ id: "add_shift_restaurant_#{i}", :class => 'btn btn-primary'}
+            Add Shift
+          - blank_shift = blank_shift_from(restaurant, @next_week_start)  
+          = render 'clone_week_js', rest_index: i, init_count: shifts.count, shift: blank_shift
       /Week Start
       = hidden_field_tag :week_start, @next_week_start
       /Basepath
       = hidden_field_tag :base_path, @base_path
       /Submit
       = submit_tag 'Submit', class: 'btn btn-primary'
+
+
+
+/ "APPENDING WORKS"
+
+/ "#{ escape_javascript( render :partial => 'clone_week_fields', :locals => { i: 0, j: 15, shift: Shift.first } ) }"

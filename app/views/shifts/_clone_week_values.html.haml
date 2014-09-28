@@ -1,0 +1,31 @@
+- #args: shift, i, j
+- prefix = "restaurant_shifts[][shifts][]"
+- id_prefix = "restaurant_shift__shift__"
+
+
+%div{ id: "shift_#{shift_index}", :class => "clone_week_entry"}
+  .row.values
+    /Start
+    .span3
+      = label_tag :start, 'Start:'
+      = shift.formal_start_datetime
+      = hidden_field_tag "#{id_prefix}[start]", shift.start
+    /End
+    .span3
+      = label_tag :start, 'End:'
+      = shift.formal_end_datetime
+      = hidden_field_tag "#{id_prefix}[end]", shift.end
+    /Restaurant ID
+    = hidden_field_tag "#{prefix}[restaurant_id]", shift.restaurant.id
+    /Buttons
+    .span2
+      / Edit
+      %a{ id: "edit_restaurant_#{rest_index}_shift_#{shift_index}" }
+        Edit
+      |
+      /Remove
+      %a{ id: "remove_restaurant_#{rest_index}_shift_#{shift_index}"}
+        Remove
+
+
+    

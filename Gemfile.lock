@@ -218,6 +218,7 @@ GEM
     uglifier (2.1.1)
       execjs (>= 0.3.0)
       multi_json (~> 1.0, >= 1.0.2)
+    underscore-rails (1.7.0)
     websocket (1.0.7)
     will_paginate (3.0.4)
     xpath (2.0.0)
@@ -260,4 +261,5 @@ DEPENDENCIES
   sprockets (= 2.11.0)
   turbolinks (= 1.1.1)
   uglifier (= 2.1.1)
+  underscore-rails
   will_paginate (= 3.0.4)

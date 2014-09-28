@@ -1,7 +1,7 @@
 class ShiftsController < ApplicationController
   include Filters, Sortable, Paths
 
-  # helper_method :sort_column, :sort_direction
+  helper_method :blank_shift_from
 
   before_action :load_shift, only: [ :show, :edit, :update, :destroy ]
   before_action :load_caller # will call load_restaurant or load_rider if applicable, load_paths always
@@ -252,6 +252,10 @@ class ShiftsController < ApplicationController
       when nil
         @form_args = @shift
       end
+    end
+
+    def blank_shift_from restaurant, week_start
+      Shift.new(restaurant_id: restaurant.id, start: week_start + 12.hours, :end => week_start + 18.hours )
     end
 
     # HTTP HELPERS
