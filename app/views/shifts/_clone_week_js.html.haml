@@ -14,32 +14,52 @@
 
   function listenTo(world){ //RECURSION HOOK
     // input: World
-    // output: callback(World)
-    
-    $(world.addSelector).click(function(){
-      addShiftTo(world)
-    })
-
-    _.each(world.removeSelectors, function(removeSelector, removeIndex){
-      $(removeSelector).click(function(){
-        removeShiftFrom( world, removeIndex )
-      })
-    })
+    // does: mutates World, recurses
+    listenForAdd(world, addShift)
+    listenForModify(world, world.removeSelectors, removeShift)
+    listenForModify(world, world.editSelectors, editShift)
   }
 
-  function addShiftTo(world){
+  function listenForAdd(world, callback){
+    // input: World, function(World, Callback)
+    $(world.addSelector).click(function(){
+      addShiftTo(world, listenTo)
+    })    
+  }
+
+  function listenForModify(world, selectors, callback){
+    // input: Arr of Strs, function(World, Int, Callback)
+    _.each(selectors, function(selector, i){
+      $(selector).click(function(){
+        callback( world, i, listenTo )
+      })
+    })     
+  }
+
+  function addShift(world, callback){
+    // input: World, function(World)
     $( world.restSelector ).append( world.addStr )
     
     world
       .swapIds(-1, world.count )
       .expandSelectors()
       .changeCountBy(1)
+      .clearEventHandlers()
 
-    listenTo(world) // RECURSE
+    callback(world) // RECURSE
   }
 
-  function removeShiftFrom(world, removeIndex){
-    console.log('called removeShiftFrom')
+  function editShift(world, callback){
+
+  }
+
+  function removeShift(world, removeIndex, callback){
+    //input: World, Int, function(World)
+
+      console.log('______________________________________')
+      console.log('>>> WORLD BEFORE REMOVE')
+      console.log(world)
+
     $(world.shiftSelectors[removeIndex]).remove() // delete shift entry
 
     var remainder = _.last(world.shiftSelectors, world.count - 1 - removeIndex )
@@ -52,8 +72,17 @@
     world
       .shrinkSelectors()
       .changeCountBy(-1)
+      .clearEventHandlers()
 
-    listenTo(world) // RECURSE
+    // _.each(world.removeSelectors, function(selector){ $(selector).off('click') })
+      
+
+      console.log('>>> WORLD AFTER REMOVE')
+      console.log(world)      
+      console.log('______________________________________')
+
+
+    callback(world) // RECURSE
   }
 
   function World(wp){
@@ -72,9 +101,8 @@
     this.editSelectors = getEditSelectors()
     this.removeSelectors = getRemoveSelectors()
 
-
-
     //PUBLIC METHODS
+
     this.listen = function(){ // RECURSION HOOK
       $(this.addSelector).click(function(){
         this.addShift() // triggers recursion
@@ -87,6 +115,7 @@
       })
     }
 
+    //mutations
     function addShift(){
       $( this.restSelector ).append( this.addStr )
       
@@ -125,15 +154,15 @@
 
     this.expandSelectors = function(){
       this.shiftSelectors.push("#shift_"+this.count)
-      this.removeSelectors.push("#add_shift_restaurant_"+this.count)
-      this.editSelectors.push("#edit_shift_restaurant_"+this.restIndexStr+"_shift_"+this.count)
+      this.removeSelectors.push("#remove_restaurant_"+this.restIndexStr+"_shift_"+this.count)
+      this.editSelectors.push("#edit_restaurant_"+this.restIndexStr+"_shift_"+this.count)
       return this
     }
 
     this.shrinkSelectors = function(){
-      this.shiftSelectors.pop()
-      this.removeSelectors.pop()
-      this.editSelectors.pop()
+      _.each(lineItemSelectors(), function(selectors){
+        selectors.pop()
+      })
       return this
     }
 
@@ -142,8 +171,20 @@
       return this
     }
 
+    this.clearEventHandlers = function(){
+      // _.each(this.removeSelectors, function(selector){ $(selector).off('click') })
+
+      _.each(eventHandlingSelectors(), function(selectors){
+        _.each(selectors, function(selector){
+          $(selector).off('click')
+        })
+      })
+      return this
+    }
+
     // PRIVATE METHODS
 
+    //initializers
     function getShiftSelectors(){
       var base = "#shift_"
       return selectorsFrom(base)
@@ -162,6 +203,20 @@
     function selectorsFrom(base){
       return _(self.count).times( function(n) { return base + n.toString() } )
     }
+
+    //accessors
+    function lineItemSelectors(){
+      return [ self.shiftSelectors, self.removeSelectors, self.editSelectors ]
+    }
+
+    function eventHandlingSelectors(){
+      return [ self.removeSelectors, self.editSelectors, [ self.addSelector ] ]
+    }
+
+    function modifySelectors(){
+      return [ self.removeSelectors, self.editSelectors ]
+    }
+
   }
 
 
