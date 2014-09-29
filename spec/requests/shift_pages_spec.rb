@@ -1419,7 +1419,40 @@ describe "Shift Requests" do
                       expect(Shift.count).to eq count + 14
                       check_cloned_shift_values Shift.last(14), expected_new_shifts(:edit)
                     end 
-                  end # "COMMITTING edits"
+                  end # "saving WITH NO ERRORS"
+
+                  describe "saving with START-BEFORE-END ERROR" do
+                    before do 
+                      page.find('#restaurant_0 #shift_0 #restaurant_shifts__shifts__start').set 'Jan 13, 2014 - 9:00 PM'
+                      click_button 'Submit'
+                    end
+
+                    it "should have an error message" do
+                      expect(page).to have_an_error_message
+                    end
+                  end # "saving with START-BEFORE-END ERROR"
+
+                  describe "saving with SHIFT-TOO-EARLY ERROR" do
+                    before do 
+                      page.find('#restaurant_0 #shift_0 #restaurant_shifts__shifts__start').set 'Jan 1, 2014 - 9:00 PM'
+                      click_button 'Submit'
+                    end
+
+                    it "should have an error message" do
+                      expect(page).to have_an_error_message
+                    end
+                  end # "saving with SHIFT-TOO-EARLY ERROR"   
+
+                  describe "saving with SHIFT-TOO-LATE ERROR" do
+                    before do 
+                      page.find('#restaurant_0 #shift_0 #restaurant_shifts__shifts__start').set 'Jan 1, 2015 - 9:00 PM'
+                      click_button 'Submit'
+                    end
+
+                    it "should have an error message" do
+                      expect(page).to have_an_error_message
+                    end
+                  end # "saving with SHIFT-TOO-LATE ERROR"            
                 end # "CLICKING edit"
               end # "EDITING SHIFTS"
             end # "WITH EDITS"
