@@ -6,7 +6,7 @@
     var world = new World({
         count: #{ init_count }, // Int
         restIndex: #{ rest_index }, // Int
-        addStr: "#{ escape_javascript( render 'clone_week_fields', rest_index: rest_index, shift_index:-1, shift: shift ) }" // Str
+        editFields: "#{ escape_javascript( render 'clone_week_fields', rest_index: rest_index, shift_index:-1, shift: shift ) }" // Str
       })
       , mutator = new Mutator(world)
       , listener = new Listener(mutator)
@@ -15,107 +15,107 @@
   })
 
   //LISTENER
-
   function Listener(mutator){
-    //context
+
+    //ATTRIBUTES
     var self = this
-    
-    //attributes
     this.mutator = mutator
     this.world = this.mutator.world
 
-    //public methods
+    //PUBLIC METHODS
     this.listen = function (){ //RECURSION HOOK
- 
       listenForAdd('addShift')
       listenForModify(this.world.removeSelectors, 'removeShift')
       listenForModify(this.world.editSelectors, 'editShift')
-
-      function listenForAdd (message){
-        // input: Str (message for: Mutator.Function())
-        console.log(self.mutator)
-        $(self.world.addSelector).click(function(){
-          self.world = self.mutator[message]()
-          self.listen()  // RECURSE
-        })    
-      }
-
-      function listenForModify (selectors, message){
-        // input: Arr of Strs, Str (message for: Mutator.Function(Int)
-        _.each(selectors, function(selector, i){
-          $(selector).click(function(){
-            self.world = self.mutator[message](i)
-            self.listen() // RECURSE
-          })
-        })     
-      } 
     }
+
+    //PRIVATE METHODS
+    function listenForAdd (message){
+      // input: Str (message for: Mutator.Function())
+      $(self.world.addSelector).click(function(){
+        self.world = self.mutator[message]()
+        self.listen()  // RECURSE
+      })    
+    }
+
+    function listenForModify (selectors, message){
+      // input: Arr of Strs, Str (message for: Mutator.Function(Int)
+      _.each(selectors, function(selector, i){
+        $(selector).click(function(){
+          self.world = self.mutator[message](i)
+          self.listen() // RECURSE
+        })
+      })     
+    } 
   }
 
   // MUTATOR
-
   function Mutator(world){
-    //context
+    
+    //ATTRIBUTES
     var self = this
-
-    //attributes
     this.world = world
 
-    //public methods
+    //PUBLIC METHODS
     this.addShift = function(){
       // input: prior World (implicit)
-      // output: World
+      // output: new World
      var world = this.world
-
-     $( world.restSelector ).append( world.addStr )
+     $( world.restSelector ).append( world.editFields )
     
-      world
-        .swapIds(-1, world.count )
+      return world
+        .swapIndex(-1, world.count )
         .expandSelectors()
         .changeCountBy(1)
         .clearEventHandlers()
-
-      return world // RECURSE
     }
 
-    this.removeShift = function(removeIndex){
+    this.removeShift = function(index){
       //input: Int, prior World (implicit)
-      //output: World
+      //output: new World
       var world = this.world
+        , here = world.domLocationFrom(index)
+      here.remove() // delete shift entry
 
-      $(world.shiftSelectors[removeIndex]).remove() // delete shift entry
+      var remainder = _.last(world.shiftSelectors, world.count - 1 - index ) // build array of selectors after removal point
+        , oldIndices = _.map( remainder, function( selector, i ){ return i + ( world.count - remainder.length ) } ) // offset indices by difference between size of original array and current aray
+        , newIndices = _.map(oldIndices, function(index){ return index -1 })
 
-      var remainder = _.last(world.shiftSelectors, world.count - 1 - removeIndex )
-      _.each(remainder, function( shiftSelector, remainderIndex ){ // loop through all shift entries with indexes greater than shiftIndex
-        var offset = world.count - remainder.length
-          , oldShiftIndex = remainderIndex + offset
-        world.swapIds(oldShiftIndex, oldShiftIndex -1 )
-      })
-
-      world
+      return world
+        .swapIndices(oldIndices, newIndices)
         .shrinkSelectors()
         .changeCountBy(-1)
         .clearEventHandlers()
-
-      return world
     }
 
-    this.editShift = function(editIndex){
+    this.editShift = function(index){
+      //input: Int, prior World (implicit)
+      //output: new World
       var world = this.world
+        , here = world.domLocationFrom(index)
+        , dates = world.currentDates(here)
+
+      $( here ).replaceWith( world.editFields ) // replace values with dummy fields
+
+      return world
+        .swapIndex(-1, index)
+        .restoreDates(world.domLocationFrom(index), dates) // send fresh instance of 'here' (b/c DOM has been mutated)
+        .clearEventHandlers()
     }
   }
 
   //WORLD
+
   function World(wp){
-    //CONTEXT
-    var self = this
 
     //ATTRIBUTES
+
+    var self = this
     this.count = wp.count // Int
 
     this.restIndex = wp.restIndex // Int
     this.restIndexStr = wp.restIndex.toString() // Str
-    this.addStr = wp.addStr // Str
+    this.editFields = wp.editFields // Str
 
     this.restSelector = "#restaurant_"+this.restIndexStr // Str
     this.addSelector = "#add_shift_restaurant_"+this.restIndexStr // Str 
@@ -125,16 +125,53 @@
 
     //PUBLIC METHODS
 
+    //accessors
+    this.domLocationFrom = function(index){
+      //input: Int
+      //output: jQuery Obj
+      return $(this.restSelector).find(this.shiftSelectors[index])
+    }
+
+    this.currentDates = function(here){
+      //input: jQuery Obj
+      //output: Obj Literal of form
+        // { start: DateString, end: DateString }
+      return {
+        start: dateStr( here, '.start', 'Start:'),
+        end: dateStr( here, '.end', 'End:' )
+      }
+    }
+
     //mutations
-    
-    this.swapIds = function(oldShiftIndex, newShiftIndex){
+    this.swapIndices = function(oldIndices, newIndices){
+      //input: Arr of Ints, Arr of Indices
+      //output: new World
+      console.log()
+      _.each(oldIndices, function(oldIndex, i){
+        self.swapIndex(oldIndex, newIndices[i])
+      })
+      return this
+    }
+
+    this.swapIndex = function(oldShiftIndex, newShiftIndex){
       // input: Int, Int
       // does: converts Ints to Strings, swaps old ids for new ids
       // output: new World
       var osi = oldShiftIndex.toString(), nsi = newShiftIndex.toString(), ri = this.restIndex.toString()
       $(this.restSelector).find("#shift_"+osi).attr( "id", "shift_" + nsi )
       $("#remove_restaurant_"+ri+"_shift_"+osi).attr( "id", "remove_restaurant_"+ri+"_shift_"+nsi )
+      $("#edit_restaurant_"+ri+"_shift_"+osi).attr( "id", "edit_restaurant_"+ri+"_shift_"+nsi )
       return this  
+    }
+
+    this.restoreDates = function(here, dates){
+      // input: jQuery Obj, Obj Literal of form:
+        // { start: DateString, end: DateString }
+      // does: restores values inside selector to values provided in object literal
+      // output: new World
+      here.find('#restaurant_shifts__shifts__start').attr('value', dates.start)
+      here.find('#restaurant_shifts__shifts__end').attr('value', dates.end)
+      return this
     }
 
     this.expandSelectors = function(){
@@ -157,8 +194,7 @@
     }
 
     this.clearEventHandlers = function(){
-      // _.each(this.removeSelectors, function(selector){ $(selector).off('click') })
-
+      // output: new World
       _.each(eventHandlingSelectors(), function(selectors){
         _.each(selectors, function(selector){
           $(selector).off('click')
@@ -200,6 +236,10 @@
 
     function modifySelectors(){
       return [ self.removeSelectors, self.editSelectors ]
+    }
+
+    function dateStr(here, selector, garbageStr){
+      return here.find(selector).text().replace(garbageStr, '').trim()
     }
 
   }

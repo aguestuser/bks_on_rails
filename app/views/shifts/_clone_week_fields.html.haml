@@ -1,14 +1,14 @@
 - #args: shift, rest_index, shift_index
 - prefix = "restaurant_shifts[][shifts][]"
-- id_prefix = "restaurant_shift__shift__"
+- id_prefix = "restaurant_shifts__shifts__"
 
 
 %div{ id: "shift_#{shift_index}", :class => "clone_week_entry" }
   .row.fields
     /Start
-    = render '/shared/datetimepicker', label: 'Start:', id: "#{id_prefix}start", name: "#{prefix}[start]", start_i: shift.start.to_i, start_str: shift.formal_start_datetime
+    = render '/shared/datetimepicker', label: 'Start:', id: "#{id_prefix}start", :class_str => 'start', name: "#{prefix}[start]", start_i: shift.start.to_i, start_str: shift.formal_start_datetime
     /End
-    = render '/shared/datetimepicker', label: 'End:', id: "#{id_prefix}end", name: "#{prefix}[end]", start_i: shift.end.to_i, start_str: shift.formal_end_datetime
+    = render '/shared/datetimepicker', label: 'End:', id: "#{id_prefix}end", :class_str => 'end', name: "#{prefix}[end]", start_i: shift.end.to_i, start_str: shift.formal_end_datetime
     /Remove
     %a{ id: "remove_restaurant_#{rest_index}_shift_#{shift_index}" }
       Remove
