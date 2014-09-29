@@ -297,6 +297,20 @@ module ShiftRequestMacros
     end
   end
 
+  def check_cloned_shift_values shifts, expected_shifts
+    expect( 
+      shifts.map { |s| filter_cloned s.attributes  }
+    ).to eq next_week_shifts.map{ |s| filter_cloned s.attributes }
+  end
+
+  def filter_cloned attrs
+    attrs.reject{ |k,v| not_cloned? k }
+  end
+
+  def not_cloned? key
+    key == 'id' || key == 'notes' || key == 'created_at' || key == 'updated_at'
+  end
+
   def load_batch
     let(:start_t){ Time.zone.local(2014,1,6,12) }
     let(:end_t){ Time.zone.local(2014,1,6,18) }
@@ -338,6 +352,14 @@ module ShiftRequestMacros
       end
 
       r1_shifts + r2_shifts
+    end
+  end
+
+  def load_next_week_shifts
+    let!(:next_week_shifts) do
+      this_week_shifts.map do |shift|
+        shift.increment_by 1.week
+      end
     end
   end
 end

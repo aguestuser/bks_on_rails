@@ -62,6 +62,10 @@ module Timeboxable
       self.end > datetime
     end
 
+    def add_end_too_late_error datetime
+      errors.add(:end, "can't be after #{datetime.strftime("%-m/%-d/%y")}")
+    end
+
     private
 
       def set_period

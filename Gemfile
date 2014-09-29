@@ -39,6 +39,7 @@ group :development, :test do
   gem 'erb2haml'
   gem 'annotate', ">=2.6.0"
   gem 'factory_girl_rails', '4.2.1'
+  gem 'database_cleaner'
 end
 
 group :test do

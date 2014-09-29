@@ -1330,14 +1330,47 @@ describe "Shift Requests" do
           end
 
           describe "CLONING shifts" do
+            load_next_week_shifts
             
             describe "WITHOUT EDITS" do
               before { click_button 'Submit' }
 
-              it "should create 14 new shirfts" do
+              it "should create 14 new shifts" do
                 expect(Shift.count).to eq count + 14
               end
+
+              it "should format shifts correctly" do
+                check_cloned_shift_values Shift.last(14), next_week_shifts
+              end
+
+              it "should redirect to shifts index" do
+                expect(current_path).to eq '/shifts/'
+              end
             end # "WITHOUT EDITS"
+
+            describe "WITH EDITS", js: true do
+                
+              describe "ADDING SHIFT" do
+                before{ page.find('#add_shift_restaurant_0').click }
+
+                it "should display edit fields with correct contents" do
+                  expect(page.find('#restaurant_0 #shift_7 #restaurant_shifts__shifts__start').value).to eq 'Jan 13, 2014 - 12:00 PM'
+                  expect(page.find('#restaurant_0 #shift_7 #restaurant_shifts__shifts__end').value).to eq 'Jan 13, 2014 - 6:00 PM'
+                end
+
+                describe "WITH NO ERRORS" do
+                  before { click_button 'Submit' }
+
+                  it "should create 15 new shifts" do
+                    expect( Shift.count ).to eq count + 15
+                  end
+
+                  it "should format shifts correctly" do
+                    expect(Shift.last(15)).to eq expected_new_shifts(:add)
+                  end
+                end #"WITH NO ERRORS"
+              end # "ADDING SHIFT"  
+            end # "WITH EDITS"
           end # "CLONING shifts"
         end # "Clone Week Preview page"
       end # "building week preview"
