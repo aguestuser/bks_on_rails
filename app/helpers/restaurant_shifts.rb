@@ -32,6 +32,7 @@ class RestaurantShifts
           subarray = record_error subarray, shift
         
         else
+          shift.build_associations
           unless shift.save
             subarray = record_error subarray, shift
           end
