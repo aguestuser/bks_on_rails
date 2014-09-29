@@ -1349,27 +1349,79 @@ describe "Shift Requests" do
             end # "WITHOUT EDITS"
 
             describe "WITH EDITS", js: true do
-                
-              describe "ADDING SHIFT" do
-                before{ page.find('#add_shift_restaurant_0').click }
+              
+              describe "REMOVING SHIFTS" do
+                before do 
+                  page.find('#remove_restaurant_1_shift_6').click
+                  page.find('#remove_restaurant_1_shift_0').click
+                  click_button 'Submit'
+                end
+
+                it "should create 13 new shifts" do
+                  expect( Shift.count ).to eq count + 12
+                end
+
+                it "should format shifts correctly" do
+                  check_cloned_shift_values Shift.last(12), expected_new_shifts(:remove)
+                end
+              end  # REMOVING SHIFTS"
+
+              describe "ADDING SHIFTS" do
+                before do 
+                  page.find('#add_shift_restaurant_1').click 
+                  page.find('#add_shift_restaurant_1').click
+                end
 
                 it "should display edit fields with correct contents" do
-                  expect(page.find('#restaurant_0 #shift_7 #restaurant_shifts__shifts__start').value).to eq 'Jan 13, 2014 - 12:00 PM'
-                  expect(page.find('#restaurant_0 #shift_7 #restaurant_shifts__shifts__end').value).to eq 'Jan 13, 2014 - 6:00 PM'
+                  expect(page.find('#restaurant_1 #shift_7 #restaurant_shifts__shifts__start').value).to eq 'Jan 13, 2014 - 12:00 PM'
+                  expect(page.find('#restaurant_1 #shift_7 #restaurant_shifts__shifts__end').value).to eq 'Jan 13, 2014 - 6:00 PM'
+                  expect(page.find('#restaurant_1 #shift_8 #restaurant_shifts__shifts__start').value).to eq 'Jan 13, 2014 - 12:00 PM'
+                  expect(page.find('#restaurant_1 #shift_8 #restaurant_shifts__shifts__end').value).to eq 'Jan 13, 2014 - 6:00 PM'
                 end
 
                 describe "WITH NO ERRORS" do
                   before { click_button 'Submit' }
 
-                  it "should create 15 new shifts" do
-                    expect( Shift.count ).to eq count + 15
-                  end
-
-                  it "should format shifts correctly" do
-                    expect(Shift.last(15)).to eq expected_new_shifts(:add)
+                  it "should create 16 new shifts with correct values" do
+                    expect( Shift.count ).to eq count + 16
+                    check_cloned_shift_values Shift.last(16), expected_new_shifts(:add)
                   end
                 end #"WITH NO ERRORS"
-              end # "ADDING SHIFT"  
+              end # "ADDING SHIFTS"
+
+              describe "EDITING SHIFTS" do
+
+                describe "CLICKING edit" do
+                  before do 
+                    page.find('#edit_restaurant_0_shift_0').click
+                    page.find('#edit_restaurant_0_shift_1').click
+                  end
+
+                  it "should display edit fields with correct contents" do
+                    expect(page.find('#restaurant_0 #shift_0 #restaurant_shifts__shifts__start').value).to eq next_week_shifts[0].formal_start_datetime
+                    expect(page.find('#restaurant_0 #shift_0 #restaurant_shifts__shifts__end').value).to eq next_week_shifts[0].formal_end_datetime
+                    expect(page.find('#restaurant_0 #shift_1 #restaurant_shifts__shifts__start').value).to eq next_week_shifts[1].formal_start_datetime
+                    expect(page.find('#restaurant_0 #shift_1 #restaurant_shifts__shifts__end').value).to eq next_week_shifts[1].formal_end_datetime
+                  end
+
+                  describe "saving WITH NO ERRORS" do
+                    before do
+                      page.find('#restaurant_0 #shift_0 #restaurant_shifts__shifts__start').set 'Jan 13, 2014 - 10:00 AM'
+                      page.find('#restaurant_0 #shift_0 #restaurant_shifts__shifts__end').set 'Jan 13, 2014 - 4:00 PM'
+                      
+                      page.find('#restaurant_0 #shift_1 #restaurant_shifts__shifts__start').set 'Jan 14, 2014 - 10:00 AM'
+                      page.find('#restaurant_0 #shift_1 #restaurant_shifts__shifts__end').set 'Jan 14, 2014 - 4:00 PM'
+                      
+                      click_button 'Submit'                
+                    end
+                    
+                    it "should create 14 shifts with correct values" do
+                      expect(Shift.count).to eq count + 14
+                      check_cloned_shift_values Shift.last(14), expected_new_shifts(:edit)
+                    end 
+                  end # "COMMITTING edits"
+                end # "CLICKING edit"
+              end # "EDITING SHIFTS"
             end # "WITH EDITS"
           end # "CLONING shifts"
         end # "Clone Week Preview page"

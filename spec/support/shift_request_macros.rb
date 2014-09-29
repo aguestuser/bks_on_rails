@@ -311,6 +311,36 @@ module ShiftRequestMacros
     key == 'id' || key == 'notes' || key == 'created_at' || key == 'updated_at'
   end
 
+  def expected_new_shifts action
+    case action
+    when :add
+      expected_add_shifts
+    when :remove
+      expected_remove_shifts
+    when :edit
+      expected_edit_shifts
+    end
+  end
+
+  def expected_add_shifts
+    start_t = next_week_shifts[0].start
+    end_t = next_week_shifts[0].end
+    next_week_shifts + 2.times.map {
+      FactoryGirl.create(:shift, :with_restaurant, restaurant: restaurants[1], start: start_t, :end => end_t )
+    }
+  end
+
+  def expected_remove_shifts
+    next_week_shifts.pop
+    next_week_shifts.shift
+    next_week_shifts
+  end
+
+  def expected_edit_shifts
+    edited_shifts = 2.times { |i| next_week_shifts[i] = next_week_shifts[i].increment_by -2.hours }
+    edited_shifts
+  end
+
   def load_batch
     let(:start_t){ Time.zone.local(2014,1,6,12) }
     let(:end_t){ Time.zone.local(2014,1,6,18) }
