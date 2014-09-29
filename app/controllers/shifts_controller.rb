@@ -135,6 +135,7 @@ class ShiftsController < ApplicationController
 
   def preview_clone_week
     @restaurants = Restaurant.find(params[:restaurant_ids].map(&:to_i))
+    @errors = @restaurants.count.times.map{ [] }
 
     @this_week_start = Time.zone.parse params[:week_start]
     @next_week_start = @this_week_start + 1.week
@@ -146,10 +147,14 @@ class ShiftsController < ApplicationController
   def save_clone_week
     @restaurant_shifts = RestaurantShifts.from_params params
     @errors = @restaurant_shifts.save
-    if @errors.empty?
-      flash[:succes] = "Schedules cloned for #{@restaurant_shifts.arr.count} restaurants"
+
+    if @errors == @restaurant_shifts.arr.map{ [] }
+      flash[:success] = "Schedules cloned for #{@restaurant_shifts.arr.count} restaurants"
       redirect_to @base_path
     else
+      @next_week_start = @restaurant_shifts.start
+      @this_week_start = @next_week_start - 1.week
+      flash[:error] = "The form contains #{view_context.pluralize @errors.flatten.count, "error"}"
       render 'preview_clone_week'
     end
   end

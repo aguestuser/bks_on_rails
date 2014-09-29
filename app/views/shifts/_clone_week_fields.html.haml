@@ -1,9 +1,12 @@
-- #args: shift, rest_index, shift_index
+- #args: shift, rest_index, shift_index, has_errors
 - prefix = "restaurant_shifts[][shifts][]"
 - id_prefix = "restaurant_shifts__shifts__"
+- has_errors = has_errors || false
+- class_str = "clone_week_entry"
+- class_str << " field_with_errors" if has_errors
 
 
-%div{ id: "shift_#{shift_index}", :class => "clone_week_entry" }
+%div{ id: "shift_#{shift_index}", :class => class_str }
   .row.fields
     /Start
     = render '/shared/datetimepicker', label: 'Start:', id: "#{id_prefix}start", :class_str => 'start', name: "#{prefix}[start]", start_i: shift.start.to_i, start_str: shift.formal_start_datetime

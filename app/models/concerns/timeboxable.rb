@@ -50,6 +50,18 @@ module Timeboxable
       self.class.new(attrs)
     end
 
+    def starts_before datetime
+      self.start < datetime
+    end
+
+    def add_start_too_early_error datetime
+      errors.add(:start, "can't be before #{datetime.strftime("%-m/%-d/%y")}")
+    end
+
+    def ends_after datetime
+      self.end > datetime
+    end
+
     private
 
       def set_period

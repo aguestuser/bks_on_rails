@@ -3,8 +3,8 @@ class RestaurantShifts
 
   def initialize restaurants, start_t
     @start = start_t
-    end_t = start_t + 1.week
-    @arr = arr_from restaurants, start_t, end_t
+    @end = start_t + 1.week
+    @arr = arr_from restaurants, @start, @end
   end
 
   def increment_week
@@ -22,11 +22,22 @@ class RestaurantShifts
       shifts = hash[:shifts]
 
       shifts.each do |shift|
-        unless shift.save
-          subarray.push({ error: shift.errors, record: shift })
+        
+        if shift.starts_before @start
+          shift.add_start_too_early_error @start
+          subarray = record_error subarray, shift
+        
+        elsif shift.ends_after @end
+          shift.add_end_too_late_error @end
+          subarray = record_error subarray, shift
+        
+        else
+          unless shift.save
+            subarray = record_error subarray, shift
+          end
         end
       end
-      errors.push subarray if subarray.any?
+      errors.push subarray
     end
     errors
   end
@@ -56,6 +67,11 @@ class RestaurantShifts
         } )
       end
       arr
+    end
+
+    def record_error subarray, shift
+      subarray.push({ error: shift.errors, record: shift })
+      subarray
     end
 
 end

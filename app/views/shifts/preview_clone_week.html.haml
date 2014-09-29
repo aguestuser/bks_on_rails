@@ -1,3 +1,4 @@
+- #input: @restaurant_shifts, @errors, @this_week_start, @next_week_start
 - provide(:title, "Preview Clone Week")
 
 %h1 Preview Clone Week
@@ -9,12 +10,19 @@
         - shifts = hash[:shifts]
         /Restaurant
         %div{ id: "restaurant_#{i}" }
+          /Header
           %h3 
             = "#{restaurant.name}"
-            = hidden_field_tag 'restaurant_shifts[][restaurant_id]', restaurant.id
+          /Errors
+          = render 'shared/batch_error_messages', errors: @errors[i], it: 'This section'
+          /Restaurant ID
+          = hidden_field_tag 'restaurant_shifts[][restaurant_id]', restaurant.id
           /Shifts
           - shifts.each_with_index do |shift, j|
-            = render 'clone_week_values', shift: shift, rest_index: i, shift_index: j
+            - if shift.errors.any?
+              = render 'clone_week_fields', shift: shift, rest_index: i, shift_index: j, has_errors: true
+            - else 
+              = render 'clone_week_values', shift: shift, rest_index: i, shift_index: j
         /Add Shift
         .center.add_shift
           %a{ id: "add_shift_restaurant_#{i}", :class => 'btn btn-primary'}

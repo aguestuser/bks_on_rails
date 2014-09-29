@@ -9,12 +9,12 @@
     .span3.start
       = label_tag :start, 'Start:'
       = shift.formal_start_datetime
-      = hidden_field_tag "#{id_prefix}[start]", shift.start
+      = hidden_field_tag "#{prefix}[start]", shift.start
     /End
     .span3.end
       = label_tag :start, 'End:'
       = shift.formal_end_datetime
-      = hidden_field_tag "#{id_prefix}[end]", shift.end
+      = hidden_field_tag "#{prefix}[end]", shift.end
     /Restaurant ID
     = hidden_field_tag "#{prefix}[restaurant_id]", shift.restaurant.id
     /Buttons

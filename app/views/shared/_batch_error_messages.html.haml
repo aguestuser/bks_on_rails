@@ -1,8 +1,9 @@
+- it = it || 'The form'
 - if errors.any?
   / - raise errors.inspect
   #error_explanation
     .alert.alert-error
-      The form contains #{pluralize(errors.count, "error")}
+      #{it} contains #{pluralize(errors.count, "error")}
     %ul
       - errors.each do |error|
         - error[:error].full_messages.each do |msg|

@@ -1334,7 +1334,7 @@ describe "Shift Requests" do
             describe "WITHOUT EDITS" do
               before { click_button 'Submit' }
 
-              it "should create 14 new shifts" do
+              it "should create 14 new shirfts" do
                 expect(Shift.count).to eq count + 14
               end
             end # "WITHOUT EDITS"
