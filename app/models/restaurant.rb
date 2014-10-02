@@ -42,6 +42,7 @@ class Restaurant < ActiveRecord::Base
     )
     .joins(:mini_contact)
     .order("mini_contacts.name asc") 
+    .to_a.uniq
   }
 
   #public methods

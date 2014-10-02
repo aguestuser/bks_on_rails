@@ -8,7 +8,7 @@
         /Restaurant
         .span4
           = label_tag :restaurant
-          = select_tag 'restaurant_ids', options_for_select(Restaurant.select_options, @restaurants_with_shifts.map(&:id) ), multiple: true, class: 'multi_select'
+          = select_tag 'restaurant_ids', options_for_select(Restaurant.select_options, @restaurants_with_shifts.map(&:id) ), multiple: true, class: 'multi_select clone_week_multi', style: "height: #{@restaurants_with_shifts.count * 1.3}em;"
         /Week Start
         .span4
           - default_week_start = Time.zone.now.beginning_of_week
