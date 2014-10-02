@@ -36,12 +36,12 @@ module ShiftRequestMacros
     select batch[0].billing_rate.text , from: "shifts[][billing_rate]" 
     select '2014' , from: "shifts[][start][year]" 
     select 'January' , from: "shifts[][start][month]" 
-    select '1' , from: "shifts[][start][day]" 
+    select '6' , from: "shifts[][start][day]" 
     select '12 PM', from: "shifts[][start][hour]" 
     select '00' , from: "shifts[][start][minute]" 
     select '2014' , from: "shifts[][end][year]" 
     select 'January' , from: "shifts[][end][month]" 
-    select '1' , from: "shifts[][end][day]" 
+    select '6' , from: "shifts[][end][day]" 
     select '6 PM', from: "shifts[][end][hour]" 
     select '00' , from: "shifts[][end][minute]"  
     select 3, from: "num_shifts"
@@ -256,8 +256,13 @@ module ShiftRequestMacros
   end
 
   def check_reassigned_shift_values_after_accepting_obstacle rider_1, rider_2, status
-    expect(page.find("#row_1_col_3").text).to eq rider_2.name
-    expect(page.find("#row_2_col_3").text).to eq rider_1.name
+      # puts ">>> PAGE VALS"
+      # puts page.find("#row_1_col_3").text
+      # puts page.find("#row_2_col_3").text
+      # puts page.find("#row_3_col_3").text
+
+    expect(page.find("#row_1_col_3").text).to eq rider_1.name
+    expect(page.find("#row_2_col_3").text).to eq rider_2.name
     expect(page.find("#row_3_col_3").text).to eq rider_1.name
 
     expect(page.find("#row_1_col_4").text).to eq status
@@ -287,12 +292,15 @@ module ShiftRequestMacros
         shift = shifts[j].increment_by 1.week
 
         expect( 
-          page.find("#restaurants_#{i} #shifts_#{j} #restaurant_shifts__shifts__start").value
-        ).to eq shift.formal_start_datetime
-        
+          Time.zone.parse(
+            page.find("#restaurant_#{i} #shift_#{j} #restaurant_shifts__shifts__start").value
+          )
+        ).to eq shift.start
         expect( 
-          page.find("#restaurants_#{i} #shifts_#{j} #restaurant_shifts__shifts__end").value
-        ).to eq shift.formal_end_datetime
+          Time.zone.parse(
+            page.find("#restaurant_#{i} #shift_#{j} #restaurant_shifts__shifts__end").value
+          )
+        ).to eq shift.end
       end
     end
   end
@@ -300,7 +308,7 @@ module ShiftRequestMacros
   def check_cloned_shift_values shifts, expected_shifts
     expect( 
       shifts.map { |s| filter_cloned s.attributes  }
-    ).to eq next_week_shifts.map{ |s| filter_cloned s.attributes }
+    ).to eq expected_shifts.map{ |s| filter_cloned s.attributes }
   end
 
   def filter_cloned attrs
@@ -323,10 +331,8 @@ module ShiftRequestMacros
   end
 
   def expected_add_shifts
-    start_t = next_week_shifts[0].start
-    end_t = next_week_shifts[0].end
-    next_week_shifts + 2.times.map {
-      FactoryGirl.create(:shift, :with_restaurant, restaurant: restaurants[1], start: start_t, :end => end_t )
+    next_week_shifts + 2.times.map { #shifts[7] }
+      FactoryGirl.create(:shift, :with_restaurant, restaurant: restaurants[1], start: next_start_t, :end => next_end_t )
     }
   end
 
@@ -391,5 +397,7 @@ module ShiftRequestMacros
         shift.increment_by 1.week
       end
     end
+    let(:next_start_t){ start_t + 1.week }
+    let(:next_end_t){ end_t + 1.week }
   end
 end

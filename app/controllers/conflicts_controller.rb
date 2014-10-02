@@ -66,7 +66,7 @@ class ConflictsController < ApplicationController
     this_week_end = @this_week_start + 1.week
 
     old_conflicts = @rider.conflicts_between(@this_week_start, this_week_end)
-    @conflicts = Conflict.clone(old_conflicts).each { |c| c.increment_by(1.week) }
+    @conflicts = Conflict.clone(old_conflicts).map { |c| c.increment_by(1.week) }
 
     @base_path = staffer_signed_in? ? @base_path : '/conflict/confirm_submission'
     @new_batch_query = { rider_id: @rider.id, week_start: @next_week_start, base_path: @base_path }.to_query

@@ -31,6 +31,14 @@ module Timeboxable
       self.start.strftime("%-m/%-d")
     end
 
+    def short_start_time
+      self.start.strftime("%^a | %-m/%-d | %-l:%M %p")
+    end
+
+    def short_end_time
+      self.end.strftime("%^a | %-m/%-d | %-l:%M %p")
+    end
+
     def formal_start_datetime
       self.start.strftime("%b %e, %Y - %-l:%M %p")
     end

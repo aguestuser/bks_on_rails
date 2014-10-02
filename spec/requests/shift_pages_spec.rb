@@ -98,7 +98,7 @@ describe "Shift Requests" do
             configure_shifts_for_sort_tests
             visit shifts_path
             filter_shifts_by_time_inclusively
-            # page.all('div.restaurant').each { |div| puts div.text }
+            # page.all('div.restaurant').each { |div| div.text }
           end
 
           it "should order shifts by time by default" do
@@ -914,7 +914,7 @@ describe "Shift Requests" do
                         expect(page).to have_h1 'Batch Reassign Shifts'                         
                       end
 
-                      it "should correctly list Assignements Requiring Reassignment" do
+                      it "should correctly list Assignments Requiring Reassignment" do
                         check_reassign_single_shift_list other_rider, 'Proposed', 0
                       end
 
@@ -928,7 +928,9 @@ describe "Shift Requests" do
                     end
 
                     describe "executing REASSIGNMENT TO FREE RIDER" do
-                      before { reassign_single_shift_to free_rider, 'Proposed' }
+                      before { 
+                        reassign_single_shift_to free_rider, 'Proposed' 
+                      }
 
                       describe "after submission" do
                         
@@ -1319,7 +1321,7 @@ describe "Shift Requests" do
 
         it "should forward to the Clone Week Preview page" do
           expect(current_path).to eq '/shift/preview_clone_week'
-          expect(page).to have_h1 'Clone Week Preview'
+          expect(page).to have_h1 'Preview Clone Week'
         end
 
         describe "Clone Week Preview page" do
@@ -1381,10 +1383,11 @@ describe "Shift Requests" do
 
                 describe "WITH NO ERRORS" do
                   before { click_button 'Submit' }
+                  let!(:last_16_shifts){ Shift.last(16) }
 
                   it "should create 16 new shifts with correct values" do
-                    expect( Shift.count ).to eq count + 16
-                    check_cloned_shift_values Shift.last(16), expected_new_shifts(:add)
+                    # expect( Shift.count ).to eq count + 16
+                    check_cloned_shift_values last_16_shifts, expected_new_shifts(:add)
                   end
                 end #"WITH NO ERRORS"
               end # "ADDING SHIFTS"

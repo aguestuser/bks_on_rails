@@ -26,11 +26,6 @@ class Week
 
     records = @record_hash[rh_key]
 
-    # raise records.to_yaml if rh_key == :mon_pm
-    # if rh_key == :mon_pm #&& entity.id == 86
-    #   raise 'ENTITY_KEY: '+ entity_key.inspect + 'ENTITY:' +entity.inspect 
-    # end
-
     if records.nil?
       matches = []
     else
@@ -38,7 +33,6 @@ class Week
         r.send(entity_key) == entity 
       end
     end
-    raise matches.to_yaml if rh_key == :mon_pm && entity.id == 86 && entity.class.name == 'Shift'
     matches
   end
 

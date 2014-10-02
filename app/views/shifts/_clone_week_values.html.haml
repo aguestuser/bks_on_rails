@@ -8,11 +8,13 @@
     /Start
     .span3.start
       = label_tag :start, 'Start:'
+      / = shift.short_start_time
       = shift.formal_start_datetime
       = hidden_field_tag "#{prefix}[start]", shift.start
     /End
     .span3.end
       = label_tag :start, 'End:'
+      / = shift.short_end_time
       = shift.formal_end_datetime
       = hidden_field_tag "#{prefix}[end]", shift.end
     /Restaurant ID
