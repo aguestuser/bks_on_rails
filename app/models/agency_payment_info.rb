@@ -11,6 +11,7 @@
 #
 
 class AgencyPaymentInfo < ActiveRecord::Base
+  include Importable
   belongs_to :restaurant
 
   classy_enum_attr :method, enum:'AgencyPaymentMethod' 

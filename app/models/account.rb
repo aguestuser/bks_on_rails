@@ -12,6 +12,7 @@
 #
 
 class Account < ActiveRecord::Base
+  include Importable
   #associations
   belongs_to :user, polymorphic: true
 

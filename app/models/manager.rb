@@ -9,7 +9,7 @@
 #
 
 class Manager < ActiveRecord::Base
-  include User, Contactable # app/model/concerns/
+  include User, Contactable, Importable # app/model/concerns/
   belongs_to :restaurant
 
 end

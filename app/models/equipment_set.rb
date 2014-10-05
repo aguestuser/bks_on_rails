@@ -19,6 +19,7 @@
 #
 
 class EquipmentSet < ActiveRecord::Base
+  include Importable
   belongs_to :equipable
 
   validates :bike, :lock, :helmet, :rack, :bag, :heated_bag, :cell_phone, :smart_phone,

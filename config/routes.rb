@@ -37,7 +37,7 @@ BksOnRails::Application.routes.draw do
   end
 
   resources :restaurants do
-    resource :short_contact_info, only: [:new, :create, :edit, :update]
+    resource :mini_contact, only: [:new, :create, :edit, :update]
     resources :managers, only: [:new, :create, :edit, :update, :show, :destroy]
       resource :account, only: [:new, :create, :edit, :update]
         # resource :contact, only: [:new, :create, :edit, :update]

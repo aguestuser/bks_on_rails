@@ -14,6 +14,7 @@
 #
 
 class WorkSpecification < ActiveRecord::Base
+  include Importable
   belongs_to :restaurant
 
   validates :zone, :daytime_volume, :evening_volume, presence: true
