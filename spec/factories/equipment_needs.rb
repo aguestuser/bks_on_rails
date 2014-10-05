@@ -14,8 +14,8 @@
 
 FactoryGirl.define do
   factory :equipment_need do
-    bike_provided false
-    rack_required false
+    bike_provided true
+    rack_required true
     restaurant nil
   end
 end

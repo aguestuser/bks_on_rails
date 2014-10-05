@@ -71,15 +71,8 @@ module RestaurantPageMacros
         },
         checkboxes: [ 
           #equipment
-          { label: 'Bike', id: 'restaurant_equipment_set_attributes_bike', value: true }, 
-          { label: 'Lock', id: 'restaurant_equipment_set_attributes_lock', value: true },
-          { label: 'Helmet', id: 'restaurant_equipment_set_attributes_helmet', value: true },
-          { label: 'Rack', id: 'restaurant_equipment_set_attributes_rack', value: true },
-          { label: 'Bag', id: 'restaurant_equipment_set_attributes_bag', value: true },
-          { label: 'Insulated bag', id: 'restaurant_equipment_set_attributes_heated_bag', value: true },
-          { label: 'Cell phone', id: 'restaurant_equipment_set_attributes_cell_phone', value: true },
-          { label: 'Smart phone', id: 'restaurant_equipment_set_attributes_smart_phone', value: true },
-          { label: 'Car', id: 'restaurant_equipment_set_attributes_car', value: true },
+          { label: 'Do you provide a bike?', id: 'restaurant_equipment_need_attributes_bike_provided', value: true }, 
+          { label: 'Do you require a rack?', id: 'restaurant_equipment_need_attributes_rack_required', value: true }
           #work_spec
           { label: 'Riders expected to do non-delivery work?', id: 'restaurant_work_specification_attributes_extra_work', value: true },
           #agency_payment
