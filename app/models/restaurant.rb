@@ -8,16 +8,19 @@
 #  brief      :text
 #  created_at :datetime
 #  updated_at :datetime
+#  unedited   :boolean
 #
 
 class Restaurant < ActiveRecord::Base
-  include Locatable, Equipable
+  include Locatable
   has_one :mini_contact, dependent: :destroy
     accepts_nested_attributes_for :mini_contact
   has_one :work_specification, dependent: :destroy
     accepts_nested_attributes_for :work_specification
   has_one :rider_payment_info, dependent: :destroy
     accepts_nested_attributes_for :rider_payment_info
+  has_one :equipment_need, dependent: :destroy
+    accepts_nested_attributes_for :equipment_need
   has_one :agency_payment_info, dependent: :destroy
     accepts_nested_attributes_for :agency_payment_info
   has_many :managers, dependent: :destroy
@@ -70,7 +73,7 @@ class Restaurant < ActiveRecord::Base
   end
 
   def Restaurant.import
-    path = Rails.env.test? '/import/sample/restaurants/' : 'import/restaurants/'
+    path = Rails.env.test? ? '/import/sample/restaurants/' : 'import/restaurants/'
     children = Restaurant.import_children
     results = Restaurant.import_self path, children
 
@@ -86,20 +89,20 @@ class Restaurant < ActiveRecord::Base
     #output Hash of Arrays of Restaurant children 
       #{ minicontacts: Arr of MiniContacts, managers: Arr of Managers, ...}
     { 
-      mini_contacts: MiniContact.import "path#{mini_contacts.csv}",
-      managers: Manager.import "path#{managers.csv}",
-      work_specifications: WorkSpecification.import "path#{work_specifications.csv}",
-      rider_payments_infos: RiderPaymentInfo.import "path#{rider_payments_infos.csv}",
-      agency_payment_infos: AgencyPaymentInfo.import "path#{agency_payment_infos.csv}",
-      equipment_sets: EquipmentSet.import "path#{equipment_sets.csv}",
-      locations: Location.import "path#{locations.csv}"
+      mini_contacts: MiniContact.import( "path#{mini_contacts.csv}" ),
+      managers: Manager.import( "path#{managers.csv}" ),
+      work_specifications: WorkSpecification.import( "path#{work_specifications.csv}" ),
+      rider_payments_infos: RiderPaymentInfo.import( "path#{rider_payments_infos.csv}" ),
+      agency_payment_infos: AgencyPaymentInfo.import( "path#{agency_payment_infos.csv}" ),
+      equipment_sets: EquipmentSet.import( "path#{equipment_sets.csv}" ),
+      locations: Location.import( "path#{locations.csv}" )
     }
   end
 
   def Restaurant.import_self path, children
     r_path = "path#{restaurants.csv}"
     c = children
-    results = { num_recs: r_path.readlines.count -1, num_errors: 0, error_ids: [], id_discrepancies: {} }
+    results = { num_recs: ( r_path.readlines.count - 1 ), num_errors: 0, error_ids: [], id_discrepancies: {} }
 
     CSV.foreach(r_path, headers: true) do |row|
       i = $. - 1 # $. returns the INPUT_LINE_NUMBER, subtracting one produces index number

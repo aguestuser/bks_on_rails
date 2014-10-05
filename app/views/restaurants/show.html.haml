@@ -13,8 +13,8 @@
       = render @restaurant.rider_payment_info
       - if @restaurant.work_specification
         = render @restaurant.work_specification, restaurant: @restaurant
-      - if @restaurant.equipment_set
-        = render @restaurant.equipment_set
+      - if @restaurant.equipment_need
+        = render @restaurant.equipment_need
       - if @restaurant.agency_payment_info
         = render @restaurant.agency_payment_info
   .center

@@ -117,6 +117,10 @@ class RestaurantsController < ApplicationController
                                           :evening_volume, :extra_work, :extra_work_description ] }
     end
 
+    def equipment_need_params
+      { equipment_need_attributes: [ :restaurant_id, :bike_provided, :rack_required ] }
+    end
+
     def agency_payment_params
       { agency_payment_info_attributes: [ :restaurant_id, :id, :method, :pickup_required ] }
     end

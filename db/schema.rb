@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140728050847) do
+ActiveRecord::Schema.define(version: 20141005065303) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -74,6 +74,16 @@ ActiveRecord::Schema.define(version: 20140728050847) do
 
   add_index "contacts", ["contactable_id", "contactable_type"], name: "index_contacts_on_contactable_id_and_contactable_type", using: :btree
 
+  create_table "equipment_needs", force: true do |t|
+    t.boolean  "bike_provided"
+    t.boolean  "rack_required"
+    t.integer  "restaurant_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "equipment_needs", ["restaurant_id"], name: "index_equipment_needs_on_restaurant_id", using: :btree
+
   create_table "equipment_sets", force: true do |t|
     t.integer  "equipable_id"
     t.string   "equipable_type"
@@ -100,6 +110,8 @@ ActiveRecord::Schema.define(version: 20140728050847) do
     t.string   "neighborhood"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.decimal  "lat"
+    t.decimal  "lng"
   end
 
   add_index "locations", ["locatable_id"], name: "index_locations_on_locatable_id", using: :btree

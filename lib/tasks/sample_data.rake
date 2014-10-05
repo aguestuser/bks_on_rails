@@ -120,16 +120,9 @@ def make_restaurants
       pickup_required: false
     )
 
-    equipment_set = EquipmentSet.new(
-      bike: [true, false].sample,
-      lock: [true, false].sample,
-      helmet: [true, false].sample,
-      rack: [true, false].sample,
-      bag: [true, false].sample,
-      heated_bag: [true, false].sample,
-      cell_phone: [true, false].sample,
-      smart_phone: [true, false].sample,
-      car: [true, false].sample
+    equipment_need = EquipmentNeed.new(
+      bike_provided: [true, false].sample,
+      rack_required: [true, false].sample
     )
 
     location = Location.new(
@@ -148,7 +141,7 @@ def make_restaurants
       managers: [manager],
       work_specification: work_spec,
       rider_payment_info: rider_pay,
-      equipment_set: equipment_set,
+      equipment_need: equipment_need,
       agency_payment_info: agency_pay
     )
   end

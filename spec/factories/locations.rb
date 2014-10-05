@@ -10,6 +10,8 @@
 #  neighborhood   :string(255)
 #  created_at     :datetime
 #  updated_at     :datetime
+#  lat            :decimal(, )
+#  lng            :decimal(, )
 #
 
 FactoryGirl.define do

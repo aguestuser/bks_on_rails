@@ -1,0 +1,8 @@
+%h3 Equipment
+= f.fields_for :equipment_set do |ff|
+  .checkbox
+    = ff.check_box :bike_provided
+    = ff.label :bike_provided, 'Do you provide a bike?'
+  .checkbox
+    = ff.check_box :rack_required, 'Do you require a rack?'
+    = ff.label :rack_required

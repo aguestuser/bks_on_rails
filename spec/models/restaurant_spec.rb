@@ -8,6 +8,7 @@
 #  brief      :text
 #  created_at :datetime
 #  updated_at :datetime
+#  unedited   :boolean
 #
 
 require 'spec_helper'

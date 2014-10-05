@@ -8,6 +8,7 @@
 #  brief      :text
 #  created_at :datetime
 #  updated_at :datetime
+#  unedited   :boolean
 #
 
 FactoryGirl.define do
@@ -24,7 +25,7 @@ FactoryGirl.define do
       f.rider_payment_info = FactoryGirl.build(:rider_payment_info, :with_restaurant, restaurant: f)
       f.work_specification = FactoryGirl.build(:work_specification, :with_restaurant, restaurant: f)
       f.agency_payment_info = FactoryGirl.build(:agency_payment_info, :with_restaurant, restaurant: f)
-      f.equipment_set = FactoryGirl.build(:equipment_set, :with_equipable, equipable: f)
+      f.equipment_need = FactoryGirl.build(:equipment_need, restaurant: f)
     end
   end
 end
