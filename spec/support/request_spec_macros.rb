@@ -105,20 +105,20 @@ module RequestSpecMacros
     models.map { |m| m.count }
   end
 
-  def check_model_counts_incremented(old_counts, new_counts)
-   expect( model_counts_incremented? old_counts, new_counts ).to eq true   
+  def check_model_counts_incremented old_counts, new_counts, increment=1
+   expect( model_counts_incremented? old_counts, new_counts, increment ).to eq true   
   end
 
-  def check_model_counts_decremented(old_counts, new_counts)
-    expect( model_counts_incremented? new_counts, old_counts ).to eq true
+  def check_model_counts_decremented old_counts, new_counts, decrement=1 
+    expect( model_counts_incremented? new_counts, old_counts, decrement ).to eq true
   end
 
-  def model_counts_incremented?(old_counts, new_counts)
+  def model_counts_incremented? old_counts, new_counts, increment 
     diffs = new_counts.each_with_index.map do |new_count, i|
       new_count - old_counts[i]
     end 
     if 
-      diffs.count(1) == diffs.size
+      diffs.count(increment) == diffs.size
       true
     else
       diffs

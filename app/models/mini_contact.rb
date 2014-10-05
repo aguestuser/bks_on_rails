@@ -11,6 +11,7 @@
 #
 
 class MiniContact < ActiveRecord::Base
+  include Importable
   belongs_to :restaurant
 
   validates :name, presence: true, length: { minimum: 3, maximum: 50 }

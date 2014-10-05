@@ -72,7 +72,7 @@ module RestaurantPageMacros
         checkboxes: [ 
           #equipment
           { label: 'Do you provide a bike?', id: 'restaurant_equipment_need_attributes_bike_provided', value: true }, 
-          { label: 'Do you require a rack?', id: 'restaurant_equipment_need_attributes_rack_required', value: true }
+          { label: 'Do you require a rack?', id: 'restaurant_equipment_need_attributes_rack_required', value: true },
           #work_spec
           { label: 'Riders expected to do non-delivery work?', id: 'restaurant_work_specification_attributes_extra_work', value: true },
           #agency_payment

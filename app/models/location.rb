@@ -15,6 +15,7 @@
 #
 
 class Location < ActiveRecord::Base
+  include Importable
   #associations
   belongs_to :locatable, polymorphic: :true
 

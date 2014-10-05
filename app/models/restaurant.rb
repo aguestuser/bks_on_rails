@@ -73,66 +73,77 @@ class Restaurant < ActiveRecord::Base
   end
 
   def Restaurant.import
-    path = Rails.env.test? ? '/import/sample/restaurants/' : 'import/restaurants/'
-    children = Restaurant.import_children
+    path = Rails.env.test? ? 'app/io/import/sample/restaurants/' : 'app/io/import/restaurants/'
+    children = Restaurant.import_children path
+      # puts ">>> children"
+      # pp children
     results = Restaurant.import_self path, children
 
     puts "IMPORTED: #{results[:num_recs]} restaurants"
     puts "ERRORS: #{results[:num_errors]}"
-    puts "ERROR IDS: #{results[:error_ids].join}" if results[:error_ids].any?
-    puts "ID DISCREPANCIES:"
-    pp results[:id_discrepancies]
+    if results[:errors].any?
+      puts "ERROR IDS: #{results[:error_ids].join(', ')}"
+      puts "ERRORS MESSAGES: "
+      pp results[:errors]
+    else 
+      puts "ID DISCREPANCIES:"
+      pp results[:id_discrepancies]
+    end
   end
 
-  def Restaurant.import_children 
+  def Restaurant.import_children path
     #input: none
     #output Hash of Arrays of Restaurant children 
       #{ minicontacts: Arr of MiniContacts, managers: Arr of Managers, ...}
     { 
-      mini_contacts: MiniContact.import( "path#{mini_contacts.csv}" ),
-      managers: Manager.import( "path#{managers.csv}" ),
-      work_specifications: WorkSpecification.import( "path#{work_specifications.csv}" ),
-      rider_payments_infos: RiderPaymentInfo.import( "path#{rider_payments_infos.csv}" ),
-      agency_payment_infos: AgencyPaymentInfo.import( "path#{agency_payment_infos.csv}" ),
-      equipment_sets: EquipmentSet.import( "path#{equipment_sets.csv}" ),
-      locations: Location.import( "path#{locations.csv}" )
+      mini_contacts: MiniContact.import( "#{path}mini_contacts.csv" ),
+      managers: Manager.import( "#{path}managers/managers.csv", "#{path}managers/accounts.csv", "#{path}managers/contacts.csv" ),
+      work_specifications: WorkSpecification.import( "#{path}work_specifications.csv" ),
+      rider_payments_infos: RiderPaymentInfo.import( "#{path}rider_payment_infos.csv" ),
+      agency_payment_infos: AgencyPaymentInfo.import( "#{path}agency_payment_infos.csv" ),
+      equipment_needs: EquipmentNeed.import( "#{path}equipment_needs.csv" ),
+      locations: Location.import( "#{path}locations.csv" )
     }
   end
 
   def Restaurant.import_self path, children
-    r_path = "path#{restaurants.csv}"
-    c = children
-    results = { num_recs: ( r_path.readlines.count - 1 ), num_errors: 0, error_ids: [], id_discrepancies: {} }
+    r_path = "#{path}restaurants.csv"
+    results = { num_recs: ( CSV.read(r_path).count - 1 ), num_errors: 0, error_ids: [], errors: [], id_discrepancies: {} }
 
     CSV.foreach(r_path, headers: true) do |row|
-      i = $. - 1 # $. returns the INPUT_LINE_NUMBER, subtracting one produces index number
+      i = $. - 2 # $. returns the INPUT_LINE_NUMBER, subtracting one produces index number
       row_hash = row.to_hash
-      old_id = row_hash[:id]
-      attrs = Restaurant.import_attrs_from row_hash
+      old_id = row_hash['id']    
+      attrs = Restaurant.import_attrs_from row_hash, children, i
+        # puts ">>> ATTRS"
+        # pp attrs
       restaurant = Restaurant.new attrs
 
       if restaurant.save
-        results[:id_discrepancies][i] = restaurant.id if i != restaurant.id
+        results[:id_discrepancies][i+1] = restaurant.id if i+1 != restaurant.id
       else
         results[:num_recs] -= 1
         results[:num_errors] += 1
-        results[:error_ids].push(attrs)
+        results[:error_ids].push(old_id)
+        results[:errors].push(restaurant.errors)
       end
     end
     results
   end
 
-  def Restaurant.impor_attrs_from row_hash
+  def Restaurant.import_attrs_from row_hash, c, i
+    #input: Hash of Restaurant attributes, Hash of Hashes of attributes for children of Restaurants, Int (index)
+    #output: Hash of Hashes of attributes for Restaurant *and* its children
     row_hash
-      .reject{ |k,v| k == :id }
+      .reject{ |k,v| k == 'id' }
       .merge( {
-        mini_contact: c.mini_contacts[i],
-        managers: [ c.managers[i] ],
-        work_specification: c.work_specifications[i],
-        rider_payment_info: c.rider_payments_infos[i],
-        agency_payment_info: c.agency_payment_infos[i],
-        equipment_set: c.equipment_sets[i],
-        location: c.locations[i]
+        mini_contact: c[:mini_contacts][i],
+        managers: [ c[:managers][i] ],
+        work_specification: c[:work_specifications][i],
+        rider_payment_info: c[:rider_payments_infos][i],
+        agency_payment_info: c[:agency_payment_infos][i],
+        equipment_need: c[:equipment_needs][i],
+        location: c[:locations][i]
       } )
   end
 

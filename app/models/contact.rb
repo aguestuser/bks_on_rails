@@ -14,6 +14,7 @@
 #
 
 class Contact < ActiveRecord::Base
+  include Importable
   #associations
   belongs_to :contactable, polymorphic: true
 

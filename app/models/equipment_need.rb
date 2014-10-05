@@ -11,6 +11,7 @@
 #
 
 class EquipmentNeed < ActiveRecord::Base
+  include Importable
   belongs_to :restaurant
 
   validates :bike_provided, :rack_required, inclusion: { in: [ true, false ] }

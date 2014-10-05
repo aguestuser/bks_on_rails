@@ -12,7 +12,7 @@
 #
 
 require 'spec_helper'
-include ValidationMacros
+include ValidationMacros, RequestSpecMacros
 
 describe Restaurant do
   let(:restaurant) { FactoryGirl.build(:restaurant) }
@@ -47,6 +47,19 @@ describe Restaurant do
     end
 
   end
+
+  describe "class methods" do
+    
+    describe "import" do
+      let(:models){ [ Restaurant, MiniContact, Location, Manager, Account, Contact, RiderPaymentInfo, WorkSpecification, AgencyPaymentInfo, EquipmentNeed ] }
+      let!(:old_count){ count_models models }
+      before { Restaurant.import }
+
+      it "should create 3 new restaurants and children" do
+        check_model_counts_incremented old_count, (count_models(models)), 3
+      end
+    end # "import" 
+  end # "class methods"
 
 
 end

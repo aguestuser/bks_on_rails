@@ -72,6 +72,9 @@ end
 class Neighborhood::Brownsville < Neighborhood
 end
 
+class Neighborhood::Bushwick < Neighborhood
+end
+
 class Neighborhood::Canarsie < Neighborhood
 end
 

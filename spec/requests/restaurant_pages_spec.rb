@@ -1,7 +1,5 @@
 require 'spec_helper'
-include CustomMatchers # /spec/support/custom_matchers.rb
-include RestaurantPageMacros # /spec/support/restaurant_macros.rb
-include RequestSpecMacros # /spec/support/request_spec_macros.rb
+include CustomMatchers, RestaurantPageMacros, RequestSpecMacros # /spec/support/
 
 describe "Restaurant Pages" do
 
