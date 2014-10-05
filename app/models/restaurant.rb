@@ -11,7 +11,7 @@
 #
 
 class Restaurant < ActiveRecord::Base
-  include Locatable, Equipable
+  include Locatable, Equipable, Importable
   has_one :mini_contact, dependent: :destroy
     accepts_nested_attributes_for :mini_contact
   has_one :work_specification, dependent: :destroy
@@ -61,10 +61,76 @@ class Restaurant < ActiveRecord::Base
       .order("start asc")
   end
 
+
+
   #class methods
 
   def Restaurant.select_options
     Restaurant.all.joins(:mini_contact).order("mini_contacts.name asc").map{ |r| [ r.name, r.id ] }
+  end
+
+  def Restaurant.import
+    path = Rails.env.test? '/import/sample/restaurants/' : 'import/restaurants/'
+    children = Restaurant.import_children
+    results = Restaurant.import_self path, children
+
+    puts "IMPORTED: #{results[:num_recs]} restaurants"
+    puts "ERRORS: #{results[:num_errors]}"
+    puts "ERROR IDS: #{results[:error_ids].join}" if results[:error_ids].any?
+    puts "ID DISCREPANCIES:"
+    pp results[:id_discrepancies]
+  end
+
+  def Restaurant.import_children 
+    #input: none
+    #output Hash of Arrays of Restaurant children 
+      #{ minicontacts: Arr of MiniContacts, managers: Arr of Managers, ...}
+    { 
+      mini_contacts: MiniContact.import "path#{mini_contacts.csv}",
+      managers: Manager.import "path#{managers.csv}",
+      work_specifications: WorkSpecification.import "path#{work_specifications.csv}",
+      rider_payments_infos: RiderPaymentInfo.import "path#{rider_payments_infos.csv}",
+      agency_payment_infos: AgencyPaymentInfo.import "path#{agency_payment_infos.csv}",
+      equipment_sets: EquipmentSet.import "path#{equipment_sets.csv}",
+      locations: Location.import "path#{locations.csv}"
+    }
+  end
+
+  def Restaurant.import_self path, children
+    r_path = "path#{restaurants.csv}"
+    c = children
+    results = { num_recs: r_path.readlines.count -1, num_errors: 0, error_ids: [], id_discrepancies: {} }
+
+    CSV.foreach(r_path, headers: true) do |row|
+      i = $. - 1 # $. returns the INPUT_LINE_NUMBER, subtracting one produces index number
+      row_hash = row.to_hash
+      old_id = row_hash[:id]
+      attrs = Restaurant.import_attrs_from row_hash
+      restaurant = Restaurant.new attrs
+
+      if restaurant.save
+        results[:id_discrepancies][i] = restaurant.id
+      else
+        results[:num_recs] -= 1
+        results[:num_errors] += 1
+        results[:error_ids].push(attrs)
+      end
+    end
+    results
+  end
+
+  def Restaurant.impor_attrs_from row_hash
+    row_hash
+      .reject{ |k,v| k == :id }
+      .merge( {
+        mini_contact: c.mini_contacts[i],
+        managers: [ c.managers[i] ],
+        work_specification: c.work_specifications[i],
+        rider_payment_info: c.rider_payments_infos[i],
+        agency_payment_info: c.agency_payment_infos[i],
+        equipment_set: c.equipment_sets[i],
+        location: c.locations[i]
+      } )
   end
 
 
