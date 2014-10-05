@@ -112,7 +112,7 @@ class Restaurant < ActiveRecord::Base
       restaurant = Restaurant.new attrs
 
       if restaurant.save
-        results[:id_discrepancies][i] = restaurant.id
+        results[:id_discrepancies][i] = restaurant.id if i != restaurant.id
       else
         results[:num_recs] -= 1
         results[:num_errors] += 1
