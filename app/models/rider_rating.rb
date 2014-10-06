@@ -14,6 +14,7 @@
 #
 
 class RiderRating < ActiveRecord::Base
+  include Importable
   belongs_to :rider
   after_validation :init_points, on: :create
 

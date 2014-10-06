@@ -12,7 +12,7 @@
 #
 
 class Restaurant < ActiveRecord::Base
-  include Locatable
+  include Locatable, ImportableFirstClass
   has_one :mini_contact, dependent: :destroy
     accepts_nested_attributes_for :mini_contact
   has_one :work_specification, dependent: :destroy
@@ -72,24 +72,7 @@ class Restaurant < ActiveRecord::Base
     Restaurant.all.joins(:mini_contact).order("mini_contacts.name asc").map{ |r| [ r.name, r.id ] }
   end
 
-  def Restaurant.import
-    path = Rails.env.test? ? 'app/io/import/sample/restaurants/' : 'app/io/import/restaurants/'
-    children = Restaurant.import_children path
-      # puts ">>> children"
-      # pp children
-    results = Restaurant.import_self path, children
-
-    puts "IMPORTED: #{results[:num_recs]} restaurants"
-    puts "ERRORS: #{results[:num_errors]}"
-    if results[:errors].any?
-      puts "ERROR IDS: #{results[:error_ids].join(', ')}"
-      puts "ERRORS MESSAGES: "
-      pp results[:errors]
-    else 
-      puts "ID DISCREPANCIES:"
-      pp results[:id_discrepancies]
-    end
-  end
+  private
 
   def Restaurant.import_children path
     #input: none
@@ -104,31 +87,6 @@ class Restaurant < ActiveRecord::Base
       equipment_needs: EquipmentNeed.import( "#{path}equipment_needs.csv" ),
       locations: Location.import( "#{path}locations.csv" )
     }
-  end
-
-  def Restaurant.import_self path, children
-    r_path = "#{path}restaurants.csv"
-    results = { num_recs: ( CSV.read(r_path).count - 1 ), num_errors: 0, error_ids: [], errors: [], id_discrepancies: {} }
-
-    CSV.foreach(r_path, headers: true) do |row|
-      i = $. - 2 # $. returns the INPUT_LINE_NUMBER, subtracting one produces index number
-      row_hash = row.to_hash
-      old_id = row_hash['id']    
-      attrs = Restaurant.import_attrs_from row_hash, children, i
-        # puts ">>> ATTRS"
-        # pp attrs
-      restaurant = Restaurant.new attrs
-
-      if restaurant.save
-        results[:id_discrepancies][i+1] = restaurant.id if i+1 != restaurant.id
-      else
-        results[:num_recs] -= 1
-        results[:num_errors] += 1
-        results[:error_ids].push(old_id)
-        results[:errors].push(restaurant.errors)
-      end
-    end
-    results
   end
 
   def Restaurant.import_attrs_from row_hash, c, i
@@ -147,8 +105,8 @@ class Restaurant < ActiveRecord::Base
       } )
   end
 
+  
 
-  private
 
 
 end

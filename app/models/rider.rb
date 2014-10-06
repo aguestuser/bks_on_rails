@@ -9,7 +9,7 @@
 #
 
 class Rider < ActiveRecord::Base
-  include User, Contactable, Equipable, Locatable # app/models/concerns/
+  include User, Contactable, Equipable, Locatable, ImportableFirstClass # app/models/concerns/
 
   #nested attributes
   has_one :qualification_set, dependent: :destroy
@@ -67,6 +67,39 @@ class Rider < ActiveRecord::Base
     end
     
     alert = count > 0 ? "#{count} conflict requests successfully sent" : ""
+  end
+
+  private
+
+  def Rider.import_children path
+    #input: none
+    #output Hash of Arrays of Rider children 
+      #{ accounts: Arr of Accounts, contacts: Arr of Contacts,  ...}
+    { 
+      accounts: Account.import( "#{path}accounts.csv" ),
+      contacts: Contact.import( "#{path}contacts.csv" ),
+      qualification_sets: QualificationSet.import( "#{path}qualification_sets.csv" ),
+      skill_sets: SkillSet.import( "#{path}skill_sets.csv" ),
+      rider_ratings: RiderRating.import( "#{path}rider_ratings.csv" ) ,
+      equipment_sets: EquipmentSet.import( "#{path}equipment_sets.csv" ), 
+      locations: Location.import( "#{path}locations.csv" )
+    }
+  end
+
+  def Rider.import_attrs_from row_hash, c, i
+    #input: Hash of Restaurant attributes, Hash of Hashes of attributes for children of Restaurants, Int (index)
+    #output: Hash of Hashes of attributes for Restaurant *and* its children
+    row_hash
+      .reject{ |k,v| k == 'id' }
+      .merge( {
+        account: c[:accounts][i],
+        contact: c[:contacts][i],
+        qualification_set: c[:qualification_sets][i],
+        skill_set: c[:skill_sets][i],
+        rider_rating: c[:rider_ratings][i],
+        equipment_set: c[:equipment_sets][i],
+        location: c[:locations][i] 
+      } )
   end
 
 end

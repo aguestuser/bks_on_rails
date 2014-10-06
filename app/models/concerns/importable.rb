@@ -14,12 +14,6 @@ module Importable
       end
       recs
     end
-
-    # def import_create file
-    #   CSV.foreach( file.path, headers: true ) do |row|
-    #     self.create! row.to_hash # will probably have to do some parsing here!
-    #   end
-    # end
   end
 end
 

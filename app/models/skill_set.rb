@@ -13,6 +13,7 @@
 #
 
 class SkillSet < ActiveRecord::Base
+  include Importable
   belongs_to :rider
 
   validates :bike_repair, :fix_flats, :early_morning, :pizza,

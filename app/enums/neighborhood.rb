@@ -21,10 +21,25 @@ end
 class Neighborhood::FinancialDistrict < Neighborhood
 end
 
+class Neighborhood::Flatiron < Neighborhood
+end
+
+class Neighborhood::Gramercy < Neighborhood
+end
+
 class Neighborhood::HamiltonHeights < Neighborhood
 end
 
 class Neighborhood::Harlem < Neighborhood
+end
+
+class Neighborhood::HellsKitchen < Neighborhood
+  def text 
+    "Hell's Kitchen"
+  end
+end
+
+class Neighborhood::KipsBay < Neighborhood
 end
 
 class Neighborhood::LowerEastSide < Neighborhood
@@ -58,6 +73,9 @@ end
 # Brooklyn 
 
 class Neighborhood::BayRidge < Neighborhood
+end
+
+class Neighborhood::BedStuy < Neighborhood
 end
 
 class Neighborhood::Bensonhurst < Neighborhood

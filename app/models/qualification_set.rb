@@ -12,6 +12,7 @@
 #
 
 class QualificationSet < ActiveRecord::Base
+  include Importable
   belongs_to :rider
 
   validates :hiring_assessment, :experience, :geography, presence: true
