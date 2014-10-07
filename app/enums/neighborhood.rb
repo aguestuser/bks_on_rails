@@ -99,6 +99,10 @@ end
 class Neighborhood::ConeyIsland < Neighborhood
 end
 
+class Neighborhood::CrownHeights < Neighborhood
+end
+
+
 class Neighborhood::DowntownBrooklyn < Neighborhood
 end
 
