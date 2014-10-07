@@ -9,7 +9,8 @@ module ImportableFirstClass
 
     def import
       sub_path = self.name.downcase << 's'
-      path = Rails.env.test? ? "app/io/import/sample/#{sub_path}/" : "app/io/import/#{sub_path}/"
+      # path = Rails.env.test? ? "app/io/import/sample/#{sub_path}/" : "app/io/import/#{sub_path}/"
+      path = "app/io/import/#{sub_path}/"
       children = self.import_children path # .import_children is class-specific class method
 
       results = self.import_self path, sub_path, children
@@ -35,7 +36,7 @@ module ImportableFirstClass
           results[:num_recs] -= 1
           results[:num_errors] += 1
           results[:error_ids].push(old_id)
-          results[:errors].push({ old_id => record.errors)
+          results[:errors].push({ old_id => record.errors })
         end
       end
       results
