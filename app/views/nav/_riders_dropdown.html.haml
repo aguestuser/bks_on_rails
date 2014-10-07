@@ -1,0 +1,7 @@
+%li#fat-menu.dropdown
+  %a.dropdown-toggle{"data-toggle" => "dropdown", :href => "#"}
+    Riders
+    %b.caret
+  %ul.dropdown-menu
+    %li= link_to "List", riders_path
+    %li= link_to "Create", new_rider_path

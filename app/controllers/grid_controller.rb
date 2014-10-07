@@ -1,7 +1,7 @@
 # require 'week.rb'
 
 class GridController < ApplicationController  
-  skip_authorize_resource
+  authorize_resource :class => false
   include TimeboxableHelper, Filters, Sortable, Paths
 
   before_action :load_subject # callbacks: load_restaurants OR load_riders

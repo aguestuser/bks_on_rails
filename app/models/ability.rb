@@ -6,6 +6,8 @@ class Ability
     account ||= Account.new
     if account.user_type == 'Staffer'
       can :manage, :all 
+      can :manage, :grid
+      can :manage, :export
     elsif account.user_type == 'Manager'
       can [ :read, :update ], Restaurant, id: account.user.restaurant.id # own restaurant
       can [ :read, :update ], [ MiniContact,

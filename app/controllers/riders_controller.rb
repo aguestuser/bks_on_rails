@@ -93,6 +93,10 @@ class RidersController < ApplicationController
     redirect_to @base_path 
   end
 
+  def export
+    send_data Rider.export, filename: 'riders.csv'
+  end
+
 
   private
 

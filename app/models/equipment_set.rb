@@ -25,7 +25,3 @@ class EquipmentSet < ActiveRecord::Base
   validates :bike, :lock, :helmet, :rack, :bag, :heated_bag, :cell_phone, :smart_phone,
     inclusion: { in: [ true, false ] }
 end
-
-
-
-m = Manager.create!(account: Account.create!(password: 'foobar', password_confirmation: 'foobar'), contact: Contact.create!(name: 'nameo', email: 'notrecorded@example.com', phone: '212-666-6666', title: 'nice guy'))

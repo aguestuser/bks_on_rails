@@ -15,7 +15,7 @@
 #
 
 require 'spec_helper'
-include ValidationMacros
+include ValidationMacros, IoMacros
 
 describe Shift do
   let(:shift) { FactoryGirl.build(:shift, :without_restaurant) }
@@ -64,7 +64,7 @@ describe Shift do
     end
   end
 
-describe "methods" do
+  describe "methods" do
 
     # let(:rider) { FactoryGirl.create(:rider) }
     let!(:shift) { FactoryGirl.create(:shift, :without_restaurant) }
@@ -143,6 +143,20 @@ describe "methods" do
         expect( shift.double_books_with?( day_before_shift ) ).to eq false
         expect( shift.double_books_with?( day_after_shift ) ).to eq false        
       end
+    end
+  end
+
+  describe "class methods" do
+
+    describe "Shift.import" do
+      load_imported_assignment_attrs
+      let!(:old_count){ Shift.count }
+      before { Shift.import }
+
+      it "should create 3 new shifts with correct assignments" do
+        expect(Shift.count).to eq old_count + 3
+        expect(Assignment.last(3).map { |a| filter_uniq_attrs a.attributes } ).to eq imported_assignment_attrs
+      end    
     end
   end
 end

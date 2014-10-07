@@ -36,6 +36,9 @@ class Contact < ActiveRecord::Base
     format: { with: VALID_EMAIL },
     uniqueness: { case_sensitive: false } 
 
+  EXPORT_COLUMNS = [ 'name' ]
+  EXPORT_HEADERS = EXPORT_COLUMNS
+
   #class methods
   def Contact.find_by_email(email)
     Contact.where("email = ?", email).readonly(false).first

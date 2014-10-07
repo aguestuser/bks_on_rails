@@ -19,4 +19,7 @@ class MiniContact < ActiveRecord::Base
   VALID_PHONE = /\A(?:(?:\+?1\s*(?:[.-]\s*)?)?(?:\(\s*([2-9]1[02-9]|[2-9][02-8]1|[2-9][02-8][02-9])\s*\)|([2-9]1[02-9]|[2-9][02-8]1|[2-9][02-8][02-9]))\s*(?:[.-]\s*)?)?([2-9]1[02-9]|[2-9][02-9]1|[2-9][02-9]{2})\s*(?:[.-]\s*)?([0-9]{4})(?:\s*(?:#|x\.?|ext\.?|extension)\s*(\d+))?\z/
   validates :phone, presence: true, 
               format: { with: VALID_PHONE }
+
+  EXPORT_COLUMNS = [ 'name', 'address' ]
+  EXPORT_HEADERS = EXPORT_COLUMNS
 end

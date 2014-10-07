@@ -15,7 +15,7 @@
 #
 
 class Shift < ActiveRecord::Base
-  include Timeboxable, BatchUpdatable
+  include Timeboxable, BatchUpdatable, ImportableFirstClass, Exportable
 
   before_validation :set_urgency_if_nil
   before_validation :set_billing_rate_if_nil
@@ -29,6 +29,9 @@ class Shift < ActiveRecord::Base
 
   validates :restaurant_id, :billing_rate, :urgency,
     presence: true
+
+  EXPORT_COLUMNS = [ 'id', 'start', 'end', 'restaurant_id', 'billing_rate' ]
+  EXPORT_HEADERS = [ 'id', 'start', 'end', 'restaurantid', 'billing' ]
 
   def build_associations
     self.assignment = Assignment.new
@@ -81,6 +84,7 @@ class Shift < ActiveRecord::Base
 
   private
 
+    # private instance methods
     def set_billing_rate_if_nil
       self.billing_rate = :normal if self.billing_rate.nil?
     end
@@ -108,5 +112,56 @@ class Shift < ActiveRecord::Base
       #input: Symbol
       self.update(urgency: urgency)
     end  
+
+    def parse_export_values attrs
+      swap_billing = lambda do |billing| 
+        case billing
+        when 'extra'
+          'extra rider'
+        when 'emergency_extra'
+          'extra rider emergency'
+        else
+          billing
+        end
+      end
+      attrs[-1] = swap_billing.call(attrs.last)
+      attrs
+    end    
+
+    # private class methods
+    def self.import_children path
+      { assignments: Assignment.import( "#{path}assignments.csv" ) }
+    end
+
+    def self.import_attrs_from row_hash, c, i
+      #input: Hash of Restaurant attributes, Hash of Hashes of attributes for children of Restaurants, Int (index)
+      #output: Hash of Hashes of attributes for Restaurant *and* its children
+      row_hash
+        .reject{ |k,v| k == 'id' }
+        .merge( {
+          assignment: c[:assignments][i]
+        } )
+    end
+
+    def self.child_export_headers
+      [ 'riderid', 'status' ]
+    end
+
+    def self.child_export_cells_from shift
+      a = shift.assignment
+      swap_status = lambda do |status|
+        case status.text
+        when 'Cancelled (Restaurant)'
+          'cancelled charge'
+        when 'Cancelled (Rider)'
+          'cancelled charge'
+        else 
+          status
+        end
+      end
+
+      [ a.rider_id, swap_status.call(a.status) ]
+    end
+
 
 end

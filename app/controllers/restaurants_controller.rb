@@ -64,6 +64,10 @@ class RestaurantsController < ApplicationController
     end
   end
 
+  def export
+    send_data Restaurant.export, filename: 'restaurants.csv'
+  end
+
   private
 
     def load_restaurant

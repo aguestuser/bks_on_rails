@@ -34,6 +34,7 @@ BksOnRails::Application.routes.draw do
       resources :assignments
     end
     resources :conflicts
+    collection { get :export }
   end
 
   resources :restaurants do
@@ -48,10 +49,12 @@ BksOnRails::Application.routes.draw do
     resources :shifts do
       resources :assignments
     end
+    collection { get :export }
   end
 
   resources :shifts do
     resources :assignments
+    collection { get :export }
   end
 
   # grid routes

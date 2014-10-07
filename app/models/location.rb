@@ -31,6 +31,9 @@ class Location < ActiveRecord::Base
   validates :address, :borough, :neighborhood, 
     presence: true
 
+  EXPORT_COLUMNS = [ 'address' ]
+  EXPORT_HEADERS = EXPORT_COLUMNS
+
   def full_address
     "#{self.address}, #{self.borough.text} [#{self.neighborhood.text}]"
   end  

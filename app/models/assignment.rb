@@ -13,7 +13,7 @@
 #
 
 class Assignment < ActiveRecord::Base
-  include BatchUpdatable
+  include BatchUpdatable, Importable
   belongs_to :shift #, inverse_of: :assignment
   belongs_to :rider
 

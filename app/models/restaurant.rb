@@ -12,7 +12,7 @@
 #
 
 class Restaurant < ActiveRecord::Base
-  include Locatable, ImportableFirstClass
+  include Locatable, ImportableFirstClass, Exportable
   has_one :mini_contact, dependent: :destroy
     accepts_nested_attributes_for :mini_contact
   has_one :work_specification, dependent: :destroy
@@ -28,7 +28,6 @@ class Restaurant < ActiveRecord::Base
   has_many :shifts
 
   classy_enum_attr :status, enum: 'AccountStatus'
-
 
   validates :status, :brief, presence: true
   validates :active, inclusion: { in: [ true, false ] }
@@ -47,6 +46,10 @@ class Restaurant < ActiveRecord::Base
     .order("mini_contacts.name asc") 
     .to_a.uniq
   }
+
+  EXPORT_COLUMNS = [ 'id', 'active' ]
+  EXPORT_HEADERS = EXPORT_COLUMNS
+
 
   #public methods
 
@@ -74,6 +77,10 @@ class Restaurant < ActiveRecord::Base
 
   private
 
+  def parse_export_values attrs
+    attrs
+  end
+  
   def Restaurant.import_children path
     #input: none
     #output Hash of Arrays of Restaurant children 
@@ -105,8 +112,16 @@ class Restaurant < ActiveRecord::Base
       } )
   end
 
-  
+  def self.child_export_headers
+    [ 'name', 'address' ]
+  end
 
-
+  def self.child_export_cells_from restaurant
+    l = restaurant.location
+    [ 
+      restaurant.mini_contact.name, 
+      "#{l.address}, #{l.borough.text}, NY"
+    ]
+  end
 
 end

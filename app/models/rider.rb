@@ -9,7 +9,7 @@
 #
 
 class Rider < ActiveRecord::Base
-  include User, Contactable, Equipable, Locatable, ImportableFirstClass # app/models/concerns/
+  include User, Contactable, Equipable, Locatable, ImportableFirstClass, Exportable # app/models/concerns/
 
   #nested attributes
   has_one :qualification_set, dependent: :destroy
@@ -29,6 +29,9 @@ class Rider < ActiveRecord::Base
   scope :testy, -> { joins(:contact).where("contacts.email = ?", "bkshifttester@gmail.com").first }
   scope :active, -> { joins(:contact).where(active: true).order("contacts.name asc") }
   scope :inactive, -> { joins(:contact).where(active: false).order("contacts.name asc") }
+
+  EXPORT_COLUMNS = [ 'id', 'active' ]
+  EXPORT_HEADERS = EXPORT_COLUMNS
   
 #public methods
   def name
@@ -52,6 +55,8 @@ class Rider < ActiveRecord::Base
       .order("start asc")
   end
 
+
+
   #class methods
   def Rider.select_options
     Rider.all.joins(:contact).order("contacts.name asc").map{ |r| [ r.name, r.id ] }
@@ -70,6 +75,10 @@ class Rider < ActiveRecord::Base
   end
 
   private
+
+  def parse_export_values attrs
+    attrs
+  end
 
   def Rider.import_children path
     #input: none
@@ -100,6 +109,14 @@ class Rider < ActiveRecord::Base
         equipment_set: c[:equipment_sets][i],
         location: c[:locations][i] 
       } )
+  end
+
+  def self.child_export_headers
+    [ 'name' ]
+  end
+
+  def self.child_export_cells_from rider
+    [ rider.short_name ]
   end
 
 end

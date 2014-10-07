@@ -9,3 +9,4 @@ end
 
 class Urgency::Emergency < Urgency
 end
+

@@ -159,6 +159,12 @@ class ShiftsController < ApplicationController
     end
   end
 
+  #IO
+
+  def export
+    send_data Shift.export, filename: 'shifts.csv'
+  end
+
   private  
 
     #CRUD HELPERS
