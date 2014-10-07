@@ -105,6 +105,9 @@ end
 class Neighborhood::CrownHeights < Neighborhood
 end
 
+class Neighborhood::DitmasPark < Neighborhood
+end
+
 class Neighborhood::DowntownBrooklyn < Neighborhood
 end
 
@@ -126,6 +129,9 @@ end
 class Neighborhood::Gowanus < Neighborhood
 end
 
+class Neighborhood::KingsHighway < Neighborhood
+end
+
 class Neighborhood::Midwood < Neighborhood
 end
 
@@ -135,7 +141,13 @@ end
 class Neighborhood::ProspectHeights < Neighborhood
 end
 
+class Neighborhood::RedHook < Neighborhood
+end
+
 class Neighborhood::SheepsheadBay < Neighborhood
+end
+
+class Neighborhood::SunsetPark < Neighborhood
 end
 
 class Neighborhood::Williamsburg < Neighborhood
@@ -152,6 +164,9 @@ class Neighborhood::Astoria < Neighborhood
 end
 
 class Neighborhood::CypressHills < Neighborhood
+end
+
+class Neighborhood::Flushing < Neighborhood
 end
 
 class Neighborhood::FreshMeadows < Neighborhood
@@ -181,18 +196,27 @@ end
 class Neighborhood::StAlbans < Neighborhood
 end
 
-class Neighborhood::SunnySide < Neighborhood
+class Neighborhood::Sunnyside < Neighborhood
 end
 
 class Neighborhood::Woodside < Neighborhood
 end
 
+# Bronx
+
+class Neighborhood::Bronx < Neighborhood
+end
+
+
 #Jersey
+
+class Neighborhood::FortLee < Neighborhood
+end
 
 class Neighborhood::JerseyCity < Neighborhood
 end
 
-class Neighborhood::FortLee < Neighborhood
+class Neighborhood::UnionCity < Neighborhood
 end
 
 
