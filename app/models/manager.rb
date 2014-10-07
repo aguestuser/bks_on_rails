@@ -19,7 +19,9 @@ class Manager < ActiveRecord::Base
   end
 
   def Manager.import_self managers_file, accounts, contacts
-    managers = []
+    path = Rails.env.test? ? "app/io/import/sample/staffers/" : "app/io/import/staffers/"
+  
+    staffers = []
     CSV.foreach(managers_file, headers: true) do |row|
       i = $. - 2 # $. returns the INPUT_LINE_NUMBER, subtracting one produces index number
       attrs = row

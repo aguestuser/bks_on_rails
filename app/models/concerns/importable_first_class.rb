@@ -51,6 +51,8 @@ module ImportableFirstClass
       else 
         puts "ID DISCREPANCIES:"
         pp results[:id_discrepancies]
+        # puts "NEW #{sub_path.upcase}:"
+        # pp self.last(results[:num_recs]).map(&:contact)
       end
       results
     end 
