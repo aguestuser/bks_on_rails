@@ -35,7 +35,7 @@ module ImportableFirstClass
           results[:num_recs] -= 1
           results[:num_errors] += 1
           results[:error_ids].push(old_id)
-          results[:errors].push(record.errors)
+          results[:errors].push({ old_id => record.errors)
         end
       end
       results

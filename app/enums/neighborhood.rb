@@ -54,6 +54,9 @@ end
 class Neighborhood::MidtownWest < Neighborhood
 end
 
+class Neighborhood::Soho < Neighborhood
+end
+
 class Neighborhood::Tribeca < Neighborhood
 end
 
@@ -94,6 +97,12 @@ class Neighborhood::Bushwick < Neighborhood
 end
 
 class Neighborhood::Canarsie < Neighborhood
+end
+
+class Neighborhood::CarrollGardens < Neighborhood
+end
+
+class Neighborhood::CobbleHill < Neighborhood
 end
 
 class Neighborhood::ClintonHill < Neighborhood
