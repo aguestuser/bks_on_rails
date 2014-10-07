@@ -26,8 +26,8 @@ module ImportableFirstClass
         row_hash = row.to_hash
         old_id = row_hash['id']    
         attrs = self.import_attrs_from row_hash, children, i # .import_attrs_from is a class-specific class method
-          # puts ">>> ATTRS"
-          # pp attrs
+          puts ">>> ATTRS"
+          pp attrs
         record = self.new attrs
 
         if record.save
