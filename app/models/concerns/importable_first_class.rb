@@ -31,6 +31,7 @@ module ImportableFirstClass
         record = self.new attrs
           puts ">>> record"
           pp record
+          pp record.location
 
         if record.save
           results[:id_discrepancies][i+1] = record.id if i+1 != record.id
