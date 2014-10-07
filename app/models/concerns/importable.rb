@@ -10,7 +10,7 @@ module Importable
     def import filepath
       recs = []
       CSV.foreach( filepath, headers: true ) do |row|
-        recs.push( self.new row.to_hash )
+        recs.push( self.new( row.to_hash ) )
       end
       recs
     end

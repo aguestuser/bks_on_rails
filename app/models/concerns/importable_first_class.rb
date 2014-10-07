@@ -26,9 +26,11 @@ module ImportableFirstClass
         row_hash = row.to_hash
         old_id = row_hash['id']    
         attrs = self.import_attrs_from row_hash, children, i # .import_attrs_from is a class-specific class method
-          puts ">>> ATTRS"
-          pp attrs
+          # puts ">>> ATTRS"
+          # pp attrs
         record = self.new attrs
+          puts ">>> record"
+          pp record
 
         if record.save
           results[:id_discrepancies][i+1] = record.id if i+1 != record.id
