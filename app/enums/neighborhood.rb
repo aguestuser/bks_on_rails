@@ -96,12 +96,14 @@ end
 class Neighborhood::Canarsie < Neighborhood
 end
 
+class Neighborhood::ClintonHill < Neighborhood
+end
+
 class Neighborhood::ConeyIsland < Neighborhood
 end
 
 class Neighborhood::CrownHeights < Neighborhood
 end
-
 
 class Neighborhood::DowntownBrooklyn < Neighborhood
 end
@@ -134,6 +136,9 @@ class Neighborhood::ProspectHeights < Neighborhood
 end
 
 class Neighborhood::SheepsheadBay < Neighborhood
+end
+
+class Neighborhood::Williamsburg < Neighborhood
 end
 
 class Neighborhood::WindsorTerrace < Neighborhood

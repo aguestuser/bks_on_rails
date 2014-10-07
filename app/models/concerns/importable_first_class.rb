@@ -54,7 +54,7 @@ module ImportableFirstClass
         # puts "NEW #{sub_path.upcase}:"
         # pp self.last(results[:num_recs]).map(&:contact)
       end
-      results
+      # results
     end 
   end
 end
