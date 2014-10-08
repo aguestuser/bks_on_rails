@@ -9,8 +9,7 @@ module ImportableFirstClass
 
     def import
       sub_path = self.name.downcase << 's'
-      # path = Rails.env.test? ? "app/io/import/sample/#{sub_path}/" : "app/io/import/#{sub_path}/"
-      path = "app/io/import/#{sub_path}/"
+      path = Rails.env.test? ? "app/io/import/sample/#{sub_path}/" : "app/io/import/#{sub_path}/"
       children = self.import_children path # .import_children is class-specific class method
 
       results = self.import_self path, sub_path, children
@@ -29,9 +28,6 @@ module ImportableFirstClass
           # puts ">>> ATTRS"
           # pp attrs
         record = self.new attrs
-          puts ">>> record"
-          pp record
-          pp record.location
 
         if record.save
           results[:id_discrepancies][i+1] = record.id if i+1 != record.id
