@@ -57,6 +57,11 @@ BksOnRails::Application.routes.draw do
     collection { get :export }
   end
 
+  post 'shifts/index'
+  post 'restaurants/:id/shifts/index' => 'shifts#index'
+  post 'riders/:id/shifts/index' => 'shifts#index'
+
+
   # grid routes
   get "grid/shifts"
   match '/shift_grid', to: 'grid#shifts', via: 'get'
