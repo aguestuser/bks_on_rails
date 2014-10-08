@@ -116,7 +116,7 @@ class Rider < ActiveRecord::Base
   end
 
   def self.child_export_cells_from rider
-    [ rider.short_name ]
+    [ rider.name ]
   end
 
 end
