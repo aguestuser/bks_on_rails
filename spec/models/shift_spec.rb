@@ -167,7 +167,7 @@ describe Shift do
       describe "all shifts" do
 
         it "should export all shifts" do
-          expect(Shift.export).to eq File.read('app/io/export/sample/all_shifts.csv')
+          expect(Shift.export).to eq File.read('app/io/export/sample/shifts_all.csv')
         end
       end
       
@@ -179,7 +179,7 @@ describe Shift do
       end
 
       describe "with deleted records" do
-        before { batch[3].destroy }
+        before { this_week_shifts[3].destroy }
 
         it "should export all shifts with empty row for deleted shift" do
           expect( Shift.export ).to eq File.read('app/io/export/sample/shifts_with_deletion.csv')

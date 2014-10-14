@@ -17,8 +17,18 @@ module Exportable
         csv << ( self::EXPORT_HEADERS + self.child_export_headers )
 
         records = self.export_records_from scope, start_t, end_t
+        id_offset = records.first.id - 0
+        index_offset = 0
+
         records.each_with_index do |record, i|
-          csv << self.export_cells_from( record, self::EXPORT_COLUMNS, i )
+
+          unless record.id - id_offset == i + index_offset
+            num_cols = self::EXPORT_COLUMNS.count - 1
+            csv << Array.new(num_cols).unshift(i + index_offset) # blank row with placeholder id
+            index_offset += 1
+          end
+          
+          csv << self.export_cells_from( record, self::EXPORT_COLUMNS, i + index_offset )
         end
       end
       puts file
@@ -36,7 +46,7 @@ module Exportable
 
     def export_cells_from record, col_names, index
       cells = record.export_values_for col_names
-      cells[0] = index + 1
+      cells[0] = index
       cells + self.child_export_cells_from(record)
     end
   end
