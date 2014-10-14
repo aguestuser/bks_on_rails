@@ -2,10 +2,7 @@ require 'spec_helper'
 include CustomMatchers, RequestSpecMacros, ShiftRequestMacros, GridRequestMacros
 
 describe "Shift Requests" do
-  let!(:restaurant) { FactoryGirl.create(:restaurant) }
-  let!(:other_restaurant) { FactoryGirl.create(:restaurant) }
-  let!(:rider){ FactoryGirl.create(:rider) }
-  let!(:other_rider){ FactoryGirl.create(:rider) }
+  load_riders_and_restaurants
   let(:shift) { FactoryGirl.build(:shift, :with_restaurant, restaurant: restaurant) }
   let(:shifts) { 31.times.map { FactoryGirl.create(:shift, :without_restaurant) } }
   let(:staffer) { FactoryGirl.create(:staffer) }

@@ -1,0 +1,15 @@
+- provide(:title, 'Build Shift Export Batch')
+
+%h1 Build Conflict Batch
+.row.profile
+  .span8.offset2
+    = form_tag '/shifts/export', method: :get do 
+      .row
+        /Week Start
+        .span4
+          - default_week_start = Time.zone.now.beginning_of_week
+          = render '/shared/datepicker', label: 'Monday of Week to Export:', id: "week_start", name: 'week_start', start_i: default_week_start.to_i, start_str: default_week_start.strftime("%B %e, %Y")
+      /Submit
+      .row
+        %p.center
+          = submit_tag 'Submit', :class => 'btn btn-primary'

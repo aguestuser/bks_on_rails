@@ -12,18 +12,31 @@ module Exportable
 
   module ClassMethods
 
-    def export
-      CSV.generate do |csv|
+    def export scope=:all, start_t=nil, end_t=nil
+      file = CSV.generate do |csv|
         csv << ( self::EXPORT_HEADERS + self.child_export_headers )
 
-        self.all.each do |record|
-          csv << self.export_cells_from( record, self::EXPORT_COLUMNS )
+        records = self.export_records_from scope, start_t, end_t
+        records.each_with_index do |record, i|
+          csv << self.export_cells_from( record, self::EXPORT_COLUMNS, i )
         end
+      end
+      puts file
+      file
+    end
+
+    def export_records_from scope, start_t, end_t
+      case scope
+      when :all
+        self.all
+      when :between
+        self.where( "start > :start AND start < :end", { start: start_t, :end => end_t } )
       end
     end
 
-    def export_cells_from record, col_names
+    def export_cells_from record, col_names, index
       cells = record.export_values_for col_names
+      cells[0] = index + 1
       cells + self.child_export_cells_from(record)
     end
   end

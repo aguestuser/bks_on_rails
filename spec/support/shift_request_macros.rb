@@ -347,6 +347,13 @@ module ShiftRequestMacros
     edited_shifts
   end
 
+  def load_riders_and_restaurants
+    let!(:restaurant) { FactoryGirl.create(:restaurant) }
+    let!(:other_restaurant) { FactoryGirl.create(:restaurant) }
+    let!(:rider){ FactoryGirl.create(:rider) }
+    let!(:other_rider){ FactoryGirl.create(:rider) }
+  end
+
   def load_batch
     let(:start_t){ Time.zone.local(2014,1,6,12) }
     let(:end_t){ Time.zone.local(2014,1,6,18) }

@@ -162,7 +162,11 @@ class ShiftsController < ApplicationController
   #IO
 
   def export
-    send_data Shift.export, filename: 'shifts.csv'
+    week_start = Time.zone.parse( params[:week_start] ).beginning_of_week # call .beginning_of_week to correct for selecting week_start that isn't monday
+    week_end = week_start + 1.week + 4.hours # offset for shifts that go later than midnight (no shifts go later than 4am)
+    csv = Shift.export :between, week_start, week_end
+
+    send_data csv, filename: 'shifts.csv'
   end
 
   private  

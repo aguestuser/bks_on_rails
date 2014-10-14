@@ -54,13 +54,12 @@ BksOnRails::Application.routes.draw do
 
   resources :shifts do
     resources :assignments
-    collection { get :export }
+    collection { get :export, :build_export }
   end
 
   post 'shifts/index'
   post 'restaurants/:id/shifts/index' => 'shifts#index'
   post 'riders/:id/shifts/index' => 'shifts#index'
-
 
   # grid routes
   get "grid/shifts"

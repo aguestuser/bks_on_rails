@@ -15,7 +15,7 @@
 #
 
 require 'spec_helper'
-include ValidationMacros, IoMacros
+include ValidationMacros, IoMacros, ShiftRequestMacros
 
 describe Shift do
   let(:shift) { FactoryGirl.build(:shift, :without_restaurant) }
@@ -157,6 +157,34 @@ describe Shift do
         expect(Shift.count).to eq old_count + 3
         expect(Assignment.last(3).map { |a| filter_uniq_attrs a.attributes } ).to eq imported_assignment_attrs
       end    
+    end
+
+    describe "Shift.export" do
+      load_riders_and_restaurants
+      load_batch
+      load_this_week_shifts
+
+      describe "all shifts" do
+
+        it "should export all shifts" do
+          expect(Shift.export).to eq File.read('app/io/export/sample/all_shifts.csv')
+        end
+      end
+      
+      describe "shifts between mon and wed" do
+
+        it "should export shifts btw mon & wed" do
+          expect( Shift.export :between, start_t.beginning_of_day, (end_t + 3.days).end_of_day ).to eq File.read('app/io/export/sample/shifts_mon_to_wed.csv')
+        end
+      end
+
+      describe "with deleted records" do
+        before { batch[3].destroy }
+
+        it "should export all shifts with empty row for deleted shift" do
+          expect( Shift.export ).to eq File.read('app/io/export/sample/shifts_with_deletion.csv')
+        end
+      end
     end
   end
 end
