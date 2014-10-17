@@ -388,6 +388,7 @@ label {
     @include sortable
   }
   .row{
+    margin-left: -10px !important;
     border-bottom: 1px solid $grayLighter;
   }
 }

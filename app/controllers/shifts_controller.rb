@@ -307,12 +307,4 @@ class ShiftsController < ApplicationController
         end
       end
     end
-
-    # def batch_shift_params
-    #   params.require(:shifts)
-    #     .permit( :id, :restaurant_id, :start, :end, :urgency, :billing_rate, :notes,
-    #       :base_path,
-    #       assignment_attributes: [ :id, :shift_id, :rider_id, :status ]
-    #     )
-    # end
 end

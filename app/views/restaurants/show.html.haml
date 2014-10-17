@@ -3,7 +3,7 @@
   = render 'profile_header'
   .row
     .span10.offset1
-      = render 'layouts/teaser', span: "span8 offset1", h3: 'Shifts', table: @shift_table, see_more: link_to('See more', index_path(:shifts))
+      = render 'layouts/teaser', span: "span10", h3: 'Shifts', table: @shift_table, see_more: link_to('See more', index_path(:shifts))
       = render 'restaurants/status' if credentials == 'Staffer'
       = render @restaurant.mini_contact
       = render @restaurant.location

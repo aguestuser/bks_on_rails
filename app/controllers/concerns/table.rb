@@ -26,7 +26,8 @@ class Table < ApplicationController
   def load_spans
     case @record_type
     when :shift 
-      trim_array_by_caller [2,3,2,2]
+      # trim_array_by_caller [2,3,2,2] 
+      trim_array_by_caller [2,3,1,2,2]# arg is arr of span widths
     when :conflict
       trim_array_by_caller [2,3,1]
     end
@@ -34,6 +35,7 @@ class Table < ApplicationController
 
   ### HEADERS ###
   def load_headers
+    #output: Arr of Hashes of type: { val: <Str>, sortable: <Bool>[OPTIONAL], sort_key: <Str>[OPTIONAL] }
     default = default_headers
     headers = trim_array_by_caller default
     headers.map { |h| header_from h }
@@ -50,15 +52,18 @@ class Table < ApplicationController
   end
 
   def default_shift_headers
+    #output: Arr of Hashes
     [ 
       { val: 'Restaurant', sort_key: 'mini_contacts.name' }, 
       { val: 'Time', sort_key: 'start' },
+      { val: 'Billing', sort_key: 'billing_rate' },
       { val: 'Assigned to', sort_key: 'contacts.name' },
       { val: 'Status', sort_key: 'assignments.status' }
     ]
   end
 
   def default_conflict_headers
+    #output: Arr of Hashes
     [ 
       { val: 'Rider', sort_key: 'contacts.name' },
       { val: 'Time',  sort_key: 'start'},
@@ -107,8 +112,9 @@ class Table < ApplicationController
 
   def default_shift_cell_procs
     [ 
-      Proc.new{ |s| { val: s.restaurant.name, href: show_path(s.restaurant) } }, #Restaurant
+      Proc.new{ |s| { val: s.restaurant.name, href: "/restaurants/#{s.restaurant.id}" } }, #Restaurant
       Proc.new{ |s| { val: s.table_time } }, #Time
+      Proc.new{ |s| { val: s.billing_rate.text } }, #Billing
       Proc.new{ |s| rider_cell_from s }, #Rider
       Proc.new{ |s| { val: s.assignment.status.text } } #Status 
     ]
@@ -116,7 +122,7 @@ class Table < ApplicationController
 
   def rider_cell_from s
     if s.assigned?
-      { val: s.rider.name, href: show_path(s.rider) }
+      { val: s.rider.name, href: "/riders/#{s.rider.id}" }
     else
       { val: '--' }
     end
@@ -168,6 +174,7 @@ class Table < ApplicationController
 
   #TRIM ARR
   def trim_array_by_caller arr
+    #input: Arr of Ints (specifying span widths)
     case @record_type
     when :shift
       trim_shift_arr_by_caller arr
@@ -183,7 +190,7 @@ class Table < ApplicationController
     when :restaurant
       arr.delete_at(0)
     when :rider
-      arr.delete_at(2)
+      arr.delete_at(3)
     end
     arr    
   end

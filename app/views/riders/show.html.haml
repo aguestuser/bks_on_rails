@@ -3,7 +3,7 @@
   = render 'users/profile_header', it: @it
   .row
     .span10.offset1
-      = render 'layouts/teaser', span: "span8 offset1", h3: 'Assignments', table: @shift_table, see_more: link_to('See more', index_path(:shifts))
+      = render 'layouts/teaser', span: "span10", h3: 'Assignments', table: @shift_table, see_more: link_to('See more', index_path(:shifts))
       = render 'layouts/teaser', span: "span6 offset2", h3: 'Conflicts', table: @conflict_table, see_more: link_to('See more', index_path(:conflicts))
       = render @rider.contact
       = render @rider.location

@@ -3,10 +3,11 @@
 /Arguments
 - if @caller
   - header_suffix = " for #{@caller_obj.name}"
-  - span = "span8 offset2"
+  / - span = "span8 offset2"
+  - span = "span10 offset1"
 - else
   - header_suffix = ""
-  - span = "span10 offset1"
+  - span = 'span12'
 
 /Header
 %h1= "Shifts" + header_suffix
