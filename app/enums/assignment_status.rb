@@ -1,4 +1,7 @@
 class AssignmentStatus < ClassyEnum::Base
+  def self.multiselect_options
+    [ [ '* All Statuses', 'all' ] ] + self.select_options
+  end
 end
 
 class AssignmentStatus::Unassigned < AssignmentStatus

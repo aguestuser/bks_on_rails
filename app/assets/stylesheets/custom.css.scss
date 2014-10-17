@@ -361,6 +361,17 @@ label {
   }
 }
 
+.radio{
+  label{ 
+    text-align: left !important;
+    font-weight: normal;  
+  }
+  .filter_toggle{
+    float: left;
+    margin-left: 2em;
+  }
+}
+
 /* Shift display */
 
 .shift_box{

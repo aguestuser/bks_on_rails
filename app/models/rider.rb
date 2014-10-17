@@ -59,7 +59,11 @@ class Rider < ActiveRecord::Base
 
   #class methods
   def Rider.select_options
-    Rider.all.joins(:contact).order("contacts.name asc").map{ |r| [ r.name, r.id ] }
+    Rider.all.joins(:contact).order("contacts.name asc").map{ |r| [ r.name, r.id ] } << [ '--', 0 ]
+  end
+
+  def self.multiselect_options
+    [ [ '* All Riders', 'all' ] ] + self.select_options
   end
 
   def Rider.email_conflict_requests rider_conflicts, week_start, account

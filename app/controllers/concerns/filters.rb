@@ -1,8 +1,8 @@
-module Filters
+ module Filters
   extend ActiveSupport::Concern
 
   included do #InstanceMethods
-    
+
     def load_filters lf_params
       #input: Hash of params with following form:
         # { subject: Symbol corresponding to Timeboxable class name }
@@ -50,20 +50,15 @@ module Filters
         # output: Hash with following structure:
           # { <filter_name>: <filter_query> } 
           # to be appended to master filter hash next level up
-        case by
-        when :time
+        if by == :time
           load_time_filter context, fp, view
-        when :restaurants
-          load_restaurants_filter context, fp
-        when :riders
-          load_riders_filter context, fp
-        when :status
-          load_status_filter context, fp
+        else
+          load_resource_filter by, context, fp
         end
       end
 
       def load_time_filter context, fp=nil, view=nil
-        #input: Symbol (:load or :request), Hash of filter params (optional)
+        #input: Symbol (:load or :request), Hash of filter params (optional), Symbol naming view (:table, :grid) (optional)
         #does: retrieves correct filter query based on context and appends it to hash
         #output: Hash of filter key/value pairs to be appended to master filter hash
         
@@ -72,76 +67,22 @@ module Filters
         when :load 
           start_value = Time.zone.now.beginning_of_week
           end_value = start_value + 6.days + 23.hours + 59.minutes
+        
         when :request
           start_value = parse_time_filter_params( fp[:start] )
-          # raise start_value.inspect
+          
           case view
+          
           when :table
             end_value = parse_time_filter_params( fp[:end] )
           when :grid
             end_value = start_value + 6.days + 23.hours + 59.minutes
           end
         end
-        
-        # case view
-        # when :shift_table
-          
-        # when :shift_grid
-          
-        # end
 
         { start: start_value, :end => end_value }
       end
 
-      def load_restaurants_filter context, fp=nil
-        #input: Symbol (:load or :request), Hash of filter params (optional)
-        #does: retrieves correct filter query based on context and appends it to hash
-        #output: Hash of filter key/value pairs to be appended to master filter hash
-        
-        if @caller == :restaurant
-          value = [ @restaurant.id ]
-        else
-          case context 
-          when :load
-            value = Restaurant.all.map(&:id)
-          when :request
-            value = fp[:restaurants].map(&:to_i)
-          end 
-        end
-        { restaurants: value }
-      end
-
-      def load_riders_filter context, fp=nil
-        #input: Symbol (:load or :request), Hash of filter params (optional)
-        #does: retrieves correct filter query based on context and appends it to hash
-        #output: Hash of filter key/value pairs to be appended to master filter hash
-        if @caller == :rider
-          value = [ @rider.id ]
-        else
-          case context 
-          when :load
-            value = Rider.all.map(&:id).push(0)
-          when :request
-            value = fp[:riders].map(&:to_i)
-          end
-        end
-        { riders: value }
-      end
-
-      def load_status_filter context, fp=nil
-        #input: Symbol (:load or :request), Hash of filter params (optional)
-        #does: retrieves correct filter query based on context and appends it to hash
-        #output: Hash of filter key/value pairs to be appended to master filter hash
-        case context 
-        when :load
-          value = AssignmentStatus.select_options.map(&:last)
-        when :request
-          value = fp[:status]
-        end
-        { status: value }
-      end
-
-      #helper for load_time_filter 
       def parse_time_filter_params p
         #input: value of either @filter[:start] or @filter[:end]
         #does: determine source of param construction (via reflection)
@@ -157,6 +98,38 @@ module Filters
         end
       end
 
+      def load_resource_filter by, context, fp=nil
+        #input: Symbol (:load or :request), Hash of filter params (optional)
+        #does: retrieves correct filter query based on context and appends it to hash
+        #output: Hash of filter key/value pairs to be appended to master filter hash
+        
+        case by            
+        when :restaurants
+          it = @restaurant
+          caller_key = :restaurant
+        when :rider
+          it = @rider
+          caller_key = :rider
+        end
+
+        if it && @caller == caller_key # it will only be defined for by == :restaurants || :riders
+          value = [ it.id ]
+        elsif context == :load || fp[by].include?( 'all' )
+          value = [ 'all' ]
+        else
+          value = parse_resource_filter_vals fp[by], by
+        end
+
+        { by => value }
+      end
+
+      def parse_resource_filter_vals vals, by
+        if by == :status
+          vals
+        else
+          vals.map(&:to_i)
+        end
+      end      
 
       #helpers for filters
 
@@ -193,9 +166,25 @@ module Filters
         #input: @filter (implicit)
         #does: maps @filter hash onto a hash referenced by the queries retrieved by filter_sql_str
         #output: Hash with keys corresponding to keys in @filter
-        @filter.keys.inject({}) do | hash, key |
-          hash[key] = @filter[key]
-          hash
+        hash = {}
+        @filter.each do | key, val |
+          if val == [ 'all' ]
+            hash[key] = all_selected_for key
+          else
+            hash[key] = val
+          end
+        end
+        hash
+      end
+
+      def all_selected_for key
+        if key == :status
+          AssignmentStatus.select_options.map(&:last)
+        else
+          klass = key.to_s.capitalize.singularize.constantize
+          arr = klass.all.map(&:id).map(&:to_i)
+          # arr.push(0) if key == :riders
+          arr
         end
       end
 

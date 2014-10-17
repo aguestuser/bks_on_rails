@@ -75,6 +75,14 @@ class Restaurant < ActiveRecord::Base
     Restaurant.all.joins(:mini_contact).order("mini_contacts.name asc").map{ |r| [ r.name, r.id ] }
   end
 
+  def Restaurant.select_options
+    ( Restaurant.all.joins(:mini_contact).order("mini_contacts.name asc").map{ |r| [ r.name, r.id ] } )
+  end
+
+  def self.multiselect_options
+    [ [ '* All Restaurants', 'all' ] ] + self.select_options
+  end
+
   private
 
   def parse_export_values attrs

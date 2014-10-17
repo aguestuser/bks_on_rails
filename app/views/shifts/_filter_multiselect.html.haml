@@ -1,0 +1,5 @@
+- #input: key (Sym), klass (Constant)
+
+.span2
+  = label_tag key
+  = select_tag "filter[#{key}]", options_for_select( klass.multiselect_options, @filter[key] ), multiple: true, :class => 'multi_select'
