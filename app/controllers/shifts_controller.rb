@@ -7,7 +7,7 @@ class ShiftsController < ApplicationController
   before_action :load_caller # will call load_restaurant or load_rider if applicable, load_paths always
   before_action :load_base_path
   before_action :load_form_args, only: [ :edit, :update ]
-  before_action :redirect_non_staffers, only: [ :index ]
+  before_action :redirect_non_staffers, only: [ :index, :list_unconfirmed ]
   before_action :load_filter_wrapper, only: [ :index, :batch_edit ]
   before_action :load_shifts, only: [ :index ]
   before_action :load_empty_errors, only: [ :route_batch_edit, :clone_new, :batch_new ]
@@ -59,8 +59,20 @@ class ShiftsController < ApplicationController
     redirect_to @base_path
   end
 
-  def hanging
-    
+  def list_unconfirmed
+    now = now_unless_test
+    params[:filter] = {
+      start: now.beginning_of_week,
+      :end => now.end_of_week,
+      restaurants: [ 'all' ],
+      riders: [ 'all' ],
+      status: [ 'unassigned', 'proposed', 'delegated', 'cancelled_by_rider' ]
+    }
+    load_filter_wrapper
+    load_shifts
+    load_table
+    render 'index'
+
   end
 
   # BATCH CRUD ACTIONS

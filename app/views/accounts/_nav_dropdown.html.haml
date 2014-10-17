@@ -1,9 +1,10 @@
-%li#fat-menu.dropdown
-  %a.dropdown-toggle{"data-toggle" => "dropdown", :href => "#"}
-    Account
-    %b.caret
-  %ul.dropdown-menu
-    %li= link_to "Homepage", current_account.user
-    %li= link_to "Settings", edit_account_path(current_account.user.id) 
-    %li.divider
-    %li= link_to "Sign out", sign_out_path, method: 'delete'
+/ %li#fat-menu.dropdown
+/   %a.dropdown-toggle{"data-toggle" => "dropdown", :href => "#"}
+/     Account
+/     %b.caret
+/   %ul.dropdown-menu
+/     %li= link_to "Homepage", current_account.user
+/     %li= link_to "Settings", edit_account_path(current_account.user.id)
+    
+/     %li.divider
+/     %li= link_to "Sign out", sign_out_path, method: 'delete'

@@ -13,13 +13,15 @@
           # permitted values: :time, :restaurants, :riders, :status
       #does: builds hash of filter params based on object type and filter keys passed as args
       #output: Hash of filter params
-      
+
       if params[:filter]
         fp = params[:filter]
         context = :request
       else
         context = :load
       end
+
+
 
       lf_params[:by].each do |by|
         @filter ||= {}
@@ -35,6 +37,7 @@
       # output: Array of form:
         # [ String (valid SQL query), Hash (corresponding to @filter hash)]
       [ filter_sql_str, filter_ref_hash ]
+      # raise [ filter_sql_str, filter_ref_hash ].inspect
     end
 
     private
@@ -90,9 +93,10 @@
           # if Hash of ActionController::Parameters, assumes source is user request
         #output: correct filter query based on context
         case p.class.name
+        when 'Time'
+          p
         when 'String' # from server load
           Time.zone.parse p
-          # p.to_datetime
         when 'ActionController::Parameters' # from user request
           Time.zone.local( p[:year].to_i, p[:month].to_i, p[:day].to_i, 0 )
         end
