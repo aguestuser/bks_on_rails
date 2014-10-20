@@ -156,7 +156,7 @@
         when :restaurants
           "restaurants.id IN (:restaurants)"
         when :riders
-          if @filter[:riders].include? 0
+          if @filter[:riders] == [ 'all' ] || @filter[:riders].include?(0)
             "(riders.id IN (:riders) OR riders.id IS null)"
           else
             "riders.id IN (:riders)"
@@ -187,7 +187,7 @@
         else
           klass = key.to_s.capitalize.singularize.constantize
           arr = klass.all.map(&:id).map(&:to_i)
-          # arr.push(0) if key == :riders
+          arr.push(0) if key == :riders
           arr
         end
       end

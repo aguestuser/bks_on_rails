@@ -77,7 +77,10 @@ class Week
       selection = @records.select do |record|
         ( record.start > @start + offset.days ) && 
         ( record.start < @end - 6.days + offset.days) && 
-        ( record.period.text.upcase == period )
+        ( 
+          record.period.text.upcase == period ||
+          record.period.text == 'Double'
+        )
       end
       # selection == [] ? nil : selection
     end

@@ -119,18 +119,20 @@
   def data_cell_val_from resource
     case resource.class.name
     when 'Shift'
-      parse_shift_for_val resource
+      val = parse_shift_for_val resource
     when 'Conflict'
-      parse_conflict_for_val resource
+      val = parse_conflict_for_val resource
     end
+    val = 'DOUBLE: ' + val if resource.period.text == 'Double'
+    val
   end
 
   def parse_shift_for_val s
     case @y_axis
-    when :restaurant
+    when :restaurant # for shift grid
       prefix = s.assigned? ? s.assignment.rider.short_name.to_s : '--'
       prefix + ' ' + s.assignment.status.short_code
-    when :rider
+    when :rider # for rider grid
       s.restaurant.name + ' ' + s.assignment.status.short_code
     end
   end
