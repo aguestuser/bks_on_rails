@@ -100,13 +100,12 @@ module Paths
       end
 
       def rt_str record, record_type
-        # raise record_type.inspect
         case record_type
         when :assignments
           prefix = @teaser ? "shifts/" : ""
           prefix + "#{record.shift.id}/assignments/"
         when :shifts
-          if @base_path == "/shifts/"
+          if @base_path.include? "/shifts/"
             ""
           else
             "shifts/"
