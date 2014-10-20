@@ -161,7 +161,7 @@ class Shift < ActiveRecord::Base
         end
       end
 
-      [ a.rider_id -1, swap_status.call(a.status) ]
+      [ ( a.rider_id - 1), swap_status.call(a.status) ]
     end
 
 
