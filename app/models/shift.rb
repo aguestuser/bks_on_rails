@@ -160,7 +160,7 @@ class Shift < ActiveRecord::Base
           status
         end
       end
-      id = a.rider_id? a.rider_id - 1 : nil
+      id = a.rider_id ? a.rider_id - 1 : nil
       [ id, swap_status.call(a.status) ]
     end
 
