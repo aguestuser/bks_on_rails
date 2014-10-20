@@ -87,7 +87,6 @@ class Rider < ActiveRecord::Base
   private
 
   def parse_export_values attrs
-    attrs[0] = attrs[0] - 1 # offset id by 1 to match google ss numbering
     attrs
   end
 

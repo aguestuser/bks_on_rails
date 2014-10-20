@@ -125,6 +125,7 @@ class Shift < ActiveRecord::Base
         end
       end
       attrs[-1] = swap_billing.call(attrs.last)
+      attrs[-2] = attrs[-2] -1 # offset id by 1
       attrs
     end    
 
@@ -160,7 +161,7 @@ class Shift < ActiveRecord::Base
         end
       end
 
-      [ a.rider_id, swap_status.call(a.status) ]
+      [ a.rider_id -1, swap_status.call(a.status) ]
     end
 
 
