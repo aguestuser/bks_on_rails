@@ -51,10 +51,22 @@ module GridRequestMacros
     end
   end
 
-  def select_first_week_of_2014
+  def load_double_shift
+    let!(:double_shift){
+      FactoryGirl.create(:shift,
+        :without_restaurant,
+        start: Time.zone.local(2013,1,7,10),
+        :end => Time.zone.local(2013,1,7,20)
+      )
+    }
+  end
 
-    # visit "/grid/"+grid_type+"?utf8=%E2%9C%93&filter%5Bstart%5D=January+06%2C+2014&end=%7B%3Avalue%3D%3ESun%2C+17+Aug+2014+23%3A59%3A00+EDT+-04%3A00%7D&commit=Filter"
-    #set start filter
+  def select_first_week_of_2013
+    fill_in "filter[start]", with: "January 7, 2013"
+    click_button 'Filter'
+  end
+
+  def select_first_week_of_2014
     fill_in "filter[start]", with: "January 6, 2014"
     click_button 'Filter'
   end
@@ -95,6 +107,17 @@ module GridRequestMacros
       rider.contact.update(name: 'A'*10)
       other_rider.contact.update(name: 'z'*10)
     end
+  end
+
+  def load_double_conflict
+    let!(:double_conflict){
+      FactoryGirl.create(:conflict,
+        :with_rider,
+        rider: rider,
+        start: Time.zone.local(2013,1,7,10),
+        :end => Time.zone.local(2013,1,7,20)
+      )
+    }
   end
 
   def configure_avail_grid_vars

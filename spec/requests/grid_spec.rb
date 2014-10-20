@@ -18,7 +18,6 @@ describe "Grid Requests" do
       before do
         visit shift_grid_path
         select_first_week_of_2014
-        # puts page.find("/table/tr[2]/td[2]").text
       end
 
       it { should have_h1('Shift Grid') }
@@ -76,6 +75,19 @@ describe "Grid Requests" do
         expect( page.find( "#row_2_col_13" ).text ).to eq ''
         expect( page.find( "#row_2_col_14" ).text ).to eq ''
         expect( page.find( "#row_2_col_15" ).text ).to eq ''
+      end
+    end
+
+    describe "double shift" do
+      load_double_shift
+      before do
+        visit shift_grid_path
+        select_first_week_of_2013 
+      end
+
+      it "should display double shift correctly" do
+        expect( page.find( "#row_1_col_2" ).text ).to eq ( "DOUBLE: " << shift_grid_cell_text_for(double_shift) )
+        expect( page.find( "#row_1_col_4" ).text ).to eq ( "DOUBLE: " << shift_grid_cell_text_for(double_shift) )
       end
     end
   end
@@ -151,6 +163,19 @@ describe "Grid Requests" do
         expect( page.find( "#row_#{last_row}_col_15" ).text ).to eq 'AVAIL'
       end
     end # "page contents"
+
+    describe "page contents with DOUBLE CONFLICTS" do
+      load_double_conflict
+      before do 
+        visit availability_grid_path
+        select_first_week_of_2013
+      end
+
+      it "should display double conflict correctly" do
+        expect( page.find( "#row_1_col_2" ).text ).to eq ( "DOUBLE: " << avail_grid_cell_text_for(double_conflict) )
+        expect( page.find( "#row_1_col_3" ).text ).to eq ( "DOUBLE: " << avail_grid_cell_text_for(double_conflict) )
+      end
+    end
 
     describe "links" do
 
