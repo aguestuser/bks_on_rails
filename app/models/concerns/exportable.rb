@@ -38,10 +38,11 @@ module Exportable
     def export_records_from scope, start_t, end_t
       case scope
       when :all
-        self.all
+        recs = self.all
       when :between
-        self.where( "start > :start AND start < :end", { start: start_t, :end => end_t } )
+        recs = self.where( "start > :start AND start < :end", { start: start_t, :end => end_t } )
       end
+      recs.order('id asc')
     end
 
     def export_cells_from record, col_names, index
