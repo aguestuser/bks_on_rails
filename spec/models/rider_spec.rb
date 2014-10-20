@@ -30,6 +30,17 @@ describe Rider do
     end
   end
 
+  describe "callbacks" do
+    before do
+      rider.contact.name = 'capitalize me'
+      rider.save
+    end
+
+    it "should capitalize the rider's name" do
+      expect(rider.name).to eq "Capitalize Me"
+    end
+  end
+
   describe "associations" do
     it "should respond to references to all associated models" do
       check_associations rider, associations

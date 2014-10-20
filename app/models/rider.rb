@@ -11,6 +11,10 @@
 class Rider < ActiveRecord::Base
   include User, Contactable, Equipable, Locatable, ImportableFirstClass, Exportable # app/models/concerns/
 
+  #constants
+  EXPORT_COLUMNS = [ 'id', 'active' ]
+  EXPORT_HEADERS = EXPORT_COLUMNS
+
   #nested attributes
   has_one :qualification_set, dependent: :destroy
     accepts_nested_attributes_for :qualification_set
@@ -24,16 +28,18 @@ class Rider < ActiveRecord::Base
   has_many :shifts, through: :assignments
   has_many :conflicts 
 
+  #validations
   validates :active, inclusion: { in: [ true, false ] }
 
+  #scopes
   scope :testy, -> { joins(:contact).where("contacts.email = ?", "bkshifttester@gmail.com").first }
   scope :active, -> { joins(:contact).where(active: true).order("contacts.name asc") }
   scope :inactive, -> { joins(:contact).where(active: false).order("contacts.name asc") }
 
-  EXPORT_COLUMNS = [ 'id', 'active' ]
-  EXPORT_HEADERS = EXPORT_COLUMNS
-  
-#public methods
+  #callbacks
+  before_create { contact.name = contact.name.split.map(&:capitalize).join(' ') }
+
+  #public methods
   def name
     self.contact.name
   end
