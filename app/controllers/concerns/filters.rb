@@ -111,14 +111,14 @@
         when :restaurants
           it = @restaurant
           caller_key = :restaurant
-        when :rider
+        when :riders
           it = @rider
           caller_key = :rider
         end
 
         if it && @caller == caller_key # it will only be defined for by == :restaurants || :riders
           value = [ it.id ]
-        elsif context == :load || ( fp[by] && fp[by].include?( 'all' ) )
+        elsif context == :load || && fp[by].include?( 'all' )
           value = [ 'all' ]
         else
           value = parse_resource_filter_vals fp[by], by
