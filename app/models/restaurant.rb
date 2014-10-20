@@ -86,6 +86,7 @@ class Restaurant < ActiveRecord::Base
   private
 
   def parse_export_values attrs
+    attrs[:id] = attrs[:id] - 1
     attrs
   end
   

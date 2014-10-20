@@ -24,7 +24,10 @@ module Exportable
 
           unless record.id - id_offset == i + index_offset
             num_cols = self::EXPORT_COLUMNS.count - 1
-            csv << Array.new(num_cols).unshift(i + index_offset) # blank row with placeholder id
+            blank = Array.new(num_cols).unshift(i + index_offset) # blank row with placeholder id
+            blank[1] = Time.zone.local(1917,1,1,0)
+            blank[2] = blank[1]
+            csv << blank
             index_offset += 1
           end
           
