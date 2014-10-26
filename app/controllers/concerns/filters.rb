@@ -21,8 +21,6 @@
         context = :load
       end
 
-
-
       lf_params[:by].each do |by|
         @filter ||= {}
         @filter.merge!(load_filter by, context, fp, lf_params[:view]) ## <-- breaks up filter retrieval to component parts

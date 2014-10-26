@@ -30,7 +30,7 @@ class RiderMailer < ActionMailer::Base
     @this_week_start = @next_week_start - 1.week
 
     query = { rider_id: @rider.id, week_start: @this_week_start }.to_query
-    @link = "#{REMOTE_ROOT}conflict/preview_batch?#{query}"
+    @link = ENV["ROOT"] + "conflict/preview_batch?#{query}"
 
     next_monday = ( @next_week_start ).strftime("%-m/%-d")
     next_sunday = ( @next_week_start + 6.days ).strftime("%-m/%-d")

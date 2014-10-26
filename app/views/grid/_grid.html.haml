@@ -1,3 +1,4 @@
+- # input: allow_edits? (bool)
 
 .grid 
   /Filters
@@ -13,10 +14,11 @@
     %div{ class: "span4", style: "float: left;"}
       /Batch Edit Form Wrapper
       = form_tag '/shift/batch_edit', :class => 'batch', method: :get do 
-        /Submit Buttons
-        = hidden_field_tag :base_path, @base_path
-        = submit_tag 'Batch Assign', class: 'btn btn-primary' 
-        = submit_tag 'Uniform Assign', class: 'btn btn-primary'
+        - if allow_edits
+          /Submit Buttons
+          = hidden_field_tag :base_path, @base_path
+          = submit_tag 'Batch Assign', class: 'btn btn-primary' 
+          = submit_tag 'Uniform Assign', class: 'btn btn-primary'
         /Grid
         %table
           /Header Row

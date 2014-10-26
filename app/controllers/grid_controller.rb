@@ -24,9 +24,15 @@ class GridController < ApplicationController
 
   def send_emails
     assignments = Shift
-      .where("id IN (:shift_ids)", { shift_ids: params[:shift_ids].split.map(&:to_i) })
+      .joins(:assignment)
+      .where( 
+        "shifts.id IN (:shift_ids) AND assignments.status = (:status)", 
+        { 
+          shift_ids: params[:shift_ids].split.map(&:to_i),
+          status: 'proposed'
+        }
+      )
       .map(&:assignment)
-    # assignments = parse_proposed assignments (to only send proposed shifts)
     count = 0
 
     rider_shifts = RiderShifts.new(assignments).hash
