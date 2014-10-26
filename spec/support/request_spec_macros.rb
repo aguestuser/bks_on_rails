@@ -113,7 +113,7 @@ module RequestSpecMacros
     expect( model_counts_incremented? new_counts, old_counts, decrement ).to eq true
   end
 
-  def model_counts_incremented? old_counts, new_counts, increment 
+  def model_counts_incremented? old_counts, new_counts, increment
     diffs = new_counts.each_with_index.map do |new_count, i|
       new_count - old_counts[i]
     end 

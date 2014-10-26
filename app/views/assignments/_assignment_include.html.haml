@@ -1,5 +1,6 @@
 - #arg: assignment
+- link_if = assignment.rider ? (link_to assignment.rider.name, rider_path(assignment.rider)) : '--'
 
 %strong
   Assigned to: 
-= (link_to assignment.rider.name, rider_path(assignment.rider)) + " [#{assignment.status.text}]"
+=  link_if + " [#{assignment.status.text}]"

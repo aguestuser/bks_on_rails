@@ -98,7 +98,7 @@ describe "Rider Pages" do
             let!(:new_counts) { count_models models }
             
             it "should create new instances of associated models" do
-              expect( model_counts_incremented? old_counts, new_counts ).to eq true
+              expect( model_counts_incremented? old_counts, new_counts, 1 ).to eq true
             end          
             it { should have_success_message("Profile created for #{contact.name}") }
             it { should have_h1("Riders") }

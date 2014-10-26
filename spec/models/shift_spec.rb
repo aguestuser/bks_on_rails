@@ -146,7 +146,7 @@ describe Shift do
     end
   end
 
-  describe "class methods" do
+  describe "IO class methods", disabled: true do
 
     describe "Shift.import" do
       load_imported_assignment_attrs

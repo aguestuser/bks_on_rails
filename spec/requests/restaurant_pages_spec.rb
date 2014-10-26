@@ -124,7 +124,7 @@ describe "Restaurant Pages" do
       end
       let(:save) { "Save Changes" }
       let(:edit_form) { get_restaurant_form_hash 'edit' }
-      let(:models) { [ WorkSpecification, AgencyPaymentInfo, EquipmentSet ] }
+      let(:models) { [ WorkSpecification, AgencyPaymentInfo, EquipmentNeed ] }
       let!(:old_counts) { count_models models }
 
       describe "page contents" do
@@ -163,7 +163,7 @@ describe "Restaurant Pages" do
         it { should have_success_message("Poop Palace's profile has been updated") }
         specify { expect(restaurant.mini_contact.reload.name).to eq 'Poop Palace' }
         specify { expect(restaurant.reload.location.reload.borough.text).to eq 'Staten Island' }
-        specify { expect(restaurant.reload.equipment_set.reload.bike).to eq true  }
+        specify { expect(restaurant.reload.equipment_need.reload.bike_provided).to eq true  }
       end
     end
   end

@@ -13,7 +13,7 @@ module ImportableFirstClass
       children = self.import_children path # .import_children is class-specific class method
 
       results = self.import_self path, sub_path, children
-      self.print_import results, sub_path
+      self.print_import results, sub_path unless Rails.env.test?
     end
 
     def import_self path, sub_path, children

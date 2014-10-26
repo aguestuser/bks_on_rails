@@ -18,7 +18,7 @@ describe Restaurant do
   let(:restaurant) { FactoryGirl.build(:restaurant) }
   let(:attrs) { [ :active, :status, :brief ] }
   let(:associations) { [:managers, :mini_contact, :location,
-    :agency_payment_info, :rider_payment_info, :work_specification, :equipment_set ] }
+    :agency_payment_info, :rider_payment_info, :work_specification, :equipment_need ] }
   subject { restaurant }
 
   describe "attributes" do

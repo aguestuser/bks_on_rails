@@ -83,7 +83,7 @@ class RestaurantsController < ApplicationController
     def build_associations
       @restaurant.build_work_specification
       @restaurant.build_agency_payment_info
-      @restaurant.build_equipment_set
+      @restaurant.build_equipment_need
     end
 
     def load_restaurants
@@ -98,7 +98,7 @@ class RestaurantsController < ApplicationController
           rider_payment_params,
           agency_payment_params,
           work_specification_params,
-          equipment_params,
+          equipment_need_params,
           location_params )
     end
 

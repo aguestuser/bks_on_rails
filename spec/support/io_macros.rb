@@ -3,9 +3,9 @@ module IoMacros
   def load_imported_assignment_attrs
     let(:imported_assignment_attrs){
       [
-        { 'shift_id' => 1, 'rider_id' => 3, 'status' => 'delegated' },
-        { 'shift_id' => 2, 'rider_id' => 2, 'status' => 'confirmed' },
-        { 'shift_id' => 3, 'rider_id' => nil, 'status' => 'unassigned' }
+        { 'shift_id' => Shift.last(3)[0], 'rider_id' => 3, 'status' => 'delegated' },
+        { 'shift_id' => Shift.last(3)[1], 'rider_id' => 2, 'status' => 'confirmed' },
+        { 'shift_id' => Shift.last(3)[2], 'rider_id' => nil, 'status' => 'unassigned' }
       ]
     }
   end

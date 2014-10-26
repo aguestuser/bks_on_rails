@@ -51,7 +51,7 @@ describe "Staffer Pages" do
           let(:new_counts){ count_models models }
 
           it "should create new intances of appropriate models" do
-            expect( model_counts_incremented? old_counts, new_counts ).to eq true
+            expect( model_counts_incremented? old_counts, new_counts, 1 ).to eq true
           end
           it { should have_title(contact.name) }
           it { should have_success_message("Profile created for #{contact.name}.") }

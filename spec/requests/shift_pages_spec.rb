@@ -145,14 +145,14 @@ describe "Shift Requests" do
               before { click_link('Assigned to') }
               
               it "should sort by riders, ascending" do
-                expect( page.find('#row_1_col_3').text ).to eq rider.name
+                expect( page.find('#row_1_col_4').text ).to eq rider.name
               end
 
               describe "descending" do
                 before { click_link('Assigned to') }            
 
                 it "should sort by rider name, descending" do
-                  expect( page.find('#row_1_col_3').text ).to eq '--'
+                  expect( page.find('#row_1_col_4').text ).to eq '--'
                 end  
               end
             end
@@ -163,14 +163,14 @@ describe "Shift Requests" do
               before { click_link('Status') }
               
               it "should sort by statuses, ascending" do
-                expect( page.find('#row_1_col_4').text ).to eq AssignmentStatus::CancelledByRestaurant.new.text
+                expect( page.find('#row_1_col_5').text ).to eq AssignmentStatus::CancelledByRestaurant.new.text
               end
 
               describe "descending" do
                 before { click_link('Status') }            
 
                 it "should sort by statuses, descending" do
-                  expect( page.find('#row_1_col_4').text ).to eq AssignmentStatus::Unassigned.new.text
+                  expect( page.find('#row_1_col_5').text ).to eq AssignmentStatus::Unassigned.new.text
                 end 
               end
             end
@@ -275,14 +275,14 @@ describe "Shift Requests" do
                 before { click_link 'Assigned to' }
 
                 it "should include first shift" do
-                  expect( page.find('#row_1_col_3').text ).to eq first_shift.assignment.rider.name
+                  expect( page.find('#row_1_col_4').text ).to eq first_shift.assignment.rider.name
                 end
 
                 describe "after sorting by rider (descending)" do
                   before { click_link 'Assigned to' }
 
                   it "should include second shift" do
-                    expect( page.find('#row_1_col_3').text ).to eq '--'
+                    expect( page.find('#row_1_col_4').text ).to eq '--'
                   end                
                 end
               end
@@ -295,7 +295,7 @@ describe "Shift Requests" do
               end
 
               it "should exclude first shift" do
-                expect( page.find('#row_1_col_3').text ).not_to eq first_shift.assignment.rider.name
+                expect( page.find('#row_1_col_4').text ).not_to eq first_shift.assignment.rider.name
               end
             end
 
@@ -306,7 +306,7 @@ describe "Shift Requests" do
                 click_link 'Assigned to'
               end
               it "should exclude first shift" do
-                expect( page.find('#row_1_col_3').text ).not_to eq '--'
+                expect( page.find('#row_1_col_4').text ).not_to eq '--'
               end
             end
           end
@@ -323,14 +323,14 @@ describe "Shift Requests" do
                 before { click_link 'Status' }
 
                 it "should include first shift" do
-                  expect( page.find('#row_1_col_4').text ).to eq first_shift.assignment.status.text
+                  expect( page.find('#row_1_col_5').text ).to eq first_shift.assignment.status.text
                 end
 
                 describe "after sorting by rider (descending)" do
                   before { click_link 'Status' }
 
                   it "should include second shift" do
-                    expect( page.find('#row_1_col_4').text ).to eq second_shift.assignment.status.text
+                    expect( page.find('#row_1_col_5').text ).to eq second_shift.assignment.status.text
                   end                
                 end
               end
@@ -343,7 +343,7 @@ describe "Shift Requests" do
               end
 
               it "should exclude first shift" do
-                expect( page.find('#row_1_col_4').text ).not_to eq first_shift.assignment.status.text
+                expect( page.find('#row_1_col_5').text ).not_to eq first_shift.assignment.status.text
               end
             end
 
@@ -354,7 +354,7 @@ describe "Shift Requests" do
                 click_link 'Status'
               end
               it "should exclude first shift" do
-                expect( page.find('#row_1_col_4').text ).not_to eq second_shift.assignment.status.text
+                expect( page.find('#row_1_col_5').text ).not_to eq second_shift.assignment.status.text
               end
             end
           end
@@ -398,7 +398,7 @@ describe "Shift Requests" do
             describe "after submission" do
               let(:new_counts){ count_models models }
               it "should create a new shift" do
-                expect( model_counts_incremented? old_counts, new_counts ).to eq true 
+                expect( model_counts_incremented? old_counts, new_counts, 1).to eq true 
               end
               it "should give the shift a blank assignment" do
                 expect( shift.assignment.nil? ).to eq false
@@ -939,7 +939,7 @@ describe "Shift Requests" do
                         describe "index page" do
                           before { filter_shifts_by_time_inclusively }
 
-                          it "shoud show new values for reassigned shifts" do
+                          it "should show new values for reassigned shifts" do
                             check_reassigned_shift_values_after_accepting_obstacle other_rider, free_rider, 'Proposed'
                           end
                         end #"index page"

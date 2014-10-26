@@ -54,7 +54,8 @@ module GridRequestMacros
   def load_double_shift
     let!(:double_shift){
       FactoryGirl.create(:shift,
-        :without_restaurant,
+        :with_restaurant,
+        restaurant: restaurant,
         start: Time.zone.local(2013,1,7,10),
         :end => Time.zone.local(2013,1,7,20)
       )

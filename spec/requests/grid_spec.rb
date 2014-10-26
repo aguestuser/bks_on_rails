@@ -87,7 +87,7 @@ describe "Grid Requests" do
 
       it "should display double shift correctly" do
         expect( page.find( "#row_1_col_2" ).text ).to eq ( "DOUBLE: " << shift_grid_cell_text_for(double_shift) )
-        expect( page.find( "#row_1_col_4" ).text ).to eq ( "DOUBLE: " << shift_grid_cell_text_for(double_shift) )
+        expect( page.find( "#row_1_col_3" ).text ).to eq ( "DOUBLE: " << shift_grid_cell_text_for(double_shift) )
       end
     end
   end
