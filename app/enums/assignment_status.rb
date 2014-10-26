@@ -28,6 +28,12 @@ class AssignmentStatus::Confirmed < AssignmentStatus
   end
 end
 
+class AssignmentStatus::CheckedIn < AssignmentStatus
+  def short_code
+    '[c+]'
+  end
+end
+
 class AssignmentStatus::CancelledByRider < AssignmentStatus
   def text
     'Cancelled (Rider)'
