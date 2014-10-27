@@ -75,7 +75,7 @@
           case view
           
           when :table
-            end_value = parse_time_filter_params( fp[:end] )
+            end_value = parse_time_filter_params( fp[:end] ) + 1.day
           when :grid
             end_value = start_value + 6.days + 23.hours + 59.minutes
           end
