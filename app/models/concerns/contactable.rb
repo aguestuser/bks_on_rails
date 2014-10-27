@@ -12,12 +12,15 @@ module Contactable
   end
 
   def first_name
-    match = self.contact.name.match(/^[A-Z](\w|\.)*\s/)
+    match = self.contact.name.match(/^[A-Z](\w|\.|\')*\s/)
     match ? match[0].strip : self.contact.name 
   end
 
   def short_name
-    self.contact.name.match(/^[A-Z](\w|\.)*\s[A-Z]/)[0]
+    # self.contact.name.match(/^[A-Z](\w|\.)*\s[A-Z]/)[0]
+    match = self.contact.name.match(/^[A-Z](\w|\'|\.)*\s[A-Z]/)
+    raise self.contact.name.inspect if match.nil?
+    match? match[0] : self.contact.name
   end
 
   def title
