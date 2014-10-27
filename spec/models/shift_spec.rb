@@ -33,17 +33,26 @@ describe Shift do
   describe "validation" do
     let(:req_attrs) { attrs[0..4] }
     let(:enums) { [ :billing_rate, :urgency ] }  
+    
     it "shouldn't be valid without required attributes" do
       check_required_attributes shift, req_attrs
     end
+    
     it "shouldn't be valid when enum attrs don't correspond to enum values" do
       check_enums shift, enums
     end
+    
     describe "of end date after start date" do
       before do
         shift.start = 1.hour.ago
         shift.end = 3.hours.ago
       end
+      it { should_not be_valid }
+    end
+
+    describe "longer than 24 hours" do
+      before { shift.update( start: 1.second.ago, :end => 24.hours.from_now ) }
+
       it { should_not be_valid }
     end
   end

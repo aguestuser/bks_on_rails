@@ -29,7 +29,16 @@ class RidersController < ApplicationController
   end
 
   def show
-    @shifts = @rider.shifts.order(:start).first(5)
+    start_t = now_unless_test.beginning_of_week
+    end_t = start_t + 1.week
+    @shifts = Shift
+      .joins(:assignment)
+      .where(
+        "start > (:start_t) AND start < (:end_t) AND assignments.rider_id = (:rider_id)",
+        { start_t: start_t, end_t: end_t, rider_id: @rider.id }
+      )
+      .order('start asc')
+    # @shifts = @rider.shifts.order(:start).first(5)
     @shift_table = Table.new(:shift, @shifts, @caller, @base_path, teaser: true)
 
     @conflicts = @rider.conflicts.order(:start).first(5)

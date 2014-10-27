@@ -29,7 +29,15 @@ class RestaurantsController < ApplicationController
   end
 
   def show
-    @shifts = @restaurant.shifts.order(:start).first(5)
+    start_t = now_unless_test.beginning_of_week
+    end_t = start_t + 1.week
+    @shifts = Shift
+      .joins(:restaurant)
+      .where(
+        "start > (:start_t) AND start < (:end_t) AND restaurants.id = (:restaurant_id)",
+        { start_t: start_t, end_t: end_t, restaurant_id: @restaurant.id }
+      )
+      .order('start asc')
     @shift_table = Table.new(:shift, @shifts, @caller, @base_path, teaser: true )
   end
 

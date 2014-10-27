@@ -29,6 +29,7 @@ class Shift < ActiveRecord::Base
 
   validates :restaurant_id, :billing_rate, :urgency,
     presence: true
+  validate :less_than_24_hr
 
   EXPORT_COLUMNS = [ 'id', 'start', 'end', 'restaurant_id', 'billing_rate' ]
   EXPORT_HEADERS = [ 'id', 'start', 'end', 'restaurantid', 'billing' ]
@@ -83,6 +84,10 @@ class Shift < ActiveRecord::Base
   end
 
   private
+
+    def less_than_24_hr
+      errors.add(:base, 'Shifts cannot be longer than 24 hours') if self.end - self.start > 24.hours
+    end
 
     # private instance methods
     def set_billing_rate_if_nil

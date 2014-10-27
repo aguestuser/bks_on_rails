@@ -20,6 +20,7 @@ class Assignment < ActiveRecord::Base
   classy_enum_attr :status, allow_nil: true, enum: 'AssignmentStatus'
 
   before_validation :set_status, if: :status_nil?
+  before_save :auto_unassign
 
   validates :status, presence: true
   validate :no_emergency_shift_delegation
@@ -167,6 +168,11 @@ class Assignment < ActiveRecord::Base
 
     def send_email_from sender_account
       RiderMailer.delegation_email(self.rider, [ self.shift ], [ self.shift.restaurant ], sender_account).deliver
+    end
+
+    def auto_unassign
+      self.rider_id = nil if self.status == :unassigned
+      # self.status = :unassigned if self.rider_id == nil
     end
 
 end

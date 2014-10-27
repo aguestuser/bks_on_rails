@@ -45,6 +45,36 @@ describe Assignment do
     end
   end
 
+  describe "callbacks" do
+    
+    describe "unassignment" do
+      let(:rider){ FactoryGirl.create(:rider) }
+      before do 
+        assignment.rider_id = rider.id
+        assignment.status = :unassigned
+        assignment.save
+      end
+
+      describe "setting status to unassigned" do
+        before { assignment.update(status: :unassigned) }
+
+        it "should set rider_id to nil" do
+          expect(assignment.reload.rider_id).to eq nil
+          expect(rider.assignments.reload.empty?).to eq true
+        end     
+      end
+
+      describe "setting rider_id to nil" do
+        before { assignment.update(rider_id: nil) }
+
+        it "should set status to unassigned" do
+          expect(assignment.reload.status.text).to eq 'Unassigned'
+          expect(rider.reload.assignments.empty?).to eq true
+        end     
+      end      
+    end
+  end
+
   it "should respond to all associations" do
     check_associations assignment, associations
   end
