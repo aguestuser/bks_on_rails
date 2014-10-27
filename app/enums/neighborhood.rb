@@ -181,6 +181,9 @@ end
 class Neighborhood::FreshMeadows < Neighborhood
 end
 
+class Neighborhood::Hillside < Neighborhood
+end
+
 class Neighborhood::Jamaica < Neighborhood
 end
 
@@ -197,6 +200,9 @@ class Neighborhood::QueensVillage < Neighborhood
 end
 
 class Neighborhood::Ridgewood < Neighborhood
+end
+
+class Neighborhood::RichmondHill < Neighborhood
 end
 
 class Neighborhood::SouthOzonePark < Neighborhood
