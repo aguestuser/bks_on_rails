@@ -14,5 +14,16 @@ class StaticPagesController < ApplicationController
   end
 
   def manual
+    if signed_in?
+      if credentials == 'Staffer'
+        render 'manual'
+      else
+        flash[:error] = "You don't have permission to view that page."
+        redirect_to root_path
+      end
+
+    else
+      redirect_to sign_in_path
+    end
   end
 end

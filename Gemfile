@@ -28,6 +28,7 @@ gem 'cancancan', '~> 1.8'
 gem 'figaro'
 
 gem 'underscore-rails'
+gem 'rdiscount'
 
 
 group :development, :test do

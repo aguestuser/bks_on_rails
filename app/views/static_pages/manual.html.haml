@@ -1,3 +1,35 @@
 - provide(:title, 'Manual')
 %h1 Manual
 %p Databases can be hard to use! This is where you will soon find a list of common workflows, guides on how to execute them, and a form for submitting questions you'd like ansered.
+%h3 Table of contents
+%ul 
+  %li 
+    %a{ href: "#backups" }
+      Backups
+
+%a{ name: "backups" }
+
+:markdown
+  ### Backups
+  **Making backups:**
+
+  * from the command line:
+  ` heroku pgbackups:capture --app bkshift `
+
+  **Viewing backups:**
+  
+  * from the command line: 
+  ` heroku pgbackups --app bkshift `
+  * [from the browser](https://postgres.heroku.com/databases/bkshift-heroku-postgresql-rose) 
+
+  **Deleting backups:**
+
+  * from the command line:
+  ` heroku pgbackups:destroy --app bkshift <INSERT_ID_HERE>*`
+
+  **Restoring backups:**
+
+  * from the command line: 
+  `heroku pgbackups:restore --app bkshift HEROKU_POSTGRESQL_ROSE <ID>*`
+
+  _*Database ids are of the form b###. IDs can be retreived from viewing list of backups according to protocol._
