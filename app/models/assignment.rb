@@ -172,7 +172,7 @@ class Assignment < ActiveRecord::Base
 
     def auto_unassign
       self.rider_id = nil if self.status == :unassigned
-      # self.status = :unassigned if self.rider_id == nil
+      self.status = :unassigned if self.rider_id == nil
     end
 
 end
