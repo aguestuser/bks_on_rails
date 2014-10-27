@@ -4,6 +4,7 @@
     %b.caret
   %ul.dropdown-menu
     %li= link_to "List Unconfirmed", list_unconfirmed_shifts_path
+    %li= link_to "List Unconfirmed (Next Week)", list_unconfirmed_next_week_shifts_path
     %li= link_to "List All", shifts_path
     %li= link_to "Grid", shift_grid_path
     - if can? :create, Shift

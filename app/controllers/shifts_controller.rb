@@ -72,7 +72,21 @@ class ShiftsController < ApplicationController
     load_shifts
     load_table
     render 'index'
+  end
 
+  def list_unconfirmed_next_week
+    now = now_unless_test
+    params[:filter] = {
+      start: now.beginning_of_week + 1.week,
+      :end => now.end_of_week + 1.week,
+      restaurants: [ 'all' ],
+      riders: [ 'all' ],
+      status: [ 'unassigned', 'proposed', 'delegated', 'cancelled_by_rider' ]
+    }
+    load_filter_wrapper
+    load_shifts
+    load_table
+    render 'index'
   end
 
   # BATCH CRUD ACTIONS
