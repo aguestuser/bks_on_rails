@@ -1,6 +1,9 @@
 .table
   /Headers
   .row.header
+    .checkbox
+      = check_box_tag( 'select_all', 1, false, id: 'select_all' )
+      = render 'layouts/table_select_all_js'
     - table.headers.each_with_index do |header, i|
       %div{ id: "row_0_col_#{i+1}", :class => "span#{table.spans[i]}" }
         = sort_if_sortable header

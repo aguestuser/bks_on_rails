@@ -1,0 +1,26 @@
+:javascript
+
+  $(document).ready(function(){
+    var boxes = $( "[name='ids[]']" )
+
+    $('#select_all').change(function(){
+      if ( $(this).prop('checked') ){
+        boxes.each(function(){
+          $(this).prop('checked', true)
+        })
+      }
+      else {
+        boxes.each(function(){
+          $(this).prop('checked', false)
+        })
+      }
+    })
+
+    boxes.each(function(){
+      $(this).change(function(){
+        if ( $(this).prop('checked', false) ){
+          $('#select_all').prop('checked', false)
+        }
+      })
+    })
+  })
