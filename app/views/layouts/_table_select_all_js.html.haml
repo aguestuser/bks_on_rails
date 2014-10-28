@@ -18,7 +18,7 @@
 
     boxes.each(function(){
       $(this).change(function(){
-        if ( $(this).prop('checked', false) ){
+        if ( ! $(this).prop('checked') ){
           $('#select_all').prop('checked', false)
         }
       })
