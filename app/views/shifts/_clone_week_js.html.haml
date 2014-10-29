@@ -243,7 +243,12 @@
     }
 
     function dateStr(here, selector, garbageStr){
-      return here.find(selector).text().replace(garbageStr, '').trim()
+      return here
+        .find(selector)
+        .text()
+        // .replace(garbageStr, '').trim()
+        .replace(/(Start:|End:|MON|TUE|WED|THU|FRI|SAT|SUN|\|)/g, '')
+        .trim()
     }
 
   }

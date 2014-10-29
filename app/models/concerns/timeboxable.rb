@@ -39,12 +39,20 @@ module Timeboxable
       self.end.strftime("%^a | %-m/%-d | %-l:%M %p")
     end
 
-    def formal_start_datetime
+    def formal_start_time
       self.start.strftime("%b %e, %Y - %-l:%M %p")
     end
 
-    def formal_end_datetime
+    def formal_start_time_with_day
+      self.start.strftime("%^a | %b %e, %Y - %-l:%M %p")
+    end
+
+    def formal_end_time
       self.end.strftime("%b %e, %Y - %-l:%M %p")
+    end
+
+    def formal_end_time_with_day
+      self.end.strftime("%^a | %b %e, %Y - %-l:%M %p")
     end
 
     def weekday

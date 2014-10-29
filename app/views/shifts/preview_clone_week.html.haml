@@ -3,7 +3,7 @@
 
 %h1 Preview Clone Week
 .row.profile
-  .span8.offset2
+  .span10.offset1
     = form_tag '/shift/save_clone_week', method: :post do
       - @restaurant_shifts.arr.each_with_index do |hash, i|
         - restaurant = hash[:restaurant]

@@ -8,10 +8,12 @@
 
 %div{ id: "shift_#{shift_index}", :class => class_str }
   .row.fields
-    /Start
-    = render '/shared/datetimepicker', label: 'Start:', id: "#{id_prefix}start", :class_str => 'start', name: "#{prefix}[start]", start_i: shift.start.to_i, start_str: shift.formal_start_datetime
-    /End
-    = render '/shared/datetimepicker', label: 'End:', id: "#{id_prefix}end", :class_str => 'end', name: "#{prefix}[end]", start_i: shift.end.to_i, start_str: shift.formal_end_datetime
+    .span4
+      /Start
+      = render '/shared/datetimepicker', label: 'Start:', id: "#{id_prefix}start", :class_str => 'start', name: "#{prefix}[start]", start_i: shift.start.to_i, start_str: shift.formal_start_time
+    .span4
+      /End
+      = render '/shared/datetimepicker', label: 'End:', id: "#{id_prefix}end", :class_str => 'end', name: "#{prefix}[end]", start_i: shift.end.to_i, start_str: shift.formal_end_time
     /Remove
     %a{ id: "remove_restaurant_#{rest_index}_shift_#{shift_index}" }
       Remove

@@ -1398,10 +1398,10 @@ describe "Shift Requests" do
                   end
 
                   it "should display edit fields with correct contents" do
-                    expect(page.find('#restaurant_0 #shift_0 #restaurant_shifts__shifts__start').value).to eq next_week_shifts[0].formal_start_datetime
-                    expect(page.find('#restaurant_0 #shift_0 #restaurant_shifts__shifts__end').value).to eq next_week_shifts[0].formal_end_datetime
-                    expect(page.find('#restaurant_0 #shift_1 #restaurant_shifts__shifts__start').value).to eq next_week_shifts[1].formal_start_datetime
-                    expect(page.find('#restaurant_0 #shift_1 #restaurant_shifts__shifts__end').value).to eq next_week_shifts[1].formal_end_datetime
+                    expect(page.find('#restaurant_0 #shift_0 #restaurant_shifts__shifts__start').value).to eq next_week_shifts[0].formal_start_time
+                    expect(page.find('#restaurant_0 #shift_0 #restaurant_shifts__shifts__end').value).to eq next_week_shifts[0].formal_end_time
+                    expect(page.find('#restaurant_0 #shift_1 #restaurant_shifts__shifts__start').value).to eq next_week_shifts[1].formal_start_time
+                    expect(page.find('#restaurant_0 #shift_1 #restaurant_shifts__shifts__end').value).to eq next_week_shifts[1].formal_end_time
                   end
 
                   describe "saving WITH NO ERRORS" do

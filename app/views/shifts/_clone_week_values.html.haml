@@ -6,28 +6,26 @@
 %div{ id: "shift_#{shift_index}", :class => "clone_week_entry"}
   .row.values
     /Start
-    .span3.start
+    .span4.start
       = label_tag :start, 'Start:'
-      / = shift.short_start_time
-      = shift.formal_start_datetime
+      = shift.formal_start_time_with_day
       = hidden_field_tag "#{prefix}[start]", shift.start
     /End
-    .span3.end
+    .span4.end
       = label_tag :start, 'End:'
       / = shift.short_end_time
-      = shift.formal_end_datetime
+      = shift.formal_end_time_with_day
       = hidden_field_tag "#{prefix}[end]", shift.end
     /Restaurant ID
     = hidden_field_tag "#{prefix}[restaurant_id]", shift.restaurant.id
     /Buttons
-    .span2
-      / Edit
-      %a{ id: "edit_restaurant_#{rest_index}_shift_#{shift_index}" }
-        Edit
-      |
-      /Remove
-      %a{ id: "remove_restaurant_#{rest_index}_shift_#{shift_index}"}
-        Remove
+    / Edit
+    %a{ id: "edit_restaurant_#{rest_index}_shift_#{shift_index}" }
+      Edit
+    |
+    /Remove
+    %a{ id: "remove_restaurant_#{rest_index}_shift_#{shift_index}"}
+      Remove
 
 
     
