@@ -107,5 +107,60 @@ describe "Rider Pages" do
       end
     end
   end
+
+  describe "active/inactive scoping" do
+    
+    let(:shift) do
+      FactoryGirl.create(
+        :shift,
+        :with_restaurant,
+        restaurant: FactoryGirl.create(:restaurant),
+        start: Time.zone.local(2014,1,7,12),
+        :end => Time.zone.local(2014,1,7,18)
+      )
+    end
+    before { shift.assign_to( riders[0] ) } 
+    
+    describe "with last of 3 riders inactive" do
+      before { riders.last.update(active: false) }
+      
+      describe "in shift index multiselect" do
+        before { visit shifts_path }
+
+        it "should only include active riders" do
+          riders.first(2).each do |rider| 
+            expect( page.find("#filter_riders").text ).to include rider.name 
+          end
+          expect( page.find("#filter_riders").text ).not_to include riders.last.name
+        end  
+      end
+
+      describe "in assignment edit dropdown" do
+        before { visit edit_shift_assignment_path( shift, shift.assignment ) }
+
+        it "should only include active riders" do
+          riders.first(2).each do |rider|
+            expect(page.find( "#assignment_rider_id" ).text ).to include rider.name
+          end
+          expect(page.find( "#assignment_rider_id" ).text).not_to include riders.last.name
+        end
+      end
+      
+      describe "in availability grid" do
+        before do
+          visit availability_grid_path
+          fill_in "filter[start]", with: "January 6, 2014"
+          click_button 'Filter'
+        end
+
+        it "should include all riders" do
+          riders.first(2).each do |rider|
+            expect(page.all( ".y_axis_label" ).map(&:text)).to include rider.name
+          end
+          expect(page.all( ".y_axis_label" ).map(&:text)).not_to include riders.last.name
+        end  
+      end
+    end
+  end
 end
 
