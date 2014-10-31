@@ -116,8 +116,6 @@ class RidersController < ApplicationController
     active_riders = Rider.find( riders.select{ |r| r[:active] }.map{ |r| r[:id] } ) 
     inactive_riders = Rider.find( riders.reject{ |r| r[:active] }.map{ |r| r[:id] } )
 
-    pp inactive_riders
-
     active_riders.each{ |rider| rider.update(active: true) }
     inactive_riders.each{ |rider| rider.update(active: false) }
 
