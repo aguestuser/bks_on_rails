@@ -1,0 +1,22 @@
+-provide(title: 'Edit Rider Statuses')
+
+%h1 Edit Rider Statuses
+%p.center
+  Check riders to make them active. 
+  %br/
+  Uncheck them to make them inactive.
+= form_tag update_statuses_riders_path, method: :put do
+  .row
+    %p.center
+      = submit_tag 'Submit', class: 'btn btn-primary'
+  .row
+    .span3.offset5
+      - @riders.each_with_index do |rider, i|
+        %div{ id: "rider_#{i}" }
+          .checkbox
+            = check_box_tag( 'riders[][active]', 1, rider.active )
+            = label_tag :name, "#{rider.name}"
+          = hidden_field_tag "riders[][id]", rider.id
+  .row
+    %p.center
+      = submit_tag 'Submit', class: 'btn btn-primary'
