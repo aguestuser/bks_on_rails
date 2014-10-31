@@ -183,12 +183,12 @@ describe "Rider Pages" do
 
       describe "commiting edit" do
         before do 
-          page.within("#rider_2"){ uncheck "riders__active" }
+          uncheck "riders[1][active]"
           click_button 'Submit', match: :first
         end
 
         it "makes the last rider inactive" do
-          expect(riders.last.reload.active).to eq false
+          expect(riders[1].reload.active).to eq false
         end
       end
     end # "Set Rider Status Page"

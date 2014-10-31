@@ -111,15 +111,16 @@ class RidersController < ApplicationController
   end
 
   def update_statuses
-    # pp params
-    riders = params[:riders]
-    active_riders = Rider.find( riders.select{ |r| r[:active] }.map{ |r| r[:id] } ) 
-    inactive_riders = Rider.find( riders.reject{ |r| r[:active] }.map{ |r| r[:id] } )
+    riders = params[:riders].keys.count.times.map{ |i| params[:riders][i.to_s] }
+    raise riders.to_yaml
 
+    active_riders = Rider.find( riders.select{ |r| r[:active] }.map{ |r| r[:id] } ) 
     active_riders.each{ |rider| rider.update(active: true) }
+    
+    inactive_riders = Rider.find( riders.reject{ |r| r[:active] }.map{ |r| r[:id] } )
     inactive_riders.each{ |rider| rider.update(active: false) }
 
-    flash[:succes] = "Statuses updated. #{active_riders.count} riders active. #{inactive_riders.count} inactive."
+    flash[:success] = "Statuses updated. #{active_riders.count} riders active. #{inactive_riders.count} inactive."
     redirect_to riders_path
   end
 

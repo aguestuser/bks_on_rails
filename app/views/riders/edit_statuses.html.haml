@@ -14,9 +14,9 @@
       - @riders.each_with_index do |rider, i|
         %div{ id: "rider_#{i}" }
           .checkbox
-            = check_box_tag( 'riders[][active]', 1, rider.active )
+            = check_box_tag "riders[#{i}][active]", 1, rider.active
             = label_tag :name, "#{rider.name}"
-          = hidden_field_tag "riders[][id]", rider.id
+          = hidden_field_tag "riders[#{i}][id]", rider.id
   .row
     %p.center
       = submit_tag 'Submit', class: 'btn btn-primary'
