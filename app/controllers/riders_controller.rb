@@ -112,7 +112,6 @@ class RidersController < ApplicationController
 
   def update_statuses
     riders = params[:riders].keys.count.times.map{ |i| params[:riders][i.to_s] }
-    raise riders.to_yaml
 
     active_riders = Rider.find( riders.select{ |r| r[:active] }.map{ |r| r[:id] } ) 
     active_riders.each{ |rider| rider.update(active: true) }
