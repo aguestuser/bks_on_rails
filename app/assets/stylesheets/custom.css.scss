@@ -514,6 +514,8 @@ label {
   }
 }
 
+// CLONE WEEK STYLES
+
 .clone_week_entry{
   padding-top: 0.5em;
   border-bottom: 1px solid $grayLighter;
@@ -555,5 +557,16 @@ label {
 
 .clone_week_multi{
   height: 30em;
+}
+
+
+.anchor:hover {
+  cursor: pointer;    
+}
+
+.toggle_restaurant {
+  float: right;
+  margin-top: -2.6em;
+  margin-right: 5.3em;
 }
 

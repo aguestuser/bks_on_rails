@@ -1,0 +1,47 @@
+:javascript
+
+  $(document).ready(function(){
+
+    $('#toggle_all').click(function(){
+      //togle visibility
+      var directive = $(this).text().trim()
+      $('.restaurant_wrapper').each(function(i){
+        var id = '#restaurant_'+i
+        if (directive === 'Expand All'){
+          $(id).show()
+        }
+        else {  
+          $(id).hide()
+        }
+      })
+      //change toggle flags
+      $('.toggle_restaurant').text(function(i, text){
+        var text = text.trim()
+        console.log('directive: ', directive, 'text: ', text)
+        if ( directive === 'Expand All' && text == 'Expand' ){
+          return 'Collapse'
+        }
+        else if ( directive === 'Collapse All' && text === 'Collapse' ) {
+          return 'Expand'
+        }
+        return text
+      })
+      $(this).text(function(i, text){
+        return text === 'Expand All' ? 'Collapse All' : 'Expand All'
+      })
+
+    })
+
+    $('.toggle_restaurant').click(function(){
+      // var id = "#" + $(this).attr('id').replace('toggle_', '')
+      // $(id).toggle()
+      $(getToggleId.apply(this)).toggle()
+      $(this).text(function(i, text){
+        return text === 'Expand' ? 'Collapse' : 'Expand'
+      })
+    })
+  })
+
+  function getToggleId(){
+    return "#" + $(this).attr('id').replace('toggle_', '')
+  }

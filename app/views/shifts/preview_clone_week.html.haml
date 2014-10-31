@@ -2,17 +2,22 @@
 - provide(:title, "Preview Clone Week")
 
 %h1 Preview Clone Week
+.row.center
+  %a#toggle_all.anchor
+    Collapse All
 .row.profile
   .span10.offset1
     = form_tag '/shift/save_clone_week', method: :post do
       - @restaurant_shifts.arr.each_with_index do |hash, i|
         - restaurant = hash[:restaurant]
         - shifts = hash[:shifts]
-        /Restaurant
-        %div{ id: "restaurant_#{i}" }
-          /Header
-          %h3 
-            = "#{restaurant.name}"
+        /Restaurant        
+        /Header
+        %h3= "#{restaurant.name}"
+        %a{ id: "toggle_restaurant_#{i}", :class => 'toggle_restaurant anchor' }
+          Collapse
+        /Wrapper
+        %div{ id: "restaurant_#{i}", :class => "restaurant_wrapper" }
           /Errors
           = render 'shared/batch_error_messages', errors: @errors[i], it: 'This section'
           /Restaurant ID
@@ -23,12 +28,12 @@
               = render 'clone_week_fields', shift: shift, rest_index: i, shift_index: j, has_errors: true
             - else 
               = render 'clone_week_values', shift: shift, rest_index: i, shift_index: j
-        /Add Shift
-        .center.add_shift
-          %a{ id: "add_shift_restaurant_#{i}", :class => 'btn btn-primary'}
-            Add Shift
-          - blank_shift = blank_shift_from(restaurant, @next_week_start)  
-          = render 'clone_week_js', rest_index: i, init_count: shifts.count, shift: blank_shift
+          /Add Shift
+          .center.add_shift
+            %a{ id: "add_shift_restaurant_#{i}", :class => 'btn btn-primary'}
+              Add Shift
+            - blank_shift = blank_shift_from(restaurant, @next_week_start)  
+            = render 'clone_week_js', rest_index: i, init_count: shifts.count, shift: blank_shift
       /Week Start
       = hidden_field_tag :week_start, @next_week_start
       /Basepath
@@ -36,6 +41,7 @@
       /Submit
       %p.center
         = submit_tag 'Submit', class: 'btn btn-primary'
+= render 'preview_clone_week_js'
 
 
 
