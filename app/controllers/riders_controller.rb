@@ -107,7 +107,7 @@ class RidersController < ApplicationController
   end
 
   def edit_statuses
-    @riders = Rider.joins(:contact).order('contacts.name asc').all
+    @riders = Rider.joins(:contact).order('contacts.name asc')
   end
 
   def update_statuses
