@@ -94,7 +94,7 @@ class GridController < ApplicationController
       end
 
       def load_riders
-        @riders = Rider.all.to_a.uniq
+        @riders = Rider.active.to_a.uniq
       end
 
     def load_sort_params

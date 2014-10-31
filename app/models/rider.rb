@@ -65,7 +65,7 @@ class Rider < ActiveRecord::Base
 
   #class methods
   def Rider.select_options
-    Rider.all.joins(:contact).order("contacts.name asc").map{ |r| [ r.name, r.id ] }
+    Rider.all.joins(:contact).where("active = ?", :true).order("contacts.name asc").map{ |r| [ r.name, r.id ] }
   end
 
   def self.multiselect_options

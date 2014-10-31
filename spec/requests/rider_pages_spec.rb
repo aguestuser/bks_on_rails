@@ -5,7 +5,7 @@ include RequestSpecMacros # /spec/support/request_spec_macros.rb
 
 describe "Rider Pages" do
   let!(:rider) { FactoryGirl.build(:rider) }
-  let(:riders){ 3.times.map{ FactoryGirl.create(:rider) } }
+  let!(:riders){ 3.times.map{ FactoryGirl.create(:rider) } }
   let!(:account) { rider.account }
   let(:contact) { rider.contact }
   let(:location) { rider.location }
@@ -119,7 +119,11 @@ describe "Rider Pages" do
         :end => Time.zone.local(2014,1,7,18)
       )
     end
-    before { shift.assign_to( riders[0] ) } 
+    before { 
+      riders
+      shift.rider.destroy
+      shift.unassign
+    } 
     
     describe "with last of 3 riders inactive" do
       before { riders.last.update(active: false) }
@@ -153,14 +157,41 @@ describe "Rider Pages" do
           click_button 'Filter'
         end
 
-        it "should include all riders" do
+        it "should only include active riders" do
           riders.first(2).each do |rider|
             expect(page.all( ".y_axis_label" ).map(&:text)).to include rider.name
           end
           expect(page.all( ".y_axis_label" ).map(&:text)).not_to include riders.last.name
         end  
       end
+    
     end
+
+    describe "Edit Rider Statuses Page" do
+      before { visit edit_statuses_riders_path }
+
+      describe "contents: " do
+        it { should have_h1 'Edit Rider Statuses' }
+
+        it "lists 3 riders with active box checked" do
+          riders.each_with_index do |rider, i|
+            expect(page).to have_content(rider.name)
+            expect(page.find("#rider_#{i} #riders__active")).to be_checked
+          end
+        end      
+      end # "contents"
+
+      describe "commiting edit" do
+        before do 
+          page.within("#rider_2"){ uncheck "riders__active" }
+          click_button 'Submit', match: :first
+        end
+
+        it "makes the last rider inactive" do
+          expect(riders.last.reload.active).to eq false
+        end
+      end
+    end # "Set Rider Status Page"
   end
 end
 

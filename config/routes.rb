@@ -1,3 +1,4 @@
+
 BksOnRails::Application.routes.draw do
 
   root 'static_pages#home'
@@ -34,7 +35,10 @@ BksOnRails::Application.routes.draw do
       resources :assignments
     end
     resources :conflicts
-    collection { get :export }
+    collection do 
+      get :export, :edit_statuses
+      put :update_statuses 
+    end
   end
 
   resources :restaurants do

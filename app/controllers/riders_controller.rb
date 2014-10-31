@@ -106,6 +106,25 @@ class RidersController < ApplicationController
     send_data Rider.export, filename: 'riders.csv'
   end
 
+  def edit_statuses
+    @riders = Rider.joins(:contact).order('contacts.name asc').all
+  end
+
+  def update_statuses
+    # pp params
+    riders = params[:riders]
+    active_riders = Rider.find( riders.select{ |r| r[:active] }.map{ |r| r[:id] } ) 
+    inactive_riders = Rider.find( riders.reject{ |r| r[:active] }.map{ |r| r[:id] } )
+
+    pp inactive_riders
+
+    active_riders.each{ |rider| rider.update(active: true) }
+    inactive_riders.each{ |rider| rider.update(active: false) }
+
+    flash[:succes] = "Statuses updated. #{active_riders.count} riders active. #{inactive_riders.count} inactive."
+    redirect_to riders_path
+  end
+
 
   private
 
