@@ -153,7 +153,15 @@
   end
 
   def parse_shifts_for_color shifts 
-    statuses = shifts.map{ |shift| shift.assignment.status.text }
+    statuses = shifts.map do |shift| 
+      if shift.class.name == 'Conflict'
+        puts ">>>>Conflict:"
+        puts shift.inspect
+        puts ">>>>> Rider:"
+        puts shift.rider.inspect
+      end
+      shift.assignment.status.text
+    end
     if statuses.include? 'Confirmed'
       'green'
     elsif statuses.include? 'Delegated'
