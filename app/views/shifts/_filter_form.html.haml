@@ -1,3 +1,4 @@
+/ - raise @filter.to_yaml
 .row.header
   Filters
 .row
@@ -6,11 +7,13 @@
       /Start
       .span2
         = label_tag :start, 'Start'
-        = select_date @filter[:start], prefix: 'filter[start]'
+        / = select_date @filter[:start], prefix: 'filter[start]'
+        = select_datetime @filter[:start], prefix: 'filter[start]', ampm: true, minute_step: 30
       /End
       .span2
         = label_tag :end, 'End'
-        = select_date @filter[:end], prefix: 'filter[end]'
+        / = select_date @filter[:end], prefix: 'filter[end]'
+        = select_datetime @filter[:end], prefix: 'filter[end]', ampm: true, minute_step: 59
       /Restaurant
       - if @caller == :restaurant
         = hidden_field_tag :restaurant_id, "#{@restaurant.id}"

@@ -67,7 +67,7 @@
         
         when :load 
           start_value = Time.zone.now.beginning_of_week
-          end_value = start_value + 6.days + 23.hours + 59.minutes
+          end_value = Time.zone.now.end_of_week
         
         when :request
           start_value = parse_time_filter_params( fp[:start] )
@@ -75,9 +75,10 @@
           case view
           
           when :table
-            end_value = parse_time_filter_params( fp[:end] ) + 1.day
+            # end_value = parse_time_filter_params( fp[:end] ) + 1.day
+            end_value = parse_time_filter_params( fp[:end] )
           when :grid
-            end_value = start_value + 6.days + 23.hours + 59.minutes
+            end_value = start_value.end_of_week
           end
         end
 
@@ -96,7 +97,8 @@
         when 'String' # from server load
           Time.zone.parse p
         when 'ActionController::Parameters' # from user request
-          Time.zone.local( p[:year].to_i, p[:month].to_i, p[:day].to_i, 0 )
+          # Time.zone.local( p[:year].to_i, p[:month].to_i, p[:day].to_i, 0 )
+          Time.zone.local( p[:year].to_i, p[:month].to_i, p[:day].to_i, p[:hour].to_i, p[:minute].to_i )
         end
       end
 
@@ -148,9 +150,9 @@
         #output: SQL query string
         case key
         when :start
-          "start > :start"
+          "start >= :start"
         when :end
-          "start < :end"
+          "start <= :end"
         when :restaurants
           "restaurants.id IN (:restaurants)"
         when :riders

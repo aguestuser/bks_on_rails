@@ -154,7 +154,7 @@
 
   def parse_shifts_for_color shifts 
     statuses = shifts.map do |shift| 
-      if shift.class.name == 'Conflict'
+      if shift.class.name == 'Conflict' # to log unfixed bug
         puts ">>>>Conflict:"
         puts shift.inspect
         puts ">>>>> Rider:"
