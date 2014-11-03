@@ -6,7 +6,7 @@ module Timeboxable
     classy_enum_attr :period, allow_nil: true
 
     validates :start, :end, :period, presence: true
-    validate :start_before_end
+    validate :start_before_end, :less_than_24_hr
 
     def table_time
       self.start.strftime("%-m/%-d | %^a | %l:%M%p").strip << ' - ' << self.end.strftime("%l:%M%p").strip
@@ -100,6 +100,12 @@ module Timeboxable
         if self.end.present? && start.present? && self.end <= start
           errors.add(:end, "can't be before start")
         end  
+      end
+
+      def less_than_24_hr
+        if self.end.present? && start.present? && self.end - self.start > 24.hours
+          errors.add(:base, 'Shifts cannot be longer than 24 hours')
+        end
       end
 
   end
