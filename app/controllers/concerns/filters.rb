@@ -17,6 +17,9 @@
       if params[:filter]
         fp = params[:filter]
         context = :request
+      elsif params[:filter_json]
+        fp = JSON.parse( params[:filter_json], symbolize_names: true )
+        context = :request
       else
         context = :load
       end
@@ -43,6 +46,7 @@
       #helpers for load_filters
 
       def load_filter by, context, fp, view
+
         #input: 
           # Sybmol for filter type(: time, :restaurants, :riders, or :status), 
           # Symbol for context (:load or :request)
@@ -106,7 +110,7 @@
         #input: Symbol (:load or :request), Hash of filter params (optional)
         #does: retrieves correct filter query based on context and appends it to hash
         #output: Hash of filter key/value pairs to be appended to master filter hash
-        
+
         case by            
         when :restaurants
           it = @restaurant
@@ -118,7 +122,7 @@
 
         if it && @caller == caller_key # it will only be defined for by == :restaurants || :riders
           value = [ it.id ]
-        elsif context == :load || fp[by].include?( 'all' )
+        elsif context == :load || fp[by] && fp[by].include?( 'all' )
           value = [ 'all' ]
         else
           value = parse_resource_filter_vals fp[by], by

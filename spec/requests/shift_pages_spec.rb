@@ -358,6 +358,39 @@ describe "Shift Requests" do
               end
             end
           end
+
+          describe "stickiness" do
+            before { 
+              filter_shifts_by_time_inclusively
+              filter_shifts_by_rider [first_shift.assignment.rider]
+              filter_shifts_by_restaurant [ first_shift.restaurant ]
+              filter_shifts_by_status [ first_shift.assignment.status.text ] 
+            }
+
+            describe "from batch assign action" do
+              before do 
+                page.within("#row_1"){ check "ids[]" }
+                click_button 'Batch Assign', match: :first
+                click_button 'Save changes'
+              end
+              let(:selected_riders){ page.within("#filter_riders"){ all("option[selected]") }.map(&:value) }
+              let(:selected_restaurants){ page.within("#filter_restaurants"){ all("option[selected]") }.map(&:value) }
+              let(:selected_status){ page.within("#filter_status"){ all("option[selected]") }.map(&:text) }
+              let(:selected_start_month){ page.within("#filter_start_month"){ find("option[selected]") }.value }
+              let(:selected_end_month){ page.within("#filter_end_month"){ find("option[selected]") }.value }
+
+              it "should retain original filter settings" do
+                expect(selected_riders).to include first_shift.rider.id.to_s
+                expect(selected_riders).not_to include "all"
+                expect(selected_restaurants).to include first_shift.restaurant.id.to_s
+                expect(selected_restaurants).not_to include "all"
+                expect(selected_status).to include first_shift.assignment.status.text
+                expect(selected_status).not_to include "* All Statuses"
+                expect(selected_start_month).to eq "1"
+                expect(selected_end_month).to eq "1"
+              end              
+            end # "from batch assign action"
+          end # "stickiness"
         end
       end
 

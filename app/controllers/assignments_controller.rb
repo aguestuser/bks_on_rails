@@ -169,7 +169,8 @@ class AssignmentsController < ApplicationController
         email_alert = send_batch_emails new_assignments, old_assignments, current_account
         
         flash[:success] = message << email_alert
-        redirect_to @base_path
+        query = params.extract!(:filter_json).to_query
+        redirect_to @base_path + "?#{query}"
       else
         request_batch_error_fixes old_assignments, new_assignments
       end

@@ -8,7 +8,8 @@ class ShiftsController < ApplicationController
   before_action :load_base_path
   before_action :load_form_args, only: [ :edit, :update ]
   before_action :redirect_non_staffers, only: [ :index, :list_unconfirmed ]
-  before_action :load_filter_wrapper, only: [ :index, :batch_edit ]
+  # before_action :load_filter_wrapper, only: [ :index, :batch_edit ]
+  before_action :load_filter_wrapper, only: [ :index ]
   before_action :load_shifts, only: [ :index ]
   before_action :load_empty_errors, only: [ :route_batch_edit, :clone_new, :batch_new ]
 
@@ -127,7 +128,7 @@ class ShiftsController < ApplicationController
   end
 
   def route_batch_edit commit
-    query = params.extract!(:ids, :base_path).to_query
+    query = params.extract!(:ids, :base_path, :filter_json).to_query
 
     case commit
     when 'Batch Edit'
