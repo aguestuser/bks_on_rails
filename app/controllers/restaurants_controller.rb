@@ -18,9 +18,7 @@ class RestaurantsController < ApplicationController
   end
 
   def create
-    puts ">>>>> PARAMS"
-    pp params
-    
+    puts "called!"
     @restaurant = Restaurant.new(restaurant_params)
     @it = @restaurant
     if @restaurant.save
