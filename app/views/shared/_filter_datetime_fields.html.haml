@@ -1,0 +1,5 @@
+- #input; key
+- sub_keys = [:year, :month, :day, :hour, :minute ]
+
+- sub_keys.each do |sub_key|
+  = hidden_field_tag "filter[#{key}][#{sub_key}]", params[:filter][key][sub_key]
