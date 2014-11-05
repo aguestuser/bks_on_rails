@@ -176,8 +176,60 @@ describe RiderShifts do
       hash
     end
 
-    it "should group by restaurant" do
+    it "should group by rider and shift type" do
       expect(RiderShifts.new(assignments).hash).to eq expected_hash
-    end    
+    end
+
+    describe "deduping restaurants" do
+      let(:assignments) do
+        [
+          FactoryGirl.create(:assignment, rider: riders[0], shift: emergency_shifts[0][0]),
+          FactoryGirl.create(:assignment, rider: riders[0], shift: emergency_shifts[0][1])
+        ]
+      end
+      let(:expected_hash) do
+        {
+          riders[0].id => {
+            rider: riders[0],
+            emergency: {
+              shifts: emergency_shifts[0],
+              restaurants: [ restaurants[0] ]
+            },
+            extra: { shifts: [], restaurants: [] },
+            weekly: { shifts: [], restaurants: [] }
+          }
+        }
+      end
+
+      it "should dedupe restaurants" do
+        expect(RiderShifts.new(assignments).hash).to eq expected_hash
+      end
+    end 
+
+    describe "sorting by date" do
+      let(:assignments) do
+        [
+          FactoryGirl.create(:assignment, rider: riders[0], shift: emergency_shifts[0][1]),
+          FactoryGirl.create(:assignment, rider: riders[0], shift: emergency_shifts[0][0])
+        ]
+      end
+      let(:expected_hash) do
+        {
+          riders[0].id => {
+            rider: riders[0],
+            emergency: {
+              shifts: emergency_shifts[0],
+              restaurants: [ restaurants[0] ]
+            },
+            extra: { shifts: [], restaurants: [] },
+            weekly: { shifts: [], restaurants: [] }
+          }
+        }
+      end
+
+      it "should sort by date" do
+        expect(RiderShifts.new(assignments).hash).to eq expected_hash
+      end
+    end     
   end
 end

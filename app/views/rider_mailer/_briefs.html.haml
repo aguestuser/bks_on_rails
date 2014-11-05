@@ -1,7 +1,6 @@
 %strong.underline
   Restaurant Briefs:
-- @shifts.each do |shift|
-  - r = shift.restaurant
+- @restaurants.each do |r|
   %p
     %strong 
       #{r.name}:

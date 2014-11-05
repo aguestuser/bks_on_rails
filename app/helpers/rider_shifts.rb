@@ -27,9 +27,9 @@ class RiderShifts
       grouped_by_rider = group_by_rider assignments
       with_parsed_rider_and_shift = parse_rider_and_shifts grouped_by_rider
       grouped_by_urgency = group_by_urgency with_parsed_rider_and_shift
-      with_restaurants = insert_restaurants grouped_by_urgency
-      # sorted_by_date = sort_by_date grouped_by_urgency
-      # with_restaurants = insert_restaurants sorted_by_date
+      # with_restaurants = insert_restaurants grouped_by_urgency
+      sorted_by_date = sort_by_date grouped_by_urgency
+      with_restaurants = insert_restaurants sorted_by_date
     end
 
     def group_by_rider assignments
@@ -64,8 +64,8 @@ class RiderShifts
     end
 
     def sort_by_date assignments
-      hash = {}
-      assignments.each do |id, rider_hash|
+      hash = assignments.clone
+      hash.each do |id, rider_hash|
         URGENCIES.each do |urgency|
           rider_hash[urgency].sort_by!{ |shift| shift.start } if rider_hash[urgency]
         end
