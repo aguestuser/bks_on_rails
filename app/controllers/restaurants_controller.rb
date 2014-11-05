@@ -18,7 +18,6 @@ class RestaurantsController < ApplicationController
   end
 
   def create
-    puts "called!"
     @restaurant = Restaurant.new(restaurant_params)
     @it = @restaurant
     if @restaurant.save
@@ -112,7 +111,8 @@ class RestaurantsController < ApplicationController
     end
 
     def mini_contact_params
-      { mini_contact_attributes: [ :restaurant_id, :id, :name, :phone ] }
+      # { mini_contact_attributes: [ :restaurant_id, :id, :name, :phone ] }
+      { mini_contact_attributes: [ :restaurant_id, :name, :phone ] }
     end
 
     def managers_params
