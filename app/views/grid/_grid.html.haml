@@ -17,6 +17,7 @@
         - if allow_edits
           /Submit Buttons
           = hidden_field_tag :base_path, @base_path
+          = hidden_field_tag :filter_json, @filter.to_json
           = submit_tag 'Batch Assign', class: 'btn btn-primary' 
           = submit_tag 'Uniform Assign', class: 'btn btn-primary'
         /Grid

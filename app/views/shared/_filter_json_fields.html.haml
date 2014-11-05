@@ -1,9 +1,3 @@
 - if params[:filter_json]
   = hidden_field_tag :filter_json, params[:filter_json]
-/ - if params[:filter]
-/   = render 'shared/filter_datetime_fields', key: :start
-/   = render 'shared/filter_datetime_fields', key: :end
-/   = hidden_field_tag 'filter[restaurants][]', params[:filter][:restaurants]
-/   = hidden_field_tag 'filter[riders][]', params[:filter][:riders]
-/   = hidden_field_tag 'filter[status][]', params[:filter][:status]
 

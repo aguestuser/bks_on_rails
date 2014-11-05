@@ -28,10 +28,10 @@
                 = render 'assignment_include', assignment: assignment
               = render 'batch_attribute_hidden_fields', assignment: assignment, assignments_key: 'without_obstacles', index: index
             %hr/
-      /Old
+      /Hidden Fields
       = render 'old_assignment_hidden_fields'
-      /Base Path
       = render 'shared/base_path_field'
+      = render 'shared/filter_json_fields'
       /Submit
       %p.center
         = submit_tag 'Save changes', class: 'btn btn-primary'

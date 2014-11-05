@@ -2,14 +2,14 @@
   .span10.offset2
     = form_tag '/grid/'<<params[:action], :class => 'filter', method: :get do
       /Start
-      = render '/shared/datepicker', label: 'Start:', id: "filter_start", name: 'filter[start]', start_i: @week.start.to_i, start_str: @week.start.strftime("%B %e, %Y")
+      = render '/shared/datepicker', label: 'Start:', id: "filter_start", name: 'filter[start]', start_i: @week.start.to_i, start_str: @week.start.strftime("%B %-d, %Y")
       .span
         %div{ style: "margin-top: .3em;" }
           %strong
             End:
           = @filter[:end].strftime("%B %e, %Y")
           = hidden_field_tag :end, value: @filter[:end]
-      /Basepath
+      /Hidden Fields
       = render 'shared/base_path_field'
       /Submit
       .span

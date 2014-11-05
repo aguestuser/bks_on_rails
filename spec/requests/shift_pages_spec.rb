@@ -360,36 +360,92 @@ describe "Shift Requests" do
           end
 
           describe "stickiness" do
-            before { 
-              filter_shifts_by_time_inclusively
-              filter_shifts_by_rider [first_shift.assignment.rider]
-              filter_shifts_by_restaurant [ first_shift.restaurant ]
-              filter_shifts_by_status [ first_shift.assignment.status.text ] 
-            }
 
-            describe "from batch assign action" do
-              before do 
-                page.within("#row_1"){ check "ids[]" }
-                click_button 'Batch Assign', match: :first
-                click_button 'Save changes'
-              end
+            describe "from shift list" do
+              before { 
+                filter_shifts_by_time_inclusively block_click: true
+                filter_shifts_by_rider [first_shift.assignment.rider], block_click: true 
+                filter_shifts_by_restaurant [ first_shift.restaurant ], block_click: true
+                filter_shifts_by_status [ first_shift.assignment.status.text ], block_click: true
+                click_button 'Filter'
+              }
               let(:selected_riders){ page.within("#filter_riders"){ all("option[selected]") }.map(&:value) }
               let(:selected_restaurants){ page.within("#filter_restaurants"){ all("option[selected]") }.map(&:value) }
               let(:selected_status){ page.within("#filter_status"){ all("option[selected]") }.map(&:text) }
               let(:selected_start_month){ page.within("#filter_start_month"){ find("option[selected]") }.value }
               let(:selected_end_month){ page.within("#filter_end_month"){ find("option[selected]") }.value }
 
+              describe "from batch assign action" do
+                
+                describe "without obstacles" do
+                  before { batch_assign_first_shift }
+
+                  it "should retain original filter settings" do
+                    check_original_filters_retained
+                  end 
+                end
+
+                describe "with conflict" do
+                  before do 
+                    FactoryGirl.create( :conflict, :with_rider, rider: first_shift.rider, start: first_shift.start, :end => first_shift.end )
+                    batch_assign_first_shift
+                  end
+
+                  describe "overriding" do
+                    before do
+                      choose "decisions_0_Override"
+                      click_button 'Submit'
+                    end
+                    
+                    it "should retain original filter settings" do
+                      check_original_filters_retained
+                    end                   
+                  end
+
+                  describe "accepting" do
+                    before do
+                      choose "decisions_0_Accept"
+                      click_button 'Submit'
+                      page.within("#assignments_requiring_reassignment_0") { find("#wrapped_assignments_fresh__assignment_rider_id").select other_rider.name }
+                      click_button 'Save changes'
+                    end
+                    
+                    it "should retain original filter settings" do
+                      check_original_filters_retained
+                    end                   
+                  end
+                end
+              end # "from batch assign action"
+
+              describe "from uniform assign action" do
+                before do 
+                  page.within("#row_1"){ check "ids[]" }
+                  click_button 'Uniform Assign', match: :first
+                  select first_shift.rider.name, from: 'assignment[rider_id]'
+                  click_button 'Save changes'
+                end
+
+                it "should retain original filter settings" do
+                  check_original_filters_retained
+                end              
+              end # "from batch assign action"              
+            end # "from shift list"
+
+            describe "from shift grid" do
+              load_batch
+              before do
+                batch.each(&:save)
+                visit shift_grid_path
+                filter_grid_for_jan_2014
+                select_batch_assign_shifts_from_grid
+                click_button 'Batch Assign'
+                click_button 'Save changes'
+              end
+
               it "should retain original filter settings" do
-                expect(selected_riders).to include first_shift.rider.id.to_s
-                expect(selected_riders).not_to include "all"
-                expect(selected_restaurants).to include first_shift.restaurant.id.to_s
-                expect(selected_restaurants).not_to include "all"
-                expect(selected_status).to include first_shift.assignment.status.text
-                expect(selected_status).not_to include "* All Statuses"
-                expect(selected_start_month).to eq "1"
-                expect(selected_end_month).to eq "1"
-              end              
-            end # "from batch assign action"
+                expect(page.find('#filter_start').value).to eq 'January 6, 2014'
+              end
+            end # "from shift grid"
           end # "stickiness"
         end
       end

@@ -30,5 +30,8 @@
           .center
             = label_tag :status
           = select_tag 'assignment[status]', options_for_select(AssignmentStatus.select_options, :proposed)
+        /Hidden Fields
+        = render 'shared/base_path_field'
+        = render 'shared/filter_json_fields'
       %p.center
         = submit_tag 'Save changes', class: 'btn btn-primary'

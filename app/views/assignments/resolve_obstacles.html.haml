@@ -41,6 +41,9 @@
               .shift_box
                 = render 'assignment_include', assignment: assignment
               %hr/
+      /Hidden Fields
+      = render 'shared/base_path_field'
+      = render 'shared/filter_json_fields'
       /Submit
       %p.center
         = submit_tag "Submit", class: 'btn btn-primary'

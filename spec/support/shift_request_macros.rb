@@ -75,7 +75,7 @@ module ShiftRequestMacros
     dummy_shift
   end
 
-  def filter_shifts_by_time_inclusively
+  def filter_shifts_by_time_inclusively options={}
     #set start filter
     select '2011', from: 'filter_start_year'
     select 'January', from: 'filter_start_month'
@@ -85,7 +85,7 @@ module ShiftRequestMacros
     select 'January', from: 'filter_end_month'
     select '1', from: 'filter_end_day'
     
-    click_button 'Filter'    
+    click_button 'Filter' unless options[:block_click]  
   end
 
   def filter_shifts_by_time_exclusively
@@ -101,14 +101,14 @@ module ShiftRequestMacros
     click_button 'Filter'    
   end
 
-  def filter_shifts_by_restaurant restaurants
+  def filter_shifts_by_restaurant restaurants, options={}
     Restaurant.all.each { |r| unselect r.name, from: 'filter_restaurants' }
     unselect '* All Restaurants', from: 'filter_restaurants'
     restaurants.each { |r| select r.name, from: 'filter_restaurants' }
-    click_button 'Filter'
+    click_button 'Filter' unless options[:block_click]
   end
 
-  def filter_shifts_by_rider riders
+  def filter_shifts_by_rider riders, options={}
     id = 'filter_riders'
     # clear multiselect
     Rider.all.each { |r| unselect r.name, from: id }
@@ -123,10 +123,10 @@ module ShiftRequestMacros
       end
     end
     #submit
-    click_button 'Filter'
+    click_button 'Filter' unless options[:block_click]
   end
 
-  def filter_shifts_by_status status_strs
+  def filter_shifts_by_status status_strs, options={}
     id = 'filter_status'
     #clear multiselect
     AssignmentStatus.select_options.map(&:first).each do |status|
@@ -136,7 +136,24 @@ module ShiftRequestMacros
     #make new selections
     status_strs.each { |status| select status, from: id }
     #submit
-    click_button 'Filter'
+    click_button 'Filter' unless options[:block_click]
+  end
+
+  def batch_assign_first_shift
+    page.within("#row_1"){ check "ids[]" }
+    click_button 'Batch Assign', match: :first
+    click_button 'Save changes'
+  end
+
+  def check_original_filters_retained
+    expect(selected_riders).to include first_shift.rider.id.to_s
+    expect(selected_riders).not_to include "all"
+    expect(selected_restaurants).to include first_shift.restaurant.id.to_s
+    expect(selected_restaurants).not_to include "all"
+    expect(selected_status).to include first_shift.assignment.status.text
+    expect(selected_status).not_to include "* All Statuses"
+    expect(selected_start_month).to eq "1"
+    expect(selected_end_month).to eq "1"    
   end
 
   def check_batch_assign_uri

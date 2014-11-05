@@ -7,7 +7,7 @@ class AssignmentsController < ApplicationController
   before_action :load_assignment, only: [ :show, :edit, :update, :destroy ]
   before_action :load_caller # will call load_restaurant or load_rider if applicable, load_paths always
   before_action :load_base_path
-  before_action :load_form_args, only: [ :edit, :update, :override_conflict, :override_double_booking ]
+  before_action :load_form_args, only: [ :edit, :update ]
 
   def edit
   end
@@ -265,7 +265,7 @@ class AssignmentsController < ApplicationController
     def assignment_params
       params
         .require(:assignment)
-        .permit(:id, :rider_id, :shift_id, :status, :override_conflict, :override_double_booking)
+        .permit(:id, :rider_id, :shift_id, :status)
     end
 
 end
