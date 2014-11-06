@@ -10,5 +10,6 @@
         %h3 Shift #{i+1}
         = render fields, shift: shift, new_shift: false
     = render 'shared/base_path_field'
+    = render 'shared/filter_json_fields'
     %p.center
       = submit_tag 'Save changes', class: 'btn btn-primary'

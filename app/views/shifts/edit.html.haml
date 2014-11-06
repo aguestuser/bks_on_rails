@@ -4,5 +4,7 @@
   .span6.offset3
     = form_for @form_args do |f|
       = render 'shift_fields', f: f
+      = render 'shared/base_path_field'
+      = render 'shared/filter_json_fields'
       .center
         = f.submit "Save changes", class: "btn btn-primary"
