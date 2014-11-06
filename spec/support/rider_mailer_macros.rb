@@ -116,8 +116,9 @@ module RiderMailerMacros
   #   let(:mail){ RiderMailer.delegation_email rider, shift }
   # end
 
-  def assign shift, status
+  def assign shift, status, block_email=false
     visit edit_shift_assignment_path(shift, shift.assignment)
+    page.find('#block_email').set true if block_email
     page.find("#assignment_rider_id").select rider.name
     page.find("#assignment_status").select status
     click_button 'Save changes'

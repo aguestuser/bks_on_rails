@@ -122,11 +122,11 @@ class Rider < ActiveRecord::Base
   end
 
   def self.child_export_headers
-    [ 'name' ]
+    [ 'name', 'email' ]
   end
 
   def self.child_export_cells_from rider
-    [ rider.name ]
+    [ rider.name, rider.email ]
   end
 
 end

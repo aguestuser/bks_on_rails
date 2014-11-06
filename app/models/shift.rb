@@ -156,6 +156,8 @@ class Shift < ActiveRecord::Base
           'cancelled charge'
         when 'Cancelled (Rider)'
           'cancelled charge'
+        when 'Checked In'
+          'confirmed'
         else 
           status
         end
