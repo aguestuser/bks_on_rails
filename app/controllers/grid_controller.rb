@@ -23,29 +23,30 @@ class GridController < ApplicationController
   end
 
   def send_emails
-    assignments = Shift
-      .joins(:assignment)
-      .where( 
-        "shifts.id IN (:shift_ids) AND assignments.status = (:status)", 
-        { 
-          shift_ids: params[:shift_ids].split.map(&:to_i),
-          status: 'proposed'
-        }
-      )
-      .map(&:assignment)
-    count = 0
-
+    assignments = assignments_to_email
+    assignments.each { |a| a.update(status: :delegated) }
     rider_shifts = RiderShifts.new(assignments).hash
-    rider_shifts.values.each do |rider_hash| 
-      Assignment.send_email( rider_hash, :weekly, current_account) 
-      count += 1
-    end
+    Assignment.send_emails rider_shifts, current_account
 
     flash[:success] = "#{rider_shifts.count} emails sent"
     redirect_to '/grid/shifts'
   end
 
   private
+
+    def assignments_to_email
+      Shift
+        .joins(:assignment)
+        .where( 
+          "shifts.id IN (:shift_ids) AND assignments.status = (:status)", 
+          { 
+            shift_ids: params[:shift_ids].split.map(&:to_i),
+            status: 'proposed'
+          }
+        )
+        .to_a
+        .map(&:assignment)
+    end
 
     def load_subject
       @view = :grid

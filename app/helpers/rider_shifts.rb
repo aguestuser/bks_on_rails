@@ -1,34 +1,56 @@
 class RiderShifts
   attr_reader :hash
   URGENCIES = [ :emergency, :extra, :weekly ]
+  EMAIL_TYPES = [ :delegation, :confirmation ]
 
   def initialize assignments
     @hash = hash_from assignments
-    # puts ">>>> @hash"
-    # pp @hash
   end
 
   private
 
     def hash_from assignments
       #input: Arr of assignments
-            #output: Hash of Hashes of type:
-        # { Num<rider_id>: 
-          # { rider: Rider, 
-            # emergency_ shifts: {
-              # shifts: Arr of Shifts, 
-              # restaurants: Arr of Restaurants
-            # }
-            # extra_shifts: {
-              # shifts: Arr of Shifts 
-              # restaurants: Arr of Restaurants
-            # } 
+      #output: Hash of Hashes of type:
+        # { Num <rider_id>: 
+        #   { rider: Rider, 
+        #     extra: {
+        #       delegation: {
+        #         shifts: Arr of Shifts,
+        #         restaurants: Arr of Restaurants
+        #       },
+        #       confirmation: {
+        #         shifts: Arr of Shifts,
+        #         restaurants: Arr of Restaurants
+        #       }
+        #     },
+        #     emergency: {
+        #       delegation: {
+        #         shifts: Arr of Shifts,
+        #         restaurants: Arr of Restaurants
+        #       },
+        #       confirmation: {
+        #         shifts: Arr of Shifts,
+        #         restaurants: Arr of Restaurants
+        #       }
+        #     },    
+        #     weekly: {
+        #       delegation: {
+        #         shifts: Arr of Shifts,
+        #         restaurants: Arr of Restaurants
+        #       },
+        #       confirmation: {
+        #         shifts: Arr of Shifts,
+        #         restaurants: Arr of Restaurants
+        #       }
+        #     },       
+        #   } 
         # }
       grouped_by_rider = group_by_rider assignments
       with_parsed_rider_and_shift = parse_rider_and_shifts grouped_by_rider
       grouped_by_urgency = group_by_urgency with_parsed_rider_and_shift
-      # with_restaurants = insert_restaurants grouped_by_urgency
-      sorted_by_date = sort_by_date grouped_by_urgency
+      grouped_by_email_type = group_by_email_type grouped_by_urgency
+      sorted_by_date = sort_by_date grouped_by_email_type
       with_restaurants = insert_restaurants sorted_by_date
     end
 
@@ -56,18 +78,56 @@ class RiderShifts
         # }
       hash = {}
       assignments.each do |id, rider_hash|
-        sorted_hash = rider_hash[:shifts].group_by{ |s| s.urgency.text.downcase.to_sym }
+        grouped = rider_hash[:shifts].group_by{ |s| s.urgency.text.downcase.to_sym }
         hash[id] = { rider: rider_hash[:rider] }
-        URGENCIES.each { |urgency| hash[id][urgency] = sorted_hash[urgency] }
+        URGENCIES.each { |urgency| hash[id][urgency] = grouped[urgency] || [] }
       end
       hash
+    end
+
+    def group_by_email_type assignments
+      #input Hash of Hashes of type
+        # { Num<rider_id>: 
+        #   { rider: Rider, emergency: Arr of Shifts, extra: Arr of Shifts, weekly: Arr of Shifts } 
+        # }
+      #output: Hash of Hashes of type
+        # { Num <rider_id>: 
+        #   { rider: Rider, 
+        #     extra: {
+        #       delegation: Arr of Shifts,
+        #       confirmation: Arr of Shifts
+        #     },
+        #     emergency: {
+        #       delegation: Arr of Shifts,
+        #       confirmation: Arr of Shifts
+        #     },    
+        #     weekly: {
+        #       delegation: Arr of Shifts,
+        #       confirmation: Arr of Shifts
+        #     }       
+        #   } 
+        # }
+        hash = {}
+        assignments.each do |id, rider_hash|
+          hash[id] = { rider: rider_hash[:rider] }
+          URGENCIES.each do |urgency|
+            hash[id][urgency] = {}
+            grouped = rider_hash[urgency].group_by { |s| s.assignment.status.text.downcase.sub('delegated', 'delegation').sub('confirmed', 'confirmation').to_sym }
+            EMAIL_TYPES.each do |email_type| 
+              hash[id][urgency][email_type] = grouped[email_type] || [] 
+            end
+          end
+        end
+        hash
     end
 
     def sort_by_date assignments
       hash = assignments.clone
       hash.each do |id, rider_hash|
         URGENCIES.each do |urgency|
-          rider_hash[urgency].sort_by!{ |shift| shift.start } if rider_hash[urgency]
+          EMAIL_TYPES.each do |email_type|
+            rider_hash[urgency][email_type].sort_by!{ |shift| shift.start } if rider_hash[urgency][email_type]
+          end
         end
       end
       hash
@@ -94,16 +154,15 @@ class RiderShifts
       assignments.each do |id, rider_hash|
         hash[id] = { rider: rider_hash[:rider] }
         URGENCIES.each do |urgency|
-          shifts = rider_hash[urgency] || []
-          restaurants = parse_restaurants shifts
-          hash[id][urgency] = urgency_hash_from shifts, restaurants
+          hash[id][urgency] = {}
+          EMAIL_TYPES.each do |email_type|
+            shifts = rider_hash[urgency][email_type] || []
+            restaurants = parse_restaurants shifts
+            hash[id][urgency][email_type] = { shifts: shifts , restaurants: restaurants }
+          end
         end
       end
       hash
-    end
-
-    def urgency_hash_from shifts, restaurants
-      { shifts: shifts , restaurants: restaurants }
     end
 
     def parse_restaurants shifts

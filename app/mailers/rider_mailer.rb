@@ -3,15 +3,16 @@ class RiderMailer < ActionMailer::Base
   default from: "brooklynshift@gmail.com"
   helper_method :protect_against_forgery?
   
-  def delegation_email rider, shifts, restaurants, account, type
+  def delegation_email sender_account, rider, urgency, email_type, shifts, restaurants
+    #input: Account, Rider, Symbol, Symbol, Arr of Shifs, Arr of Restaurants
     require 'delegation_email_helper'
 
     @rider = rider
     @shifts = shifts
     @restaurants = restaurants
-    @staffer = account.user #, staffer_from account
+    @staffer = sender_account.user #, staffer_from account
 
-    helper = DelegationEmailHelper.new shifts, type
+    helper = DelegationEmailHelper.new shifts, urgency, email_type
 
     @salutation = "Dear #{rider.first_name}:"
     @offering = helper.offering

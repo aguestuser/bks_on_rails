@@ -64,7 +64,6 @@ class Assignment < ActiveRecord::Base
     self.rider.nil? ? "Assignment updated (currently unassigned)." : "Assignment updated (Rider: #{self.rider.contact.name}, Status: #{self.status.text})"
   end
 
-
   def try_send_email old_assignment, sender_account
     if self.status == :delegated && ( old_assignment.status != :delegated || old_assignment.rider != self.rider )
       send_email_from sender_account
@@ -76,68 +75,46 @@ class Assignment < ActiveRecord::Base
 
   #Class Methods
 
-  def Assignment.send_emails new_assignments, old_assignments, sender_account
-    #input: assignments <Arr of Assignments>, old_assignments <Arr of Assignments>, Account
-    #does: 
-      # (1) constructs array of newly delegated shifts
-      # (2) parses list of shifts into sublists for each rider
-      # (3) parses list of shifts for restaurants
-      # (4) [ SIDE EFFECT ] sends batch shift delegation email to each rider using params built through (1), (2), and (3)
+  def Assignment.send_emails rider_shifts, sender_account
+    #input: RiderShifts, Account
+    #does: sends shift assignment email to each rider
     #output: Int (count of emails sent)
-    # delegations = Assignment.delegations_from new_assignments, old_assignments # (1)
-    # rider_shifts = RiderShifts.new(delegations).hash #(2), (3)
-    
-    emailable_shifts = Assignment.emailable new_assignments, old_assignments
-    rider_shifts = RiderShifts.new(emailable_shifts).hash #(2), (3)
-    
+  
     count = 0
+    
     rider_shifts.values.each do |rider_hash| # (4)
-      [:emergency, :extra, :weekly].each do |urgency|
-        if rider_hash[urgency][:shifts].any?
-          Assignment.send_email rider_hash, urgency, sender_account
-          count += 1
+      RiderShifts::URGENCIES.each do |urgency|
+        RiderShifts::EMAIL_TYPES.each do |email_type|
+          
+          if rider_hash[urgency][email_type][:shifts].any?
+            here = rider_hash[urgency][email_type]
+            RiderMailer.delegation_email(
+              sender_account,
+              rider_hash[:rider],
+              urgency,
+              email_type,
+              here[:shifts],
+              here[:restaurants]
+            ).deliver
+            count += 1
+          end
+        
         end
       end
+      count
     end
-    count
-  end
-
-  def Assignment.send_email rider_hash, urgency, sender_account
-    RiderMailer.delegation_email( 
-      rider_hash[:rider], 
-      rider_hash[urgency][:shifts], 
-      rider_hash[urgency][:restaurants],
-      sender_account,
-      urgency
-    ).deliver
-  end
-
-  def Assignment.delegations_from new_assignments, old_assignments
-    #input: Arr of Assignments, Arr of Assignments
-    #does: builds array of assignments that were newly delegated when being updated from second argument to first
-    #output: Arr of Assignments
-    new_assignments.select.with_index do |a, i|  
-      a.status == :delegated && ( old_assignments[i].status != :delegated || old_assignments[i].rider != a.rider )
-    end
-  end
+  end # Assignment.send_emails
 
   def Assignment.emailable new_assignments, old_assignments
     #input: Arr of Assignments, Arr of Assignments
-    #does: builds array of assignments that were newly delegated when being updated from second argument to first
+    #does: builds array of assignments that were newly delegated or confirmed when being updated from second argument to first
     #output: Arr of Assignments
-    # raise ( "NEW ASSIGNMENTS: " + new_assignments.inspect + "OLD ASSIGNMENTS: " + old_assignments.inspect )
     new_assignments.select.with_index do |a, i| 
-      if a.status == :delegated
-        old_assignments[i].status != :delegated || old_assignments[i].rider != a.rider
-      elsif a.status == :confirmed
-        # raise ( old_assignments[i].rider != a.rider ).inspect
-        val = ( a.shift.urgency == :emergency && ( old_assignments[i].status != :confirmed || old_assignments[i].rider != a.rider ) )
-        # raise val.inspect
+      if a.status == :delegated || a.status == :confirmed
+        old_assignments[i].status != a.status || old_assignments[i].rider != a.rider
       else
         false
       end 
-      # a.status == :delegated && ( old_assignments[i].status != :delegated || old_assignments[i].rider != a.rider ) ||
-      # a.status == :confirmed && ( old_assignments[i].status != :confirmed || old_assignments[i].rider != a.rider )
     end
   end
   

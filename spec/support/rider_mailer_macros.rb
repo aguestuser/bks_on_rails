@@ -60,6 +60,20 @@ module RiderMailerMacros
     end
   end
 
+  def load_weekly_email_scenario
+    
+    let(:shifts) do 
+      6.times.map do |n| 
+        FactoryGirl.create(:shift, :with_restaurant, restaurant: restaurant, start: start_t + n.days, :end => end_t + n.days)
+      end
+    end
+
+    before do
+      shifts.each { |shift| shift.assign_to(rider) }
+      shifts.last(2).each { |shift| shift.assignment.update( status: :cancelled_by_restaurant ) }
+    end
+  end
+
   def load_conflict_request_scenario
     let!(:riders){ 3.times.map{ FactoryGirl.create(:rider) } }
     let(:week_start){ Time.zone.local(2014,1,6) }
@@ -130,7 +144,7 @@ module RiderMailerMacros
       
     click_button 'Batch Assign', match: :first
     #assign shifts
-    assign_extra if type == :extra
+    assign_extra if type == :extra_delegation
     assign_emergency if type == :emergency
     delegate_emergency if type == :emergency_delegation
     assign_mixed if type == :mixed 
@@ -196,16 +210,22 @@ module RiderMailerMacros
 
   def subject_from type
     case type
-    when :extra
+    when :extra_delegation
       '[EXTRA SHIFT] -- CONFIRMATION REQUIRED'
+    when :extra_confirmation
+      '[EXTRA SHIFT] -- SHIFT DETAILS ENCLOSED'
     when :emergency
       "[EMERGENCY SHIFT] -- SHIFT DETAILS ENCLOSED"
+    when :weekly
+      "[WEEKLY SCHEDULE] -- PLEASE CONFIRM BY SUNDAY"
     end  
   end
 
   def check_delegation_email_body mail, staffer, type
     actual_body = parse_body_from mail
     expected_body = File.read("spec/mailers/sample_emails/single_#{staffer}_#{type}.html")
+      # puts ">>>>>> MAIL"
+      # print mail.body
 
     expect(actual_body).to eq expected_body
   end
@@ -227,7 +247,7 @@ module RiderMailerMacros
   def check_mixed_batch_delegation_email_metadata mails
     from = [ "brooklynshift@gmail.com" ]
     emails = [ rider.email, rider.email, other_rider.email, other_rider.email ]
-    subjects = [ subject_from(:emergency), subject_from(:extra), subject_from(:emergency), subject_from(:extra) ]
+    subjects = [ subject_from(:emergency), subject_from(:extra_delegation), subject_from(:emergency), subject_from(:extra_delegation) ]
     
     mails.each_with_index do |mail, i|
       expect(mail.from).to eq from
@@ -244,8 +264,10 @@ module RiderMailerMacros
     case type
     when :weekly
       "[WEEKLY SCHEDULE] -- PLEASE CONFIRM BY SUNDAY"
-    when :extra
+    when :extra_delegation
       '[EXTRA SHIFTS] -- CONFIRMATION REQUIRED'
+    when :extra_confirmation
+      '[EXTRA SHIFTS] -- SHIFT DETAILS ENCLOSED'
     when :emergency
       "[EMERGENCY SHIFTS] -- SHIFT DETAILS ENCLOSED"
     end

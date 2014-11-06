@@ -190,12 +190,12 @@ class AssignmentsController < ApplicationController
     end
 
     def send_batch_emails new_assignments, old_assignments, current_account
-      email_count = Assignment.send_emails new_assignments, old_assignments, current_account
-      if email_count == 0 
-        ""
-      else 
-        " -- #{email_count} emails sent"
-      end
+      
+      emailable_shifts = Assignment.emailable new_assignments, old_assignments
+      rider_shifts = RiderShifts.new(emailable_shifts).hash
+      email_count = Assignment.send_emails rider_shifts, current_account
+
+      ret = email_count == 0 ? "" : " -- #{email_count} emails sent"
     end
 
     def request_batch_error_fixes old_assignments, new_assignments

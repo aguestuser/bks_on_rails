@@ -29,6 +29,7 @@ gem 'figaro'
 
 gem 'underscore-rails'
 gem 'rdiscount'
+gem 'activerecord-session_store', github: 'rails/activerecord-session_store'
 
 
 group :development, :test do

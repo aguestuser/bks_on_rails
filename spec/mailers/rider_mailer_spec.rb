@@ -4,28 +4,50 @@ include RequestSpecMacros, RiderMailerMacros
 describe "Rider Mailer Requests" do
   load_staffers
 
-  describe "DELEGATION EMAIL" do
+  describe "ASSIGNMENT EMAIL" do
     load_delegation_scenario
 
     describe "as Tess" do
       before { mock_sign_in tess }
 
       describe "for extra shift" do
-        let!(:mail_count){ ActionMailer::Base.deliveries.count }
-        before { assign extra_shift, 'Delegated' }
-        let(:mail){ ActionMailer::Base.deliveries.last }
-      
-        it "should send an email" do
-          expect(ActionMailer::Base.deliveries.count).to eq (mail_count + 1)
-        end
+
+        describe "delegating" do
+          let!(:mail_count){ ActionMailer::Base.deliveries.count }
+          before { assign extra_shift, 'Delegated' }
+          let(:mail){ ActionMailer::Base.deliveries.last }
         
-        it "should render correct email metadata" do
-          check_delegation_email_metadata mail, :tess, :extra
+          it "should send an email" do
+            expect(ActionMailer::Base.deliveries.count).to eq (mail_count + 1)
+          end
+          
+          it "should render correct email metadata" do
+            check_delegation_email_metadata mail, :tess, :extra_delegation
+          end
+          
+          it "should render correct email body" do
+            check_delegation_email_body mail, :tess, :extra_delegation
+          end          
         end
+
+        describe "confirming" do
+          let!(:mail_count){ ActionMailer::Base.deliveries.count }
+          before { assign extra_shift, 'Confirmed' }
+          let(:mail){ ActionMailer::Base.deliveries.last }
         
-        it "should render correct email body" do
-          check_delegation_email_body mail, :tess, :extra
+          it "should send an email" do
+            expect(ActionMailer::Base.deliveries.count).to eq (mail_count + 1)
+          end
+          
+          it "should render correct email metadata" do
+            check_delegation_email_metadata mail, :tess, :extra_confirmation
+          end
+          
+          it "should render correct email body" do
+            check_delegation_email_body mail, :tess, :extra_confirmation
+          end           
         end
+
       end
 
       describe "for emergency shift" do
@@ -72,17 +94,17 @@ describe "Rider Mailer Requests" do
         end
         
         it "should render correct email metadata" do
-          check_delegation_email_metadata mail, :justin, :extra
+          check_delegation_email_metadata mail, :justin, :extra_delegation
         end
         
         it "should render correct email body" do
-          check_delegation_email_body mail, :justin, :extra
+          check_delegation_email_body mail, :justin, :extra_delegation
         end
       end
     end #"as Justin"
   end # "ASSIGNMENT EMAIL"
 
-  describe "BATCH DELEGATION EMAILS" do
+  describe "BATCH ASSIGNMENT EMAILS" do
     load_delegation_scenario
     load_batch_delegation_scenario
 
@@ -91,7 +113,7 @@ describe "Rider Mailer Requests" do
 
       describe "for EXTRA shifts" do
         let!(:mail_count){ ActionMailer::Base.deliveries.count } 
-        before { batch_delegate extra_shifts, :extra }
+        before { batch_delegate extra_shifts, :extra_delegation }
         let(:mails){ ActionMailer::Base.deliveries.last(2) }
 
         it "should send 2 emails" do
@@ -99,11 +121,11 @@ describe "Rider Mailer Requests" do
         end
 
         it "should format email metadata correctly" do
-          check_batch_delegation_email_metadata mails, :extra
+          check_batch_delegation_email_metadata mails, :extra_delegation
         end
 
         it "should format email body correctly" do
-          check_batch_delegation_email_body mails, :tess, :extra
+          check_batch_delegation_email_body mails, :tess, :extra_delegation
         end
       end # "for EXTRA shifts"
 
@@ -159,6 +181,39 @@ describe "Rider Mailer Requests" do
       end # "trying to DELEGATE EMERGENCY shifts"
     end # "as Tess"
   end # "BATCH ASSIGNMENT EMAILS"
+
+  describe "WEEKLY SCHEDULE EMAIL" do
+    load_delegation_scenario
+    load_weekly_email_scenario
+    
+    let!(:mail_count){ ActionMailer::Base.deliveries.count } 
+    
+    before do
+      mock_sign_in tess
+      visit shift_grid_path
+      fill_in 'filter_start', with: 'January 6, 2014'
+      click_button 'Filter'
+      click_button 'Email Schedules'
+    end
+    
+    let(:mail){ ActionMailer::Base.deliveries.last }
+
+    it "should send an email" do
+      expect(ActionMailer::Base.deliveries.count).to eq (mail_count + 1)
+    end
+
+    it "should render correct email metadata" do
+      check_delegation_email_metadata mail, :tess, :weekly
+    end
+
+    it "should render correct email body" do
+      check_delegation_email_body mail, :tess, :weekly
+    end
+
+    it "should set all assignment statuses to delegated" do
+      expect( shifts.first(4).map{ |s| s.reload.assignment.status.text } ).to eq 4.times.map{ 'Delegated' }
+    end  
+  end # "WEEKLY SCHEDULE EMAIL"
 
   describe "CONFLICT REQUEST" do
     load_conflict_request_scenario
