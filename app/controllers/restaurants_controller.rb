@@ -38,7 +38,7 @@ class RestaurantsController < ApplicationController
         { start_t: start_t, end_t: end_t, restaurant_id: @restaurant.id }
       )
       .order('start asc')
-    @shift_table = Table.new(:shift, @shifts, @caller, @base_path, teaser: true )
+    @shift_table = Table.new(:shift, @shifts, @caller, @base_path, nil, teaser: true )
   end
 
   def index

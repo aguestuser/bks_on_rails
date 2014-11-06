@@ -39,10 +39,10 @@ class RidersController < ApplicationController
       )
       .order('start asc')
     # @shifts = @rider.shifts.order(:start).first(5)
-    @shift_table = Table.new(:shift, @shifts, @caller, @base_path, teaser: true)
+    @shift_table = Table.new(:shift, @shifts, @caller, @base_path, nil, teaser: true)
 
     @conflicts = @rider.conflicts.order(:start).first(5)
-    @conflict_table = Table.new(:conflict, @conflicts, @caller, @base_path, teaser: true)
+    @conflict_table = Table.new(:conflict, @conflicts, @caller, @base_path, nil, teaser: true)
 
   end
 

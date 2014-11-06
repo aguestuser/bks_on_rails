@@ -41,7 +41,7 @@ class ConflictsController < ApplicationController
   end
 
   def index
-    @conflict_table = Table.new(:conflict, @conflicts, @caller, @base_path)
+    @conflict_table = Table.new(:conflict, @conflicts, @caller, @base_path, nil)
   end
 
   def destroy
