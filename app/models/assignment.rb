@@ -101,8 +101,9 @@ class Assignment < ActiveRecord::Base
         
         end
       end
-      count
     end
+    
+    count
   end # Assignment.send_emails
 
   def Assignment.emailable new_assignments, old_assignments

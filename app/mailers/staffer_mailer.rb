@@ -8,7 +8,7 @@ class StafferMailer < ActionMailer::Base
     @week_start = week_start
     @notes = notes
 
-    recipients = [ "brooklynshift@gmail.com", "austin@bkshift.com" ] # [ "brooklynshift@gmail.com", "tess@bkshift.com", "justin@bkshift.com" ] 
+    recipients = [ "brooklynshift@gmail.com", "tess@bkshift.com" ]  
     subject = "[CONFLICT SUBMMISSION] #{@rider.name}"
 
     mail( to: recipients, subject: subject )
