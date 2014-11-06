@@ -6,6 +6,7 @@ class ShiftsController < ApplicationController
   before_action :load_shift, only: [ :show, :edit, :update, :destroy ]
   before_action :load_caller # will call load_restaurant or load_rider if applicable, load_paths always
   before_action :load_base_path
+  before_action :load_filter_base_path
   before_action :load_form_args, only: [ :edit, :update ]
   before_action :redirect_non_staffers, only: [ :index, :list_unconfirmed ]
   # before_action :load_filter_wrapper, only: [ :index, :batch_edit ]
@@ -278,7 +279,7 @@ class ShiftsController < ApplicationController
     # VIEW INTERACTION HELPERS
 
     def load_table
-      @shift_table = Table.new(:shift, @shifts, @caller, @base_path, form: true)
+      @shift_table = Table.new(:shift, @shifts, @caller, @base_path, @filter_base_path, form: true)
     end
 
     def load_filter_wrapper

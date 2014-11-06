@@ -9,5 +9,7 @@
     = form_for @form_args do |f|
       = render 'shared/error_messages', object: f.object
       = render 'assignments/fields', f: f, shift: @shift
+      = render 'shared/base_path_field'
+      = render 'shared/filter_json_fields'
       .center
         = f.submit "Save changes", class: "btn btn-primary"

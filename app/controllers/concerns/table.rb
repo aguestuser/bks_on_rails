@@ -2,7 +2,7 @@ class Table < ApplicationController
   include Paths
   attr_accessor :spans, :headers, :rows, :form
 
-  def initialize record_type, records, caller, base_path, options={}
+  def initialize record_type, records, caller, base_path, filter_base_path=nil, options={}
     #input: Sym, Arr of ActiveRecords, Sym, Str, Hash of form:
       # { teaser: <Bool>, form: <Bool> }
     #output: Table obj
@@ -11,6 +11,7 @@ class Table < ApplicationController
     @record_type = record_type
     @caller = caller
     @base_path = base_path
+    @filter_base_path = filter_base_path || ''
     @teaser = options[:teaser] || false 
     @form = options[:form] || false
 

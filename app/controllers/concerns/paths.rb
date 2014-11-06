@@ -21,17 +21,17 @@ module Paths
 
       def show_path(record, record_type=nil)
         # raise record_type.inspect
-        @base_path + rt_str(record, record_type) + "#{record.id}" + base_path_params
+        @base_path + rt_str(record, record_type) + "#{record.id}" + base_path_params + @filter_base_path
       end
 
       def edit_path(record, record_type=nil)
         # raise record_type.inspect
         # raise rt_str(record, record_type).inspect
-        @base_path + rt_str(record, record_type) + "#{record.id}/edit" + base_path_params
+        res = @base_path + rt_str(record, record_type) + "#{record.id}/edit" + base_path_params + @filter_base_path
       end
 
       def new_path
-        @base_path + "new" + base_path_params
+        @base_path + "new" + base_path_params + @filter_base_path
       end
 
     private
@@ -60,7 +60,17 @@ module Paths
         else
           @base_path = default_base_path
         end
-        # raise @base_path.inspect
+      end
+
+      def load_filter_base_path
+        if params[:filter]
+          res = '&' + { filter_json: params[:filter].to_json }.to_query
+        elsif params[:filter_json] 
+          res = '&' + params.extract!(:filter_json).to_query
+        else
+          res = ''
+        end
+        @filter_base_path = res
       end
 
       def default_base_path
