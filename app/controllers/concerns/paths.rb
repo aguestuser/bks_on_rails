@@ -132,7 +132,6 @@ module Paths
       end
 
       def filter_params
-        raise @filter_path_params.inspect if @filter_path_params.nil?
         @filter_path_params || ''
       end
 
