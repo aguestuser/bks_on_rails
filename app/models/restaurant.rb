@@ -121,14 +121,16 @@ class Restaurant < ActiveRecord::Base
   end
 
   def self.child_export_headers
-    [ 'name', 'address' ]
+    [ 'name', 'address', 'lat', 'lng' ]
   end
 
   def self.child_export_cells_from restaurant
     l = restaurant.location
     [ 
       restaurant.mini_contact.name, 
-      "#{l.address}, #{l.borough.text}, NY"
+      "#{l.address}, #{l.borough.text}, NY",
+      l.lat,
+      l.lng
     ]
   end
 
