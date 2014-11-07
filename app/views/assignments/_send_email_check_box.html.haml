@@ -1,0 +1,4 @@
+- selected = selected || params[:send_email]
+.checkbox.offset1
+  = check_box_tag 'send_email', 1, selected
+  = label_tag 'Send emails for delegated and confirmed assignments' 
