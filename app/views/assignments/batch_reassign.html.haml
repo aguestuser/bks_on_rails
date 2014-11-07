@@ -6,6 +6,8 @@
 .row
   .span8.offset2.profile
     = form_tag '/assignment/batch_reassign', method: :post do
+      /Send Email Check Box
+      = render 'send_email_check_box'
       /Requiring Reassignment
       %div{ id: "assignments_requiring_reassignment" }
         %h3 Assignments Requiring Reassignment

@@ -4,19 +4,9 @@ include RiderPageMacros # /spec/support/restaurant_macros.rb
 include RequestSpecMacros # /spec/support/request_spec_macros.rb
 
 describe "Rider Pages" do
-  let!(:rider) { FactoryGirl.build(:rider) }
-  let!(:riders){ 3.times.map{ FactoryGirl.create(:rider) } }
-  let!(:account) { rider.account }
-  let(:contact) { rider.contact }
-  let(:location) { rider.location }
-  let(:qualifications) { rider.qualification_set }
-  let(:skills) { rider.qualification_set }
-  let(:rating) { rider.rider_rating }
-
+  load_rider_resources
   let(:staffer) { FactoryGirl.create(:staffer) }
-
   before { mock_sign_in staffer }
-
   subject { page }
 
   describe "display pages" do
@@ -176,7 +166,7 @@ describe "Rider Pages" do
         it "lists 3 riders with active box checked" do
           riders.each_with_index do |rider, i|
             expect(page).to have_content(rider.name)
-            expect(page.find("#rider_#{i} #riders__active")).to be_checked
+            expect(page.find("#riders_1_active")).to be_checked
           end
         end      
       end # "contents"

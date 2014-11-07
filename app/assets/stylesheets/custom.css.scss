@@ -194,27 +194,6 @@ aside {
   }
 }
 
-.stats {
-  overflow: auto;
-  a {
-    float: left;
-    padding: 0 10px;
-    border-left: 1px solid $grayLighter;
-    color: gray;
-    &:first-child {
-      padding-left: 0;
-      border: 0;
-    }
-    &:hover {
-      text-decoration: none;
-      color: $blue
-    }
-  }
-  strong {
-    display: block;
-  }
-}
-
 .user_avatars {
   overflow: auto;
   margin-top: 10px;
@@ -267,43 +246,6 @@ label {
   display: inline-block;
   width: auto;
 }
-
-/* Users index */
-
-.users {
-  list-style: none;
-  margin: 0;
-  li {
-    overflow: auto;
-    padding: 10px 0;
-    border-top: 1px solid $grayLighter;
-    &:last-child {
-      border-bottom: 1px solid $grayLighter;
-    }
-  }
-
-}
-
-/* Microposts */
-
-.microposts {
-  list-style: none;
-  margin: 10px 0 0 0;
-  li {
-    padding: 10px 0;
-    border-top: 1px solid #e8e8e8;
-  }
-}
-
-.content {
-  display: block;
-}
-
-.timestamp {
-  color: $grayLight;
-}
-
-
 
 /* Debug data */
 
@@ -414,6 +356,8 @@ label {
 .header{ 
   @include header_row;
 }
+
+/* GRID */
 
 .grid { 
   .filters {
@@ -543,11 +487,6 @@ label {
   .start{
     padding-left: 1.5em;
   }
-  // .edit_shift, .remove_shift{
-  //   position: relative;
-  //   top: 1.75em;
-  //   left: 1em;
-  // }
 }
 
 .add_shift{
@@ -568,5 +507,14 @@ label {
   float: right;
   margin-top: -2.6em;
   margin-right: 5.3em;
+}
+
+/* RESOLVE OBSTACLES */
+
+.decision_radios{
+  .radio{
+    float: left;
+    margin-right: 1em;
+  }
 }
 

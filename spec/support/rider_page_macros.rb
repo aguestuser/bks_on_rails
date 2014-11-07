@@ -1,4 +1,16 @@
 module RiderPageMacros
+  
+  def load_rider_resources
+    let!(:rider) { FactoryGirl.build(:rider) }
+    let!(:riders){ 3.times.map{ FactoryGirl.create(:rider) } }
+    let!(:account) { rider.account }
+    let(:contact) { rider.contact }
+    let(:location) { rider.location }
+    let(:qualifications) { rider.qualification_set }
+    let(:skills) { rider.qualification_set }
+    let(:rating) { rider.rider_rating }
+  end
+
   def get_rider_form_hash(action)
     case action
     when 'new'

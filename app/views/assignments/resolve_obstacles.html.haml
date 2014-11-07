@@ -5,6 +5,8 @@
 .row
   .span8.offset2.profile
     = form_tag '/assignment/resolve_obstacles', method: :post do
+      /Send Email Check Box
+      = render 'send_email_check_box'
       /Assignments
       = hidden_field_tag :assignments_json, @assignments.to_json
       /Decisions...

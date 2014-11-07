@@ -166,7 +166,7 @@ class AssignmentsController < ApplicationController
       if batch_save? old_assignments, new_assignments
 
         message = success_message_from old_assignments.count
-        email_alert = send_batch_emails new_assignments, old_assignments, current_account
+        email_alert = params[:send_email] ? send_batch_emails( new_assignments, old_assignments, current_account ) : ''
         
         flash[:success] = message << email_alert
         query = query = params[:filter_json] ? '?' + { filter_json: params[:filter_json] }.to_query : ''

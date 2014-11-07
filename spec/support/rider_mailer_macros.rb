@@ -51,9 +51,6 @@ module RiderMailerMacros
       4.times.map{ |n| n < 2 ? extra_shifts[n] : emergency_shifts[n]  }
     end
 
-    # let(:mixed_shifts){ [ emergency_shift, extra_shift ] }
-    # change to include 4 shifts so can be passed to batch delegate
-
     before do
       other_rider.contact.update(name: 'A'*9+'a')
       other_restaurant.mini_contact.update(name: 'A'*9+'a')
@@ -116,16 +113,16 @@ module RiderMailerMacros
   #   let(:mail){ RiderMailer.delegation_email rider, shift }
   # end
 
-  def assign shift, status, block_email=false
+  def assign shift, status, send_email=true
     visit edit_shift_assignment_path(shift, shift.assignment)
-    page.find('#block_email').set true if block_email
+    page.find('#send_email').set false unless send_email
     page.find("#assignment_rider_id").select rider.name
     page.find("#assignment_status").select status
     click_button 'Save changes'
   end
 
 
-  def batch_delegate shifts, type
+  def batch_delegate shifts, type, send_email=true
     visit shifts_path
     #set time filters inclusively
     select Time.zone.local(2013).year, from: 'filter_start_year'
@@ -145,6 +142,7 @@ module RiderMailerMacros
       
     click_button 'Batch Assign', match: :first
     #assign shifts
+    page.find('#send_email').set false unless send_email
     assign_extra if type == :extra_delegation
     assign_emergency if type == :emergency
     delegate_emergency if type == :emergency_delegation

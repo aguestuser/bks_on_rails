@@ -3,6 +3,8 @@
 %h1 Uniform Assign Shifts
 .span8.offset2.profile
   = form_tag '/assignment/batch_edit_uniform', method: :post do
+    /Send Email Check Box
+    = render 'send_email_check_box', selected: true
     /Shifts
     #shifts
       %h3 Shifts
