@@ -21,7 +21,8 @@ class RidersController < ApplicationController
     @rider = Rider.new(rider_params)
     @it = @rider
     if @rider.save
-      flash[:success] = "Profile created for #{@rider.contact.name}"
+      StafferMailer.new_rider_notification(@rider).deliver
+      flash[:success] = "Profile created for #{@rider.contact.name}. Notification email sending."
       redirect_to riders_path
     else
       render 'new'
