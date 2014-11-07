@@ -3,7 +3,9 @@
 %h1 Batch Assign Shifts
 .span8.offset2.profile
   = form_tag '/assignment/batch_edit', method: :post do
-    = render 'send_email_check_box'
+    /Send Email Check Box
+    = render 'send_email_check_box', selected: true
+    /Error Messages
     = render 'shared/batch_error_messages', errors: @errors
     /Fresh
     - @assignments.fresh.each_with_index do |wrapped_assignment, i|

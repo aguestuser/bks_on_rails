@@ -1,7 +1,8 @@
 - #args: i
-.radio
-  = radio_button_tag "decisions[#{i}]", 'Accept', true
-  = label_tag :no
-.radio
-  = radio_button_tag "decisions[#{i}]", 'Override', false
-  = label_tag :yes
+.decision_radios
+  .radio.first
+    = radio_button_tag "decisions[#{i}]", 'Accept', true
+    = label_tag :no
+  .radio
+    = radio_button_tag "decisions[#{i}]", 'Override', false
+    = label_tag :yes

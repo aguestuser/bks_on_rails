@@ -12,7 +12,7 @@ describe "Rider Mailer Requests" do
 
       describe "with email blocking on" do
         let!(:mail_count){ ActionMailer::Base.deliveries.count }
-        before { assign extra_shift, 'Delegated', true }
+        before { assign extra_shift, 'Delegated', false }
         let(:mail){ ActionMailer::Base.deliveries.last }
 
         it "shouldn't send an email" do
@@ -120,6 +120,15 @@ describe "Rider Mailer Requests" do
 
     describe "as Tess" do
       before { mock_sign_in tess }
+
+      describe "with email blocking on" do
+        let!(:mail_count){ ActionMailer::Base.deliveries.count }
+        before { batch_delegate extra_shifts, :extra_delegation, false }
+
+        it "shouldn't send an email" do
+          expect(ActionMailer::Base.deliveries.count).to eq mail_count
+        end
+      end
 
       describe "for EXTRA shifts" do
         let!(:mail_count){ ActionMailer::Base.deliveries.count } 
