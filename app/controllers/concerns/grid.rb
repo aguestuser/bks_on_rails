@@ -142,34 +142,25 @@
   end
 
   def color_from resources
-    unless resources.empty? # if so: color will be white in absence of css declaration
-      case resources[0].class.name
-      when 'Shift'
-        parse_shifts_for_color resources
-      when 'Conflict'
-        'black'
-      end
+    if resources.empty?
+      ''
+    elsif shifts = resources.select{ |r| r.class.name == 'Shift' }
+      parse_for_color shifts
+    else # only  onflicts
+      'black'
     end
   end
 
-  def parse_shifts_for_color shifts 
-    statuses = shifts.map do |shift| 
-      if shift.class.name == 'Conflict' # to log unfixed bug
-        puts ">>>>Conflict:"
-        puts shift.inspect
-        puts ">>>>> Rider:"
-        puts shift.rider.inspect
-      end
-      shift.assignment.status.text
-    end
-    if statuses.include? 'Confirmed'
-      'green'
-    elsif statuses.include? 'Delegated'
-      'yellow'
+  def parse_for_color shifts 
+    statuses = shifts.map { |shift| shift.assignment.status.text }
+    if statuses.include? 'Unassigned'
+      'red'
     elsif statuses.include? 'Proposed'
       'orange'
-    elsif statuses.include? 'Unassigned'
-      'red'
+    elsif statuses.include? 'Delegated'
+      'yellow'
+    elsif statuses.include? 'Confirmed'
+      'green'
     else # if 'Cancelled (Rider)' or 'Cancelled (Restaurant)'
       'gray'
     end

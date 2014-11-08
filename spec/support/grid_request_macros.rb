@@ -77,8 +77,7 @@ module GridRequestMacros
   end
 
   def load_avail_grid_vars
-    load_shift_week_vars
-
+    
     let!(:rider){ FactoryGirl.create(:rider) }
     let!(:other_rider){ FactoryGirl.create(:rider) }
 
