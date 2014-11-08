@@ -76,9 +76,9 @@ describe "Grid Requests" do
         expect( page.find( "#row_2_col_14" ).text ).to eq ''
         expect( page.find( "#row_2_col_15" ).text ).to eq ''
       end
-    end
+    end # "page contents"
 
-    describe "double shift" do
+    describe "with double shift" do
       load_double_shift
       before do
         visit shift_grid_path
@@ -89,22 +89,43 @@ describe "Grid Requests" do
         expect( page.find( "#row_1_col_2" ).text ).to eq ( "DOUBLE: " << shift_grid_cell_text_for(double_shift) )
         expect( page.find( "#row_1_col_3" ).text ).to eq ( "DOUBLE: " << shift_grid_cell_text_for(double_shift) )
       end
-    end
-  end
+    end # "with double shift"
+
+    describe "with ASSIGNMENTS OF DIFFERING URGENCY" do
+      let(:unassigned_shift) do
+        FactoryGirl.create(:shift, 
+          :with_restaurant, 
+          restaurant: restaurant, 
+          start: monday + 11.hours,
+          :end => monday + 16.hours 
+        )
+      end
+      
+      before do
+        unassigned_shift.unassign
+        visit shift_grid_path
+        select_first_week_of_2014
+      end
+
+      it "first cell has red background" do
+        expect( page.find( '#row_1_col_2' )['class'] ).to include 'red'
+        # expect( page.find( '#row_1_col_2' ). )
+      end
+    end # "with ASSIGNMENTS OF DIFFERING URGENCY"
+  end # "Shift Grid"
 
   describe "Availability Grid" do
+    load_shift_week_vars
     load_avail_grid_vars
-
-    before do 
-      # configure_avail_grid_vars
-      visit availability_grid_path
-      select_first_week_of_2014
-    end
-    
     let!(:last_row){ Rider.all.count }
     subject { page }
 
-    describe "page contents" do
+    describe "contents" do
+
+      before do 
+        visit availability_grid_path
+        select_first_week_of_2014
+      end
 
       it { should have_h1('Availability Grid') }
       check_grid_filter_form_contents 
@@ -164,7 +185,21 @@ describe "Grid Requests" do
       end
     end # "page contents"
 
-    describe "page contents with DOUBLE CONFLICTS" do
+    describe "with OVERLAPPING CONFLICT & SHIFT" do
+      let!(:conflict){ FactoryGirl.create(:conflict, :with_rider, rider: rider, start: monday + 11.hours, :end => monday + 16.hours  ) }
+      before do 
+        visit availability_grid_path
+        select_first_week_of_2014
+      end
+      let(:cell){ page.find( '#row_1_col_2' ).text }
+
+      it "should display conflict and shift in same cell" do
+        expect(cell).to include '[NA]'
+        expect(cell).to include restaurant.name
+      end
+    end # "with OVERLAPPING CONFLICT & SHIFT"
+
+    describe "with DOUBLE CONFLICTS" do
       load_double_conflict
       before do 
         visit availability_grid_path
@@ -175,7 +210,7 @@ describe "Grid Requests" do
         expect( page.find( "#row_1_col_2" ).text ).to eq ( "DOUBLE: " << avail_grid_cell_text_for(double_conflict) )
         expect( page.find( "#row_1_col_3" ).text ).to eq ( "DOUBLE: " << avail_grid_cell_text_for(double_conflict) )
       end
-    end
+    end # "with DOUBLE CONFLICTS"
 
     describe "links" do
 
@@ -277,6 +312,6 @@ describe "Grid Requests" do
           end
         end
       end       
-    end
+    end # "SORTING"
   end
 end
