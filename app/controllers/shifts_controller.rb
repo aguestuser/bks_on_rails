@@ -121,15 +121,11 @@ class ShiftsController < ApplicationController
       load_shift_batch # loads @shifts
       route_batch_edit params[:commit]
     else
-      flash[:error] = "Oops! Looks like you didn't select any shifts to batch edit."
-      load_shifts
-      load_table
-      render 'index'
+      handle_no_shift_selection
     end
   end
 
   def route_batch_edit commit
-    # query = params.extract!(:ids, :base_path, :filter_json).to_query
     query = [:ids, :base_path, :filter_json].inject({}) { |memo, param| 
       memo.merge( { param => params[param] } )
     }.to_query
@@ -137,7 +133,9 @@ class ShiftsController < ApplicationController
     case commit
     when 'Batch Edit'
       @errors = []
-      render 'batch_edit' 
+      render 'batch_edit'
+    when 'Batch Delete'
+      batch_delete query 
     when 'Batch Assign' 
       redirect_to "/assignment/batch_edit?#{query}"
     when 'Uniform Assign'
@@ -157,6 +155,14 @@ class ShiftsController < ApplicationController
     else
       render "batch_edit"
     end
+  end
+
+  def batch_delete query
+    count = @shifts.count
+    @shifts.each{ |s| s.destroy }
+    flash[:success] = "#{count} shifts deleted"
+
+    redirect_to @base_path + '?' + query
   end
 
   def build_clone_week_preview
@@ -269,6 +275,13 @@ class ShiftsController < ApplicationController
 
     def load_shift_batch
       @shifts = Shift.where("id IN (:ids)", { ids: params[:ids] } ).order(:start)
+    end
+
+    def handle_no_shift_selection
+      flash[:error] = "Oops! Looks like you didn't select any shifts to batch edit."
+      load_shifts
+      load_table
+      render 'index'
     end
 
     def old_shifts_from params

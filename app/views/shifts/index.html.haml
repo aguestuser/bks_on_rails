@@ -25,6 +25,7 @@
     /Submit Buttons
     .center
       = submit_tag 'Batch Edit', class: 'btn btn-primary'
+      = submit_tag 'Batch Delete', class: 'btn btn-primary', data: { confirm: 'Are you sure you want to delete these shifts?' }
       = submit_tag 'Batch Assign', class: 'btn btn-primary' 
       = submit_tag 'Uniform Assign', class: 'btn btn-primary'
       = hidden_field_tag :base_path, @base_path
@@ -42,7 +43,9 @@
     /Submit Buttons
     .center
       = submit_tag 'Batch Edit', class: 'btn btn-primary'
+      = submit_tag 'Batch Delete', class: 'btn btn-primary', data: { confirm: 'Are you sure you want to delete these shifts?' }
       = submit_tag 'Batch Assign', class: 'btn btn-primary' 
+      = submit_tag 'Uniform Assign', class: 'btn btn-primary' 
     /Hot Links
     - if can? :manage, Shift
       %p.center

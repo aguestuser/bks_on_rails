@@ -688,6 +688,25 @@ describe "Shift Requests" do
       end 
     end
 
+    describe "BATCH DELETE" do
+
+      before{ batch.each(&:save) }
+
+      let!(:shift_count){ Shift.count }
+      
+      before do 
+        visit shifts_path
+        filter_shifts_by_time_inclusively
+        page.within("#row_1"){ find("#ids_").set true }
+        page.within("#row_2"){ find("#ids_").set true }
+        click_button 'Batch Delete', match: :first
+      end
+
+      it "should delete 3 shifts" do
+        expect(Shift.count).to eq shift_count - 2
+      end
+    end
+
     describe "BATCH ASSIGN" do
       before do
         # initialize rider & shifts, assign shifts to rider
