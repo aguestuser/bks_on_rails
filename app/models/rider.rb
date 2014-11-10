@@ -87,9 +87,9 @@ class Rider < ActiveRecord::Base
     #output: Str (empty if no emails sent, email alert if emails sent)
     count = 0
     rider_conflicts.arr.each do |hash| 
-      if count > 0 && count % 75 == 0
+      if count > 0 && count % 50 == 0
         puts ">>> SLEEPING"
-        sleep 60
+        sleep 180
       end
       RiderMailer.request_conflicts(hash[:rider], hash[:conflicts], week_start, sender_account).deliver
       count += 1
