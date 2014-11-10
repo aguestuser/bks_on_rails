@@ -89,7 +89,7 @@ class Rider < ActiveRecord::Base
     rider_conflicts.arr.each do |hash| 
       if count > 0 && count % 75 == 0
         puts ">>> SLEEPING"
-        sleep 20
+        sleep 60
       end
       RiderMailer.request_conflicts(hash[:rider], hash[:conflicts], week_start, sender_account).deliver
       count += 1
