@@ -81,10 +81,11 @@ BksOnRails::Application.configure do
   #configure for gmail
   # config.action_mailer.perform_deliveries = true
   # config.action_mailer.raise_delivery_errors = false
+  config.action_mailer.delivery_method = :smtp
   config.action_mailer.smtp_settings = {
     address: "smtp.gmail.com",
     port: 587,
-    domain: "heroku.com",
+    domain: "gmail.com",
     authentication: "plain",
     enable_starttls_auto: true,
     user_name: ENV["GMAIL_USERNAME"],
