@@ -86,13 +86,15 @@ class RidersController < ApplicationController
   end
 
   def request_conflicts
-    riders = Rider.active
-    now = now_unless_test
-    this_monday = now.beginning_of_week
-    next_monday = this_monday + 1.week
+    email_alert = Rider.request_conflicts current_account, now_unless_test
+
+    # riders = Rider.active
+    # now = now_unless_test
+    # this_monday = now.beginning_of_week
+    # next_monday = this_monday + 1.week
     
-    rider_conflicts = RiderConflicts.new( riders, this_monday ).increment_week
-    email_alert = Rider.email_conflict_requests rider_conflicts, next_monday, current_account
+    # rider_conflicts = RiderConflicts.new( riders, this_monday ).increment_week
+    # email_alert = Rider.email_conflict_requests rider_conflicts, next_monday, current_account
 
     if email_alert == ''
       flash[:error] = 'There was a mistake sending the conflict request emails. Please try again.'
