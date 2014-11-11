@@ -30,7 +30,6 @@ gem 'figaro'
 gem 'underscore-rails'
 gem 'rdiscount'
 gem 'activerecord-session_store', github: 'rails/activerecord-session_store'
-gem 'delayed_job_active_record'
 
 
 group :development, :test do

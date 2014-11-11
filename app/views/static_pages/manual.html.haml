@@ -6,8 +6,9 @@
   %li 
     %a{ href: "#backups" }
       Backups
-    %a{ href: "#local_server" }
-      Local Server (for devs)
+  / %li
+  /   %a{ href: "#local_server" }
+  /     Local Server (for devs)
 
 
 %a{ name: "backups" }
@@ -37,21 +38,21 @@
 
   _*Database ids are of the form b###. IDs can be retreived from viewing list of backups according to protocol._
 
-%a{ name: "local_server" }
+/ %a{ name: "local_server" }
 
-:markdown
-  ### Local Server (for devs)
-  If you are a developer who wants to run the app in a local environment for testing, note that the app is configured to use Foreman to more closely approximate the production environment in Heroku (and to allow use of the [delayed_jobs gem](https://devcenter.heroku.com/articles/delayed-job) for background tasks such as mass email sending.)
+/ :markdown
+/   ### Local Server (for devs)
+/   If you are a developer who wants to run the app in a local environment for testing, note that the app is configured to use Foreman to more closely approximate the production environment in Heroku (and to allow use of the [delayed_jobs gem](https://devcenter.heroku.com/articles/delayed-job) for background tasks such as mass email sending.)
 
-  **To run locally**
+/   **To run locally**
 
-  * from the command line, enter:
-  ` foreman start `
-  * this will start a local Rails server at localhost:5000
+/   * from the command line, enter:
+/   ` foreman start `
+/   * this will start a local Rails server at localhost:5000
 
-  Foreman emulates the configurations given to Heroku in a Procfile. 
+/   Foreman emulates the configurations given to Heroku in a Procfile. 
 
-  **To change the Procfile configurations**
+/   **To change the Procfile configurations**
 
-  * open Procfile in the root folder and change settings for the web process and the worker process
-  * there is documentation for these processes [at this link](https://devcenter.heroku.com/articles/procfile#developing-locally-with-foreman)
+/   * open Procfile in the root folder and change settings for the web process and the worker process
+/   * there is documentation for these processes [at this link](https://devcenter.heroku.com/articles/procfile#developing-locally-with-foreman)

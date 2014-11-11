@@ -240,16 +240,15 @@ describe "Rider Mailer Requests" do
     before(:all) do # deactive all riders
       @active = Rider.find(Rider.active.map(&:id))
       @active.each{ |rider| rider.update(active: false) }
+      riders.each{ |rider| rider.update(active: true) }
+      conflicts
     end
 
     after(:all) do # reactivate all riders who were active before tests
       @active.each{ |record| record.update(active: true) }
     end
     
-    before(:each) do 
-      conflicts
-      riders
-      riders.each{ |rider| rider.update(active: true) }
+    before(:each) do
       mock_sign_in tess
       click_link 'Request Conflicts'
       click_link 'Send Emails', match: :first

@@ -93,10 +93,10 @@ class Rider < ActiveRecord::Base
       # end
       RiderMailer.request_conflicts(hash[:rider], hash[:conflicts], week_start, sender_account).deliver
       count += 1
-      puts ">>>>>#{count} EMAILS SENT"
+      puts ">>>>>#{count} EMAILS QUEUED"
     end
     
-    alert = count > 0 ? "#{count} conflict requests successfully sent" : ""
+    alert = count > 0 ? "#{count} conflict requests queued for sending" : ""
   end
 
   private

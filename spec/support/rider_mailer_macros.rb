@@ -298,7 +298,9 @@ module RiderMailerMacros
     from = [ "brooklynshift@gmail.com" ]
     subject = "[SCHEDULING CONFLICT REQUEST] 1/13 - 1/19"
 
-    mails.each_with_index do |mail, i|
+    mails.sort_by{ |m| m.to }.each_with_index do |mail, i|
+      puts "mail.to"
+      pp mail.to
       expect(mail.from).to eq from
       expect(mail.to).to eq [ riders[i].email ]
       expect(mail.subject).to eq subject
