@@ -96,7 +96,7 @@ class Rider < ActiveRecord::Base
       puts ">>>>>#{count} EMAILS QUEUED"
     end
     
-    alert = count > 0 ? "#{count} conflict requests queued for sending" : ""
+    alert = count > 0 ? "#{count} conflict requests sent" : ""
   end
 
   private
