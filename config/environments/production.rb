@@ -86,10 +86,21 @@ BksOnRails::Application.configure do
   config.action_mailer.smtp_settings = {
     address: "smtp.gmail.com",
     port: 587,
-    domain: ENV["ROOT"].sub(/\/$/, ''),
+    domain: 'gmail.com',
     authentication: "plain",
     enable_starttls_auto: true,
     user_name: ENV["GMAIL_USERNAME"],
     password: ENV["GMAIL_PASSWORD"]
   }
+
+  # #(failed) attempt at avoiding too-many-login error by sending from subdomain of bkshift.com w/ DKIM key auth
+  # config.action_mailer.smtp_settings = {
+  #   address: "smtp.gmail.com",
+  #   port: 587,
+  #   domain: ENV["ROOT"].sub(/\/$/, ''),
+  #   authentication: "plain",
+  #   enable_starttls_auto: true,
+  #   user_name: ENV["GMAIL_USERNAME"],
+  #   password: ENV["GMAIL_PASSWORD"]
+  # }
 end
