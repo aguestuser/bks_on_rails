@@ -27,3 +27,8 @@
       .center
         = label_tag :status
       = select_tag name.call('status'), options_for_select(AssignmentStatus.select_options, assignment.status)
+    /Notes
+    .span8
+      .center
+        = label_tag :notes
+      = text_area_tag name.call('notes'), assignment.notes

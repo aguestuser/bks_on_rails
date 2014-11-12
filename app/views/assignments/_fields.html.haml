@@ -3,6 +3,8 @@
   = f.select :rider_id, Rider.select_options, include_blank: true
 = f.label :status
 = f.select :status, AssignmentStatus.select_options
+= f.label :notes
+= f.text_area :notes
 = f.hidden_field :shift_id, value: shift.id
 = f.hidden_field :id, value: shift.assignment.id
 

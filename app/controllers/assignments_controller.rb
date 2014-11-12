@@ -265,7 +265,7 @@ class AssignmentsController < ApplicationController
     def assignment_params
       params
         .require(:assignment)
-        .permit(:id, :rider_id, :shift_id, :status)
+        .permit(:id, :rider_id, :shift_id, :status, :notes)
     end
 
 end
