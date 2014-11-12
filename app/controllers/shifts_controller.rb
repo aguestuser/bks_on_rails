@@ -61,6 +61,22 @@ class ShiftsController < ApplicationController
     redirect_to @base_path
   end
 
+  def today
+    now = now_unless_test
+    params[:filter] = {
+      start: now.beginning_of_day,
+      :end => now.end_of_day,
+      restaurants: [ 'all' ],
+      riders: [ 'all' ],
+      status: [ 'all' ]
+    }
+    load_filter_wrapper
+    load_filter_path_params
+    load_shifts
+    load_table
+    render 'index'
+  end
+
   def unconfirmed
     now = now_unless_test
     params[:filter] = {
