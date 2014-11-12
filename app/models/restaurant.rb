@@ -128,7 +128,7 @@ class Restaurant < ActiveRecord::Base
     l = restaurant.location
     [ 
       restaurant.mini_contact.name, 
-      "#{l.address}, #{l.borough.text}, NY",
+      l.address,
       l.lat,
       l.lng
     ]
