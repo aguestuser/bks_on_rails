@@ -3,11 +3,14 @@
     Shifts
     %b.caret
   %ul.dropdown-menu
-    %li= link_to "List Unconfirmed", list_unconfirmed_shifts_path
-    %li= link_to "List Unconfirmed (Next Week)", list_unconfirmed_next_week_shifts_path
-    %li= link_to "List All", shifts_path
+    %li= link_to "All", shifts_path
+    %li= link_to "Today", today_shifts_path
+    %li= link_to "Unconfirmed", unconfirmed_shifts_path
+    %li= link_to "Unconfirmed (Next Week)", unconfirmed_next_week_shifts_path
     %li= link_to "Grid", shift_grid_path
     - if can? :create, Shift
+      %li.divider
+      %li= link_to "Review Points", review_points_shifts_path
       %li.divider
       %li= link_to "Create", new_shift_path
       %li= link_to "Batch Create", '/shift/clone_new'

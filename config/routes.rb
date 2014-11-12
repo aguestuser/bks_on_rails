@@ -58,7 +58,7 @@ BksOnRails::Application.routes.draw do
 
   resources :shifts do
     resources :assignments
-    collection { get :export, :build_export, :list_unconfirmed, :list_unconfirmed_next_week }
+    collection { get :export, :build_export, :unconfirmed, :unconfirmed_next_week, :today, :review_points }
   end
 
   post 'shifts/index'

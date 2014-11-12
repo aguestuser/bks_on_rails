@@ -1,8 +1,10 @@
 / - raise @filter.to_yaml
+- submit_path = @filter_submit_path || index_path
 .row.header
   Filters
 .row
-  = form_tag "#{index_path}", method: :get do   
+  / = form_tag "#{index_path}", method: :get do
+  = form_tag submit_path, method: :get do   
     .row.select_wrapper
       /Start
       .span2

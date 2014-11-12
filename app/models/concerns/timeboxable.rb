@@ -19,6 +19,10 @@ module Timeboxable
       self.start.strftime("%l").strip << start_min << "-" << self.end.strftime("%l").strip << end_min
     end
 
+    def review_points_time
+      self.start.strftime("%^a") << ' ' << self.period.text.upcase
+    end
+
     def formal_date
       self.start.strftime("%B %e, %Y")
     end

@@ -456,6 +456,19 @@ describe "Shift Requests" do
         it { should_not have_content(other_restaurant.mini_contact.name) }
       end
     end
+
+    describe "Shifts#points_review" do
+      load_batch
+      before do 
+        batch.each_with_index{ |shift, i| shift.assignment.update(notes: "Some notes about assignment #{i}") } 
+        visit review_points_shifts_path
+        filter_shifts_by_time_inclusively
+      end
+      
+      it "should have correct contents" do
+        batch.each_with_index{ |shift, i| check_point_review_row shift, i }
+      end
+    end
   end
 
   describe "form pages" do

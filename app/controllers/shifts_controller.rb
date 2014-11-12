@@ -7,9 +7,9 @@ class ShiftsController < ApplicationController
   before_action :load_caller # will call load_restaurant or load_rider if applicable, load_paths always
   before_action :load_base_path
   before_action :load_form_args, only: [ :edit, :update ]
-  before_action :redirect_non_staffers, only: [ :index, :list_unconfirmed ]
+  before_action :redirect_non_staffers, only: [ :index, :unconfirmed ]
   before_action :load_filter_wrapper, only: [ :index ]
-  before_action :load_filter_path_params, only: :index
+  before_action :load_filter_path_params, only: [ :index ]
   before_action :load_shifts, only: [ :index ]
   before_action :load_empty_errors, only: [ :route_batch_edit, :clone_new, :batch_new ]
 
@@ -61,7 +61,7 @@ class ShiftsController < ApplicationController
     redirect_to @base_path
   end
 
-  def list_unconfirmed
+  def unconfirmed
     now = now_unless_test
     params[:filter] = {
       start: now.beginning_of_week,
@@ -71,12 +71,13 @@ class ShiftsController < ApplicationController
       status: [ 'unassigned', 'proposed', 'delegated', 'cancelled_by_rider' ]
     }
     load_filter_wrapper
+    load_filter_path_params
     load_shifts
     load_table
     render 'index'
   end
 
-  def list_unconfirmed_next_week
+  def unconfirmed_next_week
     now = now_unless_test
     params[:filter] = {
       start: now.beginning_of_week + 1.week,
@@ -86,8 +87,31 @@ class ShiftsController < ApplicationController
       status: [ 'unassigned', 'proposed', 'delegated', 'cancelled_by_rider' ]
     }
     load_filter_wrapper
+    load_filter_path_params
     load_shifts
     load_table
+    render 'index'
+  end
+
+  # def build_review_points
+  #   now = now_unless_test
+  #   @week_start = now.beginning_of_week
+  # end
+
+  def review_points
+    week_start = now_unless_test.beginning_of_week
+    params[:filter] = {
+      start: week_start,
+      :end => week_start.end_of_week,
+      restaurants: [ 'all' ],
+      riders: [ 'all' ],
+      status: [ 'all' ]
+    }
+    load_filter_wrapper
+    load_filter_path_params
+    load_shifts
+    @base_path = @filter_submit_path = '/shifts/review_points/'
+    load_table review_points: true
     render 'index'
   end
 
@@ -295,8 +319,9 @@ class ShiftsController < ApplicationController
 
     # VIEW INTERACTION HELPERS
 
-    def load_table
-      @shift_table = Table.new(:shift, @shifts, @caller, @base_path, @filter_path_params, form: true)
+    def load_table options={}
+      review_points = options[:review_points] || false
+      @shift_table = Table.new(:shift, @shifts, @caller, @base_path, @filter_path_params, form: true, review_points: review_points)
     end
 
     def load_filter_wrapper

@@ -1,5 +1,66 @@
 module ShiftRequestMacros
 
+  def load_riders_and_restaurants
+    let!(:restaurant) { FactoryGirl.create(:restaurant) }
+    let!(:other_restaurant) { FactoryGirl.create(:restaurant) }
+    let!(:rider){ FactoryGirl.create(:rider) }
+    let!(:other_rider){ FactoryGirl.create(:rider) }
+  end
+
+  def load_batch
+    let(:start_t){ Time.zone.local(2014,1,6,12) }
+    let(:end_t){ Time.zone.local(2014,1,6,18) }
+    let!(:batch)do
+      3.times.map do |n|
+        FactoryGirl.build(:shift, :with_restaurant, restaurant: restaurant, start: start_t + n.days, :end => end_t + n.days)
+      end
+    end
+  end
+
+  def load_conflicts
+    let(:conflicts) do 
+      3.times.map do |n| 
+        FactoryGirl.build(:conflict, :with_rider, rider: other_rider, start: batch[n].start, :end => batch[n].end)
+      end
+    end
+  end
+
+  def load_double_bookings
+    let(:double_bookings) do 
+      3.times.map do |n|
+        FactoryGirl.build(:shift, :with_restaurant, restaurant: restaurant, start: batch[n].start, :end => batch[n].end)
+      end
+    end
+  end
+
+  def load_free_rider
+    let!(:free_rider){ FactoryGirl.create(:rider) }
+  end
+
+  def load_this_week_shifts
+    let!(:restaurants){ 3.times.map{ FactoryGirl.create(:restaurant) } }
+    let!(:this_week_shifts) do
+      r1_shifts = 7.times.map do |n|
+        FactoryGirl.create( :shift, :with_restaurant, restaurant: restaurants[0], start: start_t + n.days, :end => end_t + n.days )
+      end
+      r2_shifts = 7.times.map do |n|
+        FactoryGirl.create( :shift, :with_restaurant, restaurant: restaurants[1], start: start_t + n.days, :end => end_t + n.days )
+      end
+
+      r1_shifts + r2_shifts
+    end
+  end
+
+  def load_next_week_shifts
+    let!(:next_week_shifts) do
+      this_week_shifts.map do |shift|
+        shift.increment_by 1.week
+      end
+    end
+    let(:next_start_t){ start_t + 1.week }
+    let(:next_end_t){ end_t + 1.week }
+  end
+
   def check_shift_form_contents(path)
     expect(page).to have_label('Start')
     expect(page).to have_label('End')
@@ -369,64 +430,15 @@ module ShiftRequestMacros
     edited_shifts
   end
 
-  def load_riders_and_restaurants
-    let!(:restaurant) { FactoryGirl.create(:restaurant) }
-    let!(:other_restaurant) { FactoryGirl.create(:restaurant) }
-    let!(:rider){ FactoryGirl.create(:rider) }
-    let!(:other_rider){ FactoryGirl.create(:rider) }
+  def check_point_review_row shift, i
+    expect(page.find("#row_#{i+1}_col_1").text).to eq shift.restaurant.name
+    expect(page.find("#row_#{i+1}_col_2").text).to eq shift.review_points_time
+    expect(page.find("#row_#{i+1}_col_3").text).to eq shift.billing_rate.text
+    expect(page.find("#row_#{i+1}_col_4").text).to eq shift.urgency.text
+    expect(page.find("#row_#{i+1}_col_5").text).to eq shift.assignment.rider.name
+    expect(page.find("#row_#{i+1}_col_6").text).to eq shift.assignment.status.text
+    expect(page.find("#row_#{i+1}_col_7").text).to eq shift.assignment.notes    
   end
 
-  def load_batch
-    let(:start_t){ Time.zone.local(2014,1,6,12) }
-    let(:end_t){ Time.zone.local(2014,1,6,18) }
-    let!(:batch)do
-      3.times.map do |n|
-        FactoryGirl.build(:shift, :with_restaurant, restaurant: restaurant, start: start_t + n.days, :end => end_t + n.days)
-      end
-    end
-  end
-
-  def load_conflicts
-    let(:conflicts) do 
-      3.times.map do |n| 
-        FactoryGirl.build(:conflict, :with_rider, rider: other_rider, start: batch[n].start, :end => batch[n].end)
-      end
-    end
-  end
-
-  def load_double_bookings
-    let(:double_bookings) do 
-      3.times.map do |n|
-        FactoryGirl.build(:shift, :with_restaurant, restaurant: restaurant, start: batch[n].start, :end => batch[n].end)
-      end
-    end
-  end
-
-  def load_free_rider
-    let!(:free_rider){ FactoryGirl.create(:rider) }
-  end
-
-  def load_this_week_shifts
-    let!(:restaurants){ 3.times.map{ FactoryGirl.create(:restaurant) } }
-    let!(:this_week_shifts) do
-      r1_shifts = 7.times.map do |n|
-        FactoryGirl.create( :shift, :with_restaurant, restaurant: restaurants[0], start: start_t + n.days, :end => end_t + n.days )
-      end
-      r2_shifts = 7.times.map do |n|
-        FactoryGirl.create( :shift, :with_restaurant, restaurant: restaurants[1], start: start_t + n.days, :end => end_t + n.days )
-      end
-
-      r1_shifts + r2_shifts
-    end
-  end
-
-  def load_next_week_shifts
-    let!(:next_week_shifts) do
-      this_week_shifts.map do |shift|
-        shift.increment_by 1.week
-      end
-    end
-    let(:next_start_t){ start_t + 1.week }
-    let(:next_end_t){ end_t + 1.week }
-  end
+  
 end
