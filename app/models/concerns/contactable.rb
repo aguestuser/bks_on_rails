@@ -30,6 +30,10 @@ module Contactable
     self.contact.email
   end
 
+  def full_email
+    "'#{self.name}' <#{self.email}>"
+  end
+
   def phone
     self.contact.phone
   end
