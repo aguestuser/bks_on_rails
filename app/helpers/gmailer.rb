@@ -15,11 +15,11 @@ class Gmailer
 
   def create_message body, recipients, subject
     body = # render template as string
-    message = Mime::Text.new(body).merge{
-      to: recipients.join ',',
+    message = Mime::Text.new(body).merge({
+      to: recipients.join(','),
       from: Gmailer::FROM,
       subject: helper.subject
-    }
+    })
     { 'raw' => Base64.urlsafe_encode64(message) }    
   end
 

@@ -2,14 +2,13 @@
 #
 # Table name: assignments
 #
-#  id                      :integer          not null, primary key
-#  shift_id                :integer
-#  rider_id                :integer
-#  status                  :string(255)
-#  created_at              :datetime
-#  updated_at              :datetime
-#  override_conflict       :boolean
-#  override_double_booking :boolean
+#  id         :integer          not null, primary key
+#  shift_id   :integer
+#  rider_id   :integer
+#  status     :string(255)
+#  created_at :datetime
+#  updated_at :datetime
+#  notes      :text
 #
 
 require 'spec_helper'

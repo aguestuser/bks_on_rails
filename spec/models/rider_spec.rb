@@ -6,6 +6,7 @@
 #  active     :boolean
 #  created_at :datetime
 #  updated_at :datetime
+#  notes      :text
 #
 
 require 'spec_helper'
