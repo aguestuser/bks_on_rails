@@ -204,7 +204,7 @@ module RiderMailerMacros
   def check_delegation_email_metadata mail, staffer, type
     expect(mail.to).to eq [ rider.email ]
     expect(mail.subject).to eq subject_from type
-    expect(mail.from).to eq [ "brooklynshift@gmail.com" ]
+    expect(mail.from).to eq [ "contact@bkshift.com" ]
   end
 
   def subject_from type
@@ -232,7 +232,7 @@ module RiderMailerMacros
   # BATCH EMAIL MACROS
 
   def check_batch_delegation_email_metadata mails, type
-    from = [ "brooklynshift@gmail.com" ]
+    from = [ "contact@bkshift.com" ]
     emails = [ rider.email, other_rider.email ]
     subject = batch_subject_from type
 
@@ -244,7 +244,7 @@ module RiderMailerMacros
   end
 
   def check_mixed_batch_delegation_email_metadata mails
-    from = [ "brooklynshift@gmail.com" ]
+    from = [ "contact@bkshift.com" ]
     emails = [ rider.email, rider.email, other_rider.email, other_rider.email ]
     subjects = [ subject_from(:emergency), subject_from(:extra_delegation), subject_from(:emergency), subject_from(:extra_delegation) ]
     
@@ -295,7 +295,7 @@ module RiderMailerMacros
   end
 
   def check_conflict_request_metadata mails, riders
-    from = [ "brooklynshift@gmail.com" ]
+    from = [ "contact@bkshift.com" ]
     subject = "[SCHEDULING CONFLICT REQUEST] 1/13 - 1/19"
 
     mails.sort_by{ |m| m.to }.each_with_index do |mail, i|
