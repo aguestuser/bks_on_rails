@@ -1,0 +1,21 @@
+- provide(:title, 'Terms of Employment')
+
+%h1
+  Terms of Employment
+.row
+  .span10.offset1
+    %p
+      By clicking the below, I agree to the following as conditions of my continued employment through BK Shift:
+    %ol
+      %li
+        Any placement provided by BK Shift is to be handled through BK Shift's Account Management Team, and no alternate arrangements for direct employment are to be made by messengers and BK Shift's clients, the restaurants.
+      %li
+        Once a rider has confirmed a shift, any cancellation must be made at least 3 days in advance. Last minute cancellations or not showing up for a shift are grounds for termination and blacklisting from BK Shift.
+      %li
+        Riders are expected to abide by the 
+        = link_to 'DOT Guidelines', 'http://www.nyc.gov/html/dot/downloads/pdf/commercial-bicyclist-safety-course.pdf'
+
+    = form_tag rider_toe_consent_path(@rider), method: :post do 
+      = hidden_field_tag :rider_id, @rider.id
+      %p.center
+        = submit_tag 'I Agree', :class => 'btn btn-primary'

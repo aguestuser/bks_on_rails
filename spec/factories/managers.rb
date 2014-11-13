@@ -2,10 +2,9 @@
 #
 # Table name: managers
 #
-#  id            :integer          not null, primary key
-#  restaurant_id :integer
-#  created_at    :datetime
-#  updated_at    :datetime
+#  id         :integer          not null, primary key
+#  created_at :datetime
+#  updated_at :datetime
 #
 
 FactoryGirl.define do

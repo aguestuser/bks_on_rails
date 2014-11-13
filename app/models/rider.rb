@@ -16,7 +16,7 @@ class Rider < ActiveRecord::Base
   EXPORT_COLUMNS = [ 'id', 'active' ]
   EXPORT_HEADERS = EXPORT_COLUMNS
 
-  #nested attributes
+  #associations
   has_one :qualification_set, dependent: :destroy
     accepts_nested_attributes_for :qualification_set
   has_one  :skill_set, dependent: :destroy
@@ -24,7 +24,7 @@ class Rider < ActiveRecord::Base
   has_one :rider_rating, dependent: :destroy
     accepts_nested_attributes_for :rider_rating
   
-  #associations
+  has_one :toe_consent
   has_many :assignments
   has_many :shifts, through: :assignments
   has_many :conflicts 
@@ -62,7 +62,9 @@ class Rider < ActiveRecord::Base
       .order("start asc")
   end
 
-
+  def has_toe_consent?
+    self.toe_consent
+  end
 
   #class methods
   def self.select_options

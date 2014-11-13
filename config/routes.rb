@@ -34,12 +34,14 @@ BksOnRails::Application.routes.draw do
     resources :shifts do
       resources :assignments
     end
+    resource :toe_consent, only: [:new, :create, :complete]
     resources :conflicts
     collection do 
       get :export, :edit_statuses
       put :update_statuses 
     end
   end
+
 
   resources :restaurants do
     resource :mini_contact, only: [:new, :create, :edit, :update]
@@ -103,7 +105,7 @@ BksOnRails::Application.routes.draw do
   # non-resourcesful rider routes
   get 'rider/request_conflicts_preview' => 'riders#request_conflicts_preview'
   get 'rider/request_conflicts' => 'riders#request_conflicts'
-  
+  get 'riders/:rider_id/toe_consent/complete' => 'toe_consents#complete'  
 
 
   # post 'riders/:id/batch_clone_conflicts' => 'riders#batch_clone_conflicts'
