@@ -1,0 +1,24 @@
+- #input: it, f
+
+:javascript
+
+  $(document).ready(function(){
+    console.log('hello world!')
+
+    var dropdown = "#{ escape_javascript( render 'managers/dropdown' ) }" // Str
+      , fields = "#{ escape_javascript( render 'managers/fields', it: it, f: f ) }"
+    console.log('dropdown: ', dropdown)
+    console.log("fields: ", fields)
+
+    $('#choose_existing_manager').change(function(){
+      console.log("change!")
+      if ($(this).prop('checked')){
+        $('#manager_fields').empty()
+        $('#manager_fields').append(dropdown)
+      }
+      else{
+        $('#manager_fields').empty()
+        $('#manager_fields').append(fields)
+      }
+    })
+  })

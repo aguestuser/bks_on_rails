@@ -16,6 +16,12 @@ class Staffer < ActiveRecord::Base
   #   mailed = StafferMailer.conflict_notification( rider, conflicts, week_start ).deliver
   # end
 
+  # class methods
+
+  def self.select_options
+    self.all.joins(:contact).order("contacts.name asc").map{ |r| [ r.name, r.id ] }
+  end
+
   def self.import_children path
     #input: none
     #output Hash of Arrays of Staffer children 

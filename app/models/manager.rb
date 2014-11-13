@@ -10,7 +10,11 @@
 
 class Manager < ActiveRecord::Base
   include User, Contactable # app/model/concerns/
-  belongs_to :restaurant
+  has_and_belongs_to_many :restaurants
+
+  def self.select_options
+    self.all.joins(:contact).order("contacts.name asc").map{ |r| [ r.name, r.id ] }
+  end
 
   def Manager.import managers_file, accounts_file, contacts_file
     accounts = Account.import accounts_file

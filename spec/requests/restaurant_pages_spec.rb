@@ -62,9 +62,11 @@ describe "Restaurant Pages" do
       it { should have_h1('Restaurants') }
       it { should have_link('Create new restaurant', href: new_restaurant_path) }   
     end
-  end
+  end # "display pages"
 
   describe "form pages" do
+    
+    let!(:managers){ 2.times.map{ FactoryGirl.create( :manager, :without_restaurant) } }
 
     describe "Restaurants#new" do
       
@@ -73,6 +75,7 @@ describe "Restaurant Pages" do
       let(:submit) { 'Create Restaurant' }
       let(:models) { [ Restaurant, MiniContact, Location, Manager, Contact, RiderPaymentInfo ] }
       let!(:old_counts) { count_models models  }
+
 
       describe "page contents" do
         it { should_not have_h3('Status') }
@@ -90,7 +93,7 @@ describe "Restaurant Pages" do
         describe "with invalid input" do
           before { click_button submit }
           it { should have_an_error_message }
-        end
+        end # "with invalid input"
 
         describe "with valid input" do
 
@@ -113,11 +116,48 @@ describe "Restaurant Pages" do
             it { should_not have_h3("Equipment") }
             it { should_not have_h3("Agency Compensation") }            
           end      
-        end
-      end  
-    end
+        end # "with valid input"
+
+        describe "selecting existing manager", js: true do
+
+          let!(:restaurant_count){ Restaurant.count }
+          let!(:manager_count){ Manager.count }
+
+          describe "DOM modification" do
+
+            before { page.find('#choose_existing_manager').set true }
+
+            it "replaces text fields with existing managers dropdown" do
+              expect(page).not_to have_h3 'Account Info'
+              expect(page).not_to have_content 'Email'
+              expect(page).to have_select 'manager_id'
+              expect(page.find('#manager_id').text).to include managers[0].name
+              expect(page.find('#manager_id').text).to include managers[1].name
+            end            
+          end
+
+          describe "commiting edit" do
+
+            before do
+              fill_in_form new_form
+              page.find('#choose_existing_manager').set true
+              select managers[0].name, from: 'manager_id'
+              click_button submit 
+            end
+
+            it "creates new restaurant with existing manager" do 
+              expect(Restaurant.count).to eq restaurant_count + 1
+              expect(Manager.count).to eq manager_count
+              expect(Restaurant.last.managers).to include managers[0]
+              expect(managers[0].restaurants).to include Restaurant.last
+            end
+          end
+        end # "selecting existing manager"
+      end  # "form submission"
+    end # "Restaurants#new""
 
     describe "Restaurants#edit" do
+
       before do
         restaurant.save
         visit edit_restaurant_path(restaurant)
@@ -145,7 +185,7 @@ describe "Restaurant Pages" do
         end
 
         it { should have_an_error_message }
-      end
+      end # "with invalid input"
 
       describe "with valid input" do
         before do 
@@ -161,10 +201,10 @@ describe "Restaurant Pages" do
 
         it { should have_h1('Restaurants') }
         it { should have_success_message("Poop Palace's profile has been updated") }
-        specify { expect(restaurant.mini_contact.reload.name).to eq 'Poop Palace' }
+        specify { expect(restaurant.reload.mini_contact.name).to eq 'Poop Palace' }
         specify { expect(restaurant.reload.location.reload.borough.text).to eq 'Staten Island' }
         specify { expect(restaurant.reload.equipment_need.reload.bike_provided).to eq true  }
-      end
-    end
+      end # "with valid input"
+    end # "Restaurants#edit"
   end
 end

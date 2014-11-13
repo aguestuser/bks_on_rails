@@ -8,7 +8,7 @@ FactoryGirl.define do
     after(:build) do |f|
       f.mini_contact = FactoryGirl.build(:mini_contact, :with_restaurant, restaurant: f)
       f.location = FactoryGirl.build(:location, :with_locatable, locatable: f)
-      f.managers = [ FactoryGirl.build(:manager, :with_restaurant, restaurant: f) ]
+      f.managers = [ FactoryGirl.build(:manager, :with_restaurant, restaurants: [ f ]) ]
       f.rider_payment_info = FactoryGirl.build(:rider_payment_info, :with_restaurant, restaurant: f)
     end
   end

@@ -23,7 +23,9 @@ class Restaurant < ActiveRecord::Base
     accepts_nested_attributes_for :equipment_need
   has_one :agency_payment_info, dependent: :destroy
     accepts_nested_attributes_for :agency_payment_info
-  has_many :managers, dependent: :destroy
+  # has_many :managers, dependent: :destroy
+  #   accepts_nested_attributes_for :managers, allow_destroy: true
+  has_and_belongs_to_many :managers
     accepts_nested_attributes_for :managers, allow_destroy: true
   has_many :shifts
 
@@ -73,10 +75,6 @@ class Restaurant < ActiveRecord::Base
 
   def Restaurant.select_options
     Restaurant.all.joins(:mini_contact).order("mini_contacts.name asc").map{ |r| [ r.name, r.id ] }
-  end
-
-  def Restaurant.select_options
-    ( Restaurant.all.joins(:mini_contact).order("mini_contacts.name asc").map{ |r| [ r.name, r.id ] } )
   end
 
   def self.multiselect_options

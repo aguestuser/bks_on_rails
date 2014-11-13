@@ -19,7 +19,9 @@ class RestaurantsController < ApplicationController
 
   def create
     @restaurant = Restaurant.new(restaurant_params)
+    @restaurant.managers << Manager.find( params[:manager_id] ) if params[:manager_id]
     @it = @restaurant
+    
     if @restaurant.save
       flash[:success] = "Profile created for #{@restaurant.mini_contact.name}"
       redirect_to @restaurant

@@ -20,8 +20,8 @@ module RestaurantPageMacros
           'Phone' => restaurant.managers.first.contact.phone,
           'Email' => restaurant.managers.first.contact.email,
           #manager.acccount
-          'restaurant_managers_attributes_0_account_attributes_password' => 'changeme123',
-          'restaurant_managers_attributes_0_account_attributes_password_confirmation' => 'changeme123',
+          'restaurant_managers_attributes_1_account_attributes_password' => 'changeme123',
+          'restaurant_managers_attributes_1_account_attributes_password_confirmation' => 'changeme123',
           #rider_payment,
           'Pay rate' => rider_payment.rate
           # excluded for Restaurants#new
