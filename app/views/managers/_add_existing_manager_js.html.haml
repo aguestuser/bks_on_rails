@@ -1,0 +1,12 @@
+:javascript
+
+  $(document).ready(function(){
+
+    var dropdown = "#{ escape_javascript( render 'managers/dropdown' ) }" // Str
+
+    $('#add_existing_manager').click(function(){
+      var num = $('.contact_fields').length + $('.manager_dropdown').length + 1
+      $('#manager_fields').append('<h3>Manager '+num+'</h3>')
+      $('#manager_fields').append(dropdown)
+    })
+  })

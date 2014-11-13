@@ -8,8 +8,6 @@
       = render @restaurant.mini_contact
       = render @restaurant.location
       = render @restaurant.managers, managers: @restaurant.managers
-      .center
-        = link_to 'Create new manager', new_restaurant_manager_path(@restaurant.id) 
       = render @restaurant.rider_payment_info
       - if @restaurant.work_specification
         = render @restaurant.work_specification, restaurant: @restaurant

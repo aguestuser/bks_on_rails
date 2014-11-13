@@ -1,0 +1,6 @@
+.manager_field_set
+  = f.fields_for :managers, manager do |ff|
+    %h3
+      Manager #{i+1}
+    = render 'contacts/fields', f: ff
+  %br/

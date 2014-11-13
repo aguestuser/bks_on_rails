@@ -60,15 +60,11 @@ class RestaurantsController < ApplicationController
 
   def update
     @restaurant.attributes  = restaurant_params
+    @restaurant.managers << Manager.find(params[:manager_ids]) if params[:manager_ids]
     if @restaurant.save
       @restaurant.unedited = false
       flash[:success] = "#{@restaurant.mini_contact.name}'s profile has been updated"
-      case credentials
-      when 'Staffer'
-        redirect_to restaurants_path
-      when 'Manager'
-        redirect_to restaurant_path(@restaurant)
-      end
+      redirect_to restaurant_path(@restaurant)
     else
       render 'edit'
     end
@@ -102,7 +98,7 @@ class RestaurantsController < ApplicationController
 
     def restaurant_params
       params.require(:restaurant)
-        .permit( :active, :status, :brief, :unedited,
+        .permit( :active, :status, :brief, :unedited, :manager_ids,
           mini_contact_params, 
           managers_params,
           rider_payment_params,

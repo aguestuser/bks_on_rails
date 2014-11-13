@@ -1,0 +1,5 @@
+.manager_field_set
+  = f.fields_for :managers do |ff|
+    = render 'accounts/fields', f: ff
+    = render 'contacts/fields', f: ff
+  %br/

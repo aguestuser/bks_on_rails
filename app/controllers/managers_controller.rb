@@ -1,24 +1,30 @@
 class ManagersController < ApplicationController
   include UsersController, ContactablesController
   before_action :load_manager, only: [ :show, :edit, :update, :destroy ]
-  before_action :load_restaurant, only: [ :new, :create, :edit, :update ]
 
   def new
     @manager = Manager.new
     @manager.build_account # abstract to UsersController?
     @manager.build_contact # abstract to ContactablesController?
-    @manager.restaurant = @restaurant
+    
+    if params[:restaurant_id]
+      load_restaurants
+    else
+      @manager.restaurants.build 
+    end
+
     @it = @manager
   end
 
   def create
     @manager = Manager.new(manager_params)
-    @manager.restaurant_id = @restaurant.id
+    load_restaurants
     @it = @manager
     if @manager.save
       flash[:success] = "Profile created for #{@manager.contact.name}."
       redirect_to redirect_path
     else
+      params.restaurant_id = @manager.restaurants.first.id
       render 'new'
     end
   end
@@ -51,8 +57,8 @@ class ManagersController < ApplicationController
       @it = @manager
     end
 
-    def load_restaurant
-      @restaurant = Restaurant.find(params[:restaurant_id])
+    def load_restaurants
+      @manager.restaurants = [ Restaurant.find(params[:restaurant_id]) ]
     end
 
     def refresh_restaurant(manager)
@@ -61,13 +67,13 @@ class ManagersController < ApplicationController
 
     def redirect_path
       if current_account.user == @manager
-        restaurant_manager_path(@manager.restaurant, @manager)
+        restaurant_manager_path(@manager.restaurants.first, @manager)
       else
-        restaurant_path(@manager.restaurant)
+        restaurant_path(@manager.restaurants.first)
       end
     end
 
     def manager_params
-      params.require(:manager).permit(account_params, contact_params)
+      params.require(:manager).permit(account_params, contact_params, :restaurant_id)
     end
 end

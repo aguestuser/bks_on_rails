@@ -1,17 +1,8 @@
-- if it.class == Restaurant
-  #manager_fields
-    = f.fields_for :managers do |ff|
-      - if params[:action] == 'new'
-        = render 'accounts/fields', f: ff
-      = render 'contacts/fields', f: ff
-    - if params[:action] == 'edit'
-      .center
-        = link_to 'Create new manager', new_restaurant_manager_path(it)
-    %br/
-
-- elsif it.class == Manager
-  %h2 Restaurant: #{it.restaurant.mini_contact.name}
-  .profile
-    - if params[:action] == 'new'
-      = render 'accounts/fields', f: f
-    = render 'contacts/fields', f: f
+.profile
+  %h3 Restaurants: 
+  - it.restaurants.each do |restaurant|
+    %li.center= link_to restaurant.name, restaurant
+  - if params[:action] == 'new'
+    = render 'accounts/fields', f: f
+    = hidden_field_tag :restaurant_id, it.restaurants.first.id
+  = render 'contacts/fields', f: f

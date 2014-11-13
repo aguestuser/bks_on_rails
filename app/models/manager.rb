@@ -11,6 +11,7 @@
 class Manager < ActiveRecord::Base
   include User, Contactable # app/model/concerns/
   has_and_belongs_to_many :restaurants
+    accepts_nested_attributes_for :restaurants
 
   def self.select_options
     self.all.joins(:contact).order("contacts.name asc").map{ |r| [ r.name, r.id ] }

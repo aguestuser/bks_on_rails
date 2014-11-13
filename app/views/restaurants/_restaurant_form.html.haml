@@ -8,13 +8,7 @@
         = render 'fields', f: f if credentials == 'Staffer'
         = render 'mini_contacts/fields', f: f
         = render 'locations/fields', f: f
-        %h3 Managers
-        - if params[:action] == 'new'
-          .checkbox.offset1
-            = check_box_tag 'choose_existing_manager', 1, false, id: 'choose_existing_manager'
-            = label_tag :choose_existing, 'Choose from pre-existing managers?'
-          = render 'managers/choose_existing_manager_js', it: @it, f: f
-        = render 'managers/fields', it: @it, f: f
+        = render 'managers/fields_wrapper', it: @it, f: f
         = render 'rider_payment_infos/fields', f: f
         - if credentials == 'Manager' || params[:action] == 'edit' || params[:action] == 'update'
           = render 'work_specifications/fields', f: f

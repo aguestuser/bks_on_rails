@@ -16,7 +16,7 @@ class Ability
                                 EquipmentSet,
                                 AgencyPaymentInfo
                               ], restaurant_id: account.user.restaurant.id
-      can [ :manage ], Manager, restaurant_id: account.user.restaurant.id # any manager at own restaurant
+      can [ :manage ], Manager, restaurant_id: account.user.restaurants.map(&:id) # any manager at own restaurant
       cannot [ :destroy ], Manager, id: account.user.id
       can :read, Staffer
       can :read, Shift, restaurant_id: account.user.restaurant.id
