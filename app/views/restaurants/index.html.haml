@@ -3,9 +3,9 @@
   .span10.offset1
     %h1 Restaurants
     .center
-      = link_to 'Create new restaurant', new_restaurant_path
       = will_paginate @restaurants
     %section
+      = render 'shared/index_search_form', submit_path: restaurants_path
       %ul.staff
         = render @restaurants
     .edit

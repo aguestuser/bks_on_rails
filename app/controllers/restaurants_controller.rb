@@ -45,10 +45,7 @@ class RestaurantsController < ApplicationController
 
   def index
     if credentials == 'Staffer'
-      @restaurants = Restaurant.all
-      .page(params[:page])
-      .joins(:mini_contact)
-      .order('mini_contacts.name asc')
+      @restaurants = Restaurant.search params
     else 
       flash[:error] = "You don't have permission to access that page."
       redirect_to root_path

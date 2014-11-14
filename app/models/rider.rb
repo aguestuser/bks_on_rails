@@ -75,6 +75,15 @@ class Rider < ActiveRecord::Base
     [ [ '* All Riders', 'all' ], [ '--', 0] ] + self.select_options
   end
 
+  def self.search params
+    if params[:search]
+      base = self.joins(:contact).where('contacts.name ILIKE ?', "%#{params[:search]}%")
+    else
+      base = self.joins(:contact)
+    end
+    base.order('contacts.name asc').page(params[:page])
+  end
+
   def self.request_conflicts sender_account, now
     riders = self.active
     # now = now_unless_test

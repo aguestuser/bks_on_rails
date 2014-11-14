@@ -52,11 +52,7 @@ class RidersController < ApplicationController
     if credentials == 'Rider'
       @riders = Rider.find(current_account.user.id)
     elsif credentials == 'Staffer'
-      @riders = Rider
-        .all
-        .page(params[:page])
-        .joins(:contact)
-        .order('contacts.name asc')
+      @riders = Rider.search params
     else
       redirect_to @manager
     end

@@ -71,12 +71,21 @@ class Restaurant < ActiveRecord::Base
 
   #class methods
 
-  def Restaurant.select_options
+  def self.select_options
     Restaurant.all.joins(:mini_contact).order("mini_contacts.name asc").map{ |r| [ r.name, r.id ] }
   end
 
   def self.multiselect_options
     [ [ '* All Restaurants', 'all' ] ] + self.select_options
+  end
+
+  def self.search params
+    if params[:search]
+      base = self.joins(:mini_contact).where('mini_contacts.name ILIKE ?', "%#{params[:search]}%")
+    else
+      base = self.joins(:mini_contact)
+    end
+    base.order('mini_contacts.name asc').page(params[:page])
   end
 
   private
@@ -85,7 +94,7 @@ class Restaurant < ActiveRecord::Base
     attrs
   end
   
-  def Restaurant.import_children path
+  def self.import_children path
     #input: none
     #output Hash of Arrays of Restaurant children 
       #{ minicontacts: Arr of MiniContacts, managers: Arr of Managers, ...}
@@ -100,7 +109,7 @@ class Restaurant < ActiveRecord::Base
     }
   end
 
-  def Restaurant.import_attrs_from row_hash, c, i
+  def self.import_attrs_from row_hash, c, i
     #input: Hash of Restaurant attributes, Hash of Hashes of attributes for children of Restaurants, Int (index)
     #output: Hash of Hashes of attributes for Restaurant *and* its children
     row_hash

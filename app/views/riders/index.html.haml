@@ -4,10 +4,10 @@
     %h1 Riders
 .row
   .center
-    = link_to 'Create Rider', new_rider_path
     = will_paginate @riders
 .row
   .span10.offset1
+    = render 'shared/index_search_form', submit_path: riders_path
     %ul.staff
       = render @riders
     .edit 
