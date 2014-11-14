@@ -204,7 +204,7 @@ module RiderMailerMacros
   def check_delegation_email_metadata mail, staffer, type
     expect(mail.to).to eq [ rider.email ]
     expect(mail.subject).to eq subject_from type
-    expect(mail.from).to eq [ "contact@bkshift.com" ]
+    expect(mail.from).to eq [ "brooklynshift@gmail.com" ]
   end
 
   def subject_from type
@@ -232,7 +232,7 @@ module RiderMailerMacros
   # BATCH EMAIL MACROS
 
   def check_batch_delegation_email_metadata mails, type
-    from = [ "contact@bkshift.com" ]
+    from = [ "brooklynshift@gmail.com" ]
     emails = [ rider.email, other_rider.email ]
     subject = batch_subject_from type
 
@@ -244,7 +244,7 @@ module RiderMailerMacros
   end
 
   def check_mixed_batch_delegation_email_metadata mails
-    from = [ "contact@bkshift.com" ]
+    from = [ "brooklynshift@gmail.com" ]
     emails = [ rider.email, rider.email, other_rider.email, other_rider.email ]
     subjects = [ subject_from(:emergency), subject_from(:extra_delegation), subject_from(:emergency), subject_from(:extra_delegation) ]
     
@@ -283,6 +283,17 @@ module RiderMailerMacros
     end
   end
 
+  def check_conflict_request_metadata mails, riders
+    from = [ "brooklynshift@gmail.com" ]
+    subject = "[SCHEDULING CONFLICT REQUEST] 1/13 - 1/19"
+
+    mails.sort_by{ |m| m.to }.each_with_index do |mail, i|
+      expect(mail.from).to eq from
+      expect(mail.to).to eq [ riders[i].email ]
+      expect(mail.subject).to eq subject
+    end
+  end
+
   def check_conflict_request_email_bodies mails, riders
     mails.each_with_index do |mail, i|
         # puts ">>>>>> MAIL #{i}"
@@ -294,18 +305,23 @@ module RiderMailerMacros
     end
   end
 
-  def check_conflict_request_metadata mails, riders
-    from = [ "contact@bkshift.com" ]
-    subject = "[SCHEDULING CONFLICT REQUEST] 1/13 - 1/19"
-
-    mails.sort_by{ |m| m.to }.each_with_index do |mail, i|
-      puts "mail.to"
-      pp mail.to
-      expect(mail.from).to eq from
-      expect(mail.to).to eq [ riders[i].email ]
-      expect(mail.subject).to eq subject
-    end
+  def check_rider_welcome_metadata mail, rider
+    expect(mail.from).to eq [ "brooklynshift@gmail.com" ]
+    expect(mail.to).to eq [ rider.email ]
+    expect(mail.subject).to eq "WELCOME TO BK SHIFT"
   end
+
+  def check_rider_welcome_body mail, rider
+    actual_body = parse_body_from mail
+    expected_body = expected_rider_welcome_body rider
+
+      # puts ">>> MAIL:"
+      # print mail.body
+
+    expect(actual_body).to eq expected_body
+
+  end
+
 
   # HELPERS
 
@@ -315,7 +331,16 @@ module RiderMailerMacros
 
   def expected_conflict_request_body_for rider, i
     str = File.read( "spec/mailers/sample_emails/conflicts_request_#{i}.html" )
-    str.gsub('<RIDER_ID>', "#{rider.id}")
+    str
+      .gsub('<RIDER_ID>', "#{rider.id}")
+      .gsub('RIDER_FIRST_NAME', rider.first_name)
+  end
+
+  def expected_rider_welcome_body rider
+    str = File.read("spec/mailers/sample_emails/rider_welcome.html")
+    str
+      .gsub('RIDER_FIRST_NAME', rider.first_name)
+      .gsub('RIDER_ID', rider.id.to_s)
   end
   
 end

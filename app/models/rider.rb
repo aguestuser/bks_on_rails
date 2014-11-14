@@ -96,7 +96,7 @@ class Rider < ActiveRecord::Base
       # end
       RiderMailer.request_conflicts(hash[:rider], hash[:conflicts], week_start, sender_account).deliver
       count += 1
-      puts ">>>>>#{count} EMAILS SENT"
+      # puts ">>>>>#{count} EMAILS SENT"
     end
     
     alert = count > 0 ? "#{count} conflict requests sent" : ""

@@ -91,7 +91,7 @@ describe "Rider Pages" do
               expect( model_counts_incremented? old_counts, new_counts, 1 ).to eq true
             end          
             it { should have_success_message("Profile created for #{contact.name}") }
-            it { should have_h1("Riders") }
+            it { should have_h1 rider.name }
           end
         end
       end

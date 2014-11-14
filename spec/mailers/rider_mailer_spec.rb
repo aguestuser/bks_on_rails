@@ -1,5 +1,5 @@
 require 'spec_helper'
-include RequestSpecMacros, RiderMailerMacros
+include RequestSpecMacros, RiderMailerMacros, RiderPageMacros
 
 describe "Rider Mailer Requests" do
   load_staffers
@@ -267,6 +267,34 @@ describe "Rider Mailer Requests" do
     it "should render correct email bodies" do
       check_conflict_request_email_bodies mails, riders
     end
-
   end
+
+  describe "WELCOME EMAIL" do
+    load_rider_resources
+    let(:new_form){ get_rider_form_hash 'new' }
+    let!(:rider_count){ Rider.count }
+    let!(:mail_count){ ActionMailer::Base.deliveries.count }
+
+    before do
+      mock_sign_in tess
+      visit new_rider_path
+      fill_in_form new_form
+      click_button 'Create Rider'
+    end
+
+    let(:mail){ ActionMailer::Base.deliveries.last }
+
+    it "should send two emails (one to staffer, one to rider)" do
+      expect(ActionMailer::Base.deliveries.count).to eq (mail_count + 2)
+    end
+
+    it "should render correct email data" do
+      check_rider_welcome_metadata mail, Rider.last
+    end
+
+    it "should render correct email body" do
+      check_rider_welcome_body mail, Rider.last
+    end
+
+  end # "WELCOME EMAIL"
 end

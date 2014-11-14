@@ -16,7 +16,6 @@ class RiderMailer < ActionMailer::Base
 
     helper = DelegationEmailHelper.new shifts, urgency, email_type
 
-    @salutation = "Dear #{rider.first_name}:"
     @offering = helper.offering
     @confirmation_request = helper.confirmation_request
     
@@ -40,6 +39,14 @@ class RiderMailer < ActionMailer::Base
     subject = "[SCHEDULING CONFLICT REQUEST] #{next_monday} - #{next_sunday}"
     
     mail(to: rider.full_email, subject: subject )
+  end
+
+  def welcome rider, account
+    @rider = rider
+    @toe_link = ENV["ROOT"][0..-2] + new_rider_toe_consent_path(@rider)
+    @staffer = account.user
+
+    mail(to: "'#{@rider.name}' <#{rider.email}>", subject: "WELCOME TO BK SHIFT")
   end
 
   private
