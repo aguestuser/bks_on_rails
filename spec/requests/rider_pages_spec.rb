@@ -98,6 +98,37 @@ describe "Rider Pages" do
     end
   end
 
+  describe "Terms of Employment form" do
+    let!(:toe_consent_count){ ToeConsent.count }
+    let!(:this_rider){ FactoryGirl.create(:rider) }
+    
+    before do
+      visit new_rider_toe_consent_path this_rider
+      click_button 'I Agree'
+    end
+
+    it "creates a new ToeConsent" do
+      expect(ToeConsent.count).to eq toe_consent_count + 1
+      expect(rider.toe_consent.ip).to eq "127.0.0.1"
+      expect(rider.toe_consent.created_at.beginning_of_day).to eq Time.zone.now.beginning_of_day
+    end
+
+    describe "second submission" do
+
+      let!(:new_count){ ToeConsent.count }
+
+      before do
+        visit new_rider_toe_consent_path this_rider
+        click_button 'I Agree'
+      end
+
+      it "doesn't create a new ToeConsent" do
+        expect(ToeConsent.count).to eq new_count
+      end
+    end
+
+  end # "Terms of Employment form"
+
   describe "active/inactive scoping" do
     
     let(:shift) do
