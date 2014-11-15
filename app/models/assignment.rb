@@ -148,8 +148,7 @@ class Assignment < ActiveRecord::Base
     end
 
     def auto_unassign
-      self.rider_id = nil if self.status == :unassigned
-      self.status = :unassigned if self.rider_id == nil
+      self.rider_id = nil if [ 'Unassigned', 'Cancelled (Rider)', 'Cancelled (Restaurant)' ].include? self.status.text
     end
 
 end
