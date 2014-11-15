@@ -69,6 +69,11 @@
   * There are production and staging instances of the site
     * The production instance is called bkshift and can be accessed at [https://bkshift.herokuapp.com](https://bkshift.herokuapp.com)
     * The staging instance is called bkshift-staging and can be accessed at [http://bkshift-staging.herokuapp.com](https://bkshift.herokuapp.com)
+  * There are sudomains of bkshift.com aliased to each instance 
+    * We're not using them currently because the heroku domains provide free SSL certificates and we haven't paid for our own (thus there is no SSL on the versions of the sites accessed at the subdomains)
+    * If we ever get our own SSL certificate, the two instances of the site can be accessed at the following links:
+      * Production: [https://db.bkshift.com](https://db.bkshift.com)
+      * Staging: [https://db.staging.bkshift.com](https://db.staging.bkshift.com)
 
 
 %a{ name: "story_list" }
