@@ -1,6 +1,5 @@
 class RiderMailer < ActionMailer::Base
   include RemoteRoot
-  # default from: "'BK SHIFT' <contact@bkshift.com>"
   default from: "'BK SHIFT' <brooklynshift@gmail.com>"
   
   helper_method :protect_against_forgery?

@@ -4,8 +4,8 @@
 
   $(document).ready(function(){
 
-    var dropdown = "#{ escape_javascript( render 'managers/dropdown' ) }" // Str
-      , fields = "#{ escape_javascript( render 'managers/fields', it: it, f: f ) }"
+    var dropdown = "#{ escape_javascript( render 'managers/dropdown' ) }" 
+      , fields = "#{ escape_javascript( render 'managers/fields_in_new_restaurant', it: it, f: f ) }"
 
     $('#choose_existing_manager').change(function(){
       if ($(this).prop('checked')){

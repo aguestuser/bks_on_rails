@@ -6,19 +6,19 @@
       .checkbox.offset1
         = check_box_tag 'choose_existing_manager', 1, false, id: 'choose_existing_manager'
         = label_tag :choose_existing, 'Choose from pre-existing managers?'
-      = render 'managers/choose_existing_manager_js', it: @it, f: f
-      = render 'managers/fields_in_new_restaurant', it: @it, f: f
+      = render 'managers/choose_existing_manager_js', it: it, f: f
+      = render 'managers/fields_in_new_restaurant', it: it, f: f
     
     - if params[:action] == 'edit'
       - it.managers.each_with_index do |manager, i|
         = render 'managers/fields_in_edit_restaurant', f: f, manager: manager, i:i
   
-  .center
-    = link_to 'Create new manager', new_restaurant_manager_path(it)
-    |
-    %a.anchor#add_existing_manager
-      Add existing manager
-  = render 'managers/add_existing_manager_js', it: it, f: f
+      .center
+        = link_to 'Create new manager', new_restaurant_manager_path(it)
+        |
+        %a.anchor#add_existing_manager
+          Add existing manager
+      = render 'managers/add_existing_manager_js', it: it, f: f
 
 - elsif it.class == Manager
   = render 'managers/fields', it: it, f: f
