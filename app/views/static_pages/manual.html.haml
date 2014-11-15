@@ -1,96 +1,110 @@
 - provide(:title, 'Manual')
-%h1 Manual
-%h3 Table of contents
-%h3 For Staff
-%ul 
-  %li 
-    %a{ href: "#backups" }
-      Backups
-%h3 For Developers
-  %li
-    %a{ href: "#source_code" }
-      Source Code
-  %li
-    %a{ href: "#hosting"}
-      Hosting
-  %li
-    %a{ href: "#story_list"}
-      Story List
-  %li
-    %a{ href: "#most_urgent" }
-      Most Urgent
 
+.row
+  .span10.offset1
+    %h1 Manual
+    %h3 Table of contents
+    %h4 For Staff
+    %ul 
+      %li 
+        %a{ href: "#backups" }
+          Backups
+    %h4 For Developers
+    %ul
+      %li
+        %a{ href: "#source_code" }
+          Source Code
+      %li
+        %a{ href: "#hosting"}
+          Hosting
+      %li
+        %a{ href: "#story_list"}
+          Story List
+      %li
+        %a{ href: "#most_urgent" }
+          Most Urgent
+    %hr/
+    
+    %h1 For Staff 
 
-%a{ name: "backups" }
+    %hr/
+    %a{ name: "backups" }
 
-:markdown
-  ### Backups
-  **Making backups:**
+    :markdown
+      ### Backups
+      **Making backups:**
 
-  * from the command line:
-  ` heroku pgbackups:capture --app bkshift `
+      * from the command line:
+      ` heroku pgbackups:capture --app bkshift `
 
-  **Viewing backups:**
-  
-  * from the command line: 
-  ` heroku pgbackups --app bkshift `
-  * [from the browser](https://postgres.heroku.com/databases/bkshift-heroku-postgresql-rose) 
+      **Viewing backups:**
+      
+      * from the command line: 
+      ` heroku pgbackups --app bkshift `
+      * [from the browser](https://postgres.heroku.com/databases/bkshift-heroku-postgresql-rose) 
 
-  **Deleting backups:**
+      **Deleting backups:**
 
-  * from the command line:
-  ` heroku pgbackups:destroy --app bkshift <INSERT_ID_HERE>*`
+      * from the command line:
+      ` heroku pgbackups:destroy --app bkshift <INSERT_ID_HERE>*`
 
-  **Restoring backups:**
+      **Restoring backups:**
 
-  * from the command line: 
-  `heroku pgbackups:restore --app bkshift HEROKU_POSTGRESQL_ROSE <ID>*`
+      * from the command line: 
+      `heroku pgbackups:restore --app bkshift HEROKU_POSTGRESQL_ROSE <ID>*`
 
-  _*Database ids are of the form b###. IDs can be retreived from viewing list of backups according to protocol._
+      _*Database ids are of the form b###. IDs can be retreived from viewing list of backups according to protocol._
 
+    %hr/
+    %h1 For Developers 
 
-%a{ name: "source_code" }
+    %hr/
+    %a{ name: "source_code" }
 
-:markdown
+    :markdown
 
-  ### Source Code
+      ### Source Code
 
-  * The site is written in Ruby on Rails.
-  * The source code is stored in [this github repository](https://github.com/aguestuser/bks_on_rails)
-  * To clone the repository, use `git clone git@github.com:aguestuser/bks_on_rails.git`
+      * The site is written in Ruby on Rails.
+      * The source code is stored in [this github repository](https://github.com/aguestuser/bks_on_rails)
+      * To clone the repository, use `git clone git@github.com:aguestuser/bks_on_rails.git`
 
-%a{ name: "hosting" }
+    %hr/
+    %a{ name: "hosting" }
 
-:markdown
+    :markdown
 
-  ### Hosting
+      ### Hosting
 
-  * The site is hosted on Heroku.com under the account username brooklynshift@gmail.com. (Password for account is same as password for that gmail account.)
-  * There are production and staging instances of the site
-    * The production instance is called bkshift and can be accessed at [https://bkshift.herokuapp.com](https://bkshift.herokuapp.com)
-    * The staging instance is called bkshift-staging and can be accessed at [http://bkshift-staging.herokuapp.com](https://bkshift.herokuapp.com)
-  * There are sudomains of bkshift.com aliased to each instance 
-    * We're not using them currently because the heroku domains provide free SSL certificates and we haven't paid for our own (thus there is no SSL on the versions of the sites accessed at the subdomains)
-    * If we ever get our own SSL certificate, the two instances of the site can be accessed at the following links:
-      * Production: [https://db.bkshift.com](https://db.bkshift.com)
-      * Staging: [https://db.staging.bkshift.com](https://db.staging.bkshift.com)
+      * The site is hosted on Heroku.com under the account username brooklynshift@gmail.com. (Password for account is same as password for that gmail account.)
+      * There are production and staging instances of the site
+        * The production instance is called bkshift and can be accessed at [https://bkshift.herokuapp.com](https://bkshift.herokuapp.com)
+        * The staging instance is called bkshift-staging and can be accessed at [http://bkshift-staging.herokuapp.com](https://bkshift.herokuapp.com)
+      * There are sudomains of bkshift.com aliased to each instance 
+        * We're not using them currently because the heroku domains provide free SSL certificates and we haven't paid for our own (thus there is no SSL on the versions of the sites accessed at the subdomains)
+        * If we ever get our own SSL certificate, the two instances of the site can be accessed at the following links:
+          * Production: [https://db.bkshift.com](https://db.bkshift.com)
+          * Staging: [https://db.staging.bkshift.com](https://db.staging.bkshift.com)
 
+    %hr/
+    %a{ name: "story_list" }
 
-%a{ name: "story_list" }
+    :markdown
 
-:markdown
+      ### Story List
 
-  ### Story List
+      * There is a list of complete and pending user stories in [this spreadsheet](https://docs.google.com/a/bkshift.com/spreadsheets/d/1Fw9xfi5wcUZSLvc1xYc2BLgUtJoi3TNVXpKgtrjlbNI/edit?pli=1#gid=0)
+      * There is a list of most immediatley needed stories in the [wish list tab of that sheet](https://docs.google.com/a/bkshift.com/spreadsheets/d/1Fw9xfi5wcUZSLvc1xYc2BLgUtJoi3TNVXpKgtrjlbNI/edit?pli=1#gid=2134156769)
 
-  * There is a list of complete and pending user stories in [this spreadsheet](https://docs.google.com/a/bkshift.com/spreadsheets/d/1Fw9xfi5wcUZSLvc1xYc2BLgUtJoi3TNVXpKgtrjlbNI/edit?pli=1#gid=0)
-  * There is a list of most immediatley needed stories in the [wish list tab of that sheet](https://docs.google.com/a/bkshift.com/spreadsheets/d/1Fw9xfi5wcUZSLvc1xYc2BLgUtJoi3TNVXpKgtrjlbNI/edit?pli=1#gid=2134156769)
+    %hr/
+    %a{ name: "most_urgent" }
 
-%a{ name: "most_urgent" }
+    :markdown
 
-:markdown
+      ### Most Urgent
 
-  * The most pressingly urgent story is to replace instances of Rails mailer scripts with calls to the Gmail API for mass email scripts
-  * The Rails mailer scripts work for transactional emails, but for RiderMailer#request_conflicts and instances RiderMailer#delegation_email called by the weekly schedule emailing routine send over 80 emails each and exceed Google's SMTP login requirment (and we can't run the batch in the background with long sleep intervals because we can't afford for worker dynos on Herou at the moment)
-  * There is a sketch of implmenting a mailer using Gmail's API (along with links to helpful resources) [in this file](https://github.com/aguestuser/bks_on_rails/blob/master/app/helpers/gmailer.rb)
+      * The most pressingly urgent story is to replace instances of Rails mailer scripts with calls to the Gmail API for mass email scripts
+      * The Rails mailer scripts work for transactional emails, but for RiderMailer#request_conflicts and instances RiderMailer#delegation_email called by the weekly schedule emailing routine send over 80 emails each and exceed Google's SMTP login requirment (and we can't run the batch in the background with long sleep intervals because we can't afford for worker dynos on Herou at the moment)
+      * There is a sketch of implmenting a mailer using Gmail's API (along with links to helpful resources) [in this file](https://github.com/aguestuser/bks_on_rails/blob/master/app/helpers/gmailer.rb)
 
 
