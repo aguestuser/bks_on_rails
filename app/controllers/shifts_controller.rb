@@ -115,18 +115,21 @@ class ShiftsController < ApplicationController
   # end
 
   def review_points
-    week_start = now_unless_test.beginning_of_week
-    params[:filter] = {
-      start: week_start,
-      :end => week_start.end_of_week,
-      restaurants: [ 'all' ],
-      riders: [ 'all' ],
-      status: [ 'all' ]
-    }
+    unless params[:filter]
+      week_start = now_unless_test.beginning_of_week
+      params[:filter] = {
+        start: week_start,
+        :end => week_start.end_of_week,
+        restaurants: [ 'all' ],
+        riders: [ 'all' ],
+        status: [ 'all' ]
+      }     
+    end
     load_filter_wrapper
     load_filter_path_params
     load_shifts
-    @base_path = @filter_submit_path = '/shifts/review_points/'
+    @base_path = '/shifts/review_points/'
+    @filter_submit_path = @base_path
     load_table review_points: true
     render 'index'
   end
