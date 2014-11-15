@@ -11,6 +11,7 @@
       = render @rider.qualification_set if can? :read, QualificationSet
       = render @rider.skill_set if can? :read, SkillSet
       = render @rider.equipment_set
+      = render 'toe_consents/toe_consent', toe_consent: @rider.toe_consent
       
 - if can? :manage, Rider
   .row
