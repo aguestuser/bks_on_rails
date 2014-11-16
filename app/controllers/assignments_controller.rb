@@ -161,7 +161,9 @@ class AssignmentsController < ApplicationController
     # *** SAVE HOOK ***
     def update_savable old_assignments, new_assignments
       now = now_unless_test
-      new_assignments.each{ |a| a.shift.refresh_urgency now } # will update weekly shifts to emergency and extra as appropriate
+      new_assignments.each do |a| 
+        a.shift.refresh_urgency now if a.status != :checked_in
+      end # will update weekly shifts to emergency and extra as appropriate
 
       if batch_save? old_assignments, new_assignments
 

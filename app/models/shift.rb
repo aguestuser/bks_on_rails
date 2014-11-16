@@ -78,7 +78,7 @@ class Shift < ActiveRecord::Base
     #output: self 
       
     start = self.start
-    send_urgency( parse_urgency( now, start ) ) if start > now 
+    send_urgency( parse_urgency( now, start ) ) if start > now
     self
   end
 
@@ -101,7 +101,7 @@ class Shift < ActiveRecord::Base
       
       if next_week
         :weekly
-      elsif time_gap <= 36.hours && self.assignment.status != :checked_in
+      elsif time_gap <= 36.hours
         :emergency
       else
         :extra
