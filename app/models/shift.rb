@@ -101,7 +101,7 @@ class Shift < ActiveRecord::Base
       
       if next_week
         :weekly
-      elsif time_gap <= 36.hours
+      elsif time_gap <= 36.hours && self.assignment.status != :checked_in
         :emergency
       else
         :extra
