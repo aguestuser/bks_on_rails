@@ -77,8 +77,7 @@ class Shift < ActiveRecord::Base
     #side-effects: updates shift's urgency attribute
     #output: self 
       
-    start = self.start
-    send_urgency( parse_urgency( now, start ) ) if start > now
+    send_urgency( parse_urgency( now, self.start ) ) if self.end > now
     self
   end
 
