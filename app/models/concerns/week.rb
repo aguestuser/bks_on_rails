@@ -7,7 +7,7 @@ class Week
     @start = start_time.beginning_of_day
     @end = end_time.beginning_of_day + 24.hours
     @klass = record_klass
-    
+
     @records = load_records
     @record_hash = load_record_hash
   end
@@ -18,7 +18,7 @@ class Week
   HEADERS = [ 'Mon AM','Mon PM','Tue AM','Tue PM','Wed AM','Wed PM','Thu AM','Thu PM','Fri AM','Fri PM', 'Sat AM', 'Sat PM', 'Sun AM', 'Sun PM' ]
   SELECTORS = [ 'mon_am','mon_pm','tue_am','tue_pm','wed_am','wed_pm','thu_am','thu_pm','fri_am','fri_pm', 'sat_am', 'sat_pm', 'sun_am', 'sun_pm']
 
-  def records_for day_period, entity_hash 
+  def records_for day_period, entity_hash
 
     entity_key = entity_hash.keys[0]
     entity = entity_hash.values[0]
@@ -29,8 +29,8 @@ class Week
     if records.nil?
       matches = []
     else
-      matches = records.select do |r| 
-        r.send(entity_key) == entity 
+      matches = records.select do |r|
+        r.send(entity_key) == entity
       end
     end
     matches
@@ -48,7 +48,7 @@ class Week
       'green'
     when AssignmentStatus::CancelledByRider
       'gray'
-    when AssignmentStatus::CancelledByRestaurant  
+    when AssignmentStatus::CancelledByRestaurant
       'gray'
     end
   end
@@ -56,7 +56,7 @@ class Week
   private
 
     def load_records
-      @klass.where("start > :start AND start < :end", 
+      @klass.where("start > :start AND start < :end",
         { start: @start, :end => @end })
         .order("start asc")
         .to_a
@@ -75,9 +75,9 @@ class Week
 
     def select_records_by_period period, offset
       selection = @records.select do |record|
-        ( record.start > @start + offset.days ) && 
-        ( record.start < @end - 6.days + offset.days) && 
-        ( 
+        ( record.start > @start + offset.days ) &&
+        ( record.start < @end - 6.days + offset.days) &&
+        (
           record.period.text.upcase == period ||
           record.period.text == 'Double'
         )

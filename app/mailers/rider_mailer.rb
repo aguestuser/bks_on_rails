@@ -1,9 +1,9 @@
 class RiderMailer < ActionMailer::Base
   include RemoteRoot
   default from: "'BK SHIFT' <brooklynshift@gmail.com>"
-  
+
   helper_method :protect_against_forgery?
-  
+
   def delegation_email sender_account, rider, urgency, email_type, shifts, restaurants
     #input: Account, Rider, Symbol, Symbol, Arr of Shifs, Arr of Restaurants
     require 'delegation_email_helper'
@@ -17,7 +17,7 @@ class RiderMailer < ActionMailer::Base
 
     @offering = helper.offering
     @confirmation_request = helper.confirmation_request
-    
+
     mail(to: rider.full_email, subject: helper.subject)
   end
 
@@ -36,7 +36,7 @@ class RiderMailer < ActionMailer::Base
     next_monday = ( @next_week_start ).strftime("%-m/%-d")
     next_sunday = ( @next_week_start + 6.days ).strftime("%-m/%-d")
     subject = "[SCHEDULING CONFLICT REQUEST] #{next_monday} - #{next_sunday}"
-    
+
     mail(to: rider.full_email, subject: subject )
   end
 
@@ -51,7 +51,7 @@ class RiderMailer < ActionMailer::Base
   private
 
     def staffer_from account
-      if account && account.user_type == 'Staffer' 
+      if account && account.user_type == 'Staffer'
         account.user
       else
         Staffer.tess
@@ -61,5 +61,5 @@ class RiderMailer < ActionMailer::Base
     def protect_against_forgery?
       false
     end
-      
+
 end

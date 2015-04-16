@@ -26,38 +26,37 @@ describe "Rider Mailer Requests" do
           let!(:mail_count){ ActionMailer::Base.deliveries.count }
           before { assign extra_shift, 'Delegated' }
           let(:mail){ ActionMailer::Base.deliveries.last }
-        
+
           it "should send an email" do
             expect(ActionMailer::Base.deliveries.count).to eq (mail_count + 1)
           end
-          
+
           it "should render correct email metadata" do
             check_delegation_email_metadata mail, :tess, :extra_delegation
           end
-          
+
           it "should render correct email body" do
             check_delegation_email_body mail, :tess, :extra_delegation
-          end          
+          end
         end
 
         describe "confirming" do
           let!(:mail_count){ ActionMailer::Base.deliveries.count }
           before { assign extra_shift, 'Confirmed' }
           let(:mail){ ActionMailer::Base.deliveries.last }
-        
+
           it "should send an email" do
             expect(ActionMailer::Base.deliveries.count).to eq (mail_count + 1)
           end
-          
+
           it "should render correct email metadata" do
             check_delegation_email_metadata mail, :tess, :extra_confirmation
           end
-          
+
           it "should render correct email body" do
             check_delegation_email_body mail, :tess, :extra_confirmation
-          end           
+          end
         end
-
       end
 
       describe "for emergency shift" do
@@ -68,11 +67,11 @@ describe "Rider Mailer Requests" do
         it "should send an email" do
           expect(ActionMailer::Base.deliveries.count).to eq (mail_count + 1)
         end
-        
+
         it "should render correct email metadata" do
           check_delegation_email_metadata mail, :tess, :emergency
         end
-        
+
         it "should render correct email body" do
           check_delegation_email_body mail, :tess, :emergency
         end
@@ -82,7 +81,7 @@ describe "Rider Mailer Requests" do
         before { assign emergency_shift, 'Delegated' }
 
         it "should redirect to error-handling page" do
-          expect(page).to have_h1 'Batch Assign Shifts'  
+          expect(page).to have_h1 'Batch Assign Shifts'
         end
 
         it "should list shifts with errors correctly" do
@@ -98,15 +97,15 @@ describe "Rider Mailer Requests" do
         let!(:mail_count){ ActionMailer::Base.deliveries.count }
         before { assign extra_shift, 'Delegated' }
         let(:mail){ ActionMailer::Base.deliveries.last }
-        
+
         it "should send an email" do
           expect(ActionMailer::Base.deliveries.count).to eq (mail_count + 1)
         end
-        
+
         it "should render correct email metadata" do
           check_delegation_email_metadata mail, :justin, :extra_delegation
         end
-        
+
         it "should render correct email body" do
           check_delegation_email_body mail, :justin, :extra_delegation
         end
@@ -131,7 +130,7 @@ describe "Rider Mailer Requests" do
       end
 
       describe "for EXTRA shifts" do
-        let!(:mail_count){ ActionMailer::Base.deliveries.count } 
+        let!(:mail_count){ ActionMailer::Base.deliveries.count }
         before { batch_delegate extra_shifts, :extra_delegation }
         let(:mails){ ActionMailer::Base.deliveries.last(2) }
 
@@ -149,7 +148,7 @@ describe "Rider Mailer Requests" do
       end # "for EXTRA shifts"
 
       describe "for EMERGENCY shifts" do
-        let!(:mail_count){ ActionMailer::Base.deliveries.count } 
+        let!(:mail_count){ ActionMailer::Base.deliveries.count }
         before { batch_delegate emergency_shifts, :emergency }
         let(:mails){ ActionMailer::Base.deliveries.last(2) }
 
@@ -167,7 +166,7 @@ describe "Rider Mailer Requests" do
       end # "for EMERGENCY shifts"
 
       describe "for MIXED BATCH of shifts" do
-        let!(:mail_count){ ActionMailer::Base.deliveries.count } 
+        let!(:mail_count){ ActionMailer::Base.deliveries.count }
         before { batch_delegate mixed_batch, :mixed }
         let(:mails){ ActionMailer::Base.deliveries.last(4) }
 
@@ -188,7 +187,7 @@ describe "Rider Mailer Requests" do
         before { batch_delegate emergency_shifts, :emergency_delegation }
 
         it "should redirect to error-handling page" do
-          expect(page).to have_h1 'Batch Assign Shifts'  
+          expect(page).to have_h1 'Batch Assign Shifts'
         end
 
         it "should list shifts with errors correctly" do
@@ -204,9 +203,9 @@ describe "Rider Mailer Requests" do
   describe "WEEKLY SCHEDULE EMAIL" do
     load_delegation_scenario
     load_weekly_email_scenario
-    
-    let!(:mail_count){ ActionMailer::Base.deliveries.count } 
-    
+
+    let!(:mail_count){ ActionMailer::Base.deliveries.count }
+
     before do
       mock_sign_in tess
       visit shift_grid_path
@@ -214,7 +213,7 @@ describe "Rider Mailer Requests" do
       click_button 'Filter'
       click_button 'Email Schedules'
     end
-    
+
     let(:mail){ ActionMailer::Base.deliveries.last }
 
     it "should send an email" do
@@ -231,7 +230,7 @@ describe "Rider Mailer Requests" do
 
     it "should set all assignment statuses to delegated" do
       expect( shifts.first(4).map{ |s| s.reload.assignment.status.text } ).to eq 4.times.map{ 'Delegated' }
-    end  
+    end
   end # "WEEKLY SCHEDULE EMAIL"
 
   describe "CONFLICT REQUEST" do
@@ -247,7 +246,7 @@ describe "Rider Mailer Requests" do
     after(:all) do # reactivate all riders who were active before tests
       @active.each{ |record| record.update(active: true) }
     end
-    
+
     before(:each) do
       mock_sign_in tess
       click_link 'Request Conflicts'

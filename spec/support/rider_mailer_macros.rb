@@ -1,18 +1,18 @@
 module RiderMailerMacros
-  
+
   def load_staffers
     let(:tess){ FactoryGirl.create(:staffer, :tess) }
-    let(:justin){ FactoryGirl.create(:staffer, :justin) }    
+    let(:justin){ FactoryGirl.create(:staffer, :justin) }
   end
 
   def load_delegation_scenario
 
     let!(:rider){ FactoryGirl.create(:rider) }
     let!(:restaurant){ FactoryGirl.create(:restaurant) }
-    
+
     let(:now){ Time.zone.local(2014,1,6,11) }
     let(:start_t){ now + 1.hour }
-    let(:end_t){ now + 7.hours }    
+    let(:end_t){ now + 7.hours }
 
     # let(:start_t){ Time.zone.now.beginning_of_day + 12.hours }
     # let(:end_t){ Time.zone.now.beginning_of_day + 18.hours }
@@ -20,29 +20,29 @@ module RiderMailerMacros
     let(:extra_shift){ FactoryGirl.create(:shift, :with_restaurant, restaurant: restaurant, start: start_t + 3.days, :end => end_t + 3.days) }
     let(:emergency_shift){ FactoryGirl.create(:shift, :with_restaurant, restaurant: restaurant, start: start_t + 1.day, :end => end_t + 1.day) }
 
-    before do 
+    before do
       rider.contact.update(name: 'A'*10)
       restaurant.mini_contact.update(name: 'A'*10)
-    end    
+    end
   end
 
   def load_batch_delegation_scenario
     let!(:other_rider){ FactoryGirl.create(:rider) }
     let!(:other_restaurant){ FactoryGirl.create(:restaurant) }
-    
-    let(:extra_shifts) do 
-      4.times.map do |n| 
+
+    let(:extra_shifts) do
+      4.times.map do |n|
         this_restaurant = is_even?(n) ? restaurant : other_restaurant #even shifts belong to restaurant, odd to other_restaurant
         FactoryGirl.create(:shift, :with_restaurant, restaurant: this_restaurant, start: start_t + (n+3).days, :end => end_t + (n+3).days)
       end
     end
 
-    let(:emergency_shifts) do 
-      4.times.map do |n| 
+    let(:emergency_shifts) do
+      4.times.map do |n|
         m = n < 2 ? n*6 : (6*n+12)
 
         this_restaurant = is_even?(n) ? restaurant : other_restaurant #even shifts belong to restaurant, odd to other_restaurant
-        FactoryGirl.create(:shift, :with_restaurant, restaurant: this_restaurant, start: start_t + m.hours, :end => end_t + m.hours ) 
+        FactoryGirl.create(:shift, :with_restaurant, restaurant: this_restaurant, start: start_t + m.hours, :end => end_t + m.hours )
         # FactoryGirl.create(:shift, :with_restaurant, restaurant: this_restaurant, start: start_t + ((n+2)/2).days + (n/2*6).hours, :end => end_t + ((n+2)/2).days + (n/2*6).hours)
       end
     end
@@ -58,9 +58,9 @@ module RiderMailerMacros
   end
 
   def load_weekly_email_scenario
-    
-    let(:shifts) do 
-      6.times.map do |n| 
+
+    let(:shifts) do
+      6.times.map do |n|
         FactoryGirl.create(:shift, :with_restaurant, restaurant: restaurant, start: start_t + n.days, :end => end_t + n.days)
       end
     end
@@ -99,7 +99,7 @@ module RiderMailerMacros
   end # load_conflict_request_scenario
 
   def is_even? n
-    (n+2)%2 == 0 
+    (n+2)%2 == 0
   end
 
   def load_schedule_email_scenario
@@ -131,22 +131,22 @@ module RiderMailerMacros
     Restaurant.all.each { |r| unselect r.name, from: 'filter_restaurants' }
     select restaurant.name, from: "filter_restaurants"
     select other_restaurant.name, from: "filter_restaurants"
-    click_button 'Filter' 
+    click_button 'Filter'
     # sort by restaurant
     click_link 'Restaurant'
     #select and submit test restaurants' shifts for batch assignment
     page.within("#row_1"){ find("#ids_").set true }
     page.within("#row_2"){ find("#ids_").set true }
-    page.within("#row_3"){ find("#ids_").set true } 
-    page.within("#row_4"){ find("#ids_").set true } 
-      
+    page.within("#row_3"){ find("#ids_").set true }
+    page.within("#row_4"){ find("#ids_").set true }
+
     click_button 'Batch Assign', match: :first
     #assign shifts
     page.find('#send_email').set false unless send_email
     assign_extra if type == :extra_delegation
     assign_emergency if type == :emergency
     delegate_emergency if type == :emergency_delegation
-    assign_mixed if type == :mixed 
+    assign_mixed if type == :mixed
     click_button 'Save changes'
   end
 
@@ -159,7 +159,7 @@ module RiderMailerMacros
         find("#wrapped_assignments_fresh__assignment_rider_id").select the_rider.name
         find("#wrapped_assignments_fresh__assignment_status").select 'Delegated'
       end
-    end   
+    end
   end
 
   def assign_emergency
@@ -217,7 +217,7 @@ module RiderMailerMacros
       "[EMERGENCY SHIFT] -- SHIFT DETAILS ENCLOSED"
     when :weekly
       "[WEEKLY SCHEDULE] -- PLEASE CONFIRM BY SUNDAY"
-    end  
+    end
   end
 
   def check_delegation_email_body mail, staffer, type
@@ -239,15 +239,15 @@ module RiderMailerMacros
     mails.each_with_index do |mail, i|
       expect(mail.from).to eq from
       expect(mail.to).to eq [ emails[i] ]
-      expect(mail.subject).to eq subject      
-    end    
+      expect(mail.subject).to eq subject
+    end
   end
 
   def check_mixed_batch_delegation_email_metadata mails
     from = [ "brooklynshift@gmail.com" ]
     emails = [ rider.email, rider.email, other_rider.email, other_rider.email ]
     subjects = [ subject_from(:emergency), subject_from(:extra_delegation), subject_from(:emergency), subject_from(:extra_delegation) ]
-    
+
     mails.each_with_index do |mail, i|
       expect(mail.from).to eq from
       expect(mail.to).to eq [ emails[i] ]
@@ -315,8 +315,8 @@ module RiderMailerMacros
     actual_body = parse_body_from mail
     expected_body = expected_rider_welcome_body rider
 
-      # puts ">>> MAIL:"
-      # print mail.body
+       puts ">>> MAIL:"
+       print mail.body
 
     expect(actual_body).to eq expected_body
 
@@ -342,5 +342,5 @@ module RiderMailerMacros
       .gsub('RIDER_FIRST_NAME', rider.first_name)
       .gsub('RIDER_ID', rider.id.to_s)
   end
-  
+
 end
