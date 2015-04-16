@@ -10,7 +10,7 @@ describe "Rider Pages" do
   subject { page }
 
   describe "display pages" do
-    
+
     describe "Riders#show" do
       before do
         rider.save
@@ -26,8 +26,8 @@ describe "Rider Pages" do
         it { should have_h3("Skills") }
         it { should have_h3("Equipment") }
       end
-    end    
-    
+    end
+
     describe "Riders#index" do
       before do
         riders.each_with_index{ |rider, i| rider.contact.update(name: "AAAAA"*i) }
@@ -48,7 +48,7 @@ describe "Rider Pages" do
   describe "form pages" do
 
     describe "Riders#new" do
-      
+
       before { visit new_rider_path }
       let(:new_form) { get_rider_form_hash 'new' }
       let(:submit) { 'Create Rider' }
@@ -57,7 +57,7 @@ describe "Rider Pages" do
         it { should have_h1("Create Rider") }
         it { should have_h3("Account Info") }
         it { should have_label('Password') }
-        it { should have_label('Password confirmation') }   
+        it { should have_label('Password confirmation') }
         it { should have_h3("Contact Info") }
         it { should have_label('Street address') }
         it { should have_h3("Rating") }
@@ -66,9 +66,9 @@ describe "Rider Pages" do
         it { should have_h3("Equipment") }
       end
 
-      describe "form submission" do       
+      describe "form submission" do
         let(:models) { [ Rider, Account, Contact, Location, EquipmentSet, QualificationSet, SkillSet, RiderRating ] }
-        let!(:old_counts) { count_models models }       
+        let!(:old_counts) { count_models models }
 
         describe "with invalid input" do
 
@@ -86,10 +86,10 @@ describe "Rider Pages" do
           describe "after submission" do
 
             let!(:new_counts) { count_models models }
-            
+
             it "should create new instances of associated models" do
               expect( model_counts_incremented? old_counts, new_counts, 1 ).to eq true
-            end          
+            end
             it { should have_success_message("Profile created for #{contact.name}") }
             it { should have_h1 rider.name }
           end
@@ -98,39 +98,8 @@ describe "Rider Pages" do
     end
   end
 
-  describe "Terms of Employment form" do
-    let!(:toe_consent_count){ ToeConsent.count }
-    let!(:this_rider){ FactoryGirl.create(:rider) }
-    
-    before do
-      visit new_rider_toe_consent_path this_rider
-      click_button 'I Agree'
-    end
-
-    it "creates a new ToeConsent" do
-      expect(ToeConsent.count).to eq toe_consent_count + 1
-      expect(rider.toe_consent.ip).to eq "127.0.0.1"
-      expect(rider.toe_consent.created_at.beginning_of_day).to eq Time.zone.now.beginning_of_day
-    end
-
-    describe "second submission" do
-
-      let!(:new_count){ ToeConsent.count }
-
-      before do
-        visit new_rider_toe_consent_path this_rider
-        click_button 'I Agree'
-      end
-
-      it "doesn't create a new ToeConsent" do
-        expect(ToeConsent.count).to eq new_count
-      end
-    end
-
-  end # "Terms of Employment form"
-
   describe "active/inactive scoping" do
-    
+
     let(:shift) do
       FactoryGirl.create(
         :shift,
@@ -140,24 +109,24 @@ describe "Rider Pages" do
         :end => Time.zone.local(2014,1,7,18)
       )
     end
-    before { 
+    before {
       riders
       shift.rider.destroy
       shift.unassign
-    } 
-    
+    }
+
     describe "with last of 3 riders inactive" do
       before { riders.last.update(active: false) }
-      
+
       describe "in shift index multiselect" do
         before { visit shifts_path }
 
         it "should only include active riders" do
-          riders.first(2).each do |rider| 
-            expect( page.find("#filter_riders").text ).to include rider.name 
+          riders.first(2).each do |rider|
+            expect( page.find("#filter_riders").text ).to include rider.name
           end
           expect( page.find("#filter_riders").text ).not_to include riders.last.name
-        end  
+        end
       end
 
       describe "in assignment edit dropdown" do
@@ -170,7 +139,7 @@ describe "Rider Pages" do
           expect(page.find( "#assignment_rider_id" ).text).not_to include riders.last.name
         end
       end
-      
+
       describe "in availability grid" do
         before do
           visit availability_grid_path
@@ -183,9 +152,9 @@ describe "Rider Pages" do
             expect(page.all( ".y_axis_label" ).map(&:text)).to include rider.name
           end
           expect(page.all( ".y_axis_label" ).map(&:text)).not_to include riders.last.name
-        end  
+        end
       end
-    
+
     end
 
     describe "Edit Rider Statuses Page" do
@@ -199,11 +168,11 @@ describe "Rider Pages" do
             expect(page).to have_content(rider.name)
             expect(page.find("#riders_1_active")).to be_checked
           end
-        end      
+        end
       end # "contents"
 
       describe "commiting edit" do
-        before do 
+        before do
           uncheck "riders[1][active]"
           click_button 'Submit', match: :first
         end
@@ -215,4 +184,3 @@ describe "Rider Pages" do
     end # "Set Rider Status Page"
   end
 end
-
