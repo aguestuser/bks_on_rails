@@ -6,11 +6,11 @@ class ManagersController < ApplicationController
     @manager = Manager.new
     @manager.build_account # abstract to UsersController?
     @manager.build_contact # abstract to ContactablesController?
-    
+
     if params[:restaurant_id]
       load_restaurants
     else
-      @manager.restaurants.build 
+      @manager.restaurants.build
     end
 
     @it = @manager
@@ -28,7 +28,7 @@ class ManagersController < ApplicationController
       render 'new'
     end
   end
-  
+
   def show
   end
 
@@ -41,7 +41,7 @@ class ManagersController < ApplicationController
       redirect_to redirect_path
     else
       render 'edit'
-    end    
+    end
   end
 
   def destroy

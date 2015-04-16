@@ -42,6 +42,7 @@ group :development, :test do
   gem 'annotate', ">=2.6.0"
   gem 'factory_girl_rails', '4.2.1'
   gem 'database_cleaner'
+  gem 'rack-mini-profiler'
 end
 
 group :test do
