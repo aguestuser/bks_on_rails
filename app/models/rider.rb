@@ -23,19 +23,19 @@ class Rider < ActiveRecord::Base
     accepts_nested_attributes_for :skill_set
   has_one :rider_rating, dependent: :destroy
     accepts_nested_attributes_for :rider_rating
-
+  
   has_one :toe_consent
   has_many :assignments
   has_many :shifts, through: :assignments
-  has_many :conflicts
+  has_many :conflicts 
 
   #validations
   validates :active, inclusion: { in: [ true, false ] }
 
   #scopes
-  scope :testy, -> { includes(:contact).where("contacts.email = ?", "bkshifttester@gmail.com").first }
-  scope :active, -> { includes(:contact).where(active: true).order("contacts.name asc") }
-  scope :inactive, -> { includes(:contact).where(active: false).order("contacts.name asc") }
+  scope :testy, -> { joins(:contact).where("contacts.email = ?", "bkshifttester@gmail.com").first }
+  scope :active, -> { joins(:contact).where(active: true).order("contacts.name asc") }
+  scope :inactive, -> { joins(:contact).where(active: false).order("contacts.name asc") }
 
   #callbacks
   before_create { contact.name = contact.name.split.map(&:capitalize).join(' ') }
@@ -57,17 +57,13 @@ class Rider < ActiveRecord::Base
     #input: Rider(self/implicit), Datetiem, Datetime
     #does: builds an array of conflicts belonging to rider within date range btw/ start_t and end_t
     #output: Arr
-    self.conflicts
+    conflicts = self.conflicts
       .where( "start > :start AND start < :end", { start: start_t, :end => end_t } )
       .order("start asc")
   end
 
   def has_toe_consent?
     self.toe_consent
-  end
-
-  def active?
-    self.active
   end
 
   #class methods
@@ -93,7 +89,7 @@ class Rider < ActiveRecord::Base
     # now = now_unless_test
     this_monday = now.beginning_of_week
     next_monday = this_monday + 1.week
-
+    
     rider_conflicts = RiderConflicts.new( riders, this_monday ).increment_week
     email_alert = self.email_conflict_requests rider_conflicts, next_monday, sender_account
   end
@@ -102,7 +98,7 @@ class Rider < ActiveRecord::Base
     #input: RiderConflicts, Datetime, Account
     #output: Str (empty if no emails sent, email alert if emails sent)
     count = 0
-    rider_conflicts.arr.each do |hash|
+    rider_conflicts.arr.each do |hash| 
       # if count > 0 && count % 50 == 0
       #   puts ">>> SLEEPING"
       #   sleep 180
@@ -111,7 +107,7 @@ class Rider < ActiveRecord::Base
       count += 1
       # puts ">>>>>#{count} EMAILS SENT"
     end
-
+    
     alert = count > 0 ? "#{count} conflict requests sent" : ""
   end
 
@@ -123,15 +119,15 @@ class Rider < ActiveRecord::Base
 
     def self.import_children path
       #input: none
-      #output Hash of Arrays of Rider children
+      #output Hash of Arrays of Rider children 
         #{ accounts: Arr of Accounts, contacts: Arr of Contacts,  ...}
-      {
+      { 
         accounts: Account.import( "#{path}accounts.csv" ),
         contacts: Contact.import( "#{path}contacts.csv" ),
         qualification_sets: QualificationSet.import( "#{path}qualification_sets.csv" ),
         skill_sets: SkillSet.import( "#{path}skill_sets.csv" ),
         rider_ratings: RiderRating.import( "#{path}rider_ratings.csv" ) ,
-        equipment_sets: EquipmentSet.import( "#{path}equipment_sets.csv" ),
+        equipment_sets: EquipmentSet.import( "#{path}equipment_sets.csv" ), 
         locations: Location.import( "#{path}locations.csv" )
       }
     end
@@ -148,7 +144,7 @@ class Rider < ActiveRecord::Base
           skill_set: c[:skill_sets][i],
           rider_rating: c[:rider_ratings][i],
           equipment_set: c[:equipment_sets][i],
-          location: c[:locations][i]
+          location: c[:locations][i] 
         } )
     end
 
