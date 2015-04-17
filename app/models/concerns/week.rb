@@ -72,18 +72,15 @@ class Week
      #   .to_a
       case @klass.to_s
       when 'Shift'
-          #.includes(:assignment, { rider: :contact } , { restaurant: :mini_contact} )
         Shift
           .includes({ rider: :contact } , { restaurant: :mini_contact })
           .where("start > ? AND start < ?", @start, @end )
-          #.order("start asc")
-          #.to_a
+          .to_a
       when 'Conflict'
         Conflict
           .includes(rider: :contact)
           .where("start > ? AND start < ?", @start, @end )
-         # .order("start asc")
-         # .to_a
+          .to_a
       end
     end
 
