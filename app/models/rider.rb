@@ -57,13 +57,17 @@ class Rider < ActiveRecord::Base
     #input: Rider(self/implicit), Datetiem, Datetime
     #does: builds an array of conflicts belonging to rider within date range btw/ start_t and end_t
     #output: Arr
-    conflicts = self.conflicts
+    self.conflicts
       .where( "start > :start AND start < :end", { start: start_t, :end => end_t } )
       .order("start asc")
   end
 
   def has_toe_consent?
     self.toe_consent
+  end
+
+  def active?
+    self.active
   end
 
   #class methods
