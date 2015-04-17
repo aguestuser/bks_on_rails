@@ -99,11 +99,11 @@ module Timeboxable
           end
         end
       end
-    
+
       def start_before_end
         if self.end.present? && start.present? && self.end <= start
           errors.add(:end, "can't be before start")
-        end  
+        end
       end
 
       def less_than_24_hr
@@ -118,9 +118,9 @@ module Timeboxable
     def self.matches_period(period, **options)
       if options.key? :restaurant
         rest = options[:restaurant]
-        
+
       elsif options.key? :rider
-      
+
       end
     end
   end

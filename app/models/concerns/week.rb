@@ -30,7 +30,7 @@ class Week
       matches = []
     else
       matches = records.select do |r|
-        r.send(entity_key) == entity
+        r.send(entity_key) == entity #TODO: rewrite this?
       end
     end
     matches
@@ -55,11 +55,37 @@ class Week
 
   private
 
+  #
+  #   bads = Restaurant.joins("left outer join managers_restaurants on managers_restaurants.restaurant_id = restaurants.id").where("managers_restaurants.manager_id IS NULL")
+  #end
+
+  # TODO: re-write this query as left outer join
+  # need to "pattern match" on "klass"" (paramaterize it!)
+  # if shift: join assignment, rider
+  # if conflict: join rider
+  # practice extracting related objects from active record with similar pattern
+
     def load_records
-      @klass.where("start > :start AND start < :end",
-        { start: @start, :end => @end })
-        .order("start asc")
-        .to_a
+     # @klass.where("start > :start AND start < :end",
+     #   { start: @start, :end => @end })
+     #   .order("start asc")
+     #   .to_a
+      case @klass.to_s
+      when 'Shift'
+          #.includes(:assignment, { rider: :contact } , { restaurant: :mini_contact} )
+        Shift
+          .includes({ rider: :contact } , { restaurant: :mini_contact })
+          .where("start > ? AND start < ?", @start, @end )
+          .order("start asc")
+          .to_a
+      when 'Conflict'
+          #.includes(rider: :contact)
+        Conflict
+          .includes(rider: :contact)
+          .where("start > ? AND start < ?", @start, @end )
+          .order("start asc")
+          .to_a
+      end
     end
 
     def load_record_hash
@@ -74,7 +100,7 @@ class Week
     end
 
     def select_records_by_period period, offset
-      selection = @records.select do |record|
+      @records.select do |record|
         ( record.start > @start + offset.days ) &&
         ( record.start < @end - 6.days + offset.days) &&
         (
