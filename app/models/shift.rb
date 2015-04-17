@@ -23,13 +23,14 @@ class Shift < ActiveRecord::Base
   belongs_to :restaurant
   has_one :assignment, dependent: :destroy #inverse_of: :shift
     accepts_nested_attributes_for :assignment
+  has_one :rider, through: :assignment
 
   classy_enum_attr :billing_rate
   classy_enum_attr :urgency
 
   validates :restaurant_id, :billing_rate, :urgency,
     presence: true
-  
+
   EXPORT_COLUMNS = [ 'id', 'start', 'end', 'restaurant_id', 'billing_rate' ]
   EXPORT_HEADERS = [ 'id', 'start', 'end', 'restaurantid', 'billing' ]
 
@@ -45,10 +46,10 @@ class Shift < ActiveRecord::Base
     !self.assignment.rider.nil?
   end
 
-  def assign_to(rider, status=:proposed) 
-    #input: Rider, AssignmentStatus(Symbol) 
+  def assign_to(rider, status=:proposed)
+    #input: Rider, AssignmentStatus(Symbol)
     #output: self.Assignment
-    params = { rider_id: rider.id, status: status } 
+    params = { rider_id: rider.id, status: status }
     if self.assigned?
       self.assignment.update params
     else
@@ -61,13 +62,13 @@ class Shift < ActiveRecord::Base
   end
 
   def conflicts_with? conflict
-    ( conflict.end >= self.end && conflict.start < self.end ) || 
+    ( conflict.end >= self.end && conflict.start < self.end ) ||
     ( conflict.start <= self.start && conflict.end > self.start )
-    # ie: if the conflict under examination overlaps with this conflict 
+    # ie: if the conflict under examination overlaps with this conflict
   end
 
   def double_books_with? shift
-    ( shift.end >= self.end && shift.start <  self.end ) || 
+    ( shift.end >= self.end && shift.start <  self.end ) ||
     ( shift.start <= self.start && shift.end > self.start )
     # ie: if the shift under examination overlaps with this shift
   end
@@ -75,8 +76,8 @@ class Shift < ActiveRecord::Base
   def refresh_urgency now
     #input self (implicit), DateTime Obj
     #side-effects: updates shift's urgency attribute
-    #output: self 
-      
+    #output: self
+
     send_urgency( parse_urgency( now, self.start ) ) if self.end > now
     self
   end
@@ -97,7 +98,7 @@ class Shift < ActiveRecord::Base
       #output: Symbol
       next_week = start.beginning_of_week != now.beginning_of_week
       time_gap = start - now
-      
+
       if next_week
         :weekly
       elsif time_gap <= 36.hours
@@ -110,10 +111,10 @@ class Shift < ActiveRecord::Base
     def send_urgency urgency
       #input: Symbol
       self.update(urgency: urgency)
-    end  
+    end
 
     def parse_export_values attrs
-      swap_billing = lambda do |billing| 
+      swap_billing = lambda do |billing|
         case billing
         when 'extra'
           'extra rider'
@@ -126,7 +127,7 @@ class Shift < ActiveRecord::Base
       attrs[-1] = swap_billing.call(attrs.last)
       attrs[-2] = attrs[-2] -1 # offset id by 1
       attrs
-    end    
+    end
 
     # private class methods
     def self.import_children path
@@ -157,7 +158,7 @@ class Shift < ActiveRecord::Base
           'cancelled charge'
         when 'Checked In'
           'confirmed'
-        else 
+        else
           status
         end
       end

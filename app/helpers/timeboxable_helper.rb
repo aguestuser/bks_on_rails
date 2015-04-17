@@ -1,5 +1,5 @@
 module TimeboxableHelper
-  
+
   def header_to_selector header
     header.downcase.sub ' ', '_'
   end
@@ -48,4 +48,3 @@ end
 # def load_week
 #   @week = Week.new(@filter[:start], @filter[:end])
 # end
-

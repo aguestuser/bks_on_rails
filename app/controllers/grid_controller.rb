@@ -1,6 +1,6 @@
 # require 'week.rb'
 
-class GridController < ApplicationController  
+class GridController < ApplicationController
   authorize_resource :class => false
   include TimeboxableHelper, Filters, Sortable, Paths
 
@@ -37,9 +37,9 @@ class GridController < ApplicationController
     def assignments_to_email
       Shift
         .joins(:assignment)
-        .where( 
-          "shifts.id IN (:shift_ids) AND assignments.status = (:status)", 
-          { 
+        .where(
+          "shifts.id IN (:shift_ids) AND assignments.status = (:status)",
+          {
             shift_ids: params[:shift_ids].split.map(&:to_i),
             status: 'proposed'
           }
@@ -63,7 +63,7 @@ class GridController < ApplicationController
       case @subject
       when :shifts
         load_shift_week
-      when 
+      when
         load_availability_week
       end
     end
@@ -75,7 +75,7 @@ class GridController < ApplicationController
       def load_availability_week
         start__ = @filter[:start]
         end__ = @filter[:end]
-        
+
         shift_wk = Week.new( start__, end__, Shift )
         conflict_wk = Week.new( start__, end__, Conflict )
         @week = CompoundWeek.new( start__, end__, [ shift_wk, conflict_wk ] )
@@ -100,8 +100,8 @@ class GridController < ApplicationController
 
     def load_sort_params
       @sort_key = params[:sort].to_i || 0
-      @sort_dir = params[:direction] || 'asc'      
-    end    
+      @sort_dir = params[:direction] || 'asc'
+    end
 
 
 end

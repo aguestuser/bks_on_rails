@@ -1,4 +1,4 @@
- class Grid 
+ class Grid
   include TimeboxableHelper
 
   attr_accessor :headers, :rows, :y_axis
@@ -15,7 +15,7 @@
 
   #Main Functions
 
-  def load_headers 
+  def load_headers
     row = [ y_label_header_cell ]
     row.concat header_cells
   end
@@ -60,7 +60,7 @@
   end
 
   def data_cells_from entity, week
-    Week::SELECTORS.map do |day_per_str| 
+    Week::SELECTORS.map do |day_per_str|
       entity_hash = {}
       entity_hash[@y_axis] = entity
       entity_class_str = entity_class_str_from entity
@@ -76,7 +76,7 @@
       row.each_with_index do |cell, j|
         col_num = j+1
         cell[:id_str] = "row_#{row_num}_col_#{col_num}"
-      end 
+      end
     end
   end
 
@@ -96,7 +96,7 @@
       checkboxes: checkboxes,
       resources: resources,
       values: values,
-      class_str: "#{entity_class_str} day_per_#{day_per_str} #{color}" 
+      class_str: "#{entity_class_str} day_per_#{day_per_str} #{color}"
     }
   end
 
@@ -106,7 +106,7 @@
 
   def checkbox_from resource
     { name: 'ids[]', val: resource.id } if resource.class.name == 'Shift'
-  end  
+  end
 
   def data_cell_vals_from resources
     if resources.empty?
@@ -151,7 +151,7 @@
     end
   end
 
-  def parse_for_color shifts 
+  def parse_for_color shifts
     statuses = shifts.map { |shift| shift.assignment.status.text }
     if statuses.include? 'Unassigned'
       'red'
@@ -166,4 +166,3 @@
     end
   end
 end
-
