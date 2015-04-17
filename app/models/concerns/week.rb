@@ -76,15 +76,14 @@ class Week
         Shift
           .includes({ rider: :contact } , { restaurant: :mini_contact })
           .where("start > ? AND start < ?", @start, @end )
-          .order("start asc")
-          .to_a
+          #.order("start asc")
+          #.to_a
       when 'Conflict'
-          #.includes(rider: :contact)
         Conflict
           .includes(rider: :contact)
           .where("start > ? AND start < ?", @start, @end )
-          .order("start asc")
-          .to_a
+         # .order("start asc")
+         # .to_a
       end
     end
 
