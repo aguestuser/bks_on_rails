@@ -4,15 +4,19 @@ class ApplicationController < ActionController::Base
   protect_from_forgery with: :exception
   include SessionsHelper
   # before_action :check_sign_in
+  before_filter :mini_profiler
   authorize_resource
 
   REMOTE_ROOT = "https://obscure-anchorage-7682.herokuapp.com/"
+
+  def mini_profiler
+    Rack::MiniProfiler.authorize_request if current_account.user.contact.email = 'guest.austin@gmail.com'
+  end
 
   def now_unless_test
     Rails.env.test? ? Time.zone.local(2014,1,6,11) : Time.zone.now
   end
 
-  
   # CanCan config
   def current_ability
     @current_ability ||= Ability.new(current_account)
