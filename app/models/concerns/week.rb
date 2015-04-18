@@ -94,16 +94,20 @@ class Week
 
     def group_one acc, rec
         offset = ((rec.start.beginning_of_day - @start) / 86400).ceil
-        key = assign([offset,rec.period.to_s])
-        if key.nil?
-          puts("offset: #{offset}, period: #{rec.period}")
+        per = rec.period.to_s
+        if per == 'double'
+          keys = assign_double(offset)
+          acc[keys[0]] << rec
+          acc[keys[1]] << rec
+        else
+          key = assign([offset,per])
+          acc[key] << rec
         end
-        acc[key] << rec
         acc
     end
 
-    def assign pair
     # assign(Arr[Int,Per]) -> Sym
+    def assign pair
       case pair
       when [0,'am']
         :mon_am
@@ -133,6 +137,26 @@ class Week
         :sun_am
       when [6,'pm']
         :sun_pm
+      end
+    end
+
+    # assign_double(Int) -> [Sym,Sym]
+    def assign_double pair
+      case offset
+      when 0
+        [:mon_am, :mon_pm]
+      when 1
+        [:tue_am, :tue_pm]
+      when 2
+        [:wed_am, :wed_pm]
+      when 3
+        [:thu_am, :thu_pm]
+      when 4
+        [:fri_am, :fri_pm]
+      when 5
+        [:sat_am, :sat_pm]
+      when 6
+        [:sun_am, :sun_pm]
       end
     end
 
