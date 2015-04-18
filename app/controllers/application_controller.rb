@@ -3,8 +3,8 @@ class ApplicationController < ActionController::Base
   # For APIs, you may want to use :null_session instead.
   protect_from_forgery with: :exception
   include SessionsHelper
-  # before_action :check_sign_in
-  before_filter :mini_profiler
+
+  #before_filter :mini_profiler
   authorize_resource
 
   REMOTE_ROOT = "https://obscure-anchorage-7682.herokuapp.com/"

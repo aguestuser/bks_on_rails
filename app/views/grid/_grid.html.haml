@@ -1,9 +1,9 @@
 - # input: allow_edits? (bool)
 
-.grid 
+.grid
   /Filters
   .filters
-    = render 'grid/filter_form'  
+    = render 'grid/filter_form'
   .row.batch_form.center
     /Send Emails Form
     .span2.offset3
@@ -13,17 +13,17 @@
         = submit_tag 'Email Schedules', :class => 'btn btn-primary'
     %div{ class: "span4", style: "float: left;"}
       /Batch Edit Form Wrapper
-      = form_tag '/shift/batch_edit', :class => 'batch', method: :get do 
+      = form_tag '/shift/batch_edit', :class => 'batch', method: :get do
         - if allow_edits
           /Submit Buttons
           = hidden_field_tag :base_path, @base_path
           = hidden_field_tag :filter_json, @filter.to_json
-          = submit_tag 'Batch Assign', class: 'btn btn-primary' 
+          = submit_tag 'Batch Assign', class: 'btn btn-primary'
           = submit_tag 'Uniform Assign', class: 'btn btn-primary'
         /Grid
         %table
           /Header Row
-          %tr 
+          %tr
             - @grid.headers.each_with_index do |header, i|
               %th{ id: "#{header[:id_str]}", class: "#{header[:class_str]}" }
                 = grid_sortable i, header[:value]
@@ -41,7 +41,7 @@
                     - when :restaurant
                       - path = restaurant_path resource
                     = link_to resource.name, path
-                  -else 
+                  -else
                     /Data Cells
                     - if cell[:resources].empty?
                       - rider = row[0][:resources][0]
@@ -51,12 +51,12 @@
                       - end_ = start + 6.hours
                       - path = new_rider_conflict_path(rider, base_path: @base_path, start: start, :end => end_)
                       = link_to cell[:values][0], path
-                    - else 
+                    - else
                       - cell[:values].each_with_index do |value, i|
                         %div
                         - resource = cell[:resources][i]
                         - case resource.class.name
-                        - when 'Shift' 
+                        - when 'Shift'
                           - path = edit_shift_assignment_path resource, resource.assignment, base_path: @base_path
                         - when 'Conflict'
                           - path = edit_conflict_path resource, base_path: @base_path
@@ -64,4 +64,3 @@
                           = cell_checkbox cell[:checkboxes][i]
                         = link_to value, path
                         / , base_path: @base_path
-              
