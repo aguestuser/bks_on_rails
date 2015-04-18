@@ -95,9 +95,9 @@ class Week
     def group_one acc, rec
         offset = ((rec.start.beginning_of_day - @start) / 86400).ceil
         key = assign([offset,rec.period.to_s])
-        if key.nil?
-          puts("offset: #{offset}, period: #{rec.period}")
-        end
+        #if key.nil?
+          #puts("offset: #{offset}, period: #{rec.period}")
+        #end
         acc[key] << rec
         acc
     end
