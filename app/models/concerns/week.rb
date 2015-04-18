@@ -55,21 +55,7 @@ class Week
 
   private
 
-  #
-  #   bads = Restaurant.joins("left outer join managers_restaurants on managers_restaurants.restaurant_id = restaurants.id").where("managers_restaurants.manager_id IS NULL")
-  #end
-
-  # TODO: re-write this query as left outer join
-  # need to "pattern match" on "klass"" (paramaterize it!)
-  # if shift: join assignment, rider
-  # if conflict: join rider
-  # practice extracting related objects from active record with similar pattern
-
     def load_records
-     # @klass.where("start > :start AND start < :end",
-     #   { start: @start, :end => @end })
-     #   .order("start asc")
-     #   .to_a
       case @klass.to_s
       when 'Shift'
         Shift
@@ -85,25 +71,92 @@ class Week
     end
 
     def load_record_hash
-      hash = {}
-      DAYS.each_with_index do |day, i|
-        PERIODS.each do |period|
-          key = day_and_period_to_selector(day, period).to_sym
-          hash[key] = select_records_by_period period, i
-        end
+      acc = {
+        mon_am: [],
+        mon_pm: [],
+        tue_am: [],
+        tue_pm: [],
+        wed_am: [],
+        wed_pm: [],
+        thu_am: [],
+        thu_pm: [],
+        fri_am: [],
+        fri_pm: [],
+        sat_am: [],
+        sat_pm: [],
+        sun_am: [],
+        sun_pm: []
+      }
+      Rack::MiniProfiler.step("GROUP shifts/conflicts") do
+        @records.inject(acc){ |acc_,r| group_one(acc_,r) }
       end
-      hash
     end
 
-    def select_records_by_period period, offset
-      @records.select do |record|
-        ( record.start > @start + offset.days ) &&
-        ( record.start < @end - 6.days + offset.days) &&
-        (
-          record.period.text.upcase == period ||
-          record.period.text == 'Double'
-        )
-      end
-      # selection == [] ? nil : selection
+    def group_one acc, rec
+        offset = ((rec.start.beginning_of_day - @start) / 86400).ceil
+        key = assign([offset,rec.period.to_s])
+        acc[key] << rec
+        acc
     end
+
+    def assign pair
+    # assign(Arr[Int,Per]) -> Sym
+      case pair
+      when [0,'am']
+        :mon_am
+      when [0,'pm']
+        :mon_pm
+      when [1,'am']
+        :tue_pm
+      when [1,'pm']
+        :tue_pm
+      when [2,'am']
+        :wed_am
+      when [2,'pm']
+        :wed_pm
+      when [3,'am']
+        :thu_am
+      when [3,'pm']
+        :thu_pm
+      when [4,'am']
+        :fri_am
+      when [4,'pm']
+        :fri_pm
+      when [5,'am']
+        :sat_am
+      when [5,'pm']
+        :sat_pm
+      when [6,'am']
+        :sun_am
+      when [6,'pm']
+        :sun_pm
+      end
+    end
+
+#    def select_records_by_period period, offset
+#      @records.select do |record|
+#        ( record.start > @start + offset.days ) &&
+#        ( record.start < @end - 6.days + offset.days) &&
+#        (
+#          record.period.text.upcase == period ||
+#          record.period.text == 'Double'
+#        )
+#      end
+#    end
+    #    def load_record_hash
+    #      Rack::MiniProfiler.step("GROUP shifts/conflicts") do
+    #        hash = {}
+    #        DAYS.each_with_index do |day, i|
+    #          #Rack::MiniProfiler.step("DAY LOOP") do
+    #            PERIODS.each do |period|
+    #              #Rack::MiniProfiler.step("PERIOD LOOP") do
+    #                key = day_and_period_to_selector(day, period).to_sym
+    #                hash[key] = select_records_by_period period, i
+    #              #end
+    #            end
+    #          #end
+    #        end
+    #        hash
+    #      end
+    #    end
 end
