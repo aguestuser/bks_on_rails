@@ -141,7 +141,7 @@ class Week
     end
 
     # assign_double(Int) -> [Sym,Sym]
-    def assign_double pair
+    def assign_double offset
       case offset
       when 0
         [:mon_am, :mon_pm]
