@@ -95,6 +95,9 @@ class Week
     def group_one acc, rec
         offset = ((rec.start.beginning_of_day - @start) / 86400).ceil
         key = assign([offset,rec.period.to_s])
+        if key.nil?
+          raise("offset: #{offset}, period: #{rec.period}")
+        end
         acc[key] << rec
         acc
     end
@@ -107,7 +110,7 @@ class Week
       when [0,'pm']
         :mon_pm
       when [1,'am']
-        :tue_pm
+        :tue_am
       when [1,'pm']
         :tue_pm
       when [2,'am']
@@ -134,15 +137,15 @@ class Week
     end
 
 #    def select_records_by_period period, offset
-#      @records.select do |record|
-#        ( record.start > @start + offset.days ) &&
-#        ( record.start < @end - 6.days + offset.days) &&
-#        (
-#          record.period.text.upcase == period ||
-#          record.period.text == 'Double'
-#        )
-#      end
-#    end
+a      @records.select do |record|
+a        ( record.start > @start + offset.days ) &&
+a        ( record.start < @end - 6.days + offset.days) &&
+a        (
+a          record.period.text.upcase == period ||
+a          record.period.text == 'Double'
+a        )
+a      end
+a    end
     #    def load_record_hash
     #      Rack::MiniProfiler.step("GROUP shifts/conflicts") do
     #        hash = {}
