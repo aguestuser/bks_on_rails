@@ -87,9 +87,7 @@ class Week
         sun_am: [],
         sun_pm: []
       }
-      Rack::MiniProfiler.step("GROUP shifts/conflicts") do
-        @records.inject(acc){ |acc_,r| group_one(acc_,r) }
-      end
+      @records.inject(acc){ |acc_,r| group_one(acc_,r) }
     end
 
     def group_one acc, rec
@@ -160,30 +158,4 @@ class Week
       end
     end
 
-#    def select_records_by_period period, offset
-#      @records.select do |record|
-#        ( record.start > @start + offset.days ) &&
-#        ( record.start < @end - 6.days + offset.days) &&
-#        (
-#          record.period.text.upcase == period ||
-#          record.period.text == 'Double'
-#        )
-#      end
-#    end
-    #    def load_record_hash
-    #      Rack::MiniProfiler.step("GROUP shifts/conflicts") do
-    #        hash = {}
-    #        DAYS.each_with_index do |day, i|
-    #          #Rack::MiniProfiler.step("DAY LOOP") do
-    #            PERIODS.each do |period|
-    #              #Rack::MiniProfiler.step("PERIOD LOOP") do
-    #                key = day_and_period_to_selector(day, period).to_sym
-    #                hash[key] = select_records_by_period period, i
-    #              #end
-    #            end
-    #          #end
-    #        end
-    #        hash
-    #      end
-    #    end
 end
