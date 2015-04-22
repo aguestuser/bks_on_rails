@@ -95,7 +95,8 @@ class GridController < ApplicationController
       end
 
       def load_riders
-        @riders = @week.records.map(&:rider).uniq.select{ |r| !r.nil? && r.active? }
+        # @riders = @week.records.map(&:rider).uniq.select{ |r| !r.nil? && r.active? }
+        @riders = Rider.active
       end
 
     def load_sort_params

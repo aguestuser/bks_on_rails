@@ -33,17 +33,16 @@ class Restaurant < ActiveRecord::Base
   validates :active, inclusion: { in: [ true, false ] }
 
 
-  scope :with_shifts_this_week, -> { 
-    joins(:shifts)
+  scope :with_shifts_this_week, -> {
+    includes(:shifts, :mini_contact)
     .where(
-      "start > :start_t AND start < :end_t", 
-      { 
+      "start > :start_t AND start < :end_t",
+      {
         start_t: (Rails.env.test? ? Time.zone.local(2014,1,6,11) : Time.zone.now).beginning_of_week,
         end_t: (Rails.env.test? ? Time.zone.local(2014,1,6,11) : Time.zone.now).beginning_of_week + 1.week
       }
     )
-    .joins(:mini_contact)
-    .order("mini_contacts.name asc") 
+    .order("mini_contacts.name asc")
     .to_a.uniq
   }
 
@@ -62,7 +61,7 @@ class Restaurant < ActiveRecord::Base
   end
 
   def shifts_between start_t, end_t
-    shifts = self.shifts
+    self.shifts
       .where( "start > :start AND start < :end", { start: start_t, :end => end_t } )
       .order("start asc")
   end
@@ -93,12 +92,12 @@ class Restaurant < ActiveRecord::Base
   def parse_export_values attrs
     attrs
   end
-  
+
   def self.import_children path
     #input: none
-    #output Hash of Arrays of Restaurant children 
+    #output Hash of Arrays of Restaurant children
       #{ minicontacts: Arr of MiniContacts, managers: Arr of Managers, ...}
-    { 
+    {
       mini_contacts: MiniContact.import( "#{path}mini_contacts.csv" ),
       managers: Manager.import( "#{path}managers/managers.csv", "#{path}managers/accounts.csv", "#{path}managers/contacts.csv" ),
       work_specifications: WorkSpecification.import( "#{path}work_specifications.csv" ),
@@ -131,8 +130,8 @@ class Restaurant < ActiveRecord::Base
 
   def self.child_export_cells_from restaurant
     l = restaurant.location
-    [ 
-      restaurant.mini_contact.name, 
+    [
+      restaurant.mini_contact.name,
       l.address,
       l.lat,
       l.lng
