@@ -5,14 +5,14 @@ class Ability
 
     account ||= Account.new
     if account.user_type == 'Staffer'
-      can :manage, :all 
+      can :manage, :all
       can :manage, :grid
       can :manage, :export
     elsif account.user_type == 'Manager'
       can [ :read, :update ], Restaurant, id: account.user.restaurant.id # own restaurant
       can [ :read, :update ], [ MiniContact,
                                 RiderPaymentInfo,
-                                WorkSpecification, 
+                                WorkSpecification,
                                 EquipmentSet,
                                 AgencyPaymentInfo
                               ], restaurant_id: account.user.restaurant.id
@@ -28,7 +28,7 @@ class Ability
     elsif account.user_type == 'Rider'
       can [ :read, :update ], Rider, :id => account.user.id
       can [ :read, :update ], [ Contact, EquipmentSet ]
-      can :read, Staffer 
+      can :read, Staffer
       can :read, Assignment, rider_id: account.user.id
       can :read, Shift, assignment: { rider_id: account.user.id }
       can [ :read, :update ], Contact, contactable_id: account.user.contact.id
@@ -45,12 +45,12 @@ class Ability
     #     can :read, :all
     #   end
     #
-    # The first argument to `can` is the action you are giving the user 
+    # The first argument to `can` is the action you are giving the user
     # permission to do.
     # If you pass :manage it will apply to every action. Other common actions
     # here are :read, :create, :update and :destroy.
     #
-    # The second argument is the resource the user can perform the action on. 
+    # The second argument is the resource the user can perform the action on.
     # If you pass :all it will apply to every resource. Otherwise pass a Ruby
     # class of the resource.
     #

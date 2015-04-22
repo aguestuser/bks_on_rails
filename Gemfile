@@ -31,9 +31,6 @@ gem 'underscore-rails'
 gem 'rdiscount'
 gem 'activerecord-session_store', github: 'rails/activerecord-session_store'
 
-gem 'rack-mini-profiler'
-
-
 group :development, :test do
   gem 'rspec-rails', '2.13.1'
   gem 'guard-rspec', '2.5.0'
@@ -44,6 +41,7 @@ group :development, :test do
   gem 'annotate', ">=2.6.0"
   gem 'factory_girl_rails', '4.2.1'
   gem 'database_cleaner'
+  gem 'rack-mini-profiler'
 end
 
 group :test do

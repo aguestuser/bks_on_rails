@@ -9,9 +9,9 @@ class ApplicationController < ActionController::Base
 
   REMOTE_ROOT = "https://obscure-anchorage-7682.herokuapp.com/"
 
-  def mini_profiler
-    Rack::MiniProfiler.authorize_request if current_account.user.contact.email = 'guest.austin@gmail.com'
-  end
+  # def mini_profiler
+  #   Rack::MiniProfiler.authorize_request if current_account.user.contact.email = 'guest.austin@gmail.com'
+  # end
 
   def now_unless_test
     Rails.env.test? ? Time.zone.local(2014,1,6,11) : Time.zone.now

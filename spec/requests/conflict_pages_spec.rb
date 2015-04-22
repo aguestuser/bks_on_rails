@@ -27,7 +27,7 @@ describe "Conflict Requests" do
 
   describe "Conflicts#index" do
     before do
-      conflicts.each(&:save) 
+      conflicts.each(&:save)
       other_conflict.save
     end
 
@@ -96,7 +96,7 @@ describe "Conflict Requests" do
 
     describe "from rider profile page" do
       before { visit rider_path rider }
-      
+
       it { should have_h3("Conflicts") }
       it { should have_content(conflicts[0].table_time) }
       it { should have_link('Edit', href: "/riders/#{rider.id}/conflicts/#{conflicts[0].id}/edit?base_path=/riders/#{rider.id}/") }
@@ -105,18 +105,18 @@ describe "Conflict Requests" do
       it "should be able to delete a conflict" do
         expect{ click_link('Delete', href: "/riders/#{rider.id}/conflicts/#{conflicts[0].id}?base_path=/riders/#{rider.id}/") }.to change(Conflict, :count).by(-1)
       end
-    end
+      end
   end
 
   # need specs for redirects from different caller paths
-  # need specs for 
+  # need specs for
 
   describe "Conflicts#new" do
-    before do 
+    before do
       rider
       conflicts.each(&:save)
     end
-    
+
     let(:models){ [Conflict] }
     let!(:old_counts) { count_models models }
     let(:submit) { 'Create conflict' }
@@ -167,7 +167,7 @@ describe "Conflict Requests" do
 
         describe "with invalid input" do
           before { make_invalid_conflict_submission }
-          it { should have_an_error_message }          
+          it { should have_an_error_message }
         end
 
         describe "with valid input" do
@@ -185,7 +185,7 @@ describe "Conflict Requests" do
   end
 
   describe "Conflicts#edit" do
-    before do 
+    before do
       rider
       conflict.save
     end
@@ -240,18 +240,18 @@ describe "Conflict Requests" do
           it { should have_success_message("Edited conflict for #{rider.contact.name}") }
           it "should edit the conflict" do
             expect( conflict.reload.start.hour ).to eq 1
-          end                    
+          end
         end
       end
     end
-  end  
+  end
 
   describe "Conflicts#delete redirects" do
-    
+
     before do
       rider
-      conflicts.each(&:save)     
-    end 
+      conflicts.each(&:save)
+    end
 
     describe "from (root) conflicts index" do
       before do
@@ -263,9 +263,9 @@ describe "Conflict Requests" do
     end
 
     describe "from rider conflicts index" do
-      before do 
+      before do
         visit rider_conflicts_path(rider)
-        click_link('Delete', href: "/riders/#{rider.id}/conflicts/#{conflicts[0].id}?base_path=/riders/#{rider.id}/conflicts/") 
+        click_link('Delete', href: "/riders/#{rider.id}/conflicts/#{conflicts[0].id}?base_path=/riders/#{rider.id}/conflicts/")
       end
 
       it { should have_h1("Conflicts for #{rider.contact.name}") }
@@ -274,7 +274,7 @@ describe "Conflict Requests" do
 
   describe "BATCH CREATE" do
 
-    describe "for rider WITH CONFLICTS" do  
+    describe "for rider WITH CONFLICTS" do
       before { batch_preview_conflicts_for rider }
       let!(:old_count){ Conflict.count }
       let!(:n_mail_count){ ActionMailer::Base.deliveries.count }
@@ -296,14 +296,14 @@ describe "Conflict Requests" do
         before { click_link 'Different' }
 
         describe "#BATCH_NEW page" do
-          
+
           it "should be the #batch_new page" do
             expect(current_path).to eq '/conflict/batch_new'
             expect(page).to have_h1 "New Conflicts for #{rider.name}"
           end
 
           it "should have the correct contents" do
-            Week::DAYS.each do |day| 
+            Week::DAYS.each do |day|
             expect(page).to have_content("#{day} AM")
             expect(page).to have_content("#{day} PM")
             end
@@ -312,7 +312,7 @@ describe "Conflict Requests" do
           describe "clicking SUBMIT" do
 
             describe "with 4 NEW CONFLICTS" do
-              before { submit_new_conflicts [ 0,1,4,5 ] }  
+              before { submit_new_conflicts [ 0,1,4,5 ] }
               let(:new_conflicts){ Conflict.last(4) }
 
               it "should create 4 new conflicts" do
@@ -321,9 +321,9 @@ describe "Conflict Requests" do
 
               it "should format conflicts correctly" do
                 check_new_conflicts new_conflicts, [ 0,1,4,5 ]
-              end           
+              end
             end # "with 4 NEW CONFLICTS"
-            
+
             describe "with NO NEW CONFLICTS" do
               before{ submit_new_conflicts [] }
               let(:new_conflicts){ [] }
@@ -334,11 +334,11 @@ describe "Conflict Requests" do
 
               it "should redirect to rider conflicts page" do
                 expect(current_path).to eq rider_conflicts_path(rider)+'/'
-              end   
-            end 
-          end # "clicking SUBMIT"       
+              end
+            end
+          end # "clicking SUBMIT"
         end # "#BATCH_NEW page"
-      end # "making NEW"      
+      end # "making NEW"
     end # "for rider WITH CONFLICTS"
 
     describe "for rider WITHOUT CONFLICTS" do
